@@ -2,7 +2,7 @@
 const multer = require('multer');
 const pdf = require('pdf-parse');
 const mammoth = require('mammoth');
-const fetch = require('node-fetch'); // We need to explicitly import fetch in Node.js
+const fetch = require('node-fetch');
 
 // Configure multer for memory storage.
 const upload = multer({ storage: multer.memoryStorage() });
@@ -94,11 +94,16 @@ const handler = async (req, res) => {
   }
 };
 
-export default handler;
-
 // Vercel needs this config to correctly handle file uploads.
-export const config = {
+const config = {
   api: {
     bodyParser: false,
   },
 };
+
+// Export both the handler and the config using CommonJS syntax.
+module.exports = (req, res) => {
+  handler(req, res);
+};
+
+module.exports.config = config;
