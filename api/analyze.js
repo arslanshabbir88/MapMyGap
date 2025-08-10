@@ -21,44 +21,35 @@ const runMiddleware = (req, res, fn) => {
 
 // This is the main serverless function.
 const handler = async (req, res) => {
-  console.log("Function execution started.");
   try {
     await runMiddleware(req, res, upload.single('file'));
-    console.log("Multer middleware finished.");
 
     if (!req.file) {
-      console.log("Error: No file uploaded.");
       return res.status(400).json({ error: 'No file uploaded.' });
     }
-    console.log(`File received: ${req.file.originalname}, type: ${req.file.mimetype}`);
 
     let fileContent = '';
     const { buffer, mimetype } = req.file;
 
     if (mimetype === 'application/pdf') {
-      console.log("Parsing PDF...");
       const data = await pdf(buffer);
       fileContent = data.text;
     } else if (mimetype === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-      console.log("Parsing DOCX...");
       const { value } = await mammoth.extractRawText({ buffer });
       fileContent = value;
     } else if (mimetype === 'text/plain') {
-      console.log("Parsing TXT...");
       fileContent = buffer.toString('utf8');
     } else {
-      console.log(`Error: Unsupported file type: ${mimetype}`);
       return res.status(400).json({ error: 'Unsupported file type.' });
     }
-    console.log("File parsed successfully.");
 
     const { framework } = req.body;
     const frameworkOptions = JSON.parse(req.body.frameworkOptions);
     const frameworkSourceData = JSON.parse(req.body.frameworkSourceData);
 
-    const apiKey = process.env.VITE_GEMINI_API_KEY;
+    // FIX: Use a standard environment variable name for the backend.
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      console.log("Error: API key not configured on server.");
       return res.status(500).json({ error: 'API key not configured on server.' });
     }
 
@@ -76,7 +67,6 @@ const handler = async (req, res) => {
       Return ONLY the completed JSON object.
     `;
 
-    console.log("Calling Gemini API...");
     let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
     const payload = { contents: chatHistory };
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -87,31 +77,26 @@ const handler = async (req, res) => {
       body: JSON.stringify(payload),
     });
 
-    console.log(`Gemini API response status: ${geminiResponse.status}`);
     if (!geminiResponse.ok) {
       const errorData = await geminiResponse.json();
-      console.error("Gemini API Error:", errorData);
       throw new Error(errorData?.error?.message || 'API request failed');
     }
 
     const result = await geminiResponse.json();
-    console.log("Successfully received response from Gemini API.");
     
     res.status(200).json(result);
 
   } catch (error) {
-    console.error('Error in handler:', error);
+    console.error('Error in /api/analyze:', error);
     res.status(500).json({ error: `Server error: ${error.message}` });
   }
 };
 
 // Vercel needs this config to correctly handle file uploads.
-const config = {
+handler.config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Export both the handler and the config using CommonJS syntax.
 module.exports = handler;
-module.exports.config = config;
