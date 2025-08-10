@@ -95,15 +95,10 @@ const handler = async (req, res) => {
 };
 
 // Vercel needs this config to correctly handle file uploads.
-const config = {
+handler.config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Export both the handler and the config using CommonJS syntax.
-module.exports = (req, res) => {
-  handler(req, res);
-};
-
-module.exports.config = config;
+module.exports = handler;
