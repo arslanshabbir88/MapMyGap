@@ -15,6 +15,7 @@ const XCircleIcon = () => <Icon path="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 
 const ExclamationTriangleIcon = () => <Icon path="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" className="w-5 h-5 text-yellow-400" />;
 const LightbulbIcon = () => <Icon path="M12 18v-5.25m0 0a6.01 6.01 0 001.5-11.625a6.01 6.01 0 00-1.5-1.125M12 18h.008M12 18h-.008m0 0A6.003 6.003 0 0112 3.75m0 14.25A6.003 6.003 0 0012 3.75m0 14.25v-5.25" className="w-6 h-6 text-blue-400" />;
 const SparklesIcon = () => <Icon path="M9.813 15.904L9 18l-1.813-2.096a4.5 4.5 0 00-6.214-6.214L1 8l2.096-1.813a4.5 4.5 0 006.214-6.214L9 0l.813 2.096a4.5 4.5 0 006.214 6.214L18 8l-2.096.813a4.5 4.5 0 00-6.214 6.214zM18 18l-1.813-2.096a4.5 4.5 0 00-6.214-6.214L9 8l2.096-1.813a4.5 4.5 0 006.214-6.214L18 0l.813 2.096a4.5 4.5 0 006.214 6.214L27 8l-2.096.813a4.5 4.5 0 00-6.214 6.214L18 18z" className="w-5 h-5 mr-2" />;
+const ArrowLeftIcon = () => <Icon path="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" className="w-4 h-4 mr-2" />;
 
 
 // --- Modal Component ---
@@ -38,6 +39,13 @@ const DetailModal = ({ result, fileContent, onClose }) => {
         setGeneratedText('');
         setGenerationError('');
 
+        const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+        if (!apiKey) {
+            setGenerationError("API Key is missing. Please configure it in your environment variables.");
+            setIsGenerating(false);
+            return;
+        }
+
         const prompt = `
             You are a professional cybersecurity policy writer.
             An organization's internal standards document has a compliance gap related to the NIST control: "${result.id}: ${result.control}".
@@ -57,7 +65,6 @@ const DetailModal = ({ result, fileContent, onClose }) => {
             let chatHistory = [];
             chatHistory.push({ role: "user", parts: [{ text: prompt }] });
             const payload = { contents: chatHistory };
-            const apiKey = import.meta.env.VITE_GEMINI_API_KEY; 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
             
             const response = await fetch(apiUrl, {
@@ -66,7 +73,16 @@ const DetailModal = ({ result, fileContent, onClose }) => {
                 body: JSON.stringify(payload)
             });
 
-            if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+            if (!response.ok) {
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (jsonError) {
+                    throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+                }
+                const message = errorData?.error?.message || `API request failed with status ${response.status}`;
+                throw new Error(message);
+            }
 
             const apiResult = await response.json();
             if (apiResult.candidates && apiResult.candidates[0]?.content?.parts[0]?.text) {
@@ -138,7 +154,7 @@ const DetailModal = ({ result, fileContent, onClose }) => {
 
 // --- Main App Component ---
 
-export default function Analyzer() {
+export default function Analyzer({ onNavigateHome }) {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -175,6 +191,13 @@ export default function Analyzer() {
     setError(null);
     setAnalysisResults(null);
 
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+        setError("Gemini API Key is not configured. Please set it in your .env.local file or Vercel environment variables.");
+        setIsAnalyzing(false);
+        return;
+    }
+
     const frameworkData = frameworkSourceData[selectedFramework];
     
     const prompt = `
@@ -185,11 +208,21 @@ export default function Analyzer() {
         let chatHistory = [];
         chatHistory.push({ role: "user", parts: [{ text: prompt }] });
         const payload = { contents: chatHistory };
-        const apiKey = import.meta.env.VITE_GEMINI_API_KEY; 
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
         
         const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        if (!response.ok) throw new Error(`API request failed with status ${response.status}`);
+        
+        if (!response.ok) {
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (jsonError) {
+                throw new Error(`API request failed with status ${response.status}: ${response.statusText}`);
+            }
+            const message = errorData?.error?.message || `API request failed with status ${response.status}`;
+            throw new Error(message);
+        }
+
         const result = await response.json();
         
         if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
@@ -210,7 +243,7 @@ export default function Analyzer() {
         }
     } catch (e) {
       console.error(e);
-      setError(`An error occurred during analysis: ${e.message}. Please try again.`);
+      setError(`An error occurred during analysis: ${e.message}`);
     } finally {
       setIsAnalyzing(false);
     }
@@ -287,9 +320,15 @@ export default function Analyzer() {
       <DetailModal result={modalData} fileContent={fileContent} onClose={() => setModalData(null)} />
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
         <header className="sticky top-0 z-10 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <h1 className="text-2xl font-bold text-white tracking-tight">AlignIQ</h1>
-            <p className="text-slate-400 mt-1">Align your internal standards with industry frameworks to intelligently identify and close compliance gaps.</p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">AlignIQ</h1>
+              <p className="text-slate-400 mt-1">Compliance Analyzer</p>
+            </div>
+            <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+              <ArrowLeftIcon />
+              Back to Home
+            </button>
           </div>
         </header>
         
