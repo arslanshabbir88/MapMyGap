@@ -251,7 +251,7 @@ export default function Analyzer({ onNavigateHome }) {
 
   const frameworkOptions = [
     { id: 'NIST_CSF', name: 'NIST Cybersecurity Framework (CSF) v2.0', enabled: true },
-    { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5', enabled: false },
+    { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5', enabled: true },
     { id: 'FFIEC_CAT', name: 'FFIEC Cybersecurity Assessment Tool', enabled: false },
     { id: 'PCI_DSS', name: 'PCI DSS v4.0', enabled: false },
     { id: 'ISO_27001', name: 'ISO/IEC 27001:2022', enabled: false },
@@ -269,11 +269,17 @@ export default function Analyzer({ onNavigateHome }) {
             { name: 'Recover (RC)', description: 'Restore assets and operations affected by a cybersecurity incident.', results: [ { id: 'RC.RP-1', control: 'A recovery plan is executed.'}, { id: 'RC.IM-2', control: 'Recovery plans incorporate lessons learned.'}, ]},
         ]
     },
-    FFIEC_CAT: { categories: [] }, // Placeholder for future implementation
-    PCI_DSS: { categories: [] },   // Placeholder for future implementation
-    ISO_27001: { categories: [] }, // Placeholder for future implementation
-    NYDFS_500: { categories: [] }, // Placeholder for future implementation
-    NIST_800_53: { categories: [] },// Placeholder for future implementation
+    NIST_800_53: {
+        categories: [
+            { name: 'Access Control (AC)', description: 'Limit information system access to authorized users, processes acting on behalf of users, or devices.', results: [ { id: 'AC-1', control: 'A policy and procedures for access control are in place.'}, { id: 'AC-2', control: 'User accounts and access are managed.'}, ]},
+            { name: 'Incident Response (IR)', description: 'Establish an operational incident handling capability for organizational information systems.', results: [ { id: 'IR-1', control: 'An incident response policy and procedures are in place.'}, { id: 'IR-8', control: 'An incident response plan is developed and implemented.'}, ]},
+            { name: 'Risk Assessment (RA)', description: 'Periodically assess the risk to organizational operations, assets, and individuals.', results: [ { id: 'RA-1', control: 'A risk assessment policy and procedures are in place.'}, { id: 'RA-3', control: 'Risk assessment is conducted.'}, ]},
+        ]
+    },
+    FFIEC_CAT: { categories: [] },
+    PCI_DSS: { categories: [] },
+    ISO_27001: { categories: [] },
+    NYDFS_500: { categories: [] },
   };
 
   const renderStatusIcon = (status) => {
