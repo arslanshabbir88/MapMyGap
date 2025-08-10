@@ -7,26 +7,24 @@ const fetch = require('node-fetch');
 // Configure multer for memory storage.
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Vercel needs this config to correctly handle file uploads.
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-// This is the main serverless function.
-export default async function handler(req, res) {
-  // Use a Promise to handle the multer middleware.
-  await new Promise((resolve, reject) => {
-    upload.single('file')(req, res, (err) => {
-      if (err) {
-        return reject(err);
+// Helper function to run multer middleware.
+const runMiddleware = (req, res, fn) => {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) {
+        return reject(result);
       }
-      resolve();
+      return resolve(result);
     });
   });
+};
 
+// This is the main serverless function, exported using module.exports.
+module.exports = async (req, res) => {
   try {
+    // Run the multer middleware to process the file upload.
+    await runMiddleware(req, res, upload.single('file'));
+
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded.' });
     }
