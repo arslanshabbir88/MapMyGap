@@ -124,18 +124,16 @@ export default function Analyzer({ onNavigateHome }) {
         body: formData,
       });
 
-      // NEW: Better error handling to reveal the server's actual error message.
       if (!response.ok) {
-        let errorText;
+        const errorText = await response.text();
+        let errorMessage = errorText;
         try {
-            // First, try to parse it as JSON, which is what we expect for a clean error.
-            const errorData = await response.json();
-            errorText = errorData.error || `Request failed with status ${response.status}`;
+          const errorJson = JSON.parse(errorText);
+          errorMessage = errorJson.error || errorText;
         } catch (e) {
-            // If parsing as JSON fails, it's likely an HTML error page. Read it as text.
-            errorText = await response.text();
+          // The error response was not JSON, so we'll use the raw text.
         }
-        throw new Error(errorText);
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();
