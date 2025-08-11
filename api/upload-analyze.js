@@ -1,32 +1,49 @@
-import formidable from 'formidable';
+// Dynamic, robust imports to avoid init failures on serverless
+async function loadFormidable() {
+  const mod = await import('formidable');
+  return mod.formidable || mod.default || mod;
+}
+async function loadMammoth() {
+  const mod = await import('mammoth');
+  return mod.default || mod;
+}
+async function loadPdfParse() {
+  const mod = await import('pdf-parse');
+  return mod.default || mod;
+}
+async function loadXLSX() {
+  const mod = await import('xlsx');
+  return mod.default || mod;
+}
+
 import fs from 'fs';
-import mammoth from 'mammoth';
-import pdf from 'pdf-parse';
-import xlsx from 'xlsx';
 
 async function readTxt(filePath) {
   return fs.promises.readFile(filePath, 'utf8');
 }
 
 async function readDocx(filePath) {
+  const mammoth = await loadMammoth();
   const buf = await fs.promises.readFile(filePath);
   const { value } = await mammoth.extractRawText({ buffer: buf });
   return value || '';
 }
 
 async function readPdf(filePath) {
+  const pdf = await loadPdfParse();
   const buf = await fs.promises.readFile(filePath);
   const data = await pdf(buf);
   return data.text || '';
 }
 
 async function readXlsx(filePath) {
+  const XLSX = await loadXLSX();
   const buf = await fs.promises.readFile(filePath);
-  const wb = xlsx.read(buf, { type: 'buffer' });
+  const wb = XLSX.read(buf, { type: 'buffer' });
   let out = [];
   wb.SheetNames.forEach((name) => {
     const ws = wb.Sheets[name];
-    const csv = xlsx.utils.sheet_to_csv(ws);
+    const csv = XLSX.utils.sheet_to_csv(ws);
     out.push(`# ${name}\n${csv}`);
   });
   return out.join('\n\n');
@@ -68,7 +85,6 @@ async function analyzeWithAIOrFallback(fileContent, framework) {
   };
 
   const apiKey = process.env.GEMINI_API_KEY;
-  // If framework is invalid, default to NIST_CSF
   const selected = frameworkSourceData[framework] ? framework : 'NIST_CSF';
 
   if (!apiKey) {
@@ -78,19 +94,9 @@ async function analyzeWithAIOrFallback(fileContent, framework) {
         const hasRelevantContent = fileContent.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 3).join(' '));
         const hasPartialContent = fileContent.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 2).join(' '));
         let status, details, recommendation;
-        if (hasRelevantContent) {
-          status = 'covered';
-          details = 'This control appears to be adequately addressed in your document.';
-          recommendation = 'Continue maintaining current practices for this control.';
-        } else if (hasPartialContent) {
-          status = 'partial';
-          details = 'This control is partially addressed but may need additional coverage.';
-          recommendation = 'Consider expanding your documentation to fully cover this control requirement.';
-        } else {
-          status = 'gap';
-          details = 'This control is not addressed in your current document.';
-          recommendation = 'Develop and implement policies and procedures to address this control requirement.';
-        }
+        if (hasRelevantContent) { status = 'covered'; details = 'This control appears to be adequately addressed in your document.'; recommendation = 'Continue maintaining current practices for this control.'; }
+        else if (hasPartialContent) { status = 'partial'; details = 'This control is partially addressed but may need additional coverage.'; recommendation = 'Consider expanding your documentation to fully cover this control requirement.'; }
+        else { status = 'gap'; details = 'This control is not addressed in your current document.'; recommendation = 'Develop and implement policies and procedures to address this control requirement.'; }
         return { ...result, status, details, recommendation };
       })
     }));
@@ -127,7 +133,6 @@ async function analyzeWithAIOrFallback(fileContent, framework) {
     }
     return await response.json();
   } catch (e) {
-    // Fallback on any AI error
     const analyzedCategories = frameworkSourceData[selected].categories.map(category => ({
       ...category,
       results: category.results.map(result => ({
@@ -142,9 +147,10 @@ async function analyzeWithAIOrFallback(fileContent, framework) {
 }
 
 export default async function handler(req, res) {
-  const form = formidable({ multiples: false, keepExtensions: true, uploadDir: '/tmp', maxFileSize: 25 * 1024 * 1024 });
-
   try {
+    const formidable = await loadFormidable();
+    const form = formidable({ multiples: false, keepExtensions: true, uploadDir: '/tmp', maxFileSize: 25 * 1024 * 1024 });
+
     const { fields, files } = await new Promise((resolve, reject) => {
       form.parse(req, (err, fields, files) => (err ? reject(err) : resolve({ fields, files })));
     });
@@ -181,7 +187,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ ...analysisJson, extractedText });
   } catch (e) {
-    console.error('upload-analyze error:', e);
+    console.error('upload-analyze init error:', e);
     return res.status(500).json({ error: `Server error: ${e.message}` });
   }
 }
