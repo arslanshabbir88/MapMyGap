@@ -365,11 +365,14 @@ function Analyzer({ onNavigateHome }) {
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
           console.log('Raw AI response:', rawJson);
+          console.log('Selected framework:', selectedFramework);
           
           let parsedJson = JSON.parse(rawJson);
           console.log('Parsed JSON structure:', parsedJson);
           console.log('Type of parsedJson:', typeof parsedJson);
           console.log('Is Array?', Array.isArray(parsedJson));
+          console.log('First category name:', parsedJson.categories?.[0]?.name);
+          console.log('First control ID:', parsedJson.categories?.[0]?.results?.[0]?.id);
           
           // Validate the structure and ensure it's an array
           if (!Array.isArray(parsedJson)) {
@@ -629,6 +632,9 @@ function Analyzer({ onNavigateHome }) {
                 <div className="space-y-6 animate-fade-in">
                   <div className="p-4 bg-slate-900/50 rounded-lg gradient-border">
                       <h3 className="font-semibold text-white">Compliance Summary</h3>
+                      <div className="mt-2 text-sm text-slate-400">
+                        Framework: {selectedFramework} • {frameworkOptions.find(f => f.id === selectedFramework)?.name}
+                      </div>
                       <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
                           <div className="p-3 bg-slate-800/70 rounded-lg shadow-inner"><p className="text-2xl font-bold text-blue-400">{analysisResults.summary.score}%</p><p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Score</p></div>
                           <div className="p-3 bg-slate-800/70 rounded-lg shadow-inner"><p className="text-2xl font-bold text-green-400">{analysisResults.summary.covered}</p><p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Covered</p></div>

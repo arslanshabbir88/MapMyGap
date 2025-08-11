@@ -30,30 +30,34 @@ async function analyzeWithAI(fileContent, framework) {
 
     const frameworkName = frameworkNames[framework] || framework;
 
-    // Create a comprehensive prompt for AI analysis
+    // Create a comprehensive prompt for AI analysis with exact control structure
     const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
 
 Document Content:
 ${fileContent.substring(0, 8000)}
 
 Framework: ${frameworkName}
-Available Control Categories: ${frameworkData.categories.map(cat => cat.name).join(', ')}
 
-Your task is to analyze the document content and determine the compliance status for each control. For each control, analyze the document content and determine if the control is:
+IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
+
+EXACT CONTROL STRUCTURE TO USE:
+${JSON.stringify(frameworkData.categories, null, 2)}
+
+Your task is to analyze the document content and determine the compliance status for each control in the structure above. For each control, analyze the document content and determine if the control is:
 - "covered": Fully addressed in the document
 - "partial": Partially addressed but needs improvement  
 - "gap": Not addressed at all
 
-Return your analysis in this exact JSON format:
+Return your analysis in this exact JSON format, using the EXACT control structure provided:
 {
   "categories": [
     {
-      "name": "Category Name",
-      "description": "Category description", 
+      "name": "EXACT_CATEGORY_NAME_FROM_STRUCTURE",
+      "description": "EXACT_CATEGORY_DESCRIPTION_FROM_STRUCTURE", 
       "results": [
         {
-          "id": "Control ID",
-          "control": "Control description",
+          "id": "EXACT_CONTROL_ID_FROM_STRUCTURE",
+          "control": "EXACT_CONTROL_DESCRIPTION_FROM_STRUCTURE",
           "status": "covered|partial|gap",
           "details": "Detailed analysis explaining why this status was assigned based on document content",
           "recommendation": "Specific, actionable recommendation to achieve compliance"
@@ -63,12 +67,13 @@ Return your analysis in this exact JSON format:
   ]
 }
 
-Guidelines:
+CRITICAL REQUIREMENTS:
+- Use EXACTLY the control structure provided above
+- Do not change control IDs, names, or descriptions
+- Only modify the status, details, and recommendation fields
 - Base your analysis on actual content found in the document
-- Be specific about what content supports your assessment
 - If content is insufficient, mark as "gap" with clear guidance
 - Provide actionable recommendations that match the document's context
-- Focus on the specific requirements of ${frameworkName}
 
 Return only valid JSON, no additional text or formatting.`;
 
