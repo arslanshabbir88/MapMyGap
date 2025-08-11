@@ -364,14 +364,39 @@ function Analyzer({ onNavigateHome }) {
 
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
-          const parsedJson = JSON.parse(rawJson);
+          console.log('Raw AI response:', rawJson);
+          
+          let parsedJson = JSON.parse(rawJson);
+          console.log('Parsed JSON structure:', parsedJson);
+          console.log('Type of parsedJson:', typeof parsedJson);
+          console.log('Is Array?', Array.isArray(parsedJson));
+          
+          // Validate the structure and ensure it's an array
+          if (!Array.isArray(parsedJson)) {
+            // Try to handle different response structures
+            if (parsedJson.categories && Array.isArray(parsedJson.categories)) {
+              console.log('Found categories in response object, using that instead');
+              parsedJson = parsedJson.categories;
+            } else {
+              throw new Error("AI response is not in the expected array format. Please try again.");
+            }
+          }
+          
           let covered = 0, partial = 0, gaps = 0;
-          parsedJson.forEach(cat => { cat.results.forEach(res => {
+          
+          // Safely iterate through categories
+          parsedJson.forEach(cat => {
+            if (cat && cat.results && Array.isArray(cat.results)) {
+              cat.results.forEach(res => {
+                if (res && res.status) {
                   if (res.status === 'covered') covered++;
                   else if (res.status === 'partial') partial++;
                   else if (res.status === 'gap') gaps++;
+                }
               });
+            }
           });
+          
           const total = covered + partial + gaps;
           const score = total > 0 ? Math.round(((covered + partial * 0.5) / total) * 100) : 0;
           const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
