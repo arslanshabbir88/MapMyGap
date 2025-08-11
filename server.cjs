@@ -1,6 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+const fs = require('fs');
+const mammothLib = require('mammoth');
+const pdfParse = require('pdf-parse');
+const xlsxLib = require('xlsx');
+
+function getExt(filename) { return (filename.split('.').pop() || '').toLowerCase(); }
+
+async function readTxt(filePath) { return fs.promises.readFile(filePath, 'utf8'); }
+async function readDocx(filePath) { const { value } = await mammothLib.extractRawText({ path: filePath }); return value || ''; }
+async function readPdf(filePath) { const data = await pdfParse(fs.readFileSync(filePath)); return data.text || ''; }
+async function readXlsx(filePath) {
+  const wb = xlsxLib.readFile(filePath);
+  let out = [];
+  wb.SheetNames.forEach((name) => {
+    const ws = wb.Sheets[name];
+    const csv = xlsxLib.utils.sheet_to_csv(ws);
+    out.push(`# ${name}\n${csv}`);
+  });
+  return out.join('\n\n');
+}
 
 const app = express();
 const PORT = 3001;
@@ -284,6 +306,33 @@ Requirements:
   } catch (e) {
     console.error('Error in /generate-control-text:', e);
     return res.status(500).json({ error: e.message || 'Server error' });
+  }
+});
+
+app.post('/upload-analyze', upload.single('file'), async (req, res) => {
+  try {
+    const framework = req.body.framework;
+    const file = req.file;
+    if (!file) return res.status(400).send('No file uploaded');
+    const ext = getExt(file.originalname || file.filename || '');
+    let extractedText = '';
+    if (ext === 'txt') extractedText = await readTxt(file.path);
+    else if (ext === 'docx') extractedText = await readDocx(file.path);
+    else if (ext === 'pdf') extractedText = await readPdf(file.path);
+    else if (ext === 'xlsx' || ext === 'xls') extractedText = await readXlsx(file.path);
+    else return res.status(400).send('Unsupported file type');
+
+    const resp = await fetch('http://localhost:3001/analyze', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fileContent: extractedText, framework })
+    });
+    if (!resp.ok) { const t = await resp.text(); return res.status(resp.status).send(t); }
+    const json = await resp.json();
+    res.status(200).json({ ...json, extractedText });
+  } catch (e) {
+    console.error('local /upload-analyze error:', e);
+    res.status(500).send(e.message || 'Server error');
+  } finally {
+    if (req.file?.path) fs.unlink(req.file.path, () => {});
   }
 });
 

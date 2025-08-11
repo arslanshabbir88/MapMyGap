@@ -36,7 +36,6 @@ const getStatusChipClass = (status) => {
   }
 };
 
-
 // --- Modal Component ---
 const DetailModal = ({ result, fileContent, onClose }) => {
     if (!result) return null;
@@ -138,7 +137,6 @@ const DetailModal = ({ result, fileContent, onClose }) => {
     );
 };
 
-
 // --- Main App Component ---
 
 function Analyzer({ onNavigateHome }) {
@@ -150,12 +148,16 @@ function Analyzer({ onNavigateHome }) {
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
 
+  const getFileExt = (name) => (name?.split('.').pop() || '').toLowerCase();
+  const isTextFile = (file) => file?.type === 'text/plain' || getFileExt(file?.name) === 'txt';
+  const isSupportedFile = (file) => ['txt','docx','pdf','xlsx','xls'].includes(getFileExt(file?.name));
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    if (file.type !== 'text/plain') {
-        setError('Invalid file type. Please upload a .txt file for this demo.');
+    if (!isSupportedFile(file)) {
+        setError('Unsupported file type. Please upload a .txt, .docx, .pdf, .xlsx, or .xls file. (.doc is not supported)');
         setUploadedFile(null);
         setFileContent('');
         return;
@@ -165,40 +167,50 @@ function Analyzer({ onNavigateHome }) {
     setAnalysisResults(null);
     setError(null);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setFileContent(e.target.result);
-    };
-    reader.readAsText(file);
+    if (isTextFile(file)) {
+      const reader = new FileReader();
+      reader.onload = (e) => setFileContent(e.target.result);
+      reader.readAsText(file);
+    } else {
+      // We'll extract text on the server for non-txt files
+      setFileContent('');
+    }
   };
 
   const handleAnalyze = async () => {
-    if (!uploadedFile || !fileContent) return;
+    if (!uploadedFile) return;
     setIsAnalyzing(true);
     setError(null);
     setAnalysisResults(null);
 
     try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileContent, framework: selectedFramework }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        let errorMessage = errorText;
-        try {
-          const errorJson = JSON.parse(errorText);
-          errorMessage = errorJson.error || errorText;
-        } catch (e) {
-          // The error response was not JSON, so we'll use the raw text.
+      let result;
+      if (isTextFile(uploadedFile) && fileContent) {
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileContent, framework: selectedFramework }),
+        });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText);
         }
-        throw new Error(errorMessage);
+        result = await response.json();
+      } else {
+        const form = new FormData();
+        form.append('file', uploadedFile);
+        form.append('framework', selectedFramework);
+        const response = await fetch('/api/upload-analyze', { method: 'POST', body: form });
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
+        result = await response.json();
+        if (result.extractedText) {
+          setFileContent(result.extractedText);
+        }
       }
 
-      const result = await response.json();
-        
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
           const parsedJson = JSON.parse(rawJson);
@@ -296,11 +308,11 @@ function Analyzer({ onNavigateHome }) {
                     <div className="mt-4 flex text-sm leading-6 text-slate-400">
                       <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-semibold text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-blue-300">
                         <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" accept=".txt" className="sr-only" onChange={handleFileChange} />
+                        <input id="file-upload" name="file-upload" type="file" accept=".txt,.docx,.pdf,.xlsx,.xls" className="sr-only" onChange={handleFileChange} />
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
-                    <p className="text-xs leading-5 text-slate-500">TXT files only for this demo</p>
+                    <p className="text-xs leading-5 text-slate-500">Supported: TXT, DOCX, PDF, XLSX, XLS</p>
                   </div>
                 </div>
               </div>
