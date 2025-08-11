@@ -504,8 +504,271 @@ export const soc2 = {
   ]
 };
 
+// NIST Framework Controls
+export const nistCSF = {
+  name: "NIST Cybersecurity Framework (CSF) v2.0",
+  description: "National Institute of Standards and Technology Cybersecurity Framework",
+  categories: [
+    {
+      name: "IDENTIFY (ID)",
+      description: "Develop an organizational understanding to manage cybersecurity risk",
+      results: [
+        {
+          id: "ID.AM-1",
+          control: "Physical devices and systems within the organization are inventoried",
+          status: "gap",
+          details: "Asset inventory not maintained",
+          recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+        },
+        {
+          id: "ID.AM-2",
+          control: "Software platforms and applications within the organization are inventoried",
+          status: "gap",
+          details: "Software inventory not maintained",
+          recommendation: "Create and maintain software asset inventory including platforms and applications"
+        },
+        {
+          id: "ID.AM-3",
+          control: "Organizational communication and data flows are mapped",
+          status: "gap",
+          details: "Data flow mapping not performed",
+          recommendation: "Document and map all organizational communication and data flows"
+        },
+        {
+          id: "ID.AM-4",
+          control: "External information systems are catalogued",
+          status: "gap",
+          details: "External systems not catalogued",
+          recommendation: "Maintain catalogue of all external information systems and their connections"
+        },
+        {
+          id: "ID.AM-5",
+          control: "Resources (e.g., hardware, devices, data, time, personnel, and software) are prioritized based on their classification, criticality, and business value",
+          status: "gap",
+          details: "Resource prioritization not implemented",
+          recommendation: "Implement resource classification and prioritization based on criticality and business value"
+        }
+      ]
+    },
+    {
+      name: "PROTECT (PR)",
+      description: "Develop and implement appropriate safeguards to ensure delivery of critical services",
+      results: [
+        {
+          id: "PR.AC-1",
+          control: "Identities and credentials are issued, managed, verified, revoked, and audited for authorized devices, users and processes",
+          status: "gap",
+          details: "Identity and credential management not implemented",
+          recommendation: "Implement comprehensive identity and credential management system"
+        },
+        {
+          id: "PR.AC-2",
+          control: "Physical access to assets is controlled and monitored",
+          status: "gap",
+          details: "Physical access controls not implemented",
+          recommendation: "Implement physical access controls and monitoring systems"
+        },
+        {
+          id: "PR.AC-3",
+          control: "Remote access is managed",
+          status: "gap",
+          details: "Remote access management not implemented",
+          recommendation: "Implement secure remote access management and monitoring"
+        },
+        {
+          id: "PR.AC-4",
+          control: "Access permissions are managed, incorporating the principles of least privilege and separation of duties",
+          status: "gap",
+          details: "Access permission management not implemented",
+          recommendation: "Implement access permission management with least privilege principles"
+        },
+        {
+          id: "PR.AC-5",
+          control: "Network integrity is protected (e.g., network segregation, network segmentation)",
+          status: "gap",
+          details: "Network integrity protection not implemented",
+          recommendation: "Implement network segregation and segmentation controls"
+        }
+      ]
+    },
+    {
+      name: "DETECT (DE)",
+      description: "Develop and implement appropriate activities to identify the occurrence of a cybersecurity event",
+      results: [
+        {
+          id: "DE.AE-1",
+          control: "Baseline network operations and expected data flows for users and systems are established and managed",
+          status: "gap",
+          details: "Network baseline not established",
+          recommendation: "Establish and maintain baseline network operations and expected data flows"
+        },
+        {
+          id: "DE.AE-2",
+          control: "Detected events are analyzed to understand attack targets and methods",
+          status: "gap",
+          details: "Event analysis not performed",
+          recommendation: "Implement event analysis procedures to understand attack patterns"
+        },
+        {
+          id: "DE.AE-3",
+          control: "Event data are collected and correlated from multiple sources and sensors",
+          status: "gap",
+          details: "Event data correlation not implemented",
+          recommendation: "Implement event data collection and correlation from multiple sources"
+        },
+        {
+          id: "DE.AE-4",
+          control: "Impact of events is determined",
+          status: "gap",
+          details: "Event impact assessment not performed",
+          recommendation: "Implement procedures to assess and determine event impact"
+        },
+        {
+          id: "DE.AE-5",
+          control: "Incident alert thresholds are established",
+          status: "gap",
+          details: "Alert thresholds not established",
+          recommendation: "Establish incident alert thresholds and escalation procedures"
+        }
+      ]
+    }
+  ]
+};
+
+export const nist80053 = {
+  name: "NIST SP 800-53 Rev. 5",
+  description: "Security and Privacy Controls for Information Systems and Organizations",
+  categories: [
+    {
+      name: "Access Control (AC)",
+      description: "Control access to information systems and resources",
+      results: [
+        {
+          id: "AC-1",
+          control: "Access Control Policy and Procedures",
+          status: "gap",
+          details: "Access control policy not established",
+          recommendation: "Develop and implement comprehensive access control policy and procedures"
+        },
+        {
+          id: "AC-2",
+          control: "Account Management",
+          status: "gap",
+          details: "Account management not implemented",
+          recommendation: "Implement comprehensive account management system with lifecycle controls"
+        },
+        {
+          id: "AC-3",
+          control: "Access Enforcement",
+          status: "gap",
+          details: "Access enforcement not implemented",
+          recommendation: "Implement access enforcement mechanisms and controls"
+        },
+        {
+          id: "AC-4",
+          control: "Information Flow Enforcement",
+          status: "gap",
+          details: "Information flow enforcement not implemented",
+          recommendation: "Implement information flow enforcement controls and monitoring"
+        },
+        {
+          id: "AC-5",
+          control: "Separation of Duties",
+          status: "gap",
+          details: "Separation of duties not implemented",
+          recommendation: "Implement separation of duties controls to prevent conflicts of interest"
+        }
+      ]
+    },
+    {
+      name: "Audit and Accountability (AU)",
+      description: "Create, protect, and retain information system audit records",
+      results: [
+        {
+          id: "AU-1",
+          control: "Audit and Accountability Policy and Procedures",
+          status: "gap",
+          details: "Audit policy not established",
+          recommendation: "Develop and implement audit and accountability policy and procedures"
+        },
+        {
+          id: "AU-2",
+          control: "Audit Events",
+          status: "gap",
+          details: "Audit events not defined",
+          recommendation: "Define and implement comprehensive audit event logging"
+        },
+        {
+          id: "AU-3",
+          control: "Content of Audit Records",
+          status: "gap",
+          details: "Audit record content not defined",
+          recommendation: "Define and implement comprehensive audit record content requirements"
+        },
+        {
+          id: "AU-4",
+          control: "Audit Storage Capacity",
+          status: "gap",
+          details: "Audit storage capacity not managed",
+          recommendation: "Implement audit storage capacity management and monitoring"
+        },
+        {
+          id: "AU-5",
+          control: "Response to Audit Processing Failures",
+          status: "gap",
+          details: "Audit failure response not implemented",
+          recommendation: "Implement procedures to respond to audit processing failures"
+        }
+      ]
+    },
+    {
+      name: "Configuration Management (CM)",
+      description: "Establish and maintain baseline configurations",
+      results: [
+        {
+          id: "CM-1",
+          control: "Configuration Management Policy and Procedures",
+          status: "gap",
+          details: "Configuration management policy not established",
+          recommendation: "Develop and implement configuration management policy and procedures"
+        },
+        {
+          id: "CM-2",
+          control: "Baseline Configurations",
+          status: "gap",
+          details: "Baseline configurations not established",
+          recommendation: "Establish and maintain baseline configurations for all systems"
+        },
+        {
+          id: "CM-3",
+          control: "Configuration Change Control",
+          status: "gap",
+          details: "Configuration change control not implemented",
+          recommendation: "Implement configuration change control procedures and approval processes"
+        },
+        {
+          id: "CM-4",
+          control: "Security Impact Analysis",
+          status: "gap",
+          details: "Security impact analysis not performed",
+          recommendation: "Implement security impact analysis for configuration changes"
+        },
+        {
+          id: "CM-5",
+          control: "Access Restrictions for Change",
+          status: "gap",
+          details: "Change access restrictions not implemented",
+          recommendation: "Implement access restrictions for configuration changes"
+        }
+      ]
+    }
+  ]
+};
+
 // Export all frameworks for use in the application
 export const allFrameworks = {
+  NIST_CSF: nistCSF,
+  NIST_800_53: nist80053,
   PCI_DSS: pciDSS,
   ISO_27001: iso27001,
   SOC_2: soc2
