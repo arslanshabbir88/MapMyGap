@@ -761,6 +761,129 @@ export const nist80053 = {
           recommendation: "Implement access restrictions for configuration changes"
         }
       ]
+    },
+    {
+      name: "Identification and Authentication (IA)",
+      description: "Establish and manage identification and authentication",
+      results: [
+        {
+          id: "IA-1",
+          control: "Identification and Authentication Policy and Procedures",
+          status: "gap",
+          details: "Identification and authentication policy not established",
+          recommendation: "Develop and implement comprehensive identification and authentication policy"
+        },
+        {
+          id: "IA-2",
+          control: "Identification and Authentication (Organizational Users)",
+          status: "gap",
+          details: "Multi-factor authentication not implemented for organizational users",
+          recommendation: "Implement multi-factor authentication for all organizational users"
+        },
+        {
+          id: "IA-3",
+          control: "Device Identification and Authentication",
+          status: "gap",
+          details: "Device identification and authentication not implemented",
+          recommendation: "Implement device identification and authentication mechanisms"
+        },
+        {
+          id: "IA-4",
+          control: "Identifier Management",
+          status: "gap",
+          details: "Identifier management not implemented",
+          recommendation: "Implement comprehensive identifier management system"
+        },
+        {
+          id: "IA-5",
+          control: "Authenticator Management",
+          status: "gap",
+          details: "Authenticator management not implemented",
+          recommendation: "Implement secure authenticator management procedures"
+        },
+        {
+          id: "IA-6",
+          control: "Authenticator Feedback",
+          status: "gap",
+          details: "Authenticator feedback not implemented",
+          recommendation: "Implement secure authenticator feedback mechanisms"
+        }
+      ]
+    },
+    {
+      name: "System and Communications Protection (SC)",
+      description: "Protect system and communications",
+      results: [
+        {
+          id: "SC-1",
+          control: "System and Communications Protection Policy and Procedures",
+          status: "gap",
+          details: "System and communications protection policy not established",
+          recommendation: "Develop and implement system and communications protection policy"
+        },
+        {
+          id: "SC-8",
+          control: "Transmission Confidentiality and Integrity",
+          status: "gap",
+          details: "Transmission confidentiality and integrity not implemented",
+          recommendation: "Implement transmission confidentiality and integrity controls"
+        },
+        {
+          id: "SC-12",
+          control: "Cryptographic Key Establishment and Management",
+          status: "gap",
+          details: "Cryptographic key management not implemented",
+          recommendation: "Implement secure cryptographic key establishment and management"
+        },
+        {
+          id: "SC-13",
+          control: "Cryptographic Protection",
+          status: "gap",
+          details: "Cryptographic protection not implemented",
+          recommendation: "Implement cryptographic protection for information in accordance with requirements"
+        },
+        {
+          id: "SC-28",
+          control: "Protection of Information at Rest",
+          status: "gap",
+          details: "Information at rest protection not implemented",
+          recommendation: "Implement protection mechanisms for information at rest"
+        }
+      ]
+    },
+    {
+      name: "Incident Response (IR)",
+      description: "Establish incident response capability",
+      results: [
+        {
+          id: "IR-1",
+          control: "Incident Response Policy and Procedures",
+          status: "gap",
+          details: "Incident response policy not established",
+          recommendation: "Develop and implement comprehensive incident response policy and procedures"
+        },
+        {
+          id: "IR-4",
+          control: "Incident Handling",
+          status: "gap",
+          details: "Incident handling procedures not implemented",
+          recommendation: "Implement comprehensive incident handling procedures"
+        },
+        {
+          id: "IR-6",
+          control: "Incident Reporting",
+          status: "gap",
+          details: "Incident reporting procedures not implemented",
+          recommendation: "Implement incident reporting procedures and escalation mechanisms"
+        },
+        {
+          id: "IR-8",
+          control: "Incident Response Plan",
+          status: "gap",
+          details: "Incident response plan not developed",
+          recommendation: "Develop and maintain comprehensive incident response plan"
+        }
+      ]
     }
   ]
 };

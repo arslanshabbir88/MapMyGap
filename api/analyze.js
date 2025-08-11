@@ -80,13 +80,43 @@ Return only valid JSON, no additional text or formatting.`;
     const response = await result.response;
     const text = response.text();
     
+    console.log('AI Response Text:', text);
+    
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error('Invalid AI response format');
     }
     
-    return JSON.parse(jsonMatch[0]);
+    const parsedResponse = JSON.parse(jsonMatch[0]);
+    console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
+    
+    // Validate that the AI actually changed some statuses
+    let gapCount = 0;
+    let coveredCount = 0;
+    let partialCount = 0;
+    
+    if (parsedResponse.categories) {
+      parsedResponse.categories.forEach(category => {
+        if (category.results) {
+          category.results.forEach(control => {
+            if (control.status === 'gap') gapCount++;
+            else if (control.status === 'covered') coveredCount++;
+            else if (control.status === 'partial') partialCount++;
+          });
+        }
+      });
+    }
+    
+    console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
+    
+    // If AI didn't change any statuses, use fallback
+    if (gapCount === frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0)) {
+      console.log('AI did not change any statuses, using fallback');
+      throw new Error('AI analysis did not provide meaningful status updates');
+    }
+    
+    return parsedResponse;
   } catch (error) {
     console.error('AI Analysis Error:', error);
     console.log('Falling back to predefined control structure');
