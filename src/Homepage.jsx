@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from './AuthContext';
 
 // --- Helper Components ---
 
@@ -12,11 +13,21 @@ const Icon = ({ path, className = "w-6 h-6" }) => (
 const BoltIcon = () => <Icon path="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />;
 const ShieldCheckIcon = () => <Icon path="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.286zm0 13.036h.008v.017h-.008v-.017z" />;
 const DocumentTextIcon = () => <Icon path="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />;
-
+const UserIcon = () => <Icon path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />;
+const LogoutIcon = () => <Icon path="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />;
 
 // --- Main Homepage Component ---
 
 function Homepage({ onNavigate }) {
+  const { user, signOut } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
 
   const FeatureCard = ({ icon, title, children }) => (
     <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transform hover:-translate-y-1">
@@ -62,11 +73,36 @@ function Homepage({ onNavigate }) {
         <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <h1 className="text-2xl font-bold text-white tracking-tight">AlignIQ</h1>
-            <div>
-              <a href="#" onClick={onNavigate} className="text-slate-300 hover:text-white transition-colors mr-6">Sign In</a>
-              <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
-                Get Started
-              </a>
+            <div className="flex items-center space-x-4">
+              {user ? (
+                <>
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2 text-slate-300">
+                      <UserIcon />
+                      <span className="text-sm font-medium">
+                        {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                      </span>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+                    >
+                      <LogoutIcon />
+                      <span className="text-sm">Logout</span>
+                    </button>
+                  </div>
+                  <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
+                    Go to Analyzer
+                  </a>
+                </>
+              ) : (
+                <>
+                  <a href="#" onClick={onNavigate} className="text-slate-300 hover:text-white transition-colors mr-6">Sign In</a>
+                  <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
+                    Get Started
+                  </a>
+                </>
+              )}
             </div>
           </nav>
         </header>
@@ -83,7 +119,7 @@ function Homepage({ onNavigate }) {
               </p>
               <div className="mt-10">
                 <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
-                  Start Your First Analysis
+                  {user ? 'Go to Analyzer' : 'Start Your First Analysis'}
                 </a>
               </div>
             </div>
@@ -118,7 +154,7 @@ function Homepage({ onNavigate }) {
                 </div>
                 <div className="space-y-12">
                   <HowItWorksStep number="1" title="Upload Your Document">
-                    Securely upload your internal standards or policy document. AlignIQ is ready to analyze `.txt`, `.docx`, and `.pdf` files.
+                    Securely upload your internal standards or policy document. AlignIQ is ready to analyze `.txt`, `.docx`, `.pdf`, `.xlsx`, and `.xls` files.
                   </HowItWorksStep>
                   <HowItWorksStep number="2" title="Select a Framework & Analyze">
                     Choose an industry framework and click "Analyze." Our AI reads your document and performs a detailed, control-by-control gap analysis.
@@ -135,11 +171,11 @@ function Homepage({ onNavigate }) {
             <div className="max-w-2xl mx-auto text-center px-4 sm:px-6 lg:px-8">
               <h2 className="text-4xl font-bold text-white tracking-tight">Ready to Automate Your Compliance?</h2>
               <p className="mt-4 text-slate-400">
-                Stop spending weeks on manual reviews. Start closing gaps in minutes. Create your account and get your first analysis report for free.
+                Stop spending weeks on manual reviews. Start closing gaps in minutes. {user ? 'Use your existing account to continue.' : 'Create your account and get your first analysis report for free.'}
               </p>
               <div className="mt-10">
                 <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
-                  Sign Up for Free
+                  {user ? 'Go to Analyzer' : 'Sign Up for Free'}
                 </a>
               </div>
             </div>

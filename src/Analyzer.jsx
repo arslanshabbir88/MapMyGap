@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from './AuthContext';
 
 // --- Helper Components ---
 
@@ -16,6 +17,10 @@ const ExclamationTriangleIcon = () => <Icon path="M12 9v3.75m-9.303 3.376c-.866 
 const LightbulbIcon = () => <Icon path="M12 18v-5.25m0 0a6.01 6.01 0 001.5-11.625a6.01 6.01 0 00-1.5-1.125M12 18h.008M12 18h-.008m0 0A6.003 6.003 0 0112 3.75m0 14.25A6.003 6.003 0 0012 3.75m0 14.25v-5.25" className="w-6 h-6 text-blue-400" />;
 const SparklesIcon = () => <Icon path="M9.813 15.904L9 18l-1.813-2.096a4.5 4.5 0 00-6.214-6.214L1 8l2.096-1.813a4.5 4.5 0 006.214-6.214L9 0l.813 2.096a4.5 4.5 0 006.214 6.214L18 8l-2.096.813a4.5 4.5 0 00-6.214 6.214zM18 18l-1.813-2.096a4.5 4.5 0 00-6.214-6.214L9 8l2.096-1.813a4.5 4.5 0 006.214-6.214L18 0l.813 2.096a4.5 4.5 0 006.214 6.214L27 8l-2.096.813a4.5 4.5 0 00-6.214 6.214L18 18z" className="w-5 h-5 mr-2" />;
 const ArrowLeftIcon = () => <Icon path="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" className="w-4 h-4 mr-2" />;
+const ClipboardIcon = () => <Icon path="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" className="w-4 h-4" />;
+const DownloadIcon = () => <Icon path="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" className="w-4 h-4" />;
+const UserIcon = () => <Icon path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" className="w-5 h-5" />;
+const HistoryIcon = () => <Icon path="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" className="w-5 h-5" />;
 
 // Helper functions for status rendering
 const renderStatusIcon = (status) => {
@@ -36,12 +41,75 @@ const getStatusChipClass = (status) => {
   }
 };
 
+// Utility functions for copy/download
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    // Fallback for older browsers
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    return true;
+  }
+};
+
+const downloadReport = (data, filename, type = 'json') => {
+  let content, mimeType;
+  if (type === 'csv') {
+    content = convertToCSV(data);
+    mimeType = 'text/csv';
+  } else {
+    content = JSON.stringify(data, null, 2);
+    mimeType = 'application/json';
+  }
+  
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+
+const convertToCSV = (data) => {
+  const headers = ['Category', 'Control ID', 'Control', 'Status', 'Details', 'Recommendation'];
+  const rows = [];
+  
+  data.categories.forEach(category => {
+    category.results.forEach(result => {
+      rows.push([
+        category.name,
+        result.id,
+        result.control,
+        result.status,
+        result.details || '',
+        result.recommendation || ''
+      ]);
+    });
+  });
+  
+  const csvContent = [headers, ...rows]
+    .map(row => row.map(field => `"${field.replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+  
+  return csvContent;
+};
+
 // --- Modal Component ---
 const DetailModal = ({ result, fileContent, onClose }) => {
     if (!result) return null;
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState('');
     const [generationError, setGenerationError] = useState('');
+    const [copySuccess, setCopySuccess] = useState(false);
 
     const getStatusChipClass = (status) => {
         switch (status) {
@@ -82,6 +150,25 @@ const DetailModal = ({ result, fileContent, onClose }) => {
         }
     };
 
+    const handleCopyText = async () => {
+        if (generatedText) {
+            const success = await copyToClipboard(generatedText);
+            if (success) {
+                setCopySuccess(true);
+                setTimeout(() => setCopySuccess(false), 2000);
+            }
+        }
+    };
+
+    const handleCopyControl = async () => {
+        const controlText = `${result.id}: ${result.control}\n\nStatus: ${result.status}\nDetails: ${result.details || 'N/A'}\nRecommendation: ${result.recommendation || 'N/A'}`;
+        const success = await copyToClipboard(controlText);
+        if (success) {
+            setCopySuccess(true);
+            setTimeout(() => setCopySuccess(false), 2000);
+        }
+    };
+
     return (
         <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
             <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 animate-scale-in">
@@ -92,9 +179,18 @@ const DetailModal = ({ result, fileContent, onClose }) => {
                             {result.status}
                         </span>
                     </div>
-                    <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
-                        <Icon path="M6 18L18 6M6 6l12 12" />
-                    </button>
+                    <div className="flex items-center space-x-2">
+                        <button 
+                            onClick={handleCopyControl}
+                            className="p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-700/50"
+                            title="Copy control details"
+                        >
+                            <ClipboardIcon />
+                        </button>
+                        <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+                            <Icon path="M6 18L18 6M6 6l12 12" />
+                        </button>
+                    </div>
                 </div>
                 <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
                     <div>
@@ -120,7 +216,16 @@ const DetailModal = ({ result, fileContent, onClose }) => {
                             )}
                             {generatedText && (
                               <div className="mt-4 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
-                                <h5 className="text-slate-200 font-semibold mb-2">Suggested Control Text</h5>
+                                <div className="flex justify-between items-start mb-2">
+                                  <h5 className="text-slate-200 font-semibold">Suggested Control Text</h5>
+                                  <button 
+                                    onClick={handleCopyText}
+                                    className="inline-flex items-center px-3 py-1 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
+                                  >
+                                    <ClipboardIcon />
+                                    {copySuccess ? 'Copied!' : 'Copy'}
+                                  </button>
+                                </div>
                                 <pre className="whitespace-pre-wrap text-slate-300 text-sm leading-6">{generatedText}</pre>
                               </div>
                             )}
@@ -147,10 +252,56 @@ function Analyzer({ onNavigateHome }) {
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
+  const [analysisHistory, setAnalysisHistory] = useState([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  const { user, supabase } = useAuth();
 
   const getFileExt = (name) => (name?.split('.').pop() || '').toLowerCase();
   const isTextFile = (file) => file?.type === 'text/plain' || getFileExt(file?.name) === 'txt';
   const isSupportedFile = (file) => ['txt','docx','pdf','xlsx','xls'].includes(getFileExt(file?.name));
+
+  const loadAnalysisHistory = async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoadingHistory(true);
+      const { data, error } = await supabase
+        .from('analysis_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (error) throw error;
+      setAnalysisHistory(data || []);
+    } catch (err) {
+      console.error('Error loading history:', err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const saveAnalysisToHistory = async (results, filename) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('analysis_history')
+        .insert({
+          user_id: user.id,
+          framework: selectedFramework,
+          filename: filename,
+          results: results,
+          summary: results.summary
+        });
+
+      if (error) throw error;
+    } catch (err) {
+      console.error('Error saving analysis:', err);
+    }
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -223,7 +374,13 @@ function Analyzer({ onNavigateHome }) {
           });
           const total = covered + partial + gaps;
           const score = total > 0 ? Math.round(((covered + partial * 0.5) / total) * 100) : 0;
-          setAnalysisResults({ summary: { total, covered, partial, gaps, score }, categories: parsedJson });
+          const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
+          setAnalysisResults(results);
+          
+          // Save to history for authenticated users
+          if (user) {
+            await saveAnalysisToHistory(results, uploadedFile.name);
+          }
       } else {
           throw new Error("Invalid response structure from API.");
       }
@@ -275,10 +432,32 @@ function Analyzer({ onNavigateHome }) {
               <h1 className="text-2xl font-bold text-white tracking-tight">AlignIQ</h1>
               <p className="text-slate-400 mt-1">Compliance Analyzer</p>
             </div>
-            <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
-              <ArrowLeftIcon />
-              Back to Home
-            </button>
+            <div className="flex items-center space-x-4">
+              {user && (
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2 text-slate-300">
+                    <UserIcon />
+                    <span className="text-sm font-medium">
+                      {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowHistory(!showHistory);
+                      if (!showHistory) loadAnalysisHistory();
+                    }}
+                    className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-slate-700/50"
+                  >
+                    <HistoryIcon />
+                    <span className="text-sm">History</span>
+                  </button>
+                </div>
+              )}
+              <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+                <ArrowLeftIcon />
+                Back to Home
+              </button>
+            </div>
           </div>
         </header>
         
@@ -346,7 +525,63 @@ function Analyzer({ onNavigateHome }) {
             </div>
 
             <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg">
-              <h2 className="text-lg font-semibold text-white mb-4">3. Analysis Results</h2>
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-semibold text-white">3. Analysis Results</h2>
+                {analysisResults && (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
+                      className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
+                    >
+                      <DownloadIcon />
+                      JSON
+                    </button>
+                    <button
+                      onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv')}
+                      className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
+                    >
+                      <DownloadIcon />
+                      CSV
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Analysis History Panel */}
+              {showHistory && user && (
+                <div className="mb-6 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
+                  <h3 className="text-lg font-semibold text-white mb-4">Analysis History</h3>
+                  {isLoadingHistory ? (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+                      <p className="text-slate-400">Loading history...</p>
+                    </div>
+                  ) : analysisHistory.length > 0 ? (
+                    <div className="space-y-3">
+                      {analysisHistory.map((item, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
+                          <div>
+                            <p className="text-white font-medium">{item.filename}</p>
+                            <p className="text-sm text-slate-400">{item.framework} • {new Date(item.created_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <span className="text-sm text-slate-300">Score: {item.summary.score}%</span>
+                            <button
+                              onClick={() => setAnalysisResults({ summary: item.summary, categories: item.results })}
+                              className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+                            >
+                              View
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-slate-400 text-center py-4">No analysis history yet. Run your first analysis to see it here.</p>
+                  )}
+                </div>
+              )}
+
               {isAnalyzing && (
                   <div className="flex flex-col items-center justify-center h-96 text-slate-400">
                       <svg className="animate-spin h-8 w-8 text-blue-500 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
