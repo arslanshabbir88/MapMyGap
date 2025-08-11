@@ -5,17 +5,23 @@ import formidable from 'formidable';
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // Import framework control structures
-import { allFrameworks } from '../src/frameworks/compliance-frameworks.js';
+import { allFrameworks } from './frameworks.js';
 
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
+    console.log('Available frameworks:', Object.keys(allFrameworks));
+    console.log('Requested framework:', framework);
+    
     // Get predefined control structure for the framework
     const frameworkData = allFrameworks[framework];
     
     if (!frameworkData) {
-      throw new Error(`Framework ${framework} not supported`);
+      throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(allFrameworks).join(', ')}`);
     }
+    
+    console.log('Framework data found:', frameworkData.name);
+    console.log('Number of categories:', frameworkData.categories.length);
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
