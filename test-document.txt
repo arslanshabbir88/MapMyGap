@@ -1,24 +1,31 @@
 Cybersecurity Policy Document
 
-This document outlines our organization's approach to cybersecurity risk management and compliance.
+1. Access Control Policy
+Our organization implements strict access control measures to ensure only authorized personnel can access sensitive systems and data. We follow the principle of least privilege, granting users only the minimum access necessary to perform their job functions.
 
-1. Risk Management Strategy
-Our organization has established a comprehensive cybersecurity risk management strategy that integrates with our enterprise risk management portfolio. This strategy is regularly reviewed and updated to address emerging threats and changing business requirements.
+2. Password Management
+All employees must use strong passwords that meet our security requirements. Passwords must be at least 12 characters long and include a combination of uppercase and lowercase letters, numbers, and special characters. Passwords are changed every 90 days.
 
-2. Asset Management
-We maintain an inventory of all physical devices and systems within our organization. This includes servers, workstations, mobile devices, and network infrastructure components.
+3. Data Protection
+We implement encryption for data at rest and data in transit. All sensitive information is encrypted using industry-standard encryption algorithms. Regular backups are performed and stored securely.
 
-3. Access Control
-Access permissions and authorizations are managed according to the principles of least privilege and separation of duties. All users, devices, and other assets undergo proper identity verification and authentication procedures.
+4. Incident Response
+We have established procedures for responding to cybersecurity incidents. All incidents are reported to the IT security team within 24 hours of discovery. A formal incident response plan is maintained and tested annually.
 
-4. Data Protection
-We implement appropriate safeguards to protect data in transit and at rest. This includes encryption, secure communication protocols, and regular security assessments.
+5. Employee Training
+All employees receive annual cybersecurity awareness training covering topics such as phishing prevention, social engineering, and safe internet practices. Training completion is tracked and required for continued employment.
 
-5. Monitoring and Detection
-Our networks and systems are continuously monitored to detect potential cybersecurity events. When events are detected, we analyze their impact and respond accordingly.
+6. Network Security
+Our network is protected by firewalls and intrusion detection systems. Regular vulnerability assessments are conducted to identify and remediate security weaknesses. Network access is restricted to authorized devices only.
 
-6. Incident Response
-We maintain a comprehensive incident response plan that is regularly tested and updated. All incidents are reported to appropriate internal and external stakeholders as required.
+7. Vendor Management
+Third-party vendors with access to our systems must meet our security requirements. Vendor access is reviewed quarterly and terminated when no longer needed. All vendor relationships are documented and monitored.
 
-7. Recovery Planning
-Our recovery plans incorporate lessons learned from previous incidents and are designed to restore critical business operations as quickly as possible.
+8. Risk Assessment
+We conduct annual risk assessments to identify potential cybersecurity threats and vulnerabilities. Risk mitigation strategies are developed and implemented based on the assessment results.
+
+9. Compliance Monitoring
+We regularly monitor compliance with internal policies and external regulations. Non-compliance issues are documented and addressed promptly. Regular audits are conducted to ensure policy effectiveness.
+
+10. Business Continuity
+Our cybersecurity program includes business continuity planning to ensure critical operations can continue during and after security incidents. Recovery procedures are tested annually and updated as needed.

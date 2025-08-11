@@ -2,10 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config();
 
 const app = express();
 const PORT = 3001;
+
+// Initialize Google AI
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -27,7 +31,63 @@ const upload = multer({
   }
 });
 
-// Mock API endpoint for local development
+// Real AI analysis function
+async function analyzeWithAI(fileContent, framework) {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${framework} framework.
+
+Document Content:
+${fileContent.substring(0, 8000)} // Limit content to avoid token limits
+
+Please provide a comprehensive compliance analysis in the following JSON format:
+{
+  "categories": [
+    {
+      "name": "Category Name",
+      "description": "Category description",
+      "results": [
+        {
+          "id": "Control ID",
+          "control": "Control description",
+          "status": "covered|partial|gap",
+          "details": "Detailed analysis of compliance status",
+          "recommendation": "Specific recommendation to achieve compliance"
+        }
+      ]
+    }
+  ]
+}
+
+Guidelines:
+- "covered": Control is fully addressed in the document
+- "partial": Control is partially addressed but needs improvement
+- "gap": Control is not addressed at all
+- Be specific and actionable in recommendations
+- Base analysis on actual content found in the document
+- If content is insufficient, mark as "gap" with clear guidance
+
+Return only valid JSON, no additional text.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    // Extract JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Invalid AI response format');
+    }
+    
+    return JSON.parse(jsonMatch[0]);
+  } catch (error) {
+    console.error('AI Analysis Error:', error);
+    throw new Error(`AI analysis failed: ${error.message}`);
+  }
+}
+
+// Real API endpoint for AI analysis
 app.post('/analyze', async (req, res) => {
   try {
     const { fileContent, framework } = req.body;
@@ -36,171 +96,15 @@ app.post('/analyze', async (req, res) => {
       return res.status(400).json({ error: 'Missing file content or framework.' });
     }
 
-    // Framework data for local development
-    const frameworkSourceData = {
-      NIST_CSF: {
-        categories: [
-          { 
-            name: 'Govern (GV)', 
-            description: 'Establish and monitor the organization\'s cybersecurity risk management strategy, expectations, and policy.', 
-            results: [
-              { id: 'GV.RM-01', control: 'An organizational risk management strategy is established.'},
-              { id: 'GV.SC-04', control: 'Cybersecurity is integrated into the organization\'s enterprise risk management portfolio.'}
-            ]
-          },
-          { 
-            name: 'Identify (ID)', 
-            description: 'Understand the current assets, risks, and responsibilities.', 
-            results: [
-              { id: 'ID.AM-1', control: 'Physical devices and systems within the organization are inventoried.'},
-              { id: 'ID.RA-1', control: 'Asset vulnerabilities are identified and documented.'},
-              { id: 'ID.RA-5', control: 'Threats, both internal and external, are identified and documented.'}
-            ]
-          },
-          { 
-            name: 'Protect (PR)', 
-            description: 'Implement safeguards to ensure delivery of critical services.', 
-            results: [
-              { id: 'PR.AC-4', control: 'Access permissions and authorizations are managed, incorporating the principles of least privilege and separation of duties.'},
-              { id: 'PR.AC-5', control: 'Identity and access are verified for all users, devices, and other assets.'},
-              { id: 'PR.DS-2', control: 'Data-in-transit is protected.'}
-            ]
-          },
-          { 
-            name: 'Detect (DE)', 
-            description: 'Discover and analyze cybersecurity events.', 
-            results: [
-              { id: 'DE.CM-1', control: 'Networks and systems are monitored to detect potential cybersecurity events.'},
-              { id: 'DE.AE-2', control: 'The impact of events is analyzed.'}
-            ]
-          },
-          { 
-            name: 'Respond (RS)', 
-            description: 'Take action regarding a detected cybersecurity incident.', 
-            results: [
-              { id: 'RS.RP-1', control: 'A response plan is executed.'},
-              { id: 'RS.CO-2', control: 'Incidents are reported to appropriate internal and external stakeholders.'}
-            ]
-          },
-          { 
-            name: 'Recover (RC)', 
-            description: 'Restore assets and operations affected by a cybersecurity incident.', 
-            results: [
-              { id: 'RC.RP-1', control: 'A recovery plan is executed.'},
-              { id: 'RC.IM-2', control: 'Recovery plans incorporate lessons learned.'}
-            ]
-          }
-        ]
-      },
-      NIST_800_53: {
-        categories: [
-          { 
-            name: 'Access Control (AC)', 
-            description: 'Limit system access to authorized users, processes acting on behalf of users, or devices.', 
-            results: [
-              { id: 'AC-1', control: 'Access Control Policy and Procedures'},
-              { id: 'AC-2', control: 'Account Management'},
-              { id: 'AC-3', control: 'Access Enforcement'},
-              { id: 'AC-4', control: 'Information Flow Enforcement'}
-            ]
-          },
-          { 
-            name: 'Awareness and Training (AT)', 
-            description: 'Ensure that managers and users of organizational systems are made aware of the security risks.', 
-            results: [
-              { id: 'AT-1', control: 'Awareness and Training Policy and Procedures'},
-              { id: 'AT-2', control: 'Security Awareness Training'}
-            ]
-          },
-          { 
-            name: 'Configuration Management (CM)', 
-            description: 'Establish and maintain baseline configurations and inventories of organizational systems.', 
-            results: [
-              { id: 'CM-1', control: 'Configuration Management Policy and Procedures'},
-            ]
-          },
-          { 
-            name: 'Identification and Authentication (IA)', 
-            description: 'Identify and authenticate organizational users (or processes acting on behalf of users).', 
-            results: [
-              { id: 'IA-1', control: 'Identification and Authentication Policy and Procedures'},
-              { id: 'IA-2', control: 'Identification and Authentication (Organizational Users)'}
-            ]
-          },
-          { 
-            name: 'Incident Response (IR)', 
-            description: 'Establish an operational incident handling capability for organizational systems.', 
-            results: [
-              { id: 'IR-1', control: 'Incident Response Policy and Procedures'},
-              { id: 'IR-8', control: 'Incident Response Plan'}
-            ]
-          },
-          { 
-            name: 'Risk Assessment (RA)', 
-            description: 'Periodically assess the risk to organizational operations, assets, and individuals.', 
-            results: [
-              { id: 'RA-1', control: 'Risk Assessment Policy and Procedures'},
-              { id: 'RA-3', control: 'Risk Assessment'}
-            ]
-          },
-          { 
-            name: 'System and Information Integrity (SI)', 
-            description: 'Protect the integrity of information and systems.', 
-            results: [
-              { id: 'SI-1', control: 'System and Information Integrity Policy and Procedures'},
-              { id: 'SI-2', control: 'Flaw Remediation'},
-              { id: 'SI-4', control: 'Information System Monitoring'}
-            ]
-          }
-        ]
-      }
-    };
+    // Use real AI analysis
+    const analysisResult = await analyzeWithAI(fileContent, framework);
 
-    // For local development, we'll simulate AI analysis with mock data
-    const mockAnalysis = frameworkSourceData[framework];
-    if (!mockAnalysis) {
-      return res.status(400).json({ error: 'Framework not supported.' });
-    }
-
-    // Simulate AI analysis by adding status, details, and recommendations
-    const analyzedCategories = mockAnalysis.categories.map(category => ({
-      ...category,
-      results: category.results.map(result => {
-        // Simple mock logic based on content analysis
-        const hasRelevantContent = fileContent.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 3).join(' '));
-        const hasPartialContent = fileContent.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 2).join(' '));
-        
-        let status, details, recommendation;
-        
-        if (hasRelevantContent) {
-          status = 'covered';
-          details = 'This control appears to be adequately addressed in your document.';
-          recommendation = 'Continue maintaining current practices for this control.';
-        } else if (hasPartialContent) {
-          status = 'partial';
-          details = 'This control is partially addressed but may need additional coverage.';
-          recommendation = 'Consider expanding your documentation to fully cover this control requirement.';
-        } else {
-          status = 'gap';
-          details = 'This control is not addressed in your current document.';
-          recommendation = 'Develop and implement policies and procedures to address this control requirement.';
-        }
-        
-        return {
-          ...result,
-          status,
-          details,
-          recommendation
-        };
-      })
-    }));
-
-    // Return mock AI response format
+    // Return in the expected format
     res.status(200).json({
       candidates: [{
         content: {
           parts: [{
-            text: JSON.stringify(analyzedCategories, null, 2)
+            text: JSON.stringify(analysisResult, null, 2)
           }]
         }
       }]
@@ -212,7 +116,7 @@ app.post('/analyze', async (req, res) => {
   }
 });
 
-// File upload endpoint for non-text files
+// File upload endpoint with real AI analysis
 app.post('/upload-analyze', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
@@ -224,194 +128,42 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'Missing framework parameter.' });
     }
 
-    // For local development, we'll extract text from the file and analyze it
-    // In production, this would use actual file parsing libraries
+    // Extract text from uploaded file
     let extractedText = '';
     const fileName = req.file.originalname;
     const fileExt = path.extname(fileName).toLowerCase();
 
-    // Mock text extraction based on file type
+    // Basic text extraction (we'll enhance this later)
     switch (fileExt) {
       case '.txt':
         extractedText = req.file.buffer.toString('utf8');
         break;
       case '.docx':
-        extractedText = `[DOCX Document: ${fileName}] This is a mock extraction of text from a Word document. In production, this would use the mammoth library to extract actual text content.`;
+        // For now, use a placeholder. We'll implement real DOCX parsing next
+        extractedText = `[DOCX Document: ${fileName}] This is a placeholder. Real DOCX parsing will be implemented next.`;
         break;
       case '.pdf':
-        extractedText = `[PDF Document: ${fileName}] This is a mock extraction of text from a PDF document. In production, this would use pdf-parse to extract actual text content.`;
+        // For now, use a placeholder. We'll implement real PDF parsing next
+        extractedText = `[PDF Document: ${fileName}] This is a placeholder. Real PDF parsing will be implemented next.`;
         break;
       case '.xlsx':
       case '.xls':
-        extractedText = `[Excel Document: ${fileName}] This is a mock extraction of text from an Excel document. In production, this would use xlsx library to extract actual text content.`;
+        // For now, use a placeholder. We'll implement real Excel parsing next
+        extractedText = `[Excel Document: ${fileName}] This is a placeholder. Real Excel parsing will be implemented next.`;
         break;
       default:
         return res.status(400).json({ error: 'Unsupported file type.' });
     }
 
-    // Now analyze the extracted text using the same logic as /analyze
-    const frameworkSourceData = {
-      NIST_CSF: {
-        categories: [
-          { 
-            name: 'Govern (GV)', 
-            description: 'Establish and monitor the organization\'s cybersecurity risk management strategy, expectations, and policy.', 
-            results: [
-              { id: 'GV.RM-01', control: 'An organizational risk management strategy is established.'},
-              { id: 'GV.SC-04', control: 'Cybersecurity is integrated into the organization\'s enterprise risk management portfolio.'}
-            ]
-          },
-          { 
-            name: 'Identify (ID)', 
-            description: 'Understand the current assets, risks, and responsibilities.', 
-            results: [
-              { id: 'ID.AM-1', control: 'Physical devices and systems within the organization are inventoried.'},
-              { id: 'ID.RA-1', control: 'Asset vulnerabilities are identified and documented.'},
-              { id: 'ID.RA-5', control: 'Threats, both internal and external, are identified and documented.'}
-            ]
-          },
-          { 
-            name: 'Protect (PR)', 
-            description: 'Implement safeguards to ensure delivery of critical services.', 
-            results: [
-              { id: 'PR.AC-4', control: 'Access permissions and authorizations are managed, incorporating the principles of least privilege and separation of duties.'},
-              { id: 'PR.AC-5', control: 'Identity and access are verified for all users, devices, and other assets.'},
-              { id: 'PR.DS-2', control: 'Data-in-transit is protected.'}
-            ]
-          },
-          { 
-            name: 'Detect (DE)', 
-            description: 'Discover and analyze cybersecurity events.', 
-            results: [
-              { id: 'DE.CM-1', control: 'Networks and systems are monitored to detect potential cybersecurity events.'},
-              { id: 'DE.AE-2', control: 'The impact of events is analyzed.'}
-            ]
-          },
-          { 
-            name: 'Respond (RS)', 
-            description: 'Take action regarding a detected cybersecurity incident.', 
-            results: [
-              { id: 'RS.RP-1', control: 'A response plan is executed.'},
-              { id: 'RS.CO-2', control: 'Incidents are reported to appropriate internal and external stakeholders.'}
-            ]
-          },
-          { 
-            name: 'Recover (RC)', 
-            description: 'Restore assets and operations affected by a cybersecurity incident.', 
-            results: [
-              { id: 'RC.RP-1', control: 'A recovery plan is executed.'},
-              { id: 'RC.IM-2', control: 'Recovery plans incorporate lessons learned.'}
-            ]
-          }
-        ]
-      },
-      NIST_800_53: {
-        categories: [
-          { 
-            name: 'Access Control (AC)', 
-            description: 'Limit system access to authorized users, processes acting on behalf of users, or devices.', 
-            results: [
-              { id: 'AC-1', control: 'Access Control Policy and Procedures'},
-              { id: 'AC-2', control: 'Account Management'},
-              { id: 'AC-3', control: 'Access Enforcement'},
-              { id: 'AC-4', control: 'Information Flow Enforcement'}
-            ]
-          },
-          { 
-            name: 'Awareness and Training (AT)', 
-            description: 'Ensure that managers and users of organizational systems are made aware of the security risks.', 
-            results: [
-              { id: 'AT-1', control: 'Awareness and Training Policy and Procedures'},
-              { id: 'AT-2', control: 'Security Awareness Training'}
-            ]
-          },
-          { 
-            name: 'Configuration Management (CM)', 
-            description: 'Establish and maintain baseline configurations and inventories of organizational systems.', 
-            results: [
-              { id: 'CM-1', control: 'Configuration Management Policy and Procedures'},
-            ]
-          },
-          { 
-            name: 'Identification and Authentication (IA)', 
-            description: 'Identify and authenticate organizational users (or processes acting on behalf of users).', 
-            results: [
-              { id: 'IA-1', control: 'Identification and Authentication Policy and Procedures'},
-              { id: 'IA-2', control: 'Identification and Authentication (Organizational Users)'}
-            ]
-          },
-          { 
-            name: 'Incident Response (IR)', 
-            description: 'Establish an operational incident handling capability for organizational systems.', 
-            results: [
-              { id: 'IR-1', control: 'Incident Response Policy and Procedures'},
-              { id: 'IR-8', control: 'Incident Response Plan'}
-            ]
-          },
-          { 
-            name: 'Risk Assessment (RA)', 
-            description: 'Periodically assess the risk to organizational operations, assets, and individuals.', 
-            results: [
-              { id: 'RA-1', control: 'Risk Assessment Policy and Procedures'},
-              { id: 'RA-3', control: 'Risk Assessment'}
-            ]
-          },
-          { 
-            name: 'System and Information Integrity (SI)', 
-            description: 'Protect the integrity of information and systems.', 
-            results: [
-              { id: 'SI-1', control: 'System and Information Integrity Policy and Procedures'},
-              { id: 'SI-2', control: 'Flaw Remediation'},
-              { id: 'SI-4', control: 'Information System Monitoring'}
-            ]
-          }
-        ]
-      }
-    };
+    // Use real AI analysis on extracted text
+    const analysisResult = await analyzeWithAI(extractedText, framework);
 
-    const mockAnalysis = frameworkSourceData[framework];
-    if (!mockAnalysis) {
-      return res.status(400).json({ error: 'Framework not supported.' });
-    }
-
-    // Simulate AI analysis
-    const analyzedCategories = mockAnalysis.categories.map(category => ({
-      ...category,
-      results: category.results.map(result => {
-        const hasRelevantContent = extractedText.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 3).join(' '));
-        const hasPartialContent = extractedText.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 2).join(' '));
-        
-        let status, details, recommendation;
-        
-        if (hasRelevantContent) {
-          status = 'covered';
-          details = 'This control appears to be adequately addressed in your document.';
-          recommendation = 'Continue maintaining current practices for this control.';
-        } else if (hasPartialContent) {
-          status = 'partial';
-          details = 'This control is partially addressed but may need additional coverage.';
-          recommendation = 'Consider expanding your documentation to fully cover this control requirement.';
-        } else {
-          status = 'gap';
-          details = 'This control is not addressed in your current document.';
-          recommendation = 'Develop and implement policies and procedures to address this control requirement.';
-        }
-        
-        return {
-          ...result,
-          status,
-          details,
-          recommendation
-        };
-      })
-    }));
-
-    // Return the same format as /analyze but include extracted text
+    // Return the analysis result
     res.status(200).json({
       candidates: [{
         content: {
           parts: [{
-            text: JSON.stringify(analyzedCategories, null, 2)
+            text: JSON.stringify(analysisResult, null, 2)
           }]
         }
       }],
@@ -424,7 +176,46 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
   }
 });
 
+// Enhanced text generation endpoint
+app.post('/generate-control-text', async (req, res) => {
+  try {
+    const { fileContent, controlId, controlText, status, details } = req.body;
+
+    if (!controlText || !status) {
+      return res.status(400).json({ error: 'Missing required parameters.' });
+    }
+
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `You are a cybersecurity compliance expert. Generate a comprehensive policy text for the following control:
+
+Control ID: ${controlId}
+Control: ${controlText}
+Current Status: ${status}
+Gap Details: ${details}
+
+Please generate a detailed, professional policy text that:
+1. Addresses the specific control requirement
+2. Is written in clear, actionable language
+3. Includes implementation guidance
+4. Follows industry best practices
+5. Is suitable for organizational policy documents
+
+Return only the policy text, no additional formatting or explanations.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const generatedText = response.text();
+
+    res.status(200).json({ sampleText: generatedText });
+
+  } catch (error) {
+    console.error('Error in text generation:', error);
+    res.status(500).json({ error: `Text generation failed: ${error.message}` });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Local API server running on http://localhost:${PORT}`);
-  console.log('This is a mock server for local development.');
+  console.log('Real AI integration enabled with Google Gemini!');
 });
