@@ -1,10 +1,8 @@
-// Use the 'require' syntax for Node.js compatibility on Vercel.
-const fetch = require('node-fetch');
-
 // This is the main serverless function, simplified to only handle text.
-module.exports = async (req, res) => {
+// It uses the global fetch available in modern Node.js environments.
+export default async function handler(req, res) {
   try {
-    // The front-end will now send the file content and framework directly in the body.
+    // Vercel automatically parses JSON bodies, so we can access req.body directly.
     const { fileContent, framework } = req.body;
 
     if (!fileContent || !framework) {
