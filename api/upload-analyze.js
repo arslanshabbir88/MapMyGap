@@ -9,17 +9,20 @@ async function readTxt(filePath) {
 }
 
 async function readDocx(filePath) {
-  const { value } = await mammoth.extractRawText({ path: filePath });
+  const buf = await fs.promises.readFile(filePath);
+  const { value } = await mammoth.extractRawText({ buffer: buf });
   return value || '';
 }
 
 async function readPdf(filePath) {
-  const data = await pdf(fs.readFileSync(filePath));
+  const buf = await fs.promises.readFile(filePath);
+  const data = await pdf(buf);
   return data.text || '';
 }
 
 async function readXlsx(filePath) {
-  const wb = xlsx.readFile(filePath);
+  const buf = await fs.promises.readFile(filePath);
+  const wb = xlsx.read(buf, { type: 'buffer' });
   let out = [];
   wb.SheetNames.forEach((name) => {
     const ws = wb.Sheets[name];
@@ -34,7 +37,6 @@ function getExt(filename) {
 }
 
 async function analyzeWithAIOrFallback(fileContent, framework) {
-  // Same data as in api/analyze.js
   const frameworkOptions = [
     { id: 'NIST_CSF', name: 'NIST Cybersecurity Framework (CSF) v2.0' },
     { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5' },
@@ -66,9 +68,11 @@ async function analyzeWithAIOrFallback(fileContent, framework) {
   };
 
   const apiKey = process.env.GEMINI_API_KEY;
+  // If framework is invalid, default to NIST_CSF
+  const selected = frameworkSourceData[framework] ? framework : 'NIST_CSF';
+
   if (!apiKey) {
-    // Fallback analysis (same structure as in api/analyze.js)
-    const analyzedCategories = frameworkSourceData[framework].categories.map(category => ({
+    const analyzedCategories = frameworkSourceData[selected].categories.map(category => ({
       ...category,
       results: category.results.map(result => {
         const hasRelevantContent = fileContent.toLowerCase().includes(result.control.toLowerCase().split(' ').slice(0, 3).join(' '));
@@ -101,31 +105,44 @@ async function analyzeWithAIOrFallback(fileContent, framework) {
     --- DOCUMENT START ---
     ${fileContent.substring(0, 100000)} 
     --- DOCUMENT END ---
-    Here is a set of controls from the ${frameworkOptions.find(f => f.id === framework).name} in JSON format. 
+    Here is a set of controls from the ${frameworkOptions.find(f => f.id === selected).name} in JSON format. 
     For each control, analyze the provided document to determine if it is "covered", "partial", or a "gap".
     You MUST return a JSON object. This JSON object should be an array of categories, exactly matching the structure of the input JSON, but with the 'status', 'details', and 'recommendation' fields filled in for every single control.
     Here is the JSON structure you need to analyze and complete:
-    ${JSON.stringify(frameworkSourceData[framework].categories, null, 2)}
+    ${JSON.stringify(frameworkSourceData[selected].categories, null, 2)}
     Return ONLY the completed JSON object.
   `;
 
   const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }] };
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-  const response = await Promise.race([
-    fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
-    timeoutPromise,
-  ]);
-
-  if (!response.ok) {
-    throw new Error('AI request failed');
+  try {
+    const response = await Promise.race([
+      fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }),
+      timeoutPromise,
+    ]);
+    if (!response.ok) {
+      const t = await response.text().catch(() => '');
+      throw new Error(`AI request failed: ${t}`);
+    }
+    return await response.json();
+  } catch (e) {
+    // Fallback on any AI error
+    const analyzedCategories = frameworkSourceData[selected].categories.map(category => ({
+      ...category,
+      results: category.results.map(result => ({
+        ...result,
+        status: 'gap',
+        details: 'AI unavailable; defaulting to conservative gap status based on missing evidence in the provided excerpt.',
+        recommendation: 'Provide documented procedures, roles, and evidence to address this control.'
+      }))
+    }));
+    return { candidates: [{ content: { parts: [{ text: JSON.stringify(analyzedCategories, null, 2) }] } }] };
   }
-  return await response.json();
 }
 
 export default async function handler(req, res) {
-  // Configure formidable to write to /tmp in Vercel
-  const form = formidable({ multiples: false, keepExtensions: true, uploadDir: '/tmp' });
+  const form = formidable({ multiples: false, keepExtensions: true, uploadDir: '/tmp', maxFileSize: 25 * 1024 * 1024 });
 
   try {
     const { fields, files } = await new Promise((resolve, reject) => {
@@ -135,34 +152,36 @@ export default async function handler(req, res) {
     const frameworkRaw = fields.framework;
     const framework = Array.isArray(frameworkRaw) ? frameworkRaw[0] : frameworkRaw;
 
-    const file = files.file;
-    const uploaded = Array.isArray(file) ? file[0] : file;
+    const fileField = files.file;
+    const uploaded = Array.isArray(fileField) ? fileField[0] : fileField;
     if (!uploaded || !uploaded.filepath) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
     const ext = getExt(uploaded.originalFilename || uploaded.newFilename || uploaded.filepath);
     let extractedText = '';
-    if (ext === 'txt') extractedText = await readTxt(uploaded.filepath);
-    else if (ext === 'docx') extractedText = await readDocx(uploaded.filepath);
-    else if (ext === 'pdf') extractedText = await readPdf(uploaded.filepath);
-    else if (ext === 'xlsx' || ext === 'xls') extractedText = await readXlsx(uploaded.filepath);
-    else return res.status(400).json({ error: 'Unsupported file type' });
+    try {
+      if (ext === 'txt') extractedText = await readTxt(uploaded.filepath);
+      else if (ext === 'docx') extractedText = await readDocx(uploaded.filepath);
+      else if (ext === 'pdf') extractedText = await readPdf(uploaded.filepath);
+      else if (ext === 'xlsx' || ext === 'xls') extractedText = await readXlsx(uploaded.filepath);
+      else return res.status(400).json({ error: 'Unsupported file type' });
+    } catch (parseErr) {
+      console.error('Extraction error:', parseErr);
+      return res.status(400).json({ error: `Failed to extract text from ${ext.toUpperCase()}: ${parseErr.message}` });
+    }
 
     let analysisJson;
     try {
-      analysisJson = await analyzeWithAIOrFallback(extractedText, framework);
+      analysisJson = await analyzeWithAIOrFallback(extractedText || '', framework || 'NIST_CSF');
     } catch (e) {
-      // If AI fails, produce fallback here
-      analysisJson = await analyzeWithAIOrFallback(extractedText, framework);
+      console.error('Analysis error:', e);
+      return res.status(500).json({ error: `Analysis failed: ${e.message}` });
     }
 
     return res.status(200).json({ ...analysisJson, extractedText });
   } catch (e) {
     console.error('upload-analyze error:', e);
-    return res.status(500).json({ error: 'Server error' });
-  } finally {
-    // Best-effort cleanup
-    // Formidable stores in /tmp; Vercel will clean automatically, but we can unlink if needed
+    return res.status(500).json({ error: `Server error: ${e.message}` });
   }
 }
