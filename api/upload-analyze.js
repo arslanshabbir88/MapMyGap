@@ -4,9 +4,19 @@ import formidable from 'formidable';
 // Initialize Google AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
-// Real AI analysis function
+// Import framework control structures
+import { allFrameworks } from '../src/frameworks/compliance-frameworks.js';
+
+// Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
+    // Get predefined control structure for the framework
+    const frameworkData = allFrameworks[framework];
+    
+    if (!frameworkData) {
+      throw new Error(`Framework ${framework} not supported`);
+    }
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Map framework IDs to display names
@@ -20,24 +30,33 @@ async function analyzeWithAI(fileContent, framework) {
 
     const frameworkName = frameworkNames[framework] || framework;
 
+    // Create a comprehensive prompt for AI analysis
     const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
 
 Document Content:
-${fileContent.substring(0, 8000)} // Limit content to avoid token limits
+${fileContent.substring(0, 8000)}
 
-Please provide a comprehensive compliance analysis in the following JSON format:
+Framework: ${frameworkName}
+Available Control Categories: ${frameworkData.categories.map(cat => cat.name).join(', ')}
+
+Your task is to analyze the document content and determine the compliance status for each control. For each control, analyze the document content and determine if the control is:
+- "covered": Fully addressed in the document
+- "partial": Partially addressed but needs improvement  
+- "gap": Not addressed at all
+
+Return your analysis in this exact JSON format:
 {
   "categories": [
     {
       "name": "Category Name",
-      "description": "Category description",
+      "description": "Category description", 
       "results": [
         {
           "id": "Control ID",
           "control": "Control description",
           "status": "covered|partial|gap",
-          "details": "Detailed analysis of compliance status",
-          "recommendation": "Specific recommendation to achieve compliance"
+          "details": "Detailed analysis explaining why this status was assigned based on document content",
+          "recommendation": "Specific, actionable recommendation to achieve compliance"
         }
       ]
     }
@@ -45,18 +64,13 @@ Please provide a comprehensive compliance analysis in the following JSON format:
 }
 
 Guidelines:
-- "covered": Control is fully addressed in the document
-- "partial": Control is partially addressed but needs improvement
-- "gap": Control is not addressed at all
-- Be specific and actionable in recommendations
-- Base analysis on actual content found in the document
+- Base your analysis on actual content found in the document
+- Be specific about what content supports your assessment
 - If content is insufficient, mark as "gap" with clear guidance
-- For NIST frameworks, focus on the specific control families and subcategories
-- For PCI DSS, focus on payment card data protection requirements
-- For ISO 27001, focus on information security management system requirements
-- For SOC 2, focus on the specific trust service criteria selected
+- Provide actionable recommendations that match the document's context
+- Focus on the specific requirements of ${frameworkName}
 
-Return only valid JSON, no additional text.`;
+Return only valid JSON, no additional text or formatting.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
@@ -71,7 +85,24 @@ Return only valid JSON, no additional text.`;
     return JSON.parse(jsonMatch[0]);
   } catch (error) {
     console.error('AI Analysis Error:', error);
-    throw new Error(`AI analysis failed: ${error.message}`);
+    console.log('Falling back to predefined control structure');
+    
+    // Fallback to predefined control structure with default "gap" status
+    const fallbackResult = {
+      categories: frameworkData.categories.map(category => ({
+        name: category.name,
+        description: category.description,
+        results: category.results.map(control => ({
+          id: control.id,
+          control: control.control,
+          status: "gap",
+          details: "AI analysis failed. Default status assigned. Please review manually.",
+          recommendation: control.recommendation
+        }))
+      }))
+    };
+    
+    return fallbackResult;
   }
 }
 
