@@ -17,6 +17,25 @@ const LightbulbIcon = () => <Icon path="M12 18v-5.25m0 0a6.01 6.01 0 001.5-11.62
 const SparklesIcon = () => <Icon path="M9.813 15.904L9 18l-1.813-2.096a4.5 4.5 0 00-6.214-6.214L1 8l2.096-1.813a4.5 4.5 0 006.214-6.214L9 0l.813 2.096a4.5 4.5 0 006.214 6.214L18 8l-2.096.813a4.5 4.5 0 00-6.214 6.214zM18 18l-1.813-2.096a4.5 4.5 0 00-6.214-6.214L9 8l2.096-1.813a4.5 4.5 0 006.214-6.214L18 0l.813 2.096a4.5 4.5 0 006.214 6.214L27 8l-2.096.813a4.5 4.5 0 00-6.214 6.214L18 18z" className="w-5 h-5 mr-2" />;
 const ArrowLeftIcon = () => <Icon path="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" className="w-4 h-4 mr-2" />;
 
+// Helper functions for status rendering
+const renderStatusIcon = (status) => {
+  switch (status) {
+    case 'covered': return <CheckCircleIcon />;
+    case 'partial': return <ExclamationTriangleIcon />;
+    case 'gap': return <XCircleIcon />;
+    default: return <Icon path="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" className="w-5 h-5 text-slate-400" />;
+  }
+};
+
+const getStatusChipClass = (status) => {
+  switch (status) {
+    case 'covered': return 'bg-green-500/10 text-green-400 border-green-500/20';
+    case 'partial': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+    case 'gap': return 'bg-red-500/10 text-red-400 border-red-500/20';
+    default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+  }
+};
+
 
 // --- Modal Component ---
 const DetailModal = ({ result, fileContent, onClose }) => {
