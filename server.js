@@ -3,6 +3,7 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const mammoth = require('mammoth');
 require('dotenv').config();
 
 const app = express();
@@ -139,8 +140,16 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
         extractedText = req.file.buffer.toString('utf8');
         break;
       case '.docx':
-        // For now, use a placeholder. We'll implement real DOCX parsing next
-        extractedText = `[DOCX Document: ${fileName}] This is a placeholder. Real DOCX parsing will be implemented next.`;
+        try {
+          const result = await mammoth.extractRawText({ buffer: req.file.buffer });
+          extractedText = result.value;
+          if (result.messages.length > 0) {
+            console.log('DOCX processing messages:', result.messages);
+          }
+        } catch (docxError) {
+          console.error('Error processing DOCX:', docxError);
+          extractedText = `Error processing DOCX file: ${docxError.message}`;
+        }
         break;
       case '.pdf':
         // For now, use a placeholder. We'll implement real PDF parsing next
