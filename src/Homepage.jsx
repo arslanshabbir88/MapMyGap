@@ -16,7 +16,7 @@ const DocumentTextIcon = () => <Icon path="M19.5 14.25v-2.625a3.375 3.375 0 00-3
 
 // --- Main Homepage Component ---
 
-export default function Homepage({ onNavigate }) {
+function Homepage({ onNavigate }) {
 
   const FeatureCard = ({ icon, title, children }) => (
     <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transform hover:-translate-y-1">
@@ -161,3 +161,5 @@ export default function Homepage({ onNavigate }) {
     </>
   );
 }
+
+export default Homepage;
