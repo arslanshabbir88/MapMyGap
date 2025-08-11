@@ -20,15 +20,11 @@ const runMiddleware = (req, res, fn) => {
 };
 
 // This is the main serverless function, exported using module.exports.
-module.exports = async (req, res) => {
+const handler = async (req, res) => {
   // --- Framework data is now stored on the backend ---
   const frameworkOptions = [
     { id: 'NIST_CSF', name: 'NIST Cybersecurity Framework (CSF) v2.0' },
     { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5' },
-    { id: 'FFIEC_CAT', name: 'FFIEC Cybersecurity Assessment Tool' },
-    { id: 'PCI_DSS', name: 'PCI DSS v4.0' },
-    { id: 'ISO_27001', name: 'ISO/IEC 27001:2022' },
-    { id: 'NYDFS_500', name: 'NYDFS Part 500' },
   ];
   
   const frameworkSourceData = {
@@ -122,4 +118,11 @@ module.exports = async (req, res) => {
     console.error('Error in /api/analyze:', error);
     res.status(500).json({ error: `Server error: ${error.message}` });
   }
+};
+
+// Vercel needs this config to correctly handle file uploads.
+module.exports.config = {
+  api: {
+    bodyParser: false,
+  },
 };
