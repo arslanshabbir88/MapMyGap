@@ -37,7 +37,17 @@ async function analyzeWithAI(fileContent, framework) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${framework} framework.
+    // Map framework IDs to display names
+    const frameworkNames = {
+      'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
+      'NIST_800_53': 'NIST SP 800-53',
+      'NIST_CSF_EXTENDED': 'NIST Cybersecurity Framework (CSF) Extended',
+      'NIST_800_53_EXTENDED': 'NIST SP 800-53 Extended'
+    };
+
+    const frameworkName = frameworkNames[framework] || framework;
+
+    const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
 
 Document Content:
 ${fileContent.substring(0, 8000)} // Limit content to avoid token limits
@@ -68,6 +78,7 @@ Guidelines:
 - Be specific and actionable in recommendations
 - Base analysis on actual content found in the document
 - If content is insufficient, mark as "gap" with clear guidance
+- For NIST frameworks, focus on the specific control families and subcategories
 
 Return only valid JSON, no additional text.`;
 
@@ -152,13 +163,48 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
         }
         break;
       case '.pdf':
-        // For now, use a placeholder. We'll implement real PDF parsing next
-        extractedText = `[PDF Document: ${fileName}] This is a placeholder. Real PDF parsing will be implemented next.`;
+        try {
+          const pdfParse = require('pdf-parse');
+          const result = await pdfParse(req.file.buffer);
+          extractedText = result.text;
+          if (result.info) {
+            console.log('PDF processing info:', result.info);
+          }
+        } catch (pdfError) {
+          console.error('Error processing PDF:', pdfError);
+          extractedText = `Error processing PDF file: ${pdfError.message}`;
+        }
         break;
       case '.xlsx':
       case '.xls':
-        // For now, use a placeholder. We'll implement real Excel parsing next
-        extractedText = `[Excel Document: ${fileName}] This is a placeholder. Real Excel parsing will be implemented next.`;
+        try {
+          const XLSX = require('xlsx');
+          const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
+          const sheetNames = workbook.SheetNames;
+          let allText = '';
+          
+          sheetNames.forEach(sheetName => {
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            
+            // Convert sheet data to readable text
+            jsonData.forEach(row => {
+              if (Array.isArray(row)) {
+                row.forEach(cell => {
+                  if (cell && cell.toString().trim()) {
+                    allText += cell.toString().trim() + ' ';
+                  }
+                });
+                allText += '\n';
+              }
+            });
+          });
+          
+          extractedText = allText.trim() || `[Excel Document: ${fileName}] No readable text content found.`;
+        } catch (excelError) {
+          console.error('Error processing Excel file:', excelError);
+          extractedText = `Error processing Excel file: ${excelError.message}`;
+        }
         break;
       default:
         return res.status(400).json({ error: 'Unsupported file type.' });
