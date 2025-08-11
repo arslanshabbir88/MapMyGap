@@ -54,7 +54,33 @@ const DetailModal = ({ result, fileContent, onClose }) => {
     };
 
     const handleGenerateText = async () => {
-        alert("Text generation from the modal would also be a backend function in a production app.");
+        if (!result) return;
+        try {
+            setGenerationError('');
+            setGeneratedText('');
+            setIsGenerating(true);
+            const resp = await fetch('/api/generate-control-text', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    fileContent,
+                    controlId: result.id,
+                    controlText: result.control,
+                    status: result.status,
+                    details: result.details || ''
+                })
+            });
+            if (!resp.ok) {
+                const text = await resp.text();
+                throw new Error(text || 'Failed to generate text');
+            }
+            const data = await resp.json();
+            setGeneratedText(data.sampleText || '');
+        } catch (err) {
+            setGenerationError(err.message || 'Generation failed');
+        } finally {
+            setIsGenerating(false);
+        }
     };
 
     return (
@@ -90,6 +116,15 @@ const DetailModal = ({ result, fileContent, onClose }) => {
                                 <SparklesIcon />
                                 {isGenerating ? 'Generating...' : 'Generate Control Text'}
                             </button>
+                            {generationError && (
+                              <p className="mt-3 text-sm text-red-400">{generationError}</p>
+                            )}
+                            {generatedText && (
+                              <div className="mt-4 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
+                                <h5 className="text-slate-200 font-semibold mb-2">Suggested Control Text</h5>
+                                <pre className="whitespace-pre-wrap text-slate-300 text-sm leading-6">{generatedText}</pre>
+                              </div>
+                            )}
                         </div>
                     )}
                 </div>
