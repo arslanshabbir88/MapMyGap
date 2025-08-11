@@ -186,7 +186,7 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
 });
 
 // Enhanced text generation endpoint
-app.post('/generate-control-text', async (req, res) => {
+app.post('/api/generate-control-text', async (req, res) => {
   try {
     const { fileContent, controlId, controlText, status, details } = req.body;
 
@@ -196,19 +196,29 @@ app.post('/generate-control-text', async (req, res) => {
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const prompt = `You are a cybersecurity compliance expert. Generate a comprehensive policy text for the following control:
+    const prompt = `You are a cybersecurity compliance expert. Analyze the writing style and tone of the following document, then generate a comprehensive policy text that matches that exact style and tone.
 
+ORIGINAL DOCUMENT CONTENT:
+${fileContent || 'No document content provided'}
+
+TARGET CONTROL:
 Control ID: ${controlId}
 Control: ${controlText}
 Current Status: ${status}
 Gap Details: ${details}
 
-Please generate a detailed, professional policy text that:
-1. Addresses the specific control requirement
-2. Is written in clear, actionable language
-3. Includes implementation guidance
-4. Follows industry best practices
-5. Is suitable for organizational policy documents
+INSTRUCTIONS:
+1. First, analyze the writing style, tone, and language patterns of the original document
+2. Note the level of formality, technical detail, sentence structure, and terminology used
+3. Generate policy text that:
+   - Addresses the specific control requirement
+   - Matches the EXACT writing style and tone of the original document
+   - Uses similar sentence structure, vocabulary, and formality level
+   - Maintains consistency with the document's voice and approach
+   - Includes implementation guidance in the same style
+   - Is suitable for organizational policy documents
+
+IMPORTANT: The generated text must sound like it was written by the same person/organization as the original document. Match the tone, style, and language patterns exactly.
 
 Return only the policy text, no additional formatting or explanations.`;
 
