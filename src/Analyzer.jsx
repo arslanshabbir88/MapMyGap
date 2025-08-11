@@ -395,9 +395,10 @@ function Analyzer({ onNavigateHome }) {
   const frameworkOptions = [
     { id: 'NIST_CSF', name: 'NIST Cybersecurity Framework (CSF) v2.0', enabled: true },
     { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5', enabled: true },
+    { id: 'PCI_DSS', name: 'PCI DSS v4.0', enabled: true },
+    { id: 'ISO_27001', name: 'ISO/IEC 27001:2022', enabled: true },
+    { id: 'SOC_2', name: 'SOC 2 Type II', enabled: true },
     { id: 'FFIEC_CAT', name: 'FFIEC Cybersecurity Assessment Tool', enabled: false },
-    { id: 'PCI_DSS', name: 'PCI DSS v4.0', enabled: false },
-    { id: 'ISO_27001', name: 'ISO/IEC 27001:2022', enabled: false },
     { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: false },
   ];
   
