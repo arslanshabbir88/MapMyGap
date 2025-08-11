@@ -40,9 +40,7 @@ async function analyzeWithAI(fileContent, framework) {
     // Map framework IDs to display names
     const frameworkNames = {
       'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
-      'NIST_800_53': 'NIST SP 800-53',
-      'NIST_CSF_EXTENDED': 'NIST Cybersecurity Framework (CSF) Extended',
-      'NIST_800_53_EXTENDED': 'NIST SP 800-53 Extended'
+      'NIST_800_53': 'NIST SP 800-53'
     };
 
     const frameworkName = frameworkNames[framework] || framework;

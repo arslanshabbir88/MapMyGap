@@ -1,4 +1,4 @@
-// NIST Cybersecurity Framework (CSF) Controls
+// NIST Cybersecurity Framework (CSF) - Comprehensive Controls
 export const nistCSF = {
   name: "NIST Cybersecurity Framework (CSF)",
   description: "A voluntary framework for managing and reducing cybersecurity risk",
@@ -12,7 +12,29 @@ export const nistCSF = {
         { id: "ID.AM-3", control: "Organizational communication and data flows are mapped", status: "gap", details: "Data flow documentation", recommendation: "Create data flow diagrams and communication maps" },
         { id: "ID.AM-4", control: "External information systems are catalogued", status: "gap", details: "External system inventory", recommendation: "Document all external system connections and dependencies" },
         { id: "ID.AM-5", control: "Resources are prioritized based on their classification", status: "gap", details: "Resource prioritization", recommendation: "Implement risk-based resource classification system" },
-        { id: "ID.AM-6", control: "Cybersecurity roles and responsibilities are established", status: "gap", details: "Role definition", recommendation: "Define and document cybersecurity roles and responsibilities" }
+        { id: "ID.AM-6", control: "Cybersecurity roles and responsibilities are established", status: "gap", details: "Role definition", recommendation: "Define and document cybersecurity roles and responsibilities" },
+        { id: "ID.BE-1", control: "Organization's role in supply chain is identified", status: "gap", details: "Supply chain role identification", recommendation: "Document organization's supply chain role and responsibilities" },
+        { id: "ID.BE-2", control: "Organization's place in critical infrastructure is determined", status: "gap", details: "Critical infrastructure placement", recommendation: "Assess and document critical infrastructure dependencies" },
+        { id: "ID.BE-3", control: "Priorities for organizational mission are established", status: "gap", details: "Mission priorities", recommendation: "Establish and document mission priorities" },
+        { id: "ID.BE-4", control: "Dependencies and critical functions are identified", status: "gap", details: "Critical function identification", recommendation: "Identify and document critical business functions" },
+        { id: "ID.BE-5", control: "Resilience requirements are established", status: "gap", details: "Resilience requirements", recommendation: "Define resilience requirements for critical functions" },
+        { id: "ID.GV-1", control: "Organizational security policies are established", status: "gap", details: "Security policy establishment", recommendation: "Develop comprehensive security policies" },
+        { id: "ID.GV-2", control: "Security roles and responsibilities are coordinated", status: "gap", details: "Security role coordination", recommendation: "Coordinate security roles across organization" },
+        { id: "ID.GV-3", control: "Legal and regulatory requirements are understood", status: "gap", details: "Legal compliance understanding", recommendation: "Document legal and regulatory requirements" },
+        { id: "ID.GV-4", control: "Governance and risk management processes address cybersecurity risks", status: "gap", details: "Risk management integration", recommendation: "Integrate cybersecurity into risk management" },
+        { id: "ID.RA-1", control: "Asset vulnerabilities are identified and documented", status: "gap", details: "Vulnerability identification", recommendation: "Implement vulnerability assessment process" },
+        { id: "ID.RA-2", control: "Cyber threat intelligence is received from information sharing forums", status: "gap", details: "Threat intelligence sharing", recommendation: "Participate in threat intelligence sharing" },
+        { id: "ID.RA-3", control: "Threats to assets are identified and documented", status: "gap", details: "Threat identification", recommendation: "Document identified threats to assets" },
+        { id: "ID.RA-4", control: "Potential business impacts are identified", status: "gap", details: "Business impact assessment", recommendation: "Assess potential business impacts" },
+        { id: "ID.RA-5", control: "Risks are identified and documented", status: "gap", details: "Risk identification", recommendation: "Document identified risks" },
+        { id: "ID.RM-1", control: "Risk management processes are established", status: "gap", details: "Risk management processes", recommendation: "Establish formal risk management processes" },
+        { id: "ID.RM-2", control: "Risk tolerance is determined", status: "gap", details: "Risk tolerance determination", recommendation: "Define organizational risk tolerance" },
+        { id: "ID.RM-3", control: "Risk management processes are updated", status: "gap", details: "Risk process updates", recommendation: "Establish process for updating risk management" },
+        { id: "ID.SC-1", control: "Supply chain risk management processes are identified", status: "gap", details: "Supply chain risk management", recommendation: "Identify supply chain risk management processes" },
+        { id: "ID.SC-2", control: "Suppliers and partners are routinely assessed", status: "gap", details: "Supplier assessment", recommendation: "Implement routine supplier assessment process" },
+        { id: "ID.SC-3", control: "Contracts with suppliers are established", status: "gap", details: "Supplier contracts", recommendation: "Establish contracts with key suppliers" },
+        { id: "ID.SC-4", control: "Suppliers are routinely assessed", status: "gap", details: "Routine supplier assessment", recommendation: "Implement routine supplier assessment" },
+        { id: "ID.SC-5", control: "Response and recovery planning requirements are established", status: "gap", details: "Recovery planning requirements", recommendation: "Establish recovery planning requirements" }
       ]
     },
     {
@@ -25,7 +47,38 @@ export const nistCSF = {
         { id: "PR.AC-4", control: "Access permissions are managed", status: "gap", details: "Permission management", recommendation: "Establish role-based access control system" },
         { id: "PR.AC-5", control: "Network integrity is protected", status: "gap", details: "Network security", recommendation: "Deploy network monitoring and protection tools" },
         { id: "PR.AC-6", control: "Identities are proofed and bound", status: "gap", details: "Identity verification", recommendation: "Implement multi-factor authentication" },
-        { id: "PR.AC-7", control: "Users, devices, and other assets are authenticated", status: "gap", details: "Authentication systems", recommendation: "Deploy enterprise authentication solution" }
+        { id: "PR.AC-7", control: "Users, devices, and other assets are authenticated", status: "gap", details: "Authentication systems", recommendation: "Deploy enterprise authentication solution" },
+        { id: "PR.AT-1", control: "All users are informed and trained", status: "gap", details: "User training and awareness", recommendation: "Implement comprehensive user training program" },
+        { id: "PR.AT-2", control: "Privileged users understand roles and responsibilities", status: "gap", details: "Privileged user training", recommendation: "Train privileged users on roles and responsibilities" },
+        { id: "PR.AT-3", control: "Third-party stakeholders understand roles and responsibilities", status: "gap", details: "Third-party training", recommendation: "Train third-party stakeholders on roles" },
+        { id: "PR.AT-4", control: "Senior executives understand roles and responsibilities", status: "gap", details: "Executive training", recommendation: "Train executives on cybersecurity roles" },
+        { id: "PR.AT-5", control: "Physical and security personnel understand roles and responsibilities", status: "gap", details: "Security personnel training", recommendation: "Train security personnel on roles" },
+        { id: "PR.DS-1", control: "Data-at-rest is protected", status: "gap", details: "Data-at-rest protection", recommendation: "Implement data-at-rest encryption" },
+        { id: "PR.DS-2", control: "Data-in-transit is protected", status: "gap", details: "Data-in-transit protection", recommendation: "Implement data-in-transit encryption" },
+        { id: "PR.DS-3", control: "Assets are formally managed", status: "gap", details: "Asset management", recommendation: "Implement formal asset management process" },
+        { id: "PR.DS-4", control: "Adequate capacity is ensured", status: "gap", details: "Capacity management", recommendation: "Implement capacity management processes" },
+        { id: "PR.DS-5", control: "Protections against data leaks are implemented", status: "gap", details: "Data leak prevention", recommendation: "Implement data leak prevention tools" },
+        { id: "PR.DS-6", control: "Integrity checking mechanisms are used", status: "gap", details: "Integrity checking", recommendation: "Implement data integrity checking mechanisms" },
+        { id: "PR.DS-7", control: "Development and testing environments are separate", status: "gap", details: "Environment separation", recommendation: "Separate development and testing environments" },
+        { id: "PR.DS-8", control: "Integrity checking mechanisms are used", status: "gap", details: "Integrity checking mechanisms", recommendation: "Implement integrity checking mechanisms" },
+        { id: "PR.IP-1", control: "Audit/log records are determined", status: "gap", details: "Audit log determination", recommendation: "Determine required audit log records" },
+        { id: "PR.IP-2", control: "Security configurations are established", status: "gap", details: "Security configuration establishment", recommendation: "Establish security configurations" },
+        { id: "PR.IP-3", control: "System change control procedures are managed", status: "gap", details: "Change control procedures", recommendation: "Implement system change control procedures" },
+        { id: "PR.IP-4", control: "Backups are maintained", status: "gap", details: "Backup maintenance", recommendation: "Maintain regular system backups" },
+        { id: "PR.IP-5", control: "Policies and regulations are met", status: "gap", details: "Policy compliance", recommendation: "Ensure compliance with policies and regulations" },
+        { id: "PR.IP-6", control: "Data is destroyed according to policy", status: "gap", details: "Data destruction policy", recommendation: "Implement data destruction procedures" },
+        { id: "PR.IP-7", control: "Protection processes are improved", status: "gap", details: "Process improvement", recommendation: "Implement continuous improvement for protection processes" },
+        { id: "PR.IP-8", control: "Effectiveness of protection technologies is shared", status: "gap", details: "Technology effectiveness sharing", recommendation: "Share protection technology effectiveness" },
+        { id: "PR.IP-9", control: "Response plans are tested", status: "gap", details: "Response plan testing", recommendation: "Test response plans regularly" },
+        { id: "PR.IP-10", control: "Response plans are updated", status: "gap", details: "Response plan updates", recommendation: "Update response plans based on testing" },
+        { id: "PR.IP-11", control: "Cybersecurity is included in human resources practices", status: "gap", details: "HR cybersecurity integration", recommendation: "Include cybersecurity in HR practices" },
+        { id: "PR.IP-12", control: "Vulnerability management plan is developed", status: "gap", details: "Vulnerability management planning", recommendation: "Develop vulnerability management plan" },
+        { id: "PR.MA-1", control: "Maintenance and repair of organizational assets is performed", status: "gap", details: "Asset maintenance and repair", recommendation: "Perform regular asset maintenance and repair" },
+        { id: "PR.MA-2", control: "Remote maintenance sessions are approved", status: "gap", details: "Remote maintenance approval", recommendation: "Implement remote maintenance approval process" },
+        { id: "PR.PT-1", control: "Audit/log records are determined", status: "gap", details: "Audit log determination", recommendation: "Determine required audit log records" },
+        { id: "PR.PT-2", control: "Removable media is protected", status: "gap", details: "Removable media protection", recommendation: "Implement removable media protection" },
+        { id: "PR.PT-3", control: "Access to systems and assets is controlled", status: "gap", details: "System access control", recommendation: "Implement system access controls" },
+        { id: "PR.PT-4", control: "Communications and control networks are protected", status: "gap", details: "Network protection", recommendation: "Protect communications and control networks" }
       ]
     },
     {
@@ -36,7 +89,20 @@ export const nistCSF = {
         { id: "DE.AE-2", control: "Detected events are analyzed", status: "gap", details: "Event analysis", recommendation: "Implement security event correlation and analysis" },
         { id: "DE.AE-3", control: "Event data are collected and correlated", status: "gap", details: "Data correlation", recommendation: "Deploy security information and event management system" },
         { id: "DE.AE-4", control: "Impact of events is determined", status: "gap", details: "Impact assessment", recommendation: "Establish incident impact assessment procedures" },
-        { id: "DE.AE-5", control: "Incident alert thresholds are established", status: "gap", details: "Alert thresholds", recommendation: "Define and configure security alert thresholds" }
+        { id: "DE.AE-5", control: "Incident alert thresholds are established", status: "gap", details: "Alert thresholds", recommendation: "Define and configure security alert thresholds" },
+        { id: "DE.CM-1", control: "The network is monitored to detect potential cybersecurity events", status: "gap", details: "Network monitoring", recommendation: "Implement network monitoring for cybersecurity events" },
+        { id: "DE.CM-2", control: "The physical environment is monitored to detect potential cybersecurity events", status: "gap", details: "Physical environment monitoring", recommendation: "Implement physical environment monitoring" },
+        { id: "DE.CM-3", control: "Personnel activity is monitored to detect potential cybersecurity events", status: "gap", details: "Personnel activity monitoring", recommendation: "Implement personnel activity monitoring" },
+        { id: "DE.CM-4", control: "Malicious code is detected", status: "gap", details: "Malicious code detection", recommendation: "Implement malicious code detection tools" },
+        { id: "DE.CM-5", control: "Unauthorized mobile code is detected", status: "gap", details: "Unauthorized mobile code detection", recommendation: "Implement unauthorized mobile code detection" },
+        { id: "DE.CM-6", control: "External service provider activity is monitored", status: "gap", details: "External provider monitoring", recommendation: "Monitor external service provider activity" },
+        { id: "DE.CM-7", control: "Monitoring for unauthorized personnel, connections, devices, and software", status: "gap", details: "Unauthorized activity monitoring", recommendation: "Implement monitoring for unauthorized activities" },
+        { id: "DE.CM-8", control: "Vulnerability scans are performed", status: "gap", details: "Vulnerability scanning", recommendation: "Perform regular vulnerability scans" },
+        { id: "DE.DP-1", control: "Roles and responsibilities for detection process are established", status: "gap", details: "Detection process roles", recommendation: "Establish detection process roles and responsibilities" },
+        { id: "DE.DP-2", control: "Detection activities comply with applicable requirements", status: "gap", details: "Detection compliance", recommendation: "Ensure detection activities comply with requirements" },
+        { id: "DE.DP-3", control: "Detection process is tested", status: "gap", details: "Detection process testing", recommendation: "Test detection process regularly" },
+        { id: "DE.DP-4", control: "Event detection information is communicated", status: "gap", details: "Event detection communication", recommendation: "Communicate event detection information" },
+        { id: "DE.DP-5", control: "Detection process is continuously improved", status: "gap", details: "Detection process improvement", recommendation: "Continuously improve detection process" }
       ]
     },
     {
@@ -48,7 +114,17 @@ export const nistCSF = {
         { id: "RS.CO-2", control: "Events are reported consistent with criteria", status: "gap", details: "Event reporting", recommendation: "Establish event reporting criteria and procedures" },
         { id: "RS.CO-3", control: "Information is shared consistent with response plans", status: "gap", details: "Information sharing", recommendation: "Implement secure information sharing protocols" },
         { id: "RS.CO-4", control: "Coordination with stakeholders occurs", status: "gap", details: "Stakeholder coordination", recommendation: "Establish stakeholder communication procedures" },
-        { id: "RS.CO-5", control: "Voluntary information sharing occurs with external stakeholders", status: "gap", details: "External sharing", recommendation: "Develop external information sharing agreements" }
+        { id: "RS.CO-5", control: "Voluntary information sharing occurs with external stakeholders", status: "gap", details: "External sharing", recommendation: "Develop external information sharing agreements" },
+        { id: "RS.AN-1", control: "Notifications from detection systems are investigated", status: "gap", details: "Detection notification investigation", recommendation: "Investigate detection system notifications" },
+        { id: "RS.AN-2", control: "The impact of the incident is understood", status: "gap", details: "Incident impact understanding", recommendation: "Understand incident impact on organization" },
+        { id: "RS.AN-3", control: "Forensics are performed", status: "gap", details: "Forensic analysis", recommendation: "Perform forensic analysis when appropriate" },
+        { id: "RS.AN-4", control: "Incidents are categorized", status: "gap", details: "Incident categorization", recommendation: "Categorize incidents for appropriate response" },
+        { id: "RS.AN-5", control: "Processes are established to receive, analyze and respond to vulnerabilities", status: "gap", details: "Vulnerability response processes", recommendation: "Establish vulnerability response processes" },
+        { id: "RS.MI-1", control: "Incidents are contained", status: "gap", details: "Incident containment", recommendation: "Contain incidents to prevent further damage" },
+        { id: "RS.MI-2", control: "Incidents are mitigated", status: "gap", details: "Incident mitigation", recommendation: "Mitigate incidents to reduce impact" },
+        { id: "RS.MI-3", control: "Newly identified vulnerabilities are mitigated or documented as accepted risks", status: "gap", details: "Vulnerability mitigation", recommendation: "Mitigate or document new vulnerabilities" },
+        { id: "RS.IM-1", control: "Response plans incorporate lessons learned", status: "gap", details: "Lessons learned integration", recommendation: "Incorporate lessons learned into response plans" },
+        { id: "RS.IM-2", control: "Response strategies are updated", status: "gap", details: "Response strategy updates", recommendation: "Update response strategies based on lessons learned" }
       ]
     },
     {
@@ -57,13 +133,17 @@ export const nistCSF = {
       results: [
         { id: "RC.RP-1", control: "Recovery plan is executed during or after incident", status: "gap", details: "Recovery execution", recommendation: "Develop and test disaster recovery procedures" },
         { id: "RC.IM-1", control: "Recovery plans incorporate lessons learned", status: "gap", details: "Lessons learned integration", recommendation: "Establish post-incident review process" },
-        { id: "RC.IM-2", control: "Recovery strategies are updated", status: "gap", details: "Strategy updates", recommendation: "Implement continuous improvement for recovery strategies" }
+        { id: "RC.IM-2", control: "Recovery strategies are updated", status: "gap", details: "Strategy updates", recommendation: "Implement continuous improvement for recovery strategies" },
+        { id: "RC.IM-3", control: "Recovery activities are communicated to internal and external stakeholders", status: "gap", details: "Recovery communication", recommendation: "Communicate recovery activities to stakeholders" },
+        { id: "RC.IM-4", control: "Public relations are managed", status: "gap", details: "Public relations management", recommendation: "Manage public relations during recovery" },
+        { id: "RC.IM-5", control: "Reputation is repaired after an incident", status: "gap", details: "Reputation repair", recommendation: "Implement reputation repair strategies" },
+        { id: "RC.IM-6", control: "Recovery activities are communicated to external stakeholders", status: "gap", details: "External stakeholder communication", recommendation: "Communicate recovery activities to external stakeholders" }
       ]
     }
   ]
 };
 
-// NIST 800-53 Controls (Selected Key Controls)
+// NIST 800-53 Controls - Comprehensive Controls
 export const nist80053 = {
   name: "NIST SP 800-53",
   description: "Security and Privacy Controls for Information Systems and Organizations",
