@@ -1256,10 +1256,41 @@ async function analyzeWithAI(fileContent, framework) {
       console.log('Cache status:', nistControlsCache ? `Valid (age: ${Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60)} minutes)` : 'None');
     }
 
-    // DISABLE SMART FILTERING FOR NOW - Use full framework to ensure proper analysis
+    // SMART FILTERING - Balance between speed and accuracy
     let filteredFrameworkData = frameworkData;
-    console.log('=== USING FULL FRAMEWORK (Smart filtering disabled) ===');
-    console.log('Total controls available:', countTotalControls(frameworkData));
+    console.log('=== APPLYING SMART FILTERING FOR PERFORMANCE ===');
+    
+    if (framework === 'NIST_800_53') {
+      // For NIST 800-53, use intelligent filtering to reduce AI processing time
+      const totalControls = countTotalControls(frameworkData);
+      
+      if (totalControls > 20) {
+        // If we have many controls, filter to most relevant ones
+        console.log('Large framework detected, applying intelligent filtering...');
+        
+        // Always include core control families
+        const coreFamilies = ['AC', 'AU', 'IA', 'SC', 'IR'];
+        const additionalFamilies = ['CM', 'CP', 'AT', 'CA'];
+        
+        // Filter to include core families + a few additional ones
+        filteredFrameworkData = {
+          ...frameworkData,
+          categories: frameworkData.categories.filter(category => {
+            const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+            return coreFamilies.includes(categoryCode) || 
+                   (additionalFamilies.includes(categoryCode) && Math.random() < 0.5); // 50% chance for additional families
+          })
+        };
+        
+        const filteredControls = countTotalControls(filteredFrameworkData);
+        const reduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
+        console.log(`Smart filtering applied: ${filteredControls}/${totalControls} controls (${reduction}% reduction)`);
+      } else {
+        console.log('Small framework, using all controls for accuracy');
+      }
+    }
+    
+    console.log('Total controls for AI analysis:', countTotalControls(filteredFrameworkData));
 
          const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -1296,82 +1327,34 @@ Does this document contain cybersecurity information?`;
        console.error('AI test failed:', error);
      }
 
-    // Create a comprehensive prompt for AI analysis with filtered control structure
-    const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
+         // Create an optimized prompt for faster AI analysis
+     const prompt = `Analyze this document against ${frameworkName} framework. Use EXACT control structure below.
 
-Document Content:
-${fileContent.substring(0, 8000)}
+Document: ${fileContent.substring(0, 6000)}
 
-Framework: ${frameworkName}
-
-IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
-
-EXACT CONTROL STRUCTURE TO USE:
+Controls to analyze:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
-Your task is to analyze the document content and determine the compliance status for each control. For each control, analyze the document content and determine if the control is:
-- "covered": Fully addressed in the document (clear evidence of implementation)
-- "partial": Partially addressed but needs improvement (some evidence but incomplete)
-- "gap": Not addressed at all (no evidence found)
+For each control, mark as:
+- "covered": Clear evidence of implementation
+- "partial": Some evidence but incomplete  
+- "gap": No evidence found
 
-ANALYSIS INSTRUCTIONS:
-1. Read through the document content carefully
-2. For each control, search for relevant keywords, policies, procedures, or descriptions
-3. Look for specific evidence like:
-   - Policy statements (e.g., "We have a policy that...", "Our policy requires...")
-   - Procedure descriptions (e.g., "The procedure for...", "We follow these steps...")
-   - Implementation details (e.g., "We implement...", "Our system includes...")
-   - Security measures (e.g., "We use firewalls...", "Access is controlled by...")
-   - Training programs (e.g., "Employees receive training...", "We conduct security awareness...")
-   - Monitoring systems (e.g., "We monitor...", "Our system logs...")
-   - Incident response plans (e.g., "In case of incident...", "Our response procedure...")
-   - Access controls (e.g., "User access is managed...", "We control access through...")
-   - Audit procedures (e.g., "We audit...", "Regular reviews are conducted...")
+Look for: policies, procedures, security measures, training, monitoring, access controls.
 
-4. If you find clear evidence of a control being implemented, mark it as "covered"
-5. If you find partial evidence or mentions but not full implementation, mark it as "partial"
-6. If you find no evidence at all, mark it as "gap"
+Return JSON with same structure, only changing status/details/recommendation fields.
 
-EXAMPLE ANALYSIS:
-For a control like "Access Control Policy and Procedures":
-- If document mentions "We have an access control policy that defines user permissions", mark as "covered"
-- If document mentions "Access control is important" but no policy details, mark as "partial"
-- If document has no mention of access control policies, mark as "gap"
+Be thorough but concise. Return valid JSON only.`;
 
-Return your analysis in this exact JSON format, using the EXACT control structure provided:
-{
-  "categories": [
-    {
-      "name": "EXACT_CATEGORY_NAME_FROM_STRUCTURE",
-      "description": "EXACT_CATEGORY_DESCRIPTION_FROM_STRUCTURE", 
-      "results": [
-        {
-          "id": "EXACT_CONTROL_ID_FROM_STRUCTURE",
-          "control": "EXACT_CONTROL_DESCRIPTION_FROM_STRUCTURE",
-          "status": "covered|partial|gap",
-          "details": "Detailed analysis explaining why this status was assigned based on document content. Include specific evidence found or explain why no evidence was found.",
-          "recommendation": "Specific, actionable recommendation to achieve compliance"
-        }
-      ]
-    }
-  ]
-}
-
-CRITICAL REQUIREMENTS:
-- Use EXACTLY the control structure provided above
-- Do not change control IDs, names, or descriptions
-- Only modify the status, details, and recommendation fields
-- Base your analysis on actual content found in the document
-- Be thorough in your analysis - don't default to "gap" without careful consideration
-- If content is insufficient, mark as "gap" with clear guidance
-- Provide actionable recommendations that match the document's context
-- IMPORTANT: Look for ANY evidence, even if it's just a mention or partial implementation
-
-Return only valid JSON, no additional text or formatting.`;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+         // Add timeout to prevent hanging
+     const timeoutPromise = new Promise((_, reject) => {
+       setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 8000); // 8 second timeout
+     });
+     
+     const aiPromise = model.generateContent(prompt);
+     const result = await Promise.race([aiPromise, timeoutPromise]);
+     const response = await result.response;
+     const text = response.text();
     
     console.log('AI Response Text:', text);
     
@@ -1422,172 +1405,29 @@ Return only valid JSON, no additional text or formatting.`;
      }
     
     return parsedResponse;
-  } catch (error) {
-    console.error('AI Analysis Error:', error);
-    console.log('Falling back to predefined control structure');
-    
-    // Get framework data for fallback (either from global or fallback)
-    let fallbackFrameworkData;
-    if (typeof allFrameworks !== 'undefined' && allFrameworks[framework]) {
-      fallbackFrameworkData = allFrameworks[framework];
-    } else {
-      // Use local fallback frameworks
-      const localFallbackFrameworks = {
-        NIST_CSF: {
-          name: "NIST Cybersecurity Framework (CSF) v2.0",
-          description: "National Institute of Standards and Technology Cybersecurity Framework",
-          categories: [
-            {
-              name: "IDENTIFY (ID)",
-              description: "Develop an organizational understanding to manage cybersecurity risk",
-              results: [
-                {
-                  id: "ID.AM-1",
-                  control: "Physical devices and systems within the organization are inventoried",
-                  status: "gap",
-                  details: "Asset inventory not maintained",
-                  recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
-                },
-                {
-                  id: "ID.AM-2",
-                  control: "Software platforms and applications within the organization are inventoried",
-                  status: "gap",
-                  details: "Software inventory not maintained",
-                  recommendation: "Implement software asset management system to track all applications and platforms"
-                }
-              ]
-            }
-          ]
-        },
-                 NIST_800_53: {
-           name: "NIST SP 800-53 Rev. 5",
-           description: "Security and Privacy Controls for Information Systems and Organizations",
-           categories: [
-             {
-               name: "Access Control (AC)",
-               description: "Control access to information systems and resources",
-               results: [
-                 {
-                   id: "AC-1",
-                   control: "Access Control Policy and Procedures",
-                   status: "gap",
-                   details: "Access control policy not established",
-                   recommendation: "Develop and implement comprehensive access control policy and procedures"
-                 },
-                 {
-                   id: "AC-2",
-                   control: "Account Management",
-                   status: "gap",
-                   details: "Account management procedures not implemented",
-                   recommendation: "Establish formal account management procedures for user accounts"
-                 },
-                 {
-                   id: "AC-3",
-                   control: "Access Enforcement",
-                   status: "gap",
-                   details: "Access enforcement mechanisms not implemented",
-                   recommendation: "Implement technical controls to enforce access policies"
-                 },
-                 {
-                   id: "AC-4",
-                   control: "Information Flow Enforcement",
-                   status: "gap",
-                   details: "Information flow controls not implemented",
-                   recommendation: "Implement controls to enforce information flow policies"
-                 },
-                 {
-                   id: "AC-5",
-                   control: "Separation of Duties",
-                   status: "gap",
-                   details: "Separation of duties not implemented",
-                   recommendation: "Implement separation of duties for critical functions"
-                 }
-               ]
-             }
-           ]
-         },
-        ISO_27001: {
-          name: "ISO/IEC 27001:2022",
-          description: "Information Security Management System",
-          categories: [
-            {
-              name: "A.5 Information Security Policies",
-              description: "Information security policy framework",
-              results: [
-                {
-                  id: "A.5.1",
-                  control: "Information security policy",
-                  status: "gap",
-                  details: "Information security policy not established",
-                  recommendation: "Develop and implement comprehensive information security policy"
-                }
-              ]
-            }
-          ]
-        },
-        PCI_DSS: {
-          name: "PCI DSS v4.0",
-          description: "Payment Card Industry Data Security Standard",
-          categories: [
-            {
-              name: "Requirement 1: Network Security Controls",
-              description: "Install and maintain network security controls",
-              results: [
-                {
-                  id: "1.1",
-                  control: "Network security controls",
-                  status: "gap",
-                  details: "Network security controls not implemented",
-                  recommendation: "Implement network security controls including firewalls and segmentation"
-                }
-              ]
-            }
-          ]
-        },
-        SOC_2: {
-          name: "SOC 2 Type II",
-          description: "System and Organization Controls for Service Organizations",
-          categories: [
-            {
-              name: "CC1: Control Environment",
-              description: "Commitment to integrity and ethical values",
-              results: [
-                {
-                  id: "CC1.1",
-                  control: "Commitment to integrity and ethical values",
-                  status: "gap",
-                  details: "Code of conduct not established",
-                  recommendation: "Develop and implement code of conduct and ethical standards"
-                }
-              ]
-            }
-          ]
-        }
-      };
-      fallbackFrameworkData = localFallbackFrameworks[framework];
-    }
-    
-    if (!fallbackFrameworkData) {
-      throw new Error(`Framework ${framework} not supported in fallback mode`);
-    }
-    
-    // Fallback to predefined control structure with default "gap" status
-    const fallbackResult = {
-      categories: fallbackFrameworkData.categories.map(category => ({
-        name: category.name,
-        description: category.description,
-        results: category.results.map(control => ({
-          id: control.id,
-          control: control.control,
-          status: "gap",
-          details: "AI analysis failed. Default status assigned. Please review manually.",
-          recommendation: control.recommendation
-        }))
-      }))
-    };
-    
-    return fallbackResult;
-  }
+     } catch (error) {
+     console.error('AI Analysis Error:', error);
+     console.log('Falling back to predefined control structure');
+     
+     // Use the filtered framework data for fallback
+     const fallbackResult = {
+       categories: filteredFrameworkData.categories.map(category => ({
+         name: category.name,
+         description: category.description,
+         results: category.results.map(control => ({
+           id: control.id,
+           control: control.control,
+           status: "gap",
+           details: error.message.includes('timeout') ? 
+             "AI analysis timed out. Please review manually or try again." : 
+             "AI analysis failed. Default status assigned. Please review manually.",
+           recommendation: control.recommendation
+         }))
+       }))
+     };
+     
+     return fallbackResult;
+   }
 }
 
 // Configure formidable for file uploads
@@ -1688,10 +1528,15 @@ module.exports = async function handler(req, res) {
         return res.status(400).json({ error: 'Unsupported file type.' });
     }
 
-    // Use real AI analysis on extracted text
-    console.log('About to call analyzeWithAI with framework:', framework);
-    const analysisResult = await analyzeWithAI(extractedText, framework);
-    console.log('analyzeWithAI completed successfully');
+         // Use real AI analysis on extracted text with timeout protection
+     console.log('About to call analyzeWithAI with framework:', framework);
+     console.log('Document length:', extractedText.length, 'characters');
+     
+     const analysisStartTime = Date.now();
+     const analysisResult = await analyzeWithAI(extractedText, framework);
+     const analysisTime = Date.now() - analysisStartTime;
+     
+     console.log(`analyzeWithAI completed successfully in ${analysisTime}ms`);
 
     // Return the analysis result
     res.status(200).json({
