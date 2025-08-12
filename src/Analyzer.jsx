@@ -150,8 +150,16 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
                         setGenerationError(`Rate limit exceeded: ${errorData.details} ${errorData.suggestion}`);
                     } else if (errorData.error === 'AI generation timed out') {
                         setGenerationError(`AI generation timed out: ${errorData.details} ${errorData.suggestion}`);
+                    } else if (errorData.error === 'Authentication failed') {
+                        setGenerationError(`Authentication failed: ${errorData.details} ${errorData.suggestion}`);
+                    } else if (errorData.error === 'Google AI service error') {
+                        setGenerationError(`Google AI service error: ${errorData.details} ${errorData.suggestion}`);
+                    } else if (errorData.error === 'Configuration error') {
+                        setGenerationError(`Configuration error: ${errorData.details} ${errorData.suggestion}`);
+                    } else if (errorData.error === 'Service temporarily unavailable') {
+                        setGenerationError(`Service unavailable: ${errorData.details} ${errorData.suggestion}`);
                     } else {
-                        setGenerationError(errorData.error || errorData.details || text || 'Failed to generate text');
+                        setGenerationError(`${errorData.error}: ${errorData.details || ''} ${errorData.suggestion || ''}`.trim());
                     }
                 } catch {
                     // If not JSON, use the raw text
