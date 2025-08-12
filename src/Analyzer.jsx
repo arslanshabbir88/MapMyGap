@@ -269,7 +269,6 @@ function Analyzer({ onNavigateHome }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
-  const [showDebug, setShowDebug] = useState(false);
 
   const { user, supabase } = useAuth();
 
@@ -575,14 +574,8 @@ function Analyzer({ onNavigateHome }) {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
                           <div className="lg:col-span-1 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg self-start sticky top-24">
-                <div className="flex justify-between items-center mb-4">
+                <div className="mb-4">
                   <h2 className="text-lg font-semibold text-white">1. Configuration</h2>
-                  <button
-                    onClick={() => setShowDebug(!showDebug)}
-                    className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded text-slate-300 transition-colors"
-                  >
-                    {showDebug ? 'Hide' : 'Show'} Debug
-                  </button>
                 </div>
               
               <div className="mb-6">
@@ -656,8 +649,7 @@ function Analyzer({ onNavigateHome }) {
                     ))}
                   </div>
                   <div className="mt-2 text-xs text-slate-400">
-                    Selected: {selectedCategories.length} families • 
-                    Estimated cost: ${((selectedCategories.length * 0.002) + 0.01).toFixed(3)} per analysis
+                    Selected: {selectedCategories.length} families
                   </div>
                   {selectedCategories.length === 0 && (
                     <div className="mt-2 text-sm text-red-400">
@@ -696,26 +688,7 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
 
-              {/* Debug Information */}
-              {showDebug && (
-                <div className="mt-6 p-4 bg-slate-900/50 border border-slate-600 rounded-lg">
-                  <h3 className="text-sm font-semibold text-slate-300 mb-3">Debug Information</h3>
-                  <div className="space-y-2 text-xs text-slate-400">
-                    <div><strong>Framework:</strong> {selectedFramework}</div>
-                    <div><strong>File:</strong> {uploadedFile?.name || 'None'}</div>
-                    <div><strong>File Size:</strong> {uploadedFile?.size ? `${(uploadedFile.size / 1024).toFixed(1)} KB` : 'N/A'}</div>
-                    <div><strong>Content Length:</strong> {fileContent ? `${fileContent.length} characters` : 'N/A'}</div>
-                    {analysisResults && (
-                      <>
-                        <div><strong>Total Categories:</strong> {analysisResults.categories?.length || 0}</div>
-                        <div><strong>Total Controls:</strong> {totalControls}</div>
-                        <div><strong>Filtered Controls:</strong> {filteredResults.reduce((sum, cat) => sum + cat.results.length, 0)}</div>
-                        <div><strong>Score Breakdown:</strong> {analysisResults.summary?.covered || 0} covered, {analysisResults.summary?.partial || 0} partial, {analysisResults.summary?.gaps || 0} gaps</div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )}
+
 
               <button
                 onClick={handleAnalyze}
