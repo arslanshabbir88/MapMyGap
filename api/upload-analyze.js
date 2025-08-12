@@ -1863,27 +1863,50 @@ module.exports = async function handler(req, res) {
     const fileName = file.name;
     const fileExt = fileName.split('.').pop().toLowerCase();
 
-    // Basic text extraction (enhanced version would use proper libraries)
-    switch (fileExt) {
-      case 'txt':
-        // For busboy, we have the file content as a buffer
-        extractedText = file.buffer.toString('utf8');
-        break;
-      case 'docx':
-        // For now, return a message that DOCX processing is available
-        extractedText = `[DOCX Document: ${fileName}] Document content extracted. Analysis will be performed on the extracted text.`;
-        break;
-      case 'pdf':
-        // For now, return a message that PDF processing is available
-        extractedText = `[PDF Document: ${fileName}] Document content extracted. Analysis will be performed on the extracted text.`;
-        break;
-      case 'xlsx':
-      case 'xls':
-        // For now, return a message that Excel processing is available
-        extractedText = `[Excel Document: ${fileName}] Document content extracted. Analysis will be performed on the extracted text.`;
-        break;
-      default:
-        return res.status(400).json({ error: 'Unsupported file type.' });
+    // Real file processing using installed libraries
+    try {
+      switch (fileExt) {
+        case 'txt':
+          // For busboy, we have the file content as a buffer
+          extractedText = file.buffer.toString('utf8');
+          break;
+        case 'docx':
+          // Use mammoth for real DOCX processing
+          const mammoth = require('mammoth');
+          const docxResult = await mammoth.extractRawText({ buffer: file.buffer });
+          extractedText = docxResult.value;
+          break;
+        case 'pdf':
+          // Use pdf-parse for real PDF processing
+          const pdfParse = require('pdf-parse');
+          const pdfResult = await pdfParse(file.buffer);
+          extractedText = pdfResult.text;
+          break;
+        case 'xlsx':
+        case 'xls':
+          // Use xlsx for real Excel processing
+          const XLSX = require('xlsx');
+          const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+          const sheetNames = workbook.SheetNames;
+          const sheets = {};
+          
+          sheetNames.forEach(sheetName => {
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            sheets[sheetName] = jsonData;
+          });
+          
+          // Convert to readable text format
+          extractedText = JSON.stringify(sheets, null, 2);
+          break;
+        default:
+          return res.status(400).json({ error: 'Unsupported file type.' });
+      }
+    } catch (fileError) {
+      console.error('File processing error:', fileError);
+      return res.status(500).json({ 
+        error: `Error processing ${fileExt.toUpperCase()} file: ${fileError.message}` 
+      });
     }
 
          // Use real AI analysis on extracted text with timeout protection
