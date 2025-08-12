@@ -403,6 +403,149 @@ const allFrameworks = {
             recommendation: "Develop comprehensive incident response plan"
           }
         ]
+      },
+      {
+        name: "Configuration Management (CM)",
+        description: "Establish and maintain baseline configurations and inventories",
+        results: [
+          {
+            id: "CM-1",
+            control: "Configuration Management Policy and Procedures",
+            status: "gap",
+            details: "Configuration management policy not established",
+            recommendation: "Develop configuration management policy and procedures"
+          },
+          {
+            id: "CM-2",
+            control: "Baseline Configuration",
+            status: "gap",
+            details: "Baseline configuration not established",
+            recommendation: "Establish and maintain baseline configurations for all systems"
+          },
+          {
+            id: "CM-3",
+            control: "Configuration Change Control",
+            status: "gap",
+            details: "Configuration change control not implemented",
+            recommendation: "Implement configuration change control procedures"
+          },
+          {
+            id: "CM-4",
+            control: "Security Impact Analysis",
+            status: "gap",
+            details: "Security impact analysis not performed",
+            recommendation: "Perform security impact analysis for configuration changes"
+          },
+          {
+            id: "CM-5",
+            control: "Access Restrictions for Change",
+            status: "gap",
+            details: "Access restrictions for changes not implemented",
+            recommendation: "Implement access restrictions for configuration changes"
+          }
+        ]
+      },
+      {
+        name: "Contingency Planning (CP)",
+        description: "Establish, maintain, and implement plans for emergency response",
+        results: [
+          {
+            id: "CP-1",
+            control: "Contingency Planning Policy and Procedures",
+            status: "gap",
+            details: "Contingency planning policy not established",
+            recommendation: "Develop contingency planning policy and procedures"
+          },
+          {
+            id: "CP-2",
+            control: "Contingency Plan",
+            status: "gap",
+            details: "Contingency plan not developed",
+            recommendation: "Develop comprehensive contingency plan"
+          },
+          {
+            id: "CP-3",
+            control: "Contingency Training",
+            status: "gap",
+            details: "Contingency training not implemented",
+            recommendation: "Implement contingency planning training for personnel"
+          },
+          {
+            id: "CP-4",
+            control: "Contingency Plan Testing",
+            status: "gap",
+            details: "Contingency plan testing not implemented",
+            recommendation: "Implement testing of contingency plan effectiveness"
+          }
+        ]
+      },
+      {
+        name: "Awareness and Training (AT)",
+        description: "Ensure personnel are aware of security risks",
+        results: [
+          {
+            id: "AT-1",
+            control: "Awareness and Training Policy and Procedures",
+            status: "gap",
+            details: "Awareness and training policy not established",
+            recommendation: "Develop awareness and training policy and procedures"
+          },
+          {
+            id: "AT-2",
+            control: "Security Awareness Training",
+            status: "gap",
+            details: "Security awareness training not implemented",
+            recommendation: "Implement security awareness training for all personnel"
+          },
+          {
+            id: "AT-3",
+            control: "Role-Based Training",
+            status: "gap",
+            details: "Role-based training not implemented",
+            recommendation: "Implement role-based security training for specific roles"
+          },
+          {
+            id: "AT-4",
+            control: "Training Records",
+            status: "gap",
+            details: "Training records not maintained",
+            recommendation: "Maintain records of security training completion"
+          }
+        ]
+      },
+      {
+        name: "Assessment, Authorization, and Monitoring (CA)",
+        description: "Assess, authorize, and monitor information systems",
+        results: [
+          {
+            id: "CA-1",
+            control: "Assessment, Authorization, and Monitoring Policy and Procedures",
+            status: "gap",
+            details: "Assessment policy not established",
+            recommendation: "Develop assessment, authorization, and monitoring policy"
+          },
+          {
+            id: "CA-2",
+            control: "Security Assessments",
+            status: "gap",
+            details: "Security assessments not performed",
+            recommendation: "Perform regular security assessments of information systems"
+          },
+          {
+            id: "CA-3",
+            control: "System Interconnections",
+            status: "gap",
+            details: "System interconnection controls not implemented",
+            recommendation: "Implement controls for system interconnections"
+          },
+          {
+            id: "CA-4",
+            control: "Security Certification",
+            status: "gap",
+            details: "Security certification not performed",
+            recommendation: "Perform security certification of information systems"
+          }
+        ]
       }
     ]
   },
@@ -620,36 +763,64 @@ async function fetchNISTControls() {
 function parseOSCALToFramework(oscalCatalog) {
   try {
     console.log('Parsing OSCAL catalog to framework structure...');
+    console.log('OSCAL catalog structure:', Object.keys(oscalCatalog));
     
     const controls = [];
     const groups = {};
     
-    // Extract controls from OSCAL catalog
+    // Extract controls from OSCAL catalog - handle different possible structures
+    let controlList = [];
+    
     if (oscalCatalog.controls) {
-      oscalCatalog.controls.forEach(control => {
-        const controlId = control.id;
-        const controlTitle = control.title;
-        const controlDescription = control.description || controlTitle;
-        
-        // Group controls by their category (AC, AU, IA, SC, etc.)
-        const category = controlId.split('-')[0];
-        if (!groups[category]) {
-          groups[category] = {
-            name: getCategoryDisplayName(category),
-            description: getCategoryDescription(category),
-            results: []
-          };
-        }
-        
-        groups[category].results.push({
-          id: controlId,
-          control: controlTitle,
-          status: "gap",
-          details: "Control not yet analyzed",
-          recommendation: `Implement ${controlTitle.toLowerCase()}`
+      controlList = oscalCatalog.controls;
+      console.log('Found controls in oscalCatalog.controls:', controlList.length);
+    } else if (oscalCatalog.catalog && oscalCatalog.catalog.controls) {
+      controlList = oscalCatalog.catalog.controls;
+      console.log('Found controls in oscalCatalog.catalog.controls:', controlList.length);
+    } else if (oscalCatalog.metadata && oscalCatalog.metadata.title) {
+      console.log('OSCAL catalog title:', oscalCatalog.metadata.title);
+      // Try to find controls in other possible locations
+      if (oscalCatalog.groups) {
+        console.log('Found groups structure, processing...');
+        oscalCatalog.groups.forEach(group => {
+          if (group.controls) {
+            controlList = controlList.concat(group.controls);
+          }
         });
-      });
+        console.log('Total controls from groups:', controlList.length);
+      }
     }
+    
+    console.log('Total controls to process:', controlList.length);
+    
+    // Process each control
+    controlList.forEach((control, index) => {
+      if (index < 10) { // Log first 10 controls for debugging
+        console.log(`Control ${index + 1}:`, control.id, control.title);
+      }
+      
+      const controlId = control.id;
+      const controlTitle = control.title;
+      const controlDescription = control.description || controlTitle;
+      
+      // Group controls by their category (AC, AU, IA, SC, etc.)
+      const category = controlId.split('-')[0];
+      if (!groups[category]) {
+        groups[category] = {
+          name: getCategoryDisplayName(category),
+          description: getCategoryDescription(category),
+          results: []
+        };
+      }
+      
+      groups[category].results.push({
+        id: controlId,
+        control: controlTitle,
+        status: "gap",
+        details: "Control not yet analyzed",
+        recommendation: `Implement ${controlTitle.toLowerCase()}`
+      });
+    });
     
     // Convert groups to our framework format
     const framework = {
@@ -658,10 +829,14 @@ function parseOSCALToFramework(oscalCatalog) {
       categories: Object.values(groups)
     };
     
-    console.log('OSCAL parsing completed. Categories:', Object.keys(groups));
+    console.log('OSCAL parsing completed. Categories found:', Object.keys(groups));
+    console.log('Total categories:', Object.keys(groups).length);
+    console.log('Total controls processed:', Object.values(groups).reduce((sum, cat) => sum + cat.results.length, 0));
+    
     return framework;
   } catch (error) {
     console.error('Error parsing OSCAL catalog:', error);
+    console.error('Error details:', error.stack);
     return null;
   }
 }
@@ -687,7 +862,23 @@ function getCategoryDisplayName(category) {
     'AT': 'Awareness and Training (AT)',
     'CA': 'Assessment, Authorization, and Monitoring (CA)',
     'SC': 'System and Communications Protection (SC)',
-    'SI': 'System and Information Integrity (SI)'
+    'SI': 'System and Information Integrity (SI)',
+    'AC': 'Access Control (AC)',
+    'AU': 'Audit and Accountability (AU)',
+    'IA': 'Identification and Authentication (IA)',
+    'IR': 'Incident Response (IR)',
+    'MA': 'Maintenance (MA)',
+    'MP': 'Media Protection (MP)',
+    'PS': 'Personnel Security (PS)',
+    'PE': 'Physical and Environmental Protection (PE)',
+    'PL': 'Planning (PL)',
+    'RA': 'Risk Assessment (RA)',
+    'SA': 'System and Services Acquisition (SA)',
+    'SR': 'Supply Chain Risk Management (SR)',
+    'CM': 'Configuration Management (CM)',
+    'CP': 'Contingency Planning (CP)',
+    'AT': 'Awareness and Training (AT)',
+    'CA': 'Assessment, Authorization, and Monitoring (CA)'
   };
   
   return categoryNames[category] || `${category} Controls`;
@@ -743,6 +934,39 @@ async function refreshNISTControls() {
   } catch (error) {
     console.error('Error refreshing NIST controls:', error);
     return { success: false, error: error.message };
+  }
+}
+
+// Function to get NIST controls status
+async function getNISTControlsStatus() {
+  try {
+    const controls = await fetchNISTControls();
+    if (controls) {
+      return {
+        success: true,
+        source: controls.name.includes('Live') ? 'OSCAL API' : 'Static Fallback',
+        totalCategories: controls.categories.length,
+        totalControls: countTotalControls(controls),
+        categories: controls.categories.map(cat => ({
+          name: cat.name,
+          controlCount: cat.results.length
+        })),
+        cacheStatus: nistControlsCache ? {
+          age: Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60),
+          valid: (Date.now() - nistControlsCacheTime) < CACHE_DURATION
+        } : 'None'
+      };
+    } else {
+      return {
+        success: false,
+        error: 'Failed to fetch NIST controls'
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message
+    };
   }
 }
 
@@ -1247,6 +1471,16 @@ exports.config = {
 };
 
 module.exports = async function handler(req, res) {
+  // Add GET endpoint for testing NIST controls
+  if (req.method === 'GET') {
+    try {
+      const status = await getNISTControlsStatus();
+      return res.status(200).json(status);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
