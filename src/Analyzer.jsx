@@ -622,6 +622,57 @@ function Analyzer({ onNavigateHome }) {
           background: linear-gradient(to right, #1e293b, #1e293b) padding-box,
                       linear-gradient(to right, #38bdf8, #818cf8) border-box;
         }
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #1e293b;
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #374151;
+          border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #4b5563;
+        }
+        
+        /* Enhanced animations and effects */
+        @keyframes slide-up {
+          0% { opacity: 0; transform: translateY(20px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slide-up 0.4s ease-out forwards; }
+        
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.1); }
+          50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.2); }
+        }
+        .pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+        
+        /* Smooth transitions */
+        .transition-all { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .transition-transform { transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* Enhanced hover effects */
+        .hover-lift:hover { transform: translateY(-2px); }
+        .hover-scale:hover { transform: scale(1.02); }
+        
+        /* Glass morphism effects */
+        .glass-effect {
+          background: rgba(30, 41, 59, 0.7);
+          backdrop-filter: blur(20px);
+          border: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        /* Custom focus rings */
+        .focus-ring:focus {
+          outline: none;
+          ring: 2px;
+          ring-color: #3b82f6;
+          ring-offset: 2px;
+          ring-offset-color: #0f172a;
+        }
       `}</style>
                           <DetailModal result={modalData} fileContent={fileContent} selectedFramework={selectedFramework} onClose={() => setModalData(null)} />
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
@@ -660,109 +711,251 @@ function Analyzer({ onNavigateHome }) {
           </div>
         </header>
         
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-                          <div className="lg:col-span-1 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg self-start sticky top-24">
-                <div className="mb-4">
-                  <h2 className="text-lg font-semibold text-white">1. Configuration</h2>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+          {/* Step Indicator */}
+          <div className="mb-6 sm:mb-8">
+            <div className="flex items-center justify-center space-x-2 sm:space-x-4">
+              <div className={`flex items-center space-x-1 sm:space-x-2 ${!uploadedFile ? 'text-blue-400' : 'text-slate-400'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${!uploadedFile ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  1
                 </div>
+                <span className="font-medium text-sm sm:text-base">Configure</span>
+              </div>
+              <div className="w-8 sm:w-16 h-0.5 bg-slate-600"></div>
+              <div className={`flex items-center space-x-1 sm:space-x-2 ${uploadedFile && !analysisResults ? 'text-blue-400' : 'text-slate-400'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${uploadedFile && !analysisResults ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  2
+                </div>
+                <span className="font-medium text-sm sm:text-base">Analyze</span>
+              </div>
+              <div className="w-8 sm:w-16 h-0.5 bg-slate-600"></div>
+              <div className={`flex items-center space-x-1 sm:space-x-2 ${analysisResults ? 'text-blue-400' : 'text-slate-400'}`}>
+                <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-semibold ${analysisResults ? 'bg-blue-500 text-white' : 'bg-slate-700 text-slate-300'}`}>
+                  3
+                </div>
+                <span className="font-medium text-sm sm:text-base">Review</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-5 gap-4 sm:gap-6 lg:gap-8">
+            {/* Left Configuration Panel - 40% width */}
+            <div className="xl:col-span-2 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-4 sm:p-6 rounded-2xl shadow-lg self-start sticky top-24">
+              <div className="mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">Configuration</h2>
+                <p className="text-xs sm:text-sm text-slate-400">Set up your analysis parameters and upload your document</p>
+              </div>
               
               <div className="mb-6">
-                <label htmlFor="framework" className="block text-sm font-medium text-slate-300 mb-2">Select Framework</label>
-                <select 
-                  id="framework" 
-                  value={selectedFramework}
-                  onChange={(e) => { 
-                    setSelectedFramework(e.target.value); 
-                    setAnalysisResults(null);
-                    // Reset categories when framework changes
-                    if (e.target.value === 'NIST_800_53') {
-                      setSelectedCategories(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core families
-                    } else {
-                      setSelectedCategories([]);
-                    }
-                  }}
-                  className="w-full bg-slate-700 border border-slate-600 rounded-lg shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                >
-                  {frameworkOptions.map(opt => <option key={opt.id} value={opt.id} disabled={!opt.enabled}>{opt.name}{!opt.enabled ? ' (Demo disabled)' : ''}</option>)}
-                </select>
+                <label htmlFor="framework" className="block text-sm font-medium text-slate-300 mb-3">Select Framework</label>
+                <div className="relative">
+                  <select 
+                    id="framework" 
+                    value={selectedFramework}
+                    onChange={(e) => { 
+                      setSelectedFramework(e.target.value); 
+                      setAnalysisResults(null);
+                      // Reset categories when framework changes
+                      if (e.target.value === 'NIST_800_53') {
+                        setSelectedCategories(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core families
+                      } else {
+                        setSelectedCategories([]);
+                      }
+                    }}
+                    className="w-full bg-slate-700 border border-slate-600 rounded-lg shadow-sm py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none cursor-pointer hover:border-slate-500"
+                  >
+                    {frameworkOptions.map(opt => (
+                      <option key={opt.id} value={opt.id} disabled={!opt.enabled}>
+                        {opt.name}{!opt.enabled ? ' (Demo disabled)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+                <p className="mt-2 text-xs text-slate-400">
+                  Choose the compliance framework you want to analyze against
+                </p>
               </div>
 
               {/* Control Family Selection for NIST 800-53 */}
               {selectedFramework === 'NIST_800_53' && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Control Families to Analyze
-                    <span className="text-xs text-slate-400 ml-2">
-                      (Select 3-8 families for optimal performance and cost)
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-slate-300">
+                      Control Families to Analyze
+                    </label>
+                    <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
+                      {selectedCategories.length} selected
                     </span>
-                  </label>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50">
-                    {[
-                      { code: 'AC', name: 'Access Control (AC)', description: 'Control access to information systems and resources' },
-                      { code: 'AU', name: 'Audit and Accountability (AU)', description: 'Create, protect, and retain audit records' },
-                      { code: 'IA', name: 'Identification and Authentication (IA)', description: 'Identify and authenticate users and devices' },
-                      { code: 'IR', name: 'Incident Response (IR)', description: 'Respond to and manage security incidents' },
-                      { code: 'SC', name: 'System and Communications Protection (SC)', description: 'Protect system boundaries and communications' },
-                      { code: 'AT', name: 'Awareness and Training (AT)', description: 'Ensure personnel are aware of security responsibilities' },
-                      { code: 'CA', name: 'Assessment, Authorization, and Monitoring (CA)', description: 'Assess and authorize systems' },
-                      { code: 'CM', name: 'Configuration Management (CM)', description: 'Manage system configurations and changes' },
-                      { code: 'CP', name: 'Contingency Planning (CP)', description: 'Plan for system recovery and continuity' },
-                      { code: 'PE', name: 'Physical and Environmental Protection (PE)', description: 'Protect physical assets and environment' },
-                      { code: 'PS', name: 'Personnel Security (PS)', description: 'Ensure personnel are trustworthy and qualified' },
-                      { code: 'MP', name: 'Media Protection (MP)', description: 'Protect and manage media throughout its lifecycle' },
-                      { code: 'SI', name: 'System and Information Integrity (SI)', description: 'Maintain system and information integrity' },
-                      { code: 'MA', name: 'Maintenance (MA)', description: 'Perform system maintenance securely' },
-                      { code: 'RA', name: 'Risk Assessment (RA)', description: 'Assess and manage security risks' },
-                      { code: 'SA', name: 'System and Services Acquisition (SA)', description: 'Acquire systems and services securely' },
-                      { code: 'SR', name: 'Supply Chain Risk Management (SR)', description: 'Manage supply chain risks' }
-                    ].map(family => (
-                      <label key={family.code} className="flex items-start space-x-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(family.code)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedCategories([...selectedCategories, family.code]);
-                            } else {
-                              setSelectedCategories(selectedCategories.filter(c => c !== family.code));
-                            }
-                          }}
-                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
-                        />
-                        <div className="text-sm">
-                          <div className="font-medium text-slate-200">{family.code}</div>
-                          <div className="text-slate-400 text-xs">{family.name}</div>
-                        </div>
-                      </label>
-                    ))}
                   </div>
-                  <div className="mt-2 text-xs text-slate-400">
-                    Selected: {selectedCategories.length} families
+                  
+                  <p className="text-xs text-slate-400 mb-3">
+                    Select 3-8 families for optimal performance and cost savings
+                  </p>
+
+                  {/* Search and Filter */}
+                  <div className="mb-3">
+                    <input
+                      type="text"
+                      placeholder="Search control families..."
+                      className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      onChange={(e) => {
+                        // Add search functionality here if needed
+                      }}
+                    />
                   </div>
-                  {selectedCategories.length === 0 && (
-                    <div className="mt-2 text-sm text-red-400">
-                      Please select at least one control family to analyze.
+
+                  {/* Control Family Grid */}
+                  <div className="max-h-64 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50 custom-scrollbar">
+                    <div className="grid grid-cols-1 gap-2">
+                      {[
+                        { code: 'AC', name: 'Access Control', description: 'Control access to information systems and resources', priority: 'high' },
+                        { code: 'AU', name: 'Audit & Accountability', description: 'Create, protect, and retain audit records', priority: 'high' },
+                        { code: 'IA', name: 'Identification & Authentication', description: 'Identify and authenticate users and devices', priority: 'high' },
+                        { code: 'IR', name: 'Incident Response', description: 'Respond to and manage security incidents', priority: 'high' },
+                        { code: 'SC', name: 'System & Communications Protection', description: 'Protect system boundaries and communications', priority: 'high' },
+                        { code: 'AT', name: 'Awareness & Training', description: 'Ensure personnel are aware of security responsibilities', priority: 'medium' },
+                        { code: 'CA', name: 'Assessment & Authorization', description: 'Assess and authorize systems', priority: 'medium' },
+                        { code: 'CM', name: 'Configuration Management', description: 'Manage system configurations and changes', priority: 'medium' },
+                        { code: 'CP', name: 'Contingency Planning', description: 'Plan for system recovery and continuity', priority: 'medium' },
+                        { code: 'PE', name: 'Physical & Environmental Protection', description: 'Protect physical assets and environment', priority: 'medium' },
+                        { code: 'PS', name: 'Personnel Security', description: 'Ensure personnel are trustworthy and qualified', priority: 'medium' },
+                        { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle', priority: 'low' },
+                        { code: 'SI', name: 'System & Information Integrity', description: 'Maintain system and information integrity', priority: 'medium' },
+                        { code: 'MA', name: 'Maintenance', description: 'Perform system maintenance securely', priority: 'low' },
+                        { code: 'RA', name: 'Risk Assessment', description: 'Assess and manage security risks', priority: 'medium' },
+                        { code: 'SA', name: 'System & Services Acquisition', description: 'Acquire systems and services securely', priority: 'low' },
+                        { code: 'SR', name: 'Supply Chain Risk Management', description: 'Manage supply chain risks', priority: 'low' }
+                      ].map(family => (
+                        <label key={family.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                          <input
+                            type="checkbox"
+                            checked={selectedCategories.includes(family.code)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedCategories([...selectedCategories, family.code]);
+                              } else {
+                                setSelectedCategories(selectedCategories.filter(c => c !== family.code));
+                              }
+                            }}
+                            className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2">
+                              <span className="font-medium text-slate-200">{family.code}</span>
+                              <span className={`text-xs px-2 py-1 rounded-full ${
+                                family.priority === 'high' ? 'bg-red-500/20 text-red-300' :
+                                family.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
+                                'bg-slate-500/20 text-slate-300'
+                              }`}>
+                                {family.priority}
+                              </span>
+                            </div>
+                            <div className="text-slate-400 text-xs mt-1">{family.description}</div>
+                          </div>
+                        </label>
+                      ))}
                     </div>
-                  )}
+                  </div>
+                  
+                  {/* Selection Summary */}
+                  <div className="mt-3 p-3 bg-slate-700/30 rounded-lg border border-slate-600">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-300">Selected families:</span>
+                      <span className="text-blue-400 font-medium">
+                        {selectedCategories.length > 0 ? selectedCategories.join(', ') : 'None'}
+                      </span>
+                    </div>
+                    {selectedCategories.length === 0 && (
+                      <div className="mt-2 text-sm text-red-400 flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        Please select at least one control family to analyze.
+                      </div>
+                    )}
+                    {selectedCategories.length > 8 && (
+                      <div className="mt-2 text-sm text-yellow-400 flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        Consider selecting fewer families for better performance.
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
               
 
-              <div>
-                <label htmlFor="file-upload" className="block text-sm font-medium text-slate-300 mb-2">Upload Standards Document</label>
-                <div className="mt-2 flex justify-center rounded-lg border-2 border-dashed border-slate-600 px-6 py-10 hover:border-blue-500 transition-colors duration-300">
+              <div className="mb-6">
+                <label htmlFor="file-upload" className="block text-sm font-medium text-slate-300 mb-3">Upload Standards Document</label>
+                <div 
+                  className={`mt-2 flex justify-center rounded-lg border-2 border-dashed transition-all duration-300 ${
+                    uploadedFile 
+                      ? 'border-blue-500 bg-blue-500/5' 
+                      : 'border-slate-600 hover:border-blue-500 hover:bg-slate-700/20'
+                  } px-6 py-8`}
+                >
                   <div className="text-center">
-                    <FileUploadIcon />
-                    <div className="mt-4 flex text-sm leading-6 text-slate-400">
-                      <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-semibold text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-blue-300">
-                        <span>Upload a file</span>
-                        <input id="file-upload" name="file-upload" type="file" accept=".txt,.docx,.pdf,.xlsx,.xls" className="sr-only" onChange={handleFileChange} />
-                      </label>
-                      <p className="pl-1">or drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-slate-500">Supported: TXT, DOCX, PDF, XLSX, XLS</p>
+                    {uploadedFile ? (
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mb-3">
+                          <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <p className="text-sm font-medium text-blue-300 mb-1">File Selected</p>
+                        <p className="text-xs text-slate-400 mb-3">{uploadedFile.name}</p>
+                        <button
+                          onClick={() => {
+                            setUploadedFile(null);
+                            setFileContent('');
+                            setError(null);
+                          }}
+                          className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                        >
+                          Remove file
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 bg-slate-600 rounded-full flex items-center justify-center mb-3">
+                          <FileUploadIcon />
+                        </div>
+                        <div className="flex text-sm leading-6 text-slate-400 mb-2">
+                          <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-semibold text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-blue-300 transition-colors">
+                            <span>Upload a file</span>
+                            <input 
+                              id="file-upload" 
+                              name="file-upload" 
+                              type="file" 
+                              accept=".txt,.docx,.pdf,.xlsx,.xls" 
+                              className="sr-only" 
+                              onChange={handleFileChange}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const files = e.dataTransfer.files;
+                                if (files.length > 0) {
+                                  handleFileChange({ target: { files } });
+                                }
+                              }}
+                            />
+                          </label>
+                          <p className="pl-1">or drag and drop</p>
+                        </div>
+                        <p className="text-xs leading-5 text-slate-500">
+                          Supported: TXT, DOCX, PDF, XLSX, XLS
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Max size: 10MB
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -773,17 +966,31 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
                {error && (
-                <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-300">
-                  <strong>Error:</strong> {error}
+                <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+                  <div className="flex items-start space-x-3">
+                    <svg className="w-5 h-5 text-red-400 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-medium text-red-300 mb-1">Analysis Error</h4>
+                      <p className="text-sm text-red-400">{error}</p>
+                    </div>
+                    <button
+                      onClick={() => setError(null)}
+                      className="text-red-400 hover:text-red-300 transition-colors"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               )}
 
-
-
               <button
                 onClick={handleAnalyze}
-                disabled={!uploadedFile || isAnalyzing}
-                className="mt-6 w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 disabled:from-slate-600 disabled:to-slate-600 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300"
+                disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0)}
+                className="w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 disabled:from-slate-600 disabled:to-slate-600 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isAnalyzing ? (
                   <>
@@ -791,55 +998,71 @@ function Analyzer({ onNavigateHome }) {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Analyzing...
+                    <span>Analyzing with AI...</span>
                   </>
-                ) : '2. Analyze for Gaps'}
+                ) : (
+                  <>
+                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                    <span>Analyze for Compliance Gaps</span>
+                  </>
+                )}
               </button>
+              
+              {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
+                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                  <div className="flex items-center space-x-2 text-sm text-yellow-400">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span>Please select at least one control family to analyze</span>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-white">3. Analysis Results</h2>
-                {analysisResults && (
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
-                      className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
-                    >
-                      <DownloadIcon />
-                      JSON
-                    </button>
-                    <button
-                      onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv')}
-                      className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
-                    >
-                      <DownloadIcon />
-                      CSV
-                    </button>
-                  </div>
+            {/* Right Analysis Results Panel - 60% width */}
+            <div className="xl:col-span-3 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-4 sm:p-6 rounded-2xl shadow-lg">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3">
+                <div>
+                  <h2 className="text-lg sm:text-xl font-semibold text-white">Analysis Results</h2>
+                  <p className="text-xs sm:text-sm text-slate-400 mt-1">Review your compliance assessment and identify gaps</p>
+                </div>
+                {user && (
+                  <button
+                    onClick={() => {
+                      setShowHistory(!showHistory);
+                      if (!showHistory) loadAnalysisHistory();
+                    }}
+                    className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 sm:px-4 py-2 rounded-lg hover:bg-slate-700/50 border border-slate-600 hover:border-slate-500 text-sm"
+                  >
+                    <HistoryIcon />
+                    <span className="text-sm">History</span>
+                  </button>
                 )}
               </div>
 
               {/* Search and Filter Controls */}
               {analysisResults && (
-                <div className="mb-6 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
-                  <div className="flex flex-col sm:flex-row gap-4">
+                <div className="mb-6 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                  <div className="flex flex-col lg:flex-row gap-4">
                     <div className="flex-1">
                       <label className="block text-sm font-medium text-slate-300 mb-2">Search Controls</label>
                       <input
                         type="text"
                         placeholder="Search by control ID, name, or description..."
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                       />
                     </div>
-                    <div className="sm:w-48">
+                    <div className="lg:w-48">
                       <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Status</label>
                       <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       >
                         <option value="">All Statuses</option>
                         <option value="covered">Covered</option>
@@ -847,12 +1070,12 @@ function Analyzer({ onNavigateHome }) {
                         <option value="gap">Gaps</option>
                       </select>
                     </div>
-                    <div className="sm:w-48">
+                    <div className="lg:w-48">
                       <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Category</label>
                       <select
                         value={categoryFilter}
                         onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                       >
                         <option value="">All Categories</option>
                         {analysisResults.categories.map(cat => (
@@ -861,19 +1084,27 @@ function Analyzer({ onNavigateHome }) {
                       </select>
                     </div>
                   </div>
-                  <div className="mt-3 flex items-center justify-between text-sm text-slate-400">
-                    <span>
-                      Showing {filteredResults.length} of {totalControls} controls
-                    </span>
+                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="flex items-center space-x-4 text-sm text-slate-400">
+                      <span className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                        <span>Showing {filteredResults.reduce((total, cat) => total + cat.results.length, 0)} of {totalControls} controls</span>
+                      </span>
+                      {(searchTerm || statusFilter || categoryFilter) && (
+                        <span className="text-blue-400">
+                          Filters active
+                        </span>
+                      )}
+                    </div>
                     <button
                       onClick={() => {
                         setSearchTerm('');
                         setStatusFilter('');
                         setCategoryFilter('');
                       }}
-                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                      className="text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 text-sm border border-blue-400/30 rounded-lg hover:bg-blue-400/10"
                     >
-                      Clear Filters
+                      Clear All Filters
                     </button>
                   </div>
                 </div>
@@ -1001,8 +1232,14 @@ function Analyzer({ onNavigateHome }) {
               )}
               {analysisResults && (
                 <div className="space-y-6 animate-fade-in" data-results-section>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">Analysis Results</h3>
+                  {/* Header with Actions */}
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Compliance Summary</h3>
+                      <p className="text-sm text-slate-400 mt-1">
+                        Framework: {selectedFramework} • {frameworkOptions.find(f => f.id === selectedFramework)?.name}
+                      </p>
+                    </div>
                     <div className="flex items-center space-x-3">
                       <button
                         onClick={() => {
@@ -1023,49 +1260,117 @@ function Analyzer({ onNavigateHome }) {
                           View History
                         </button>
                       )}
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
+                          className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
+                        >
+                          <DownloadIcon />
+                          JSON
+                        </button>
+                        <button
+                          onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv')}
+                          className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
+                        >
+                          <DownloadIcon />
+                          CSV
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-4 bg-slate-900/50 rounded-lg gradient-border">
-                      <h3 className="font-semibold text-white">Compliance Summary</h3>
-                      <div className="mt-2 text-sm text-slate-400">
-                        Framework: {selectedFramework} • {frameworkOptions.find(f => f.id === selectedFramework)?.name}
+
+                  {/* Summary Cards */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="p-4 bg-gradient-to-br from-blue-500/10 to-blue-600/10 border border-blue-500/20 rounded-xl shadow-lg">
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-blue-400 mb-1">{analysisResults.summary.score}%</p>
+                        <p className="text-xs font-medium text-blue-300 uppercase tracking-wider">Overall Score</p>
                       </div>
-                      <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                          <div className="p-3 bg-slate-800/70 rounded-lg shadow-inner"><p className="text-2xl font-bold text-blue-400">{analysisResults.summary.score}%</p><p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Score</p></div>
-                          <div className="p-3 bg-slate-800/70 rounded-lg shadow-inner"><p className="text-2xl font-bold text-green-400">{analysisResults.summary.covered}</p><p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Covered</p></div>
-                          <div className="p-3 bg-slate-800/70 rounded-lg shadow-inner"><p className="text-2xl font-bold text-yellow-400">{analysisResults.summary.partial}</p><p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Partial</p></div>
-                          <div className="p-3 bg-slate-800/70 rounded-lg shadow-inner"><p className="text-2xl font-bold text-red-400">{analysisResults.summary.gaps}</p><p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Gaps</p></div>
+                    </div>
+                    <div className="p-4 bg-gradient-to-br from-green-500/10 to-green-600/10 border border-green-500/20 rounded-xl shadow-lg">
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-green-400 mb-1">{analysisResults.summary.covered}</p>
+                        <p className="text-xs font-medium text-green-300 uppercase tracking-wider">Covered</p>
                       </div>
+                    </div>
+                    <div className="p-4 bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/20 rounded-xl shadow-lg">
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-yellow-400 mb-1">{analysisResults.summary.partial}</p>
+                        <p className="text-xs font-medium text-yellow-300 uppercase tracking-wider">Partial</p>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-gradient-to-br from-red-500/10 to-red-600/10 border border-red-500/20 rounded-xl shadow-lg">
+                      <div className="text-center">
+                        <p className="text-3xl font-bold text-red-400 mb-1">{analysisResults.summary.gaps}</p>
+                        <p className="text-xs font-medium text-red-300 uppercase tracking-wider">Gaps</p>
+                      </div>
+                    </div>
                   </div>
 
                   <div className="space-y-4">
                     {filteredResults.length > 0 ? (
                       filteredResults.map(category => (
-                        <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-lg overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
-                          <div className="p-3 border-b border-slate-700">
-                            <h4 className="font-semibold text-white">{category.name}</h4>
+                        <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
+                          <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-700">
+                            <h4 className="font-semibold text-white text-lg mb-1">{category.name}</h4>
                             <p className="text-sm text-slate-400">{category.description}</p>
+                            <div className="mt-2 flex items-center space-x-4 text-xs text-slate-500">
+                              <span className="flex items-center space-x-1">
+                                <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                <span>{category.results.filter(r => r.status === 'covered').length} covered</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                <span>{category.results.filter(r => r.status === 'partial').length} partial</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                                <span>{category.results.filter(r => r.status === 'gap').length} gaps</span>
+                              </span>
+                            </div>
                           </div>
                           <ul className="divide-y divide-slate-700">
                             {category.results.map(result => (
-                              <li key={result.id} onClick={() => setModalData(result)} className="p-3 flex items-center justify-between hover:bg-slate-700/50 cursor-pointer transition-colors">
-                                <div className="flex items-start">
+                              <li key={result.id} onClick={() => setModalData(result)} className="p-4 flex items-center justify-between hover:bg-slate-700/50 cursor-pointer transition-all duration-200 group">
+                                <div className="flex items-start flex-1 min-w-0">
                                     {renderStatusIcon(result.status)}
-                                    <div className="ml-3">
-                                        <p className="text-sm font-medium text-slate-200">{result.id}</p>
-                                        <p className="text-sm text-slate-400">{result.control}</p>
+                                    <div className="ml-3 flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">{result.id}</p>
+                                        <p className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors mt-1 leading-relaxed">{result.control}</p>
                                     </div>
                                 </div>
-                                <span className={`capitalize text-xs font-medium px-2 py-1 rounded-full ${getStatusChipClass(result.status)}`}>{result.status}</span>
+                                <div className="flex items-center space-x-3 ml-4">
+                                  <span className={`capitalize text-xs font-medium px-3 py-1.5 rounded-full border transition-all duration-200 ${getStatusChipClass(result.status)}`}>
+                                    {result.status}
+                                  </span>
+                                  <svg className="w-4 h-4 text-slate-500 group-hover:text-slate-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
+                                </div>
                               </li>
                             ))}
                           </ul>
                         </div>
                       ))
                     ) : (
-                      <div className="text-center py-8 text-slate-400">
-                        <p className="font-medium">No controls match your current filters</p>
-                        <p className="text-sm">Try adjusting your search terms or filters</p>
+                      <div className="text-center py-12 text-slate-400">
+                        <div className="w-16 h-16 bg-slate-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                          </svg>
+                        </div>
+                        <p className="font-medium text-lg mb-2">No controls match your current filters</p>
+                        <p className="text-sm">Try adjusting your search terms or filters to see more results</p>
+                        <button
+                          onClick={() => {
+                            setSearchTerm('');
+                            setStatusFilter('');
+                            setCategoryFilter('');
+                          }}
+                          className="mt-4 text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 text-sm border border-blue-400/30 rounded-lg hover:bg-blue-400/10"
+                        >
+                          Clear All Filters
+                        </button>
                       </div>
                     )}
                   </div>
@@ -1080,3 +1385,4 @@ function Analyzer({ onNavigateHome }) {
 }
 
 export default Analyzer;
+
