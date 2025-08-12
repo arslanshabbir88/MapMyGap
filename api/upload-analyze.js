@@ -1356,16 +1356,31 @@ Be thorough but concise. Return valid JSON only.`;
      const response = await result.response;
      const text = response.text();
     
-    console.log('AI Response Text:', text);
-    
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      throw new Error('Invalid AI response format');
-    }
-    
-    const parsedResponse = JSON.parse(jsonMatch[0]);
-    console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
+         console.log('AI Response Text:', text);
+     console.log('AI Response Length:', text.length);
+     
+     // Check if AI returned an error message
+     if (text.toLowerCase().includes('error') || text.toLowerCase().includes('sorry') || text.toLowerCase().includes('cannot')) {
+       console.error('AI returned an error message:', text);
+       throw new Error(`AI analysis failed: ${text.substring(0, 200)}`);
+     }
+     
+     // Extract JSON from response
+     const jsonMatch = text.match(/\{[\s\S]*\}/);
+     if (!jsonMatch) {
+       console.error('No JSON found in AI response:', text);
+       throw new Error('AI response does not contain valid JSON structure');
+     }
+     
+     let parsedResponse;
+     try {
+       parsedResponse = JSON.parse(jsonMatch[0]);
+       console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
+     } catch (parseError) {
+       console.error('Failed to parse AI JSON response:', parseError);
+       console.error('Raw JSON text:', jsonMatch[0]);
+       throw new Error(`Failed to parse AI JSON response: ${parseError.message}`);
+     }
     
          // Validate that the AI actually changed some statuses
      let gapCount = 0;
@@ -1420,12 +1435,15 @@ Be thorough but concise. Return valid JSON only.`;
            status: "gap",
            details: error.message.includes('timeout') ? 
              "AI analysis timed out. Please review manually or try again." : 
+             error.message.includes('AI analysis failed') ?
+             "AI analysis failed. Please review manually." :
              "AI analysis failed. Default status assigned. Please review manually.",
            recommendation: control.recommendation
          }))
        }))
      };
      
+     console.log('Fallback result created with', fallbackResult.categories.length, 'categories');
      return fallbackResult;
    }
 }

@@ -401,23 +401,54 @@ function Analyzer({ onNavigateHome }) {
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
           console.log('Raw AI response:', rawJson);
+          console.log('Raw response length:', rawJson.length);
           console.log('Selected framework:', selectedFramework);
           
-          let parsedJson = JSON.parse(rawJson);
-          console.log('Parsed JSON structure:', parsedJson);
-          console.log('Type of parsedJson:', typeof parsedJson);
-          console.log('Is Array?', Array.isArray(parsedJson));
-          console.log('First category name:', parsedJson.categories?.[0]?.name);
-          console.log('First control ID:', parsedJson.categories?.[0]?.results?.[0]?.id);
+          // Log the first 500 characters to see the structure
+          console.log('First 500 chars of response:', rawJson.substring(0, 500));
           
-          // Validate the structure and ensure it's an array
+          // Check if the response looks like JSON
+          if (!rawJson.trim().startsWith('{') && !rawJson.trim().startsWith('[')) {
+            console.error('Response does not appear to be JSON:', rawJson);
+            throw new Error('AI response is not in valid JSON format. Please try again.');
+          }
+          
+          let parsedJson;
+          try {
+            parsedJson = JSON.parse(rawJson);
+            console.log('Parsed JSON structure:', parsedJson);
+            console.log('Type of parsedJson:', typeof parsedJson);
+            console.log('Is Array?', Array.isArray(parsedJson));
+            console.log('Has categories property?', parsedJson.hasOwnProperty('categories'));
+            console.log('Categories type:', typeof parsedJson.categories);
+            console.log('Categories is array?', Array.isArray(parsedJson.categories));
+            console.log('First category name:', parsedJson.categories?.[0]?.name);
+            console.log('First control ID:', parsedJson.categories?.[0]?.results?.[0]?.id);
+            
+            // Log the full structure for debugging
+            console.log('Full parsed response keys:', Object.keys(parsedJson));
+            if (parsedJson.categories) {
+              console.log('Categories length:', parsedJson.categories.length);
+              console.log('First category structure:', parsedJson.categories[0]);
+            }
+          } catch (parseError) {
+            console.error('JSON parsing failed:', parseError);
+            console.error('Failed to parse:', rawJson);
+            throw new Error(`Failed to parse AI response: ${parseError.message}`);
+          }
+          
+          // Validate the structure and handle different response formats
           if (!Array.isArray(parsedJson)) {
             // Try to handle different response structures
             if (parsedJson.categories && Array.isArray(parsedJson.categories)) {
               console.log('Found categories in response object, using that instead');
               parsedJson = parsedJson.categories;
+            } else if (parsedJson.categories && !Array.isArray(parsedJson.categories)) {
+              console.log('Found categories object, converting to array format');
+              parsedJson = [parsedJson.categories];
             } else {
-              throw new Error("AI response is not in the expected array format. Please try again.");
+              console.log('Unexpected response structure:', parsedJson);
+              throw new Error("AI response structure is not recognized. Please try again.");
             }
           }
           
