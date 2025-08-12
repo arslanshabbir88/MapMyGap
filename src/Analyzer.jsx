@@ -21,6 +21,7 @@ const ClipboardIcon = () => <Icon path="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3
 const DownloadIcon = () => <Icon path="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" className="w-4 h-4" />;
 const UserIcon = () => <Icon path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" className="w-5 h-5" />;
 const HistoryIcon = () => <Icon path="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" className="w-5 h-5" />;
+const TrashIcon = () => <Icon path="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" className="w-4 h-4" />;
 
 // Helper functions for status rendering
 const renderStatusIcon = (status) => {
@@ -433,6 +434,26 @@ function Analyzer({ onNavigateHome }) {
       await loadAnalysisHistory();
     } catch (err) {
       console.error('Error saving analysis:', err);
+    }
+  };
+
+  const deleteAnalysisFromHistory = async (analysisId) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('analysis_history')
+        .delete()
+        .eq('id', analysisId)
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      
+      // Remove from local state
+      setAnalysisHistory(prev => prev.filter(item => item.id !== analysisId));
+    } catch (err) {
+      console.error('Error deleting analysis:', err);
+      alert('Failed to delete analysis. Please try again.');
     }
   };
 
@@ -1202,6 +1223,17 @@ function Analyzer({ onNavigateHome }) {
                               className="text-blue-400 hover:text-blue-300 text-sm transition-colors px-3 py-1 rounded border border-blue-400/30 hover:bg-blue-400/10"
                             >
                               View
+                            </button>
+                            <button
+                              onClick={() => {
+                                if (confirm('Are you sure you want to delete this analysis? This action cannot be undone.')) {
+                                  deleteAnalysisFromHistory(item.id);
+                                }
+                              }}
+                              className="text-red-400 hover:text-red-300 text-sm transition-colors px-2 py-1 rounded border border-red-400/30 hover:bg-red-400/10"
+                              title="Delete analysis"
+                            >
+                              <TrashIcon />
                             </button>
                           </div>
                         </div>
