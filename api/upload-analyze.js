@@ -1036,12 +1036,15 @@ Focus on families that are clearly addressed or missing in the document content.
 }
 
 // Hybrid analysis function - uses smart filtering + AI analysis
-async function analyzeWithAI(fileContent, framework) {
-  try {
-    console.log('=== SMART ANALYSIS: Starting with filtered controls ===');
-    console.log('allFrameworks type:', typeof allFrameworks);
-    console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
-    console.log('Requested framework:', framework);
+ async function analyzeWithAI(fileContent, framework) {
+   // Declare filteredFrameworkData at function level to ensure it's always available
+   let filteredFrameworkData = { categories: [] };
+   
+   try {
+     console.log('=== SMART ANALYSIS: Starting with filtered controls ===');
+     console.log('allFrameworks type:', typeof allFrameworks);
+     console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
+     console.log('Requested framework:', framework);
     
     // Additional debugging
     console.log('Global allFrameworks reference:', global.allFrameworks);
@@ -1260,7 +1263,7 @@ async function analyzeWithAI(fileContent, framework) {
     }
 
          // SMART FILTERING - Balance between speed and accuracy
-     let filteredFrameworkData = frameworkData || { categories: [] };
+     filteredFrameworkData = frameworkData || { categories: [] };
      console.log('=== APPLYING SMART FILTERING FOR PERFORMANCE ===');
     
     if (framework === 'NIST_800_53') {
@@ -1427,9 +1430,9 @@ Be thorough but concise. Return valid JSON only.`;
      console.error('AI Analysis Error:', error);
      console.log('Falling back to predefined control structure');
      
-     // Ensure filteredFrameworkData is defined for fallback
-     if (!filteredFrameworkData || !filteredFrameworkData.categories) {
-       console.error('filteredFrameworkData is not available for fallback, creating minimal structure');
+     // filteredFrameworkData is already defined at function level, but ensure it has valid content
+     if (!filteredFrameworkData.categories || filteredFrameworkData.categories.length === 0) {
+       console.error('filteredFrameworkData has no valid categories, creating minimal structure');
        filteredFrameworkData = {
          categories: [{
            name: "General Controls",
