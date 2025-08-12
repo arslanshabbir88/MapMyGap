@@ -12,7 +12,7 @@ console.log('Starting to define allFrameworks...');
 console.log('GoogleGenerativeAI loaded:', typeof GoogleGenerativeAI);
 console.log('Busboy loaded:', typeof Busboy);
 
-// Simplified frameworks for testing
+// Comprehensive frameworks with multiple controls
 const allFrameworks = {
   NIST_CSF: {
     name: "NIST Cybersecurity Framework (CSF) v2.0",
@@ -28,6 +28,40 @@ const allFrameworks = {
             status: "gap",
             details: "Asset inventory not maintained",
             recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+          },
+          {
+            id: "ID.AM-2",
+            control: "Software platforms and applications within the organization are inventoried",
+            status: "gap",
+            details: "Software inventory not maintained",
+            recommendation: "Implement software asset management system to track all applications and platforms"
+          },
+          {
+            id: "ID.AM-3",
+            control: "Organizational communication and data flows are mapped",
+            status: "gap",
+            details: "Data flow mapping not documented",
+            recommendation: "Document and map all data flows and communication channels"
+          }
+        ]
+      },
+      {
+        name: "PROTECT (PR)",
+        description: "Develop and implement appropriate safeguards",
+        results: [
+          {
+            id: "PR.AC-1",
+            control: "Identities and credentials are managed for authorized devices and users",
+            status: "gap",
+            details: "Identity management system not implemented",
+            recommendation: "Implement identity and access management (IAM) system"
+          },
+          {
+            id: "PR.AC-2",
+            control: "Physical access to assets is controlled and managed",
+            status: "gap",
+            details: "Physical access controls not implemented",
+            recommendation: "Implement physical security controls and access management"
           }
         ]
       }
@@ -47,6 +81,198 @@ const allFrameworks = {
             status: "gap",
             details: "Access control policy not established",
             recommendation: "Develop and implement comprehensive access control policy and procedures"
+          },
+          {
+            id: "AC-2",
+            control: "Account Management",
+            status: "gap",
+            details: "Account management procedures not implemented",
+            recommendation: "Establish formal account management procedures for user accounts"
+          },
+          {
+            id: "AC-3",
+            control: "Access Enforcement",
+            status: "gap",
+            details: "Access enforcement mechanisms not implemented",
+            recommendation: "Implement technical controls to enforce access policies"
+          }
+        ]
+      },
+      {
+        name: "Audit and Accountability (AU)",
+        description: "Create, protect, and retain information system audit records",
+        results: [
+          {
+            id: "AU-1",
+            control: "Audit and Accountability Policy and Procedures",
+            status: "gap",
+            details: "Audit policy not established",
+            recommendation: "Develop audit and accountability policy and procedures"
+          },
+          {
+            id: "AU-2",
+            control: "Audit Events",
+            status: "gap",
+            details: "Audit events not defined",
+            recommendation: "Define and configure system audit events"
+          }
+        ]
+      }
+    ]
+  },
+  ISO_27001: {
+    name: "ISO/IEC 27001:2022",
+    description: "Information Security Management System",
+    categories: [
+      {
+        name: "A.5 Information Security Policies",
+        description: "Information security policy framework",
+        results: [
+          {
+            id: "A.5.1",
+            control: "Information security policy",
+            status: "gap",
+            details: "Information security policy not established",
+            recommendation: "Develop and implement comprehensive information security policy"
+          },
+          {
+            id: "A.5.2",
+            control: "Information security policy review",
+            status: "gap",
+            details: "Policy review process not implemented",
+            recommendation: "Establish regular policy review and update procedures"
+          }
+        ]
+      },
+      {
+        name: "A.6 Organization of Information Security",
+        description: "Internal organization and external parties",
+        results: [
+          {
+            id: "A.6.1",
+            control: "Internal organization",
+            status: "gap",
+            details: "Security roles and responsibilities not defined",
+            recommendation: "Define clear security roles and responsibilities within organization"
+          },
+          {
+            id: "A.6.2",
+            control: "Mobile device policy",
+            status: "gap",
+            details: "Mobile device policy not established",
+            recommendation: "Develop and implement mobile device security policy"
+          }
+        ]
+      },
+      {
+        name: "A.7 Human Resource Security",
+        description: "Security aspects for employees joining, moving, and leaving",
+        results: [
+          {
+            id: "A.7.1",
+            control: "Screening",
+            status: "gap",
+            details: "Employee screening procedures not implemented",
+            recommendation: "Implement background screening for all employees and contractors"
+          },
+          {
+            id: "A.7.2",
+            control: "Terms and conditions of employment",
+            status: "gap",
+            details: "Security terms not included in employment contracts",
+            recommendation: "Include security responsibilities in employment terms and conditions"
+          }
+        ]
+      }
+    ]
+  },
+  PCI_DSS: {
+    name: "PCI DSS v4.0",
+    description: "Payment Card Industry Data Security Standard",
+    categories: [
+      {
+        name: "Requirement 1: Network Security Controls",
+        description: "Install and maintain network security controls",
+        results: [
+          {
+            id: "1.1",
+            control: "Network security controls",
+            status: "gap",
+            details: "Network security controls not implemented",
+            recommendation: "Implement network security controls including firewalls and segmentation"
+          },
+          {
+            id: "1.2",
+            control: "Network security configuration",
+            status: "gap",
+            details: "Network security configuration not documented",
+            recommendation: "Document and implement secure network configuration standards"
+          }
+        ]
+      },
+      {
+        name: "Requirement 2: Secure Configuration",
+        description: "Apply secure configurations to all system components",
+        results: [
+          {
+            id: "2.1",
+            control: "Secure configuration standards",
+            status: "gap",
+            details: "Configuration standards not established",
+            recommendation: "Develop and implement secure configuration standards for all systems"
+          },
+          {
+            id: "2.2",
+            control: "System component inventory",
+            status: "gap",
+            details: "System inventory not maintained",
+            recommendation: "Maintain comprehensive inventory of all system components"
+          }
+        ]
+      }
+    ]
+  },
+  SOC_2: {
+    name: "SOC 2 Type II",
+    description: "System and Organization Controls for Service Organizations",
+    categories: [
+      {
+        name: "CC1: Control Environment",
+        description: "Commitment to integrity and ethical values",
+        results: [
+          {
+            id: "CC1.1",
+            control: "Commitment to integrity and ethical values",
+            status: "gap",
+            details: "Code of conduct not established",
+            recommendation: "Develop and implement code of conduct and ethical standards"
+          },
+          {
+            id: "CC1.2",
+            control: "Board oversight",
+            status: "gap",
+            details: "Board oversight not established",
+            recommendation: "Establish board oversight of security and compliance activities"
+          }
+        ]
+      },
+      {
+        name: "CC2: Communication and Information",
+        description: "Quality of information and communication",
+        results: [
+          {
+            id: "CC2.1",
+            control: "Information quality",
+            status: "gap",
+            details: "Information quality standards not established",
+            recommendation: "Establish standards for information quality and accuracy"
+          },
+          {
+            id: "CC2.2",
+            control: "Internal communication",
+            status: "gap",
+            details: "Internal communication channels not established",
+            recommendation: "Establish formal internal communication channels for security matters"
           }
         ]
       }
@@ -100,6 +326,13 @@ async function analyzeWithAI(fileContent, framework) {
                   status: "gap",
                   details: "Asset inventory not maintained",
                   recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+                },
+                {
+                  id: "ID.AM-2",
+                  control: "Software platforms and applications within the organization are inventoried",
+                  status: "gap",
+                  details: "Software inventory not maintained",
+                  recommendation: "Implement software asset management system to track all applications and platforms"
                 }
               ]
             }
@@ -119,6 +352,70 @@ async function analyzeWithAI(fileContent, framework) {
                   status: "gap",
                   details: "Access control policy not established",
                   recommendation: "Develop and implement comprehensive access control policy and procedures"
+                },
+                {
+                  id: "AC-2",
+                  control: "Account Management",
+                  status: "gap",
+                  details: "Account management procedures not implemented",
+                  recommendation: "Establish formal account management procedures for user accounts"
+                }
+              ]
+            }
+          ]
+        },
+        ISO_27001: {
+          name: "ISO/IEC 27001:2022",
+          description: "Information Security Management System",
+          categories: [
+            {
+              name: "A.5 Information Security Policies",
+              description: "Information security policy framework",
+              results: [
+                {
+                  id: "A.5.1",
+                  control: "Information security policy",
+                  status: "gap",
+                  details: "Information security policy not established",
+                  recommendation: "Develop and implement comprehensive information security policy"
+                }
+              ]
+            }
+          ]
+        },
+        PCI_DSS: {
+          name: "PCI DSS v4.0",
+          description: "Payment Card Industry Data Security Standard",
+          categories: [
+            {
+              name: "Requirement 1: Network Security Controls",
+              description: "Install and maintain network security controls",
+              results: [
+                {
+                  id: "1.1",
+                  control: "Network security controls",
+                  status: "gap",
+                  details: "Network security controls not implemented",
+                  recommendation: "Implement network security controls including firewalls and segmentation"
+                }
+              ]
+            }
+          ]
+        },
+        SOC_2: {
+          name: "SOC 2 Type II",
+          description: "System and Organization Controls for Service Organizations",
+          categories: [
+            {
+              name: "CC1: Control Environment",
+              description: "Commitment to integrity and ethical values",
+              results: [
+                {
+                  id: "CC1.1",
+                  control: "Commitment to integrity and ethical values",
+                  status: "gap",
+                  details: "Code of conduct not established",
+                  recommendation: "Develop and implement code of conduct and ethical standards"
                 }
               ]
             }
@@ -296,6 +593,13 @@ Return only valid JSON, no additional text or formatting.`;
                   status: "gap",
                   details: "Asset inventory not maintained",
                   recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+                },
+                {
+                  id: "ID.AM-2",
+                  control: "Software platforms and applications within the organization are inventoried",
+                  status: "gap",
+                  details: "Software inventory not maintained",
+                  recommendation: "Implement software asset management system to track all applications and platforms"
                 }
               ]
             }
@@ -315,6 +619,70 @@ Return only valid JSON, no additional text or formatting.`;
                   status: "gap",
                   details: "Access control policy not established",
                   recommendation: "Develop and implement comprehensive access control policy and procedures"
+                },
+                {
+                  id: "AC-2",
+                  control: "Account Management",
+                  status: "gap",
+                  details: "Account management procedures not implemented",
+                  recommendation: "Establish formal account management procedures for user accounts"
+                }
+              ]
+            }
+          ]
+        },
+        ISO_27001: {
+          name: "ISO/IEC 27001:2022",
+          description: "Information Security Management System",
+          categories: [
+            {
+              name: "A.5 Information Security Policies",
+              description: "Information security policy framework",
+              results: [
+                {
+                  id: "A.5.1",
+                  control: "Information security policy",
+                  status: "gap",
+                  details: "Information security policy not established",
+                  recommendation: "Develop and implement comprehensive information security policy"
+                }
+              ]
+            }
+          ]
+        },
+        PCI_DSS: {
+          name: "PCI DSS v4.0",
+          description: "Payment Card Industry Data Security Standard",
+          categories: [
+            {
+              name: "Requirement 1: Network Security Controls",
+              description: "Install and maintain network security controls",
+              results: [
+                {
+                  id: "1.1",
+                  control: "Network security controls",
+                  status: "gap",
+                  details: "Network security controls not implemented",
+                  recommendation: "Implement network security controls including firewalls and segmentation"
+                }
+              ]
+            }
+          ]
+        },
+        SOC_2: {
+          name: "SOC 2 Type II",
+          description: "System and Organization Controls for Service Organizations",
+          categories: [
+            {
+              name: "CC1: Control Environment",
+              description: "Commitment to integrity and ethical values",
+              results: [
+                {
+                  id: "CC1.1",
+                  control: "Commitment to integrity and ethical values",
+                  status: "gap",
+                  details: "Code of conduct not established",
+                  recommendation: "Develop and implement code of conduct and ethical standards"
                 }
               ]
             }
