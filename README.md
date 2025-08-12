@@ -1,6 +1,6 @@
-# AlignIQ - AI-Powered Compliance Analyzer
+# CTRLcheck - AI-Powered Compliance Analyzer
 
-AlignIQ uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
+CTRLcheck uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
 
 ## ✨ Features
 
@@ -18,7 +18,7 @@ AlignIQ uses AI to analyze your internal standards against industry frameworks, 
 
 ```bash
 git clone <your-repo-url>
-cd aligniq-app
+cd ctrlcheck-app
 npm install
 ```
 

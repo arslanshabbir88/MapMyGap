@@ -1,5 +1,5 @@
 @echo off
-echo Starting AlignIQ Development Environment...
+echo Starting CTRLcheck Development Environment...
 echo.
 echo This will start both the API server and the frontend development server.
 echo.
