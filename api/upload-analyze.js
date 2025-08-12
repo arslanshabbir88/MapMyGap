@@ -6,11 +6,20 @@ const Busboy = require('busboy');
 // Initialize Google AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
+// NIST OSCAL API endpoint for live control fetching
+const NIST_OSCAL_URL = 'https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/catalog.json';
+
+// Cache for NIST controls to avoid repeated API calls
+let nistControlsCache = null;
+let nistControlsCacheTime = 0;
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
 // Inline framework control structures to avoid import issues
 console.log('=== FILE LOADING DEBUG ===');
 console.log('Starting to define allFrameworks...');
 console.log('GoogleGenerativeAI loaded:', typeof GoogleGenerativeAI);
 console.log('Busboy loaded:', typeof Busboy);
+console.log('NIST OSCAL URL:', NIST_OSCAL_URL);
 
 // Comprehensive frameworks with multiple controls
 const allFrameworks = {
@@ -95,6 +104,55 @@ const allFrameworks = {
             status: "gap",
             details: "Access enforcement mechanisms not implemented",
             recommendation: "Implement technical controls to enforce access policies"
+          },
+          {
+            id: "AC-4",
+            control: "Information Flow Enforcement",
+            status: "gap",
+            details: "Information flow controls not implemented",
+            recommendation: "Implement controls to enforce information flow policies"
+          },
+          {
+            id: "AC-5",
+            control: "Separation of Duties",
+            status: "gap",
+            details: "Separation of duties not implemented",
+            recommendation: "Implement separation of duties for critical functions"
+          },
+          {
+            id: "AC-6",
+            control: "Least Privilege",
+            status: "gap",
+            details: "Least privilege principle not implemented",
+            recommendation: "Implement least privilege access controls"
+          },
+          {
+            id: "AC-7",
+            control: "Unsuccessful Logon Attempts",
+            status: "gap",
+            details: "Logon attempt limits not configured",
+            recommendation: "Configure limits on unsuccessful logon attempts"
+          },
+          {
+            id: "AC-8",
+            control: "System Use Notification",
+            status: "gap",
+            details: "System use notifications not displayed",
+            recommendation: "Display appropriate system use notifications"
+          },
+          {
+            id: "AC-9",
+            control: "Previous Logon Notification",
+            status: "gap",
+            details: "Previous logon notifications not implemented",
+            recommendation: "Implement notifications for previous logon information"
+          },
+          {
+            id: "AC-10",
+            control: "Concurrent Session Control",
+            status: "gap",
+            details: "Concurrent session limits not implemented",
+            recommendation: "Implement limits on concurrent sessions"
           }
         ]
       },
@@ -115,6 +173,234 @@ const allFrameworks = {
             status: "gap",
             details: "Audit events not defined",
             recommendation: "Define and configure system audit events"
+          },
+          {
+            id: "AU-3",
+            control: "Content of Audit Records",
+            status: "gap",
+            details: "Audit record content not defined",
+            recommendation: "Define required content for audit records"
+          },
+          {
+            id: "AU-4",
+            control: "Audit Storage Capacity",
+            status: "gap",
+            details: "Audit storage capacity not allocated",
+            recommendation: "Allocate sufficient storage capacity for audit records"
+          },
+          {
+            id: "AU-5",
+            control: "Response to Audit Processing Failures",
+            status: "gap",
+            details: "Audit failure response procedures not defined",
+            recommendation: "Define procedures for responding to audit processing failures"
+          },
+          {
+            id: "AU-6",
+            control: "Audit Review, Analysis, and Reporting",
+            status: "gap",
+            details: "Audit review procedures not implemented",
+            recommendation: "Implement procedures for reviewing and analyzing audit records"
+          }
+        ]
+      },
+      {
+        name: "Identification and Authentication (IA)",
+        description: "Identify and authenticate organizational users and processes",
+        results: [
+          {
+            id: "IA-1",
+            control: "Identification and Authentication Policy and Procedures",
+            status: "gap",
+            details: "Identification and authentication policy not established",
+            recommendation: "Develop identification and authentication policy and procedures"
+          },
+          {
+            id: "IA-2",
+            control: "Identification and Authentication (Organizational Users)",
+            status: "gap",
+            details: "Multi-factor authentication not implemented",
+            recommendation: "Implement multi-factor authentication for all users"
+          },
+          {
+            id: "IA-3",
+            control: "Device Identification and Authentication",
+            status: "gap",
+            details: "Device authentication not implemented",
+            recommendation: "Implement device identification and authentication"
+          },
+          {
+            id: "IA-4",
+            control: "Identifier Management",
+            status: "gap",
+            details: "Identifier management procedures not implemented",
+            recommendation: "Implement procedures for managing user identifiers"
+          },
+          {
+            id: "IA-5",
+            control: "Authenticator Management",
+            status: "gap",
+            details: "Authenticator management procedures not implemented",
+            recommendation: "Implement procedures for managing authenticators"
+          },
+          {
+            id: "IA-6",
+            control: "Authenticator Feedback",
+            status: "gap",
+            details: "Authenticator feedback not implemented",
+            recommendation: "Implement feedback mechanisms for authenticators"
+          },
+          {
+            id: "IA-7",
+            control: "Cryptographic Module Authentication",
+            status: "gap",
+            details: "Cryptographic module authentication not implemented",
+            recommendation: "Implement authentication for cryptographic modules"
+          },
+          {
+            id: "IA-8",
+            control: "Identification and Authentication (Non-Organizational Users)",
+            status: "gap",
+            details: "Non-organizational user authentication not implemented",
+            recommendation: "Implement authentication for non-organizational users"
+          }
+        ]
+      },
+      {
+        name: "System and Communications Protection (SC)",
+        description: "Monitor, control, and protect organizational communications",
+        results: [
+          {
+            id: "SC-1",
+            control: "System and Communications Protection Policy and Procedures",
+            status: "gap",
+            details: "System and communications protection policy not established",
+            recommendation: "Develop system and communications protection policy and procedures"
+          },
+          {
+            id: "SC-2",
+            control: "Application Partitioning",
+            status: "gap",
+            details: "Application partitioning not implemented",
+            recommendation: "Implement application partitioning to isolate functions"
+          },
+          {
+            id: "SC-3",
+            control: "Security Function Isolation",
+            status: "gap",
+            details: "Security function isolation not implemented",
+            recommendation: "Implement isolation of security functions from non-security functions"
+          },
+          {
+            id: "SC-4",
+            control: "Information in Shared System Resources",
+            status: "gap",
+            details: "Shared resource protection not implemented",
+            recommendation: "Implement controls to protect information in shared resources"
+          },
+          {
+            id: "SC-5",
+            control: "Denial of Service Protection",
+            status: "gap",
+            details: "Denial of service protection not implemented",
+            recommendation: "Implement controls to protect against denial of service attacks"
+          },
+          {
+            id: "SC-6",
+            control: "Resource Availability",
+            status: "gap",
+            details: "Resource availability controls not implemented",
+            recommendation: "Implement controls to ensure resource availability"
+          },
+          {
+            id: "SC-7",
+            control: "Boundary Protection",
+            status: "gap",
+            details: "Network boundary protection not implemented",
+            recommendation: "Implement network boundary protection controls"
+          },
+          {
+            id: "SC-8",
+            control: "Transmission Confidentiality and Integrity",
+            status: "gap",
+            details: "Transmission protection not implemented",
+            recommendation: "Implement controls to protect transmission confidentiality and integrity"
+          },
+          {
+            id: "SC-9",
+            control: "Transmission Confidentiality",
+            status: "gap",
+            details: "Transmission confidentiality not implemented",
+            recommendation: "Implement controls to ensure transmission confidentiality"
+          },
+          {
+            id: "SC-10",
+            control: "Network Disconnect",
+            status: "gap",
+            details: "Network disconnect capability not implemented",
+            recommendation: "Implement capability to disconnect network connections"
+          }
+        ]
+      },
+      {
+        name: "Incident Response (IR)",
+        description: "Establish an operational incident handling capability",
+        results: [
+          {
+            id: "IR-1",
+            control: "Incident Response Policy and Procedures",
+            status: "gap",
+            details: "Incident response policy not established",
+            recommendation: "Develop incident response policy and procedures"
+          },
+          {
+            id: "IR-2",
+            control: "Incident Response Training",
+            status: "gap",
+            details: "Incident response training not implemented",
+            recommendation: "Implement incident response training for personnel"
+          },
+          {
+            id: "IR-3",
+            control: "Incident Response Testing",
+            status: "gap",
+            details: "Incident response testing not implemented",
+            recommendation: "Implement testing of incident response capabilities"
+          },
+          {
+            id: "IR-4",
+            control: "Incident Handling",
+            status: "gap",
+            details: "Incident handling procedures not implemented",
+            recommendation: "Implement incident handling procedures"
+          },
+          {
+            id: "IR-5",
+            control: "Incident Monitoring",
+            status: "gap",
+            details: "Incident monitoring not implemented",
+            recommendation: "Implement monitoring of incident response activities"
+          },
+          {
+            id: "IR-6",
+            control: "Incident Reporting",
+            status: "gap",
+            details: "Incident reporting procedures not implemented",
+            recommendation: "Implement incident reporting procedures"
+          },
+          {
+            id: "IR-7",
+            control: "Incident Response Assistance",
+            status: "gap",
+            details: "Incident response assistance not available",
+            recommendation: "Provide incident response assistance to users"
+          },
+          {
+            id: "IR-8",
+            control: "Incident Response Plan",
+            status: "gap",
+            details: "Incident response plan not developed",
+            recommendation: "Develop comprehensive incident response plan"
           }
         ]
       }
@@ -291,6 +577,175 @@ console.log('allFrameworks === undefined:', allFrameworks === undefined);
 console.log('allFrameworks === null:', allFrameworks === null);
 console.log('typeof allFrameworks:', typeof allFrameworks);
 
+// Dynamic NIST control fetching functions
+async function fetchNISTControls() {
+  try {
+    console.log('Fetching NIST controls from OSCAL API...');
+    
+    // Check if we have valid cached controls
+    if (nistControlsCache && (Date.now() - nistControlsCacheTime) < CACHE_DURATION) {
+      console.log('Using cached NIST controls (age:', Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60), 'minutes)');
+      return nistControlsCache;
+    }
+    
+    console.log('Cache expired or missing, fetching fresh controls...');
+    
+    // Fetch from NIST OSCAL API
+    const response = await fetch(NIST_OSCAL_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const catalog = await response.json();
+    console.log('Successfully fetched NIST OSCAL catalog');
+    
+    // Parse OSCAL format to our framework structure
+    const parsedControls = parseOSCALToFramework(catalog);
+    
+    // Cache the results
+    nistControlsCache = parsedControls;
+    nistControlsCacheTime = Date.now();
+    
+    console.log('NIST controls parsed and cached successfully');
+    console.log('Total controls fetched:', countTotalControls(parsedControls));
+    
+    return parsedControls;
+  } catch (error) {
+    console.error('Failed to fetch NIST controls from OSCAL API:', error);
+    console.log('Falling back to static NIST controls');
+    return null;
+  }
+}
+
+function parseOSCALToFramework(oscalCatalog) {
+  try {
+    console.log('Parsing OSCAL catalog to framework structure...');
+    
+    const controls = [];
+    const groups = {};
+    
+    // Extract controls from OSCAL catalog
+    if (oscalCatalog.controls) {
+      oscalCatalog.controls.forEach(control => {
+        const controlId = control.id;
+        const controlTitle = control.title;
+        const controlDescription = control.description || controlTitle;
+        
+        // Group controls by their category (AC, AU, IA, SC, etc.)
+        const category = controlId.split('-')[0];
+        if (!groups[category]) {
+          groups[category] = {
+            name: getCategoryDisplayName(category),
+            description: getCategoryDescription(category),
+            results: []
+          };
+        }
+        
+        groups[category].results.push({
+          id: controlId,
+          control: controlTitle,
+          status: "gap",
+          details: "Control not yet analyzed",
+          recommendation: `Implement ${controlTitle.toLowerCase()}`
+        });
+      });
+    }
+    
+    // Convert groups to our framework format
+    const framework = {
+      name: "NIST SP 800-53 Rev. 5 (Live)",
+      description: "Security and Privacy Controls for Information Systems and Organizations - Live from NIST OSCAL",
+      categories: Object.values(groups)
+    };
+    
+    console.log('OSCAL parsing completed. Categories:', Object.keys(groups));
+    return framework;
+  } catch (error) {
+    console.error('Error parsing OSCAL catalog:', error);
+    return null;
+  }
+}
+
+function getCategoryDisplayName(category) {
+  const categoryNames = {
+    'AC': 'Access Control (AC)',
+    'AU': 'Audit and Accountability (AU)',
+    'IA': 'Identification and Authentication (IA)',
+    'SC': 'System and Communications Protection (SC)',
+    'IR': 'Incident Response (IR)',
+    'MA': 'Maintenance (MA)',
+    'MP': 'Media Protection (MP)',
+    'PS': 'Personnel Security (PS)',
+    'PE': 'Physical and Environmental Protection (PE)',
+    'PL': 'Planning (PL)',
+    'RA': 'Risk Assessment (RA)',
+    'SA': 'System and Services Acquisition (SA)',
+    'SR': 'Supply Chain Risk Management (SR)',
+    'SI': 'System and Information Integrity (SI)',
+    'CM': 'Configuration Management (CM)',
+    'CP': 'Contingency Planning (CP)',
+    'AT': 'Awareness and Training (AT)',
+    'CA': 'Assessment, Authorization, and Monitoring (CA)',
+    'SC': 'System and Communications Protection (SC)',
+    'SI': 'System and Information Integrity (SI)'
+  };
+  
+  return categoryNames[category] || `${category} Controls`;
+}
+
+function getCategoryDescription(category) {
+  const categoryDescriptions = {
+    'AC': 'Control access to information systems and resources',
+    'AU': 'Create, protect, and retain information system audit records',
+    'IA': 'Identify and authenticate organizational users and processes',
+    'SC': 'Monitor, control, and protect organizational communications',
+    'IR': 'Establish an operational incident handling capability',
+    'MA': 'Perform periodic and timely maintenance on organizational information systems',
+    'MP': 'Protect the confidentiality, integrity, and availability of information',
+    'PS': 'Ensure that individuals occupying positions of responsibility within organizations are trustworthy',
+    'PE': 'Provide physical and environmental protection for organizational information systems',
+    'PL': 'Develop, document, and periodically update system security plans',
+    'RA': 'Assess the risk and magnitude of harm that could result from unauthorized access',
+    'SA': 'Allocate adequate resources to protect organizational information systems',
+    'SR': 'Manage supply chain risks associated with organizational information systems',
+    'SI': 'Identify, report, and correct information and information system flaws',
+    'CM': 'Establish and maintain baseline configurations and inventories of organizational information systems',
+    'CP': 'Establish, maintain, and effectively implement plans for emergency response',
+    'AT': 'Ensure that managers and users of organizational information systems are made aware of security risks',
+    'CA': 'Assess, authorize, and monitor information systems and associated security controls'
+  };
+  
+  return categoryDescriptions[category] || `Controls for ${category} category`;
+}
+
+function countTotalControls(framework) {
+  if (!framework || !framework.categories) return 0;
+  return framework.categories.reduce((total, category) => {
+    return total + (category.results ? category.results.length : 0);
+  }, 0);
+}
+
+// Function to manually refresh NIST controls cache
+async function refreshNISTControls() {
+  try {
+    console.log('Manually refreshing NIST controls cache...');
+    nistControlsCache = null;
+    nistControlsCacheTime = 0;
+    
+    const freshControls = await fetchNISTControls();
+    if (freshControls) {
+      console.log('NIST controls cache refreshed successfully');
+      return { success: true, controls: freshControls, totalControls: countTotalControls(freshControls) };
+    } else {
+      console.log('Failed to refresh NIST controls cache');
+      return { success: false, error: 'Failed to fetch fresh controls' };
+    }
+  } catch (error) {
+    console.error('Error refreshing NIST controls:', error);
+    return { success: false, error: error.message };
+  }
+}
+
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
@@ -359,6 +814,27 @@ async function analyzeWithAI(fileContent, framework) {
                   status: "gap",
                   details: "Account management procedures not implemented",
                   recommendation: "Establish formal account management procedures for user accounts"
+                },
+                {
+                  id: "AC-3",
+                  control: "Access Enforcement",
+                  status: "gap",
+                  details: "Access enforcement mechanisms not implemented",
+                  recommendation: "Implement technical controls to enforce access policies"
+                },
+                {
+                  id: "AC-4",
+                  control: "Information Flow Enforcement",
+                  status: "gap",
+                  details: "Information flow controls not implemented",
+                  recommendation: "Implement controls to enforce information flow policies"
+                },
+                {
+                  id: "AC-5",
+                  control: "Separation of Duties",
+                  status: "gap",
+                  details: "Separation of duties not implemented",
+                  recommendation: "Implement separation of duties for critical functions"
                 }
               ]
             }
@@ -453,7 +929,23 @@ async function analyzeWithAI(fileContent, framework) {
     let frameworkData;
     try {
       console.log('Attempting to access allFrameworks[framework]...');
-      frameworkData = allFrameworks[framework];
+      
+      // Special handling for NIST 800-53 - try to fetch live controls first
+      if (framework === 'NIST_800_53') {
+        console.log('NIST 800-53 detected, attempting to fetch live controls...');
+        const liveNISTControls = await fetchNISTControls();
+        
+        if (liveNISTControls) {
+          console.log('Using live NIST controls from OSCAL API');
+          frameworkData = liveNISTControls;
+        } else {
+          console.log('Live controls failed, using static NIST controls');
+          frameworkData = allFrameworks[framework];
+        }
+      } else {
+        frameworkData = allFrameworks[framework];
+      }
+      
       console.log('Successfully accessed framework data:', frameworkData ? 'exists' : 'undefined');
     } catch (error) {
       console.error('Error accessing allFrameworks[framework]:', error);
@@ -466,6 +958,17 @@ async function analyzeWithAI(fileContent, framework) {
     
     console.log('Framework data found:', frameworkData.name);
     console.log('Number of categories:', frameworkData.categories.length);
+    
+    // Log detailed framework statistics
+    const totalControls = countTotalControls(frameworkData);
+    console.log('Total controls in framework:', totalControls);
+    
+    if (framework === 'NIST_800_53') {
+      console.log('=== NIST 800-53 STATISTICS ===');
+      console.log('Framework source:', frameworkData.name.includes('Live') ? 'OSCAL API (Live)' : 'Static Controls');
+      console.log('Categories available:', frameworkData.categories.map(cat => `${cat.name} (${cat.results.length} controls)`).join(', '));
+      console.log('Cache status:', nistControlsCache ? `Valid (age: ${Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60)} minutes)` : 'None');
+    }
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -605,32 +1108,53 @@ Return only valid JSON, no additional text or formatting.`;
             }
           ]
         },
-        NIST_800_53: {
-          name: "NIST SP 800-53 Rev. 5",
-          description: "Security and Privacy Controls for Information Systems and Organizations",
-          categories: [
-            {
-              name: "Access Control (AC)",
-              description: "Control access to information systems and resources",
-              results: [
-                {
-                  id: "AC-1",
-                  control: "Access Control Policy and Procedures",
-                  status: "gap",
-                  details: "Access control policy not established",
-                  recommendation: "Develop and implement comprehensive access control policy and procedures"
-                },
-                {
-                  id: "AC-2",
-                  control: "Account Management",
-                  status: "gap",
-                  details: "Account management procedures not implemented",
-                  recommendation: "Establish formal account management procedures for user accounts"
-                }
-              ]
-            }
-          ]
-        },
+                 NIST_800_53: {
+           name: "NIST SP 800-53 Rev. 5",
+           description: "Security and Privacy Controls for Information Systems and Organizations",
+           categories: [
+             {
+               name: "Access Control (AC)",
+               description: "Control access to information systems and resources",
+               results: [
+                 {
+                   id: "AC-1",
+                   control: "Access Control Policy and Procedures",
+                   status: "gap",
+                   details: "Access control policy not established",
+                   recommendation: "Develop and implement comprehensive access control policy and procedures"
+                 },
+                 {
+                   id: "AC-2",
+                   control: "Account Management",
+                   status: "gap",
+                   details: "Account management procedures not implemented",
+                   recommendation: "Establish formal account management procedures for user accounts"
+                 },
+                 {
+                   id: "AC-3",
+                   control: "Access Enforcement",
+                   status: "gap",
+                   details: "Access enforcement mechanisms not implemented",
+                   recommendation: "Implement technical controls to enforce access policies"
+                 },
+                 {
+                   id: "AC-4",
+                   control: "Information Flow Enforcement",
+                   status: "gap",
+                   details: "Information flow controls not implemented",
+                   recommendation: "Implement controls to enforce information flow policies"
+                 },
+                 {
+                   id: "AC-5",
+                   control: "Separation of Duties",
+                   status: "gap",
+                   details: "Separation of duties not implemented",
+                   recommendation: "Implement separation of duties for critical functions"
+                 }
+               ]
+             }
+           ]
+         },
         ISO_27001: {
           name: "ISO/IEC 27001:2022",
           description: "Information Security Management System",
