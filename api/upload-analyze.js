@@ -1047,169 +1047,172 @@ async function analyzeWithAI(fileContent, framework) {
     console.log('Global allFrameworks reference:', global.allFrameworks);
     console.log('This context allFrameworks:', this ? this.allFrameworks : 'no this context');
     
-    // Check if allFrameworks is accessible
-    if (typeof allFrameworks === 'undefined') {
-      console.log('allFrameworks is undefined, using fallback frameworks...');
-      
-      // Use fallback frameworks when global ones are not accessible
-      const fallbackFrameworks = {
-        NIST_CSF: {
-          name: "NIST Cybersecurity Framework (CSF) v2.0",
-          description: "National Institute of Standards and Technology Cybersecurity Framework",
-          categories: [
-            {
-              name: "IDENTIFY (ID)",
-              description: "Develop an organizational understanding to manage cybersecurity risk",
-              results: [
-                {
-                  id: "ID.AM-1",
-                  control: "Physical devices and systems within the organization are inventoried",
-                  status: "gap",
-                  details: "Asset inventory not maintained",
-                  recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
-                },
-                {
-                  id: "ID.AM-2",
-                  control: "Software platforms and applications within the organization are inventoried",
-                  status: "gap",
-                  details: "Software inventory not maintained",
-                  recommendation: "Implement software asset management system to track all applications and platforms"
-                }
-              ]
-            }
-          ]
-        },
-        NIST_800_53: {
-          name: "NIST SP 800-53 Rev. 5",
-          description: "Security and Privacy Controls for Information Systems and Organizations",
-          categories: [
-            {
-              name: "Access Control (AC)",
-              description: "Control access to information systems and resources",
-              results: [
-                {
-                  id: "AC-1",
-                  control: "Access Control Policy and Procedures",
-                  status: "gap",
-                  details: "Access control policy not established",
-                  recommendation: "Develop and implement comprehensive access control policy and procedures"
-                },
-                {
-                  id: "AC-2",
-                  control: "Account Management",
-                  status: "gap",
-                  details: "Account management procedures not implemented",
-                  recommendation: "Establish formal account management procedures for user accounts"
-                },
-                {
-                  id: "AC-3",
-                  control: "Access Enforcement",
-                  status: "gap",
-                  details: "Access enforcement mechanisms not implemented",
-                  recommendation: "Implement technical controls to enforce access policies"
-                },
-                {
-                  id: "AC-4",
-                  control: "Information Flow Enforcement",
-                  status: "gap",
-                  details: "Information flow controls not implemented",
-                  recommendation: "Implement controls to enforce information flow policies"
-                },
-                {
-                  id: "AC-5",
-                  control: "Separation of Duties",
-                  status: "gap",
-                  details: "Separation of duties not implemented",
-                  recommendation: "Implement separation of duties for critical functions"
-                }
-              ]
-            }
-          ]
-        },
-        ISO_27001: {
-          name: "ISO/IEC 27001:2022",
-          description: "Information Security Management System",
-          categories: [
-            {
-              name: "A.5 Information Security Policies",
-              description: "Information security policy framework",
-              results: [
-                {
-                  id: "A.5.1",
-                  control: "Information security policy",
-                  status: "gap",
-                  details: "Information security policy not established",
-                  recommendation: "Develop and implement comprehensive information security policy"
-                }
-              ]
-            }
-          ]
-        },
-        PCI_DSS: {
-          name: "PCI DSS v4.0",
-          description: "Payment Card Industry Data Security Standard",
-          categories: [
-            {
-              name: "Requirement 1: Network Security Controls",
-              description: "Install and maintain network security controls",
-              results: [
-                {
-                  id: "1.1",
-                  control: "Network security controls",
-                  status: "gap",
-                  details: "Network security controls not implemented",
-                  recommendation: "Implement network security controls including firewalls and segmentation"
-                }
-              ]
-            }
-          ]
-        },
-        SOC_2: {
-          name: "SOC 2 Type II",
-          description: "System and Organization Controls for Service Organizations",
-          categories: [
-            {
-              name: "CC1: Control Environment",
-              description: "Commitment to integrity and ethical values",
-              results: [
-                {
-                  id: "CC1.1",
-                  control: "Commitment to integrity and ethical values",
-                  status: "gap",
-                  details: "Code of conduct not established",
-                  recommendation: "Develop and implement code of conduct and ethical standards"
-                }
-              ]
-            }
-          ]
-        }
-      };
-      
-      console.log('Fallback frameworks defined. Keys:', Object.keys(fallbackFrameworks));
-      const frameworkData = fallbackFrameworks[framework];
-      
-      if (!frameworkData) {
-        throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(fallbackFrameworks).join(', ')}`);
-      }
-      
-      console.log('Using fallback frameworks. Framework data found:', frameworkData.name);
-      console.log('Number of categories:', frameworkData.categories.length);
-      
-      // Return the fallback framework data
-      return {
-        categories: frameworkData.categories.map(category => ({
-          name: category.name,
-          description: category.description,
-          results: category.results.map(control => ({
-            id: control.id,
-            control: control.control,
-            status: "gap",
-            details: "Using fallback framework data. Please review manually.",
-            recommendation: control.recommendation
-          }))
-        }))
-      };
-    }
+         // Check if allFrameworks is accessible
+     if (typeof allFrameworks === 'undefined') {
+       console.log('allFrameworks is undefined, using fallback frameworks...');
+       
+       // Use fallback frameworks when global ones are not accessible
+       const fallbackFrameworks = {
+         NIST_CSF: {
+           name: "NIST Cybersecurity Framework (CSF) v2.0",
+           description: "National Institute of Standards and Technology Cybersecurity Framework",
+           categories: [
+             {
+               name: "IDENTIFY (ID)",
+               description: "Develop an organizational understanding to manage cybersecurity risk",
+               results: [
+                 {
+                   id: "ID.AM-1",
+                   control: "Physical devices and systems within the organization are inventoried",
+                   status: "gap",
+                   details: "Asset inventory not maintained",
+                   recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+                 },
+                 {
+                   id: "ID.AM-2",
+                   control: "Software platforms and applications within the organization are inventoried",
+                   status: "gap",
+                   details: "Software inventory not maintained",
+                   recommendation: "Implement software asset management system to track all applications and platforms"
+                 }
+               ]
+             }
+           ]
+         },
+         NIST_800_53: {
+           name: "NIST SP 800-53 Rev. 5",
+           description: "Security and Privacy Controls for Information Systems and Organizations",
+           categories: [
+             {
+               name: "Access Control (AC)",
+               description: "Control access to information systems and resources",
+               results: [
+                 {
+                   id: "AC-1",
+                   control: "Access Control Policy and Procedures",
+                   status: "gap",
+                   details: "Access control policy not established",
+                   recommendation: "Develop and implement comprehensive access control policy and procedures"
+                 },
+                 {
+                   id: "AC-2",
+                   control: "Account Management",
+                   status: "gap",
+                   details: "Account management procedures not implemented",
+                   recommendation: "Establish formal account management procedures for user accounts"
+                 },
+                 {
+                   id: "AC-3",
+                   control: "Access Enforcement",
+                   status: "gap",
+                   details: "Access enforcement mechanisms not implemented",
+                   recommendation: "Implement technical controls to enforce access policies"
+                 },
+                 {
+                   id: "AC-4",
+                   control: "Information Flow Enforcement",
+                   status: "gap",
+                   details: "Information flow controls not implemented",
+                   recommendation: "Implement controls to enforce information flow policies"
+                 },
+                 {
+                   id: "AC-5",
+                   control: "Separation of Duties",
+                   status: "gap",
+                   details: "Separation of duties not implemented",
+                   recommendation: "Implement separation of duties for critical functions"
+                 }
+               ]
+             }
+           ]
+         },
+         ISO_27001: {
+           name: "ISO/IEC 27001:2022",
+           description: "Information Security Management System",
+           categories: [
+             {
+               name: "A.5 Information Security Policies",
+               description: "Information security policy framework",
+               results: [
+                 {
+                   id: "A.5.1",
+                   control: "Information security policy",
+                   status: "gap",
+                   details: "Information security policy not established",
+                   recommendation: "Develop and implement comprehensive information security policy"
+                 }
+               ]
+             }
+           ]
+         },
+         PCI_DSS: {
+           name: "PCI DSS v4.0",
+           description: "Payment Card Industry Data Security Standard",
+           categories: [
+             {
+               name: "Requirement 1: Network Security Controls",
+               description: "Install and maintain network security controls",
+               results: [
+                 {
+                   id: "1.1",
+                   control: "Network security controls",
+                   status: "gap",
+                   details: "Network security controls not implemented",
+                   recommendation: "Implement network security controls including firewalls and segmentation"
+                 }
+               ]
+             }
+           ]
+         },
+         SOC_2: {
+           name: "SOC 2 Type II",
+           description: "System and Organization Controls for Service Organizations",
+           categories: [
+             {
+               name: "CC1: Control Environment",
+               description: "Commitment to integrity and ethical values",
+               results: [
+                 {
+                   id: "CC1.1",
+                   control: "Commitment to integrity and ethical values",
+                   status: "gap",
+                   details: "Code of conduct not established",
+                   recommendation: "Develop and implement code of conduct and ethical standards"
+                 }
+               ]
+             }
+           ]
+         }
+       };
+       
+       console.log('Fallback frameworks defined. Keys:', Object.keys(fallbackFrameworks));
+       const frameworkData = fallbackFrameworks[framework];
+       
+       if (!frameworkData) {
+         throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(fallbackFrameworks).join(', ')}`);
+       }
+       
+       console.log('Using fallback frameworks. Framework data found:', frameworkData.name);
+       console.log('Number of categories:', frameworkData.categories.length);
+       
+       // Set filteredFrameworkData for consistency
+       filteredFrameworkData = frameworkData;
+       
+       // Return the fallback framework data
+       return {
+         categories: frameworkData.categories.map(category => ({
+           name: category.name,
+           description: category.description,
+           results: category.results.map(control => ({
+             id: control.id,
+             control: control.control,
+             status: "gap",
+             details: "Using fallback framework data. Please review manually.",
+             recommendation: control.recommendation
+           }))
+         }))
+       };
+     }
     
     // Get predefined control structure for the framework
     let frameworkData;
@@ -1256,9 +1259,9 @@ async function analyzeWithAI(fileContent, framework) {
       console.log('Cache status:', nistControlsCache ? `Valid (age: ${Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60)} minutes)` : 'None');
     }
 
-    // SMART FILTERING - Balance between speed and accuracy
-    let filteredFrameworkData = frameworkData;
-    console.log('=== APPLYING SMART FILTERING FOR PERFORMANCE ===');
+         // SMART FILTERING - Balance between speed and accuracy
+     let filteredFrameworkData = frameworkData || { categories: [] };
+     console.log('=== APPLYING SMART FILTERING FOR PERFORMANCE ===');
     
     if (framework === 'NIST_800_53') {
       // For NIST 800-53, use intelligent filtering to reduce AI processing time
@@ -1423,6 +1426,24 @@ Be thorough but concise. Return valid JSON only.`;
      } catch (error) {
      console.error('AI Analysis Error:', error);
      console.log('Falling back to predefined control structure');
+     
+     // Ensure filteredFrameworkData is defined for fallback
+     if (!filteredFrameworkData || !filteredFrameworkData.categories) {
+       console.error('filteredFrameworkData is not available for fallback, creating minimal structure');
+       filteredFrameworkData = {
+         categories: [{
+           name: "General Controls",
+           description: "Basic security controls",
+           results: [{
+             id: "GEN-1",
+             control: "Basic Security Control",
+             status: "gap",
+             details: "AI analysis failed and no framework data available. Please review manually.",
+             recommendation: "Implement basic security controls based on your organization's needs."
+           }]
+         }]
+       };
+     }
      
      // Use the filtered framework data for fallback
      const fallbackResult = {
