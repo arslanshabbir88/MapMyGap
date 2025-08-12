@@ -126,6 +126,9 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
             setGenerationError('');
             setGeneratedText('');
             setIsGenerating(true);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+            
             const resp = await fetch('/api/generate-control-text', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -133,8 +136,11 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
                     originalDocument: fileContent,
                     targetControl: result.control,
                     framework: selectedFramework
-                })
+                }),
+                signal: controller.signal
             });
+            
+            clearTimeout(timeoutId);
             if (!resp.ok) {
                 const text = await resp.text();
                 try {
@@ -142,6 +148,8 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
                     const errorData = JSON.parse(text);
                     if (errorData.error === 'API rate limit exceeded') {
                         setGenerationError(`Rate limit exceeded: ${errorData.details} ${errorData.suggestion}`);
+                    } else if (errorData.error === 'AI generation timed out') {
+                        setGenerationError(`AI generation timed out: ${errorData.details} ${errorData.suggestion}`);
                     } else {
                         setGenerationError(errorData.error || errorData.details || text || 'Failed to generate text');
                     }
@@ -154,7 +162,11 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
             const data = await resp.json();
             setGeneratedText(data.generatedText || '');
         } catch (err) {
-            setGenerationError(err.message || 'Generation failed');
+            if (err.name === 'AbortError') {
+                setGenerationError('Request timed out. Please try again or review manually.');
+            } else {
+                setGenerationError(err.message || 'Generation failed');
+            }
         } finally {
             setIsGenerating(false);
         }

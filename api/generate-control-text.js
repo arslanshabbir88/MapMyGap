@@ -36,7 +36,13 @@ Instructions:
 
 Return only the generated policy text, no additional formatting or explanations.`;
 
-    const result = await model.generateContent(prompt);
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 15000); // 15 second timeout
+    });
+    
+    const aiPromise = model.generateContent(prompt);
+    const result = await Promise.race([aiPromise, timeoutPromise]);
     const response = await result.response;
     const generatedText = response.text();
 
@@ -46,6 +52,15 @@ Return only the generated policy text, no additional formatting or explanations.
 
   } catch (error) {
     console.error('Error in /generate-control-text:', error);
+    
+    // Handle timeout errors specifically
+    if (error.message && error.message.includes('timeout')) {
+      return res.status(408).json({ 
+        error: 'AI generation timed out',
+        details: 'The AI analysis is taking too long. Please try again or review manually.',
+        suggestion: 'Try again with a shorter document or different control'
+      });
+    }
     
     // Handle rate limit errors specifically
     if (error.message && error.message.includes('429') || error.message.includes('quota')) {
