@@ -250,6 +250,7 @@ function Analyzer({ onNavigateHome }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
+  const [selectedControlFamilies, setSelectedControlFamilies] = useState([]);
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -351,6 +352,11 @@ function Analyzer({ onNavigateHome }) {
         const form = new FormData();
         form.append('file', uploadedFile);
         form.append('framework', selectedFramework);
+        
+        // Add selected control families for NIST 800-53
+        if (selectedFramework === 'NIST_800_53' && selectedControlFamilies.length > 0) {
+          form.append('selectedFamilies', JSON.stringify(selectedControlFamilies));
+        }
         const response = await fetch('/api/upload-analyze', { method: 'POST', body: form });
         if (!response.ok) {
           const errorText = await response.text();
@@ -501,12 +507,67 @@ function Analyzer({ onNavigateHome }) {
                 <select 
                   id="framework" 
                   value={selectedFramework}
-                  onChange={(e) => { setSelectedFramework(e.target.value); setAnalysisResults(null); }}
+                  onChange={(e) => { setSelectedFramework(e.target.value); setAnalysisResults(null); setSelectedControlFamilies([]); }}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 >
                   {frameworkOptions.map(opt => <option key={opt.id} value={opt.id} disabled={!opt.enabled}>{opt.name}{!opt.enabled ? ' (Demo disabled)' : ''}</option>)}
                 </select>
               </div>
+
+              {/* Control Family Selection for NIST 800-53 */}
+              {selectedFramework === 'NIST_800_53' && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Select Control Families (Optional)
+                    <span className="text-xs text-slate-500 ml-2">Leave empty for smart auto-selection</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                    {[
+                      { code: 'AC', name: 'Access Control', desc: 'User access & authentication' },
+                      { code: 'AU', name: 'Audit & Accountability', desc: 'Logging & monitoring' },
+                      { code: 'IA', name: 'Identification & Auth', desc: 'User identity & MFA' },
+                      { code: 'SC', name: 'System Protection', desc: 'Network security & encryption' },
+                      { code: 'IR', name: 'Incident Response', desc: 'Security incidents & procedures' },
+                      { code: 'CM', name: 'Configuration Mgmt', desc: 'System configs & changes' },
+                      { code: 'CP', name: 'Contingency Planning', desc: 'Business continuity' },
+                      { code: 'AT', name: 'Awareness & Training', desc: 'Security training' },
+                      { code: 'CA', name: 'Assessment & Monitoring', desc: 'Security assessments' },
+                      { code: 'PE', name: 'Physical Security', desc: 'Facilities & environment' },
+                      { code: 'PS', name: 'Personnel Security', desc: 'Employee screening' },
+                      { code: 'MP', name: 'Media Protection', desc: 'Data storage & media' },
+                      { code: 'SI', name: 'System Integrity', desc: 'Malware protection & updates' },
+                      { code: 'MA', name: 'Maintenance', desc: 'System maintenance & patches' },
+                      { code: 'RA', name: 'Risk Assessment', desc: 'Risk analysis & threats' },
+                      { code: 'SA', name: 'System Acquisition', desc: 'Procurement & vendors' },
+                      { code: 'SR', name: 'Supply Chain Risk', desc: 'Third-party risk' }
+                    ].map(family => (
+                      <label key={family.code} className="flex items-start space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedControlFamilies.includes(family.code)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedControlFamilies([...selectedControlFamilies, family.code]);
+                            } else {
+                              setSelectedControlFamilies(selectedControlFamilies.filter(f => f !== family.code));
+                            }
+                          }}
+                          className="mt-1 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500 focus:ring-offset-slate-900"
+                        />
+                        <div className="text-xs">
+                          <div className="font-medium text-slate-300">{family.code}</div>
+                          <div className="text-slate-500">{family.name}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                  {selectedControlFamilies.length > 0 && (
+                    <div className="mt-2 text-xs text-blue-400">
+                      Selected: {selectedControlFamilies.join(', ')} ({selectedControlFamilies.length} families)
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div>
                 <label htmlFor="file-upload" className="block text-sm font-medium text-slate-300 mb-2">Upload Standards Document</label>

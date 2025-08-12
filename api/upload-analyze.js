@@ -970,16 +970,78 @@ async function getNISTControlsStatus() {
   }
 }
 
-// Hybrid analysis function - uses predefined controls + AI analysis
+// Smart filtering function - identifies relevant control families based on document content
+async function identifyRelevantControls(fileContent, framework) {
+  try {
+    console.log('=== SMART FILTERING: Identifying relevant controls ===');
+    
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    // First, do a high-level content analysis to identify relevant areas
+    const contentAnalysisPrompt = `Analyze this document content and identify which cybersecurity control families are most relevant.
+
+Document Content (first 4000 characters):
+${fileContent.substring(0, 4000)}
+
+Based on the content, identify which of these control families are most relevant (return only the family codes):
+
+NIST 800-53 Control Families:
+- AC (Access Control) - User access, authentication, authorization
+- AU (Audit & Accountability) - Logging, monitoring, audit trails
+- IA (Identification & Authentication) - User identity, multi-factor auth
+- SC (System & Communications Protection) - Network security, encryption
+- IR (Incident Response) - Security incidents, response procedures
+- CM (Configuration Management) - System configs, change management
+- CP (Contingency Planning) - Business continuity, disaster recovery
+- AT (Awareness & Training) - Security training, user awareness
+- CA (Assessment & Monitoring) - Security assessments, compliance
+- PE (Physical & Environmental) - Physical security, facilities
+- PS (Personnel Security) - Employee screening, background checks
+- MP (Media Protection) - Data storage, removable media
+- SI (System & Information Integrity) - Malware protection, updates
+- MA (Maintenance) - System maintenance, patches
+- RA (Risk Assessment) - Risk analysis, threat assessment
+- SA (System Acquisition) - Procurement, vendor management
+- SR (Supply Chain Risk) - Third-party risk, vendor security
+
+Return only the 3-5 most relevant family codes as a JSON array, like: ["AC", "AU", "IA"]
+
+Focus on families that are clearly addressed or missing in the document content.`;
+
+    const contentResult = await model.generateContent(contentAnalysisPrompt);
+    const contentResponse = await contentResult.response;
+    const contentText = contentResponse.text();
+    
+    console.log('Content analysis response:', contentText);
+    
+    // Extract relevant family codes
+    const familyMatch = contentText.match(/\[([^\]]+)\]/);
+    let relevantFamilies = [];
+    
+    if (familyMatch) {
+      relevantFamilies = familyMatch[1].split(',').map(f => f.trim().replace(/"/g, ''));
+    } else {
+      // Fallback to common families if parsing fails
+      relevantFamilies = ['AC', 'AU', 'IA'];
+    }
+    
+    console.log('Identified relevant control families:', relevantFamilies);
+    return relevantFamilies;
+    
+  } catch (error) {
+    console.error('Error in smart filtering:', error);
+    // Fallback to core control families
+    return ['AC', 'AU', 'IA'];
+  }
+}
+
+// Hybrid analysis function - uses smart filtering + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
-    console.log('=== DEBUGGING FRAMEWORK ACCESS ===');
+    console.log('=== SMART ANALYSIS: Starting with filtered controls ===');
     console.log('allFrameworks type:', typeof allFrameworks);
-    console.log('allFrameworks value:', allFrameworks);
     console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
-    console.log('Available frameworks:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
     console.log('Requested framework:', framework);
-    console.log('allFrameworks[framework]:', allFrameworks ? allFrameworks[framework] : 'undefined');
     
     // Additional debugging
     console.log('Global allFrameworks reference:', global.allFrameworks);
@@ -1194,6 +1256,40 @@ async function analyzeWithAI(fileContent, framework) {
       console.log('Cache status:', nistControlsCache ? `Valid (age: ${Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60)} minutes)` : 'None');
     }
 
+    // SMART FILTERING: Identify relevant control families to reduce token usage
+    let filteredFrameworkData = frameworkData;
+    if (framework === 'NIST_800_53') {
+      console.log('=== APPLYING SMART FILTERING ===');
+      
+      // Check if user provided specific control families
+      const userSelectedFamilies = req.body.selectedFamilies ? JSON.parse(req.body.selectedFamilies) : [];
+      
+      let relevantFamilies;
+      if (userSelectedFamilies.length > 0) {
+        console.log('Using user-selected control families:', userSelectedFamilies);
+        relevantFamilies = userSelectedFamilies;
+      } else {
+        console.log('No user selection, using AI-based smart filtering');
+        relevantFamilies = await identifyRelevantControls(fileContent, framework);
+      }
+      
+      // Filter framework to only include relevant control families
+      filteredFrameworkData = {
+        ...frameworkData,
+        categories: frameworkData.categories.filter(category => {
+          const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+          const isRelevant = relevantFamilies.includes(categoryCode);
+          console.log(`Category ${category.name} (${categoryCode}): ${isRelevant ? 'RELEVANT' : 'FILTERED OUT'}`);
+          return isRelevant;
+        })
+      };
+      
+      const filteredControls = countTotalControls(filteredFrameworkData);
+      const tokenReduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
+      console.log(`Smart filtering applied: ${filteredControls}/${totalControls} controls (${tokenReduction}% reduction)`);
+      console.log('Relevant families:', relevantFamilies);
+    }
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Map framework IDs to display names
@@ -1207,7 +1303,7 @@ async function analyzeWithAI(fileContent, framework) {
 
     const frameworkName = frameworkNames[framework] || framework;
 
-    // Create a comprehensive prompt for AI analysis with exact control structure
+    // Create a comprehensive prompt for AI analysis with filtered control structure
     const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
 
 Document Content:
@@ -1217,8 +1313,8 @@ Framework: ${frameworkName}
 
 IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
 
-EXACT CONTROL STRUCTURE TO USE:
-${JSON.stringify(frameworkData.categories, null, 2)}
+EXACT CONTROL STRUCTURE TO USE (Smart-filtered for relevance):
+${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
 Your task is to analyze the document content and determine the compliance status for each control in the structure above. For each control, analyze the document content and determine if the control is:
 - "covered": Fully addressed in the document
