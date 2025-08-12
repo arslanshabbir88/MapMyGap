@@ -137,7 +137,19 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
             });
             if (!resp.ok) {
                 const text = await resp.text();
-                throw new Error(text || 'Failed to generate text');
+                try {
+                    // Try to parse as JSON for better error handling
+                    const errorData = JSON.parse(text);
+                    if (errorData.error === 'API rate limit exceeded') {
+                        setGenerationError(`Rate limit exceeded: ${errorData.details} ${errorData.suggestion}`);
+                    } else {
+                        setGenerationError(errorData.error || errorData.details || text || 'Failed to generate text');
+                    }
+                } catch {
+                    // If not JSON, use the raw text
+                    setGenerationError(text || 'Failed to generate text');
+                }
+                return;
             }
             const data = await resp.json();
             setGeneratedText(data.generatedText || '');

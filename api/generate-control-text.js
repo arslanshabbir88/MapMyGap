@@ -46,6 +46,26 @@ Return only the generated policy text, no additional formatting or explanations.
 
   } catch (error) {
     console.error('Error in /generate-control-text:', error);
+    
+    // Handle rate limit errors specifically
+    if (error.message && error.message.includes('429') || error.message.includes('quota')) {
+      return res.status(429).json({ 
+        error: 'API rate limit exceeded',
+        details: 'You have exceeded your daily quota for the Google Gemini API. Please try again tomorrow or upgrade to a paid plan.',
+        retryAfter: '24 hours',
+        suggestion: 'Consider upgrading to a paid plan at https://aistudio.google.com/ for higher limits'
+      });
+    }
+    
+    // Handle other Google AI errors
+    if (error.message && error.message.includes('GoogleGenerativeAI Error')) {
+      return res.status(500).json({ 
+        error: 'Google AI service error',
+        details: 'There was an issue with the AI service. Please try again later.',
+        suggestion: 'Check your API key and try again'
+      });
+    }
+    
     res.status(500).json({ error: `Server error: ${error.message}` });
   }
 };
