@@ -275,9 +275,62 @@ Return only valid JSON, no additional text or formatting.`;
     console.error('AI Analysis Error:', error);
     console.log('Falling back to predefined control structure');
     
+    // Get framework data for fallback (either from global or fallback)
+    let fallbackFrameworkData;
+    if (typeof allFrameworks !== 'undefined' && allFrameworks[framework]) {
+      fallbackFrameworkData = allFrameworks[framework];
+    } else {
+      // Use local fallback frameworks
+      const localFallbackFrameworks = {
+        NIST_CSF: {
+          name: "NIST Cybersecurity Framework (CSF) v2.0",
+          description: "National Institute of Standards and Technology Cybersecurity Framework",
+          categories: [
+            {
+              name: "IDENTIFY (ID)",
+              description: "Develop an organizational understanding to manage cybersecurity risk",
+              results: [
+                {
+                  id: "ID.AM-1",
+                  control: "Physical devices and systems within the organization are inventoried",
+                  status: "gap",
+                  details: "Asset inventory not maintained",
+                  recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+                }
+              ]
+            }
+          ]
+        },
+        NIST_800_53: {
+          name: "NIST SP 800-53 Rev. 5",
+          description: "Security and Privacy Controls for Information Systems and Organizations",
+          categories: [
+            {
+              name: "Access Control (AC)",
+              description: "Control access to information systems and resources",
+              results: [
+                {
+                  id: "AC-1",
+                  control: "Access Control Policy and Procedures",
+                  status: "gap",
+                  details: "Access control policy not established",
+                  recommendation: "Develop and implement comprehensive access control policy and procedures"
+                }
+              ]
+            }
+          ]
+        }
+      };
+      fallbackFrameworkData = localFallbackFrameworks[framework];
+    }
+    
+    if (!fallbackFrameworkData) {
+      throw new Error(`Framework ${framework} not supported in fallback mode`);
+    }
+    
     // Fallback to predefined control structure with default "gap" status
     const fallbackResult = {
-      categories: frameworkData.categories.map(category => ({
+      categories: fallbackFrameworkData.categories.map(category => ({
         name: category.name,
         description: category.description,
         results: category.results.map(control => ({
