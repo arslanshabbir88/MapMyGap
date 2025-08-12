@@ -1271,6 +1271,14 @@ async function analyzeWithAI(fileContent, framework) {
       } else {
         console.log('No user selection, using AI-based smart filtering');
         relevantFamilies = await identifyRelevantControls(fileContent, framework);
+        
+        // Make filtering less aggressive - include more families by default
+        if (relevantFamilies.length < 5) {
+          // Add common families if AI only identified a few
+          const commonFamilies = ['AC', 'AU', 'IA', 'SC', 'IR', 'CM', 'CP', 'AT', 'CA'];
+          relevantFamilies = [...new Set([...relevantFamilies, ...commonFamilies.slice(0, 8)])];
+          console.log('Expanded relevant families to:', relevantFamilies);
+        }
       }
       
       // Filter framework to only include relevant control families
@@ -1317,9 +1325,27 @@ EXACT CONTROL STRUCTURE TO USE (Smart-filtered for relevance):
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
 Your task is to analyze the document content and determine the compliance status for each control in the structure above. For each control, analyze the document content and determine if the control is:
-- "covered": Fully addressed in the document
-- "partial": Partially addressed but needs improvement  
-- "gap": Not addressed at all
+- "covered": Fully addressed in the document (clear evidence of implementation)
+- "partial": Partially addressed but needs improvement (some evidence but incomplete)
+- "gap": Not addressed at all (no evidence found)
+
+ANALYSIS INSTRUCTIONS:
+1. Read through the document content carefully
+2. For each control, search for relevant keywords, policies, procedures, or descriptions
+3. Look for specific evidence like:
+   - Policy statements
+   - Procedure descriptions
+   - Implementation details
+   - Security measures mentioned
+   - Training programs
+   - Monitoring systems
+   - Incident response plans
+   - Access controls
+   - Audit procedures
+
+4. If you find clear evidence of a control being implemented, mark it as "covered"
+5. If you find partial evidence or mentions but not full implementation, mark it as "partial"
+6. If you find no evidence at all, mark it as "gap"
 
 Return your analysis in this exact JSON format, using the EXACT control structure provided:
 {
@@ -1332,7 +1358,7 @@ Return your analysis in this exact JSON format, using the EXACT control structur
           "id": "EXACT_CONTROL_ID_FROM_STRUCTURE",
           "control": "EXACT_CONTROL_DESCRIPTION_FROM_STRUCTURE",
           "status": "covered|partial|gap",
-          "details": "Detailed analysis explaining why this status was assigned based on document content",
+          "details": "Detailed analysis explaining why this status was assigned based on document content. Include specific evidence found or explain why no evidence was found.",
           "recommendation": "Specific, actionable recommendation to achieve compliance"
         }
       ]
@@ -1345,6 +1371,7 @@ CRITICAL REQUIREMENTS:
 - Do not change control IDs, names, or descriptions
 - Only modify the status, details, and recommendation fields
 - Base your analysis on actual content found in the document
+- Be thorough in your analysis - don't default to "gap" without careful consideration
 - If content is insufficient, mark as "gap" with clear guidance
 - Provide actionable recommendations that match the document's context
 

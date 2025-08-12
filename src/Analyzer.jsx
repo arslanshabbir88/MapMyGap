@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 
 // --- Helper Components ---
@@ -256,12 +256,45 @@ function Analyzer({ onNavigateHome }) {
   const [showHistory, setShowHistory] = useState(false);
   const [analysisHistory, setAnalysisHistory] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [showDebug, setShowDebug] = useState(false);
 
   const { user, supabase } = useAuth();
 
   const getFileExt = (name) => (name?.split('.').pop() || '').toLowerCase();
   const isTextFile = (file) => file?.type === 'text/plain' || getFileExt(file?.name) === 'txt';
   const isSupportedFile = (file) => ['txt','docx','pdf','xlsx','xls'].includes(getFileExt(file?.name));
+
+  // Filtering logic for analysis results
+  const filteredResults = useMemo(() => {
+    if (!analysisResults?.categories) return [];
+    
+    return analysisResults.categories
+      .filter(category => 
+        !categoryFilter || category.name === categoryFilter
+      )
+      .map(category => ({
+        ...category,
+        results: category.results.filter(result => {
+          const matchesSearch = !searchTerm || 
+            result.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            result.control.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (result.details && result.details.toLowerCase().includes(searchTerm.toLowerCase()));
+          
+          const matchesStatus = !statusFilter || result.status === statusFilter;
+          
+          return matchesSearch && matchesStatus;
+        })
+      }))
+      .filter(category => category.results.length > 0);
+  }, [analysisResults, searchTerm, statusFilter, categoryFilter]);
+
+  const totalControls = useMemo(() => {
+    if (!analysisResults?.categories) return 0;
+    return analysisResults.categories.reduce((total, cat) => total + cat.results.length, 0);
+  }, [analysisResults]);
 
   const loadAnalysisHistory = async () => {
     if (!user) return;
@@ -499,8 +532,16 @@ function Analyzer({ onNavigateHome }) {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <div className="lg:col-span-1 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg self-start sticky top-24">
-              <h2 className="text-lg font-semibold text-white mb-4">1. Configuration</h2>
+                          <div className="lg:col-span-1 bg-slate-800/50 backdrop-blur-xl border border-slate-700 p-6 rounded-2xl shadow-lg self-start sticky top-24">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg font-semibold text-white">1. Configuration</h2>
+                  <button
+                    onClick={() => setShowDebug(!showDebug)}
+                    className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 rounded text-slate-300 transition-colors"
+                  >
+                    {showDebug ? 'Hide' : 'Show'} Debug
+                  </button>
+                </div>
               
               <div className="mb-6">
                 <label htmlFor="framework" className="block text-sm font-medium text-slate-300 mb-2">Select Framework</label>
@@ -597,6 +638,28 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
 
+              {/* Debug Information */}
+              {showDebug && (
+                <div className="mt-6 p-4 bg-slate-900/50 border border-slate-600 rounded-lg">
+                  <h3 className="text-sm font-semibold text-slate-300 mb-3">Debug Information</h3>
+                  <div className="space-y-2 text-xs text-slate-400">
+                    <div><strong>Framework:</strong> {selectedFramework}</div>
+                    <div><strong>Selected Families:</strong> {selectedControlFamilies.length > 0 ? selectedControlFamilies.join(', ') : 'Auto-selected'}</div>
+                    <div><strong>File:</strong> {uploadedFile?.name || 'None'}</div>
+                    <div><strong>File Size:</strong> {uploadedFile?.size ? `${(uploadedFile.size / 1024).toFixed(1)} KB` : 'N/A'}</div>
+                    <div><strong>Content Length:</strong> {fileContent ? `${fileContent.length} characters` : 'N/A'}</div>
+                    {analysisResults && (
+                      <>
+                        <div><strong>Total Categories:</strong> {analysisResults.categories?.length || 0}</div>
+                        <div><strong>Total Controls:</strong> {totalControls}</div>
+                        <div><strong>Filtered Controls:</strong> {filteredResults.reduce((sum, cat) => sum + cat.results.length, 0)}</div>
+                        <div><strong>Score Breakdown:</strong> {analysisResults.summary?.covered || 0} covered, {analysisResults.summary?.partial || 0} partial, {analysisResults.summary?.gaps || 0} gaps</div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <button
                 onClick={handleAnalyze}
                 disabled={!uploadedFile || isAnalyzing}
@@ -636,6 +699,65 @@ function Analyzer({ onNavigateHome }) {
                   </div>
                 )}
               </div>
+
+              {/* Search and Filter Controls */}
+              {analysisResults && (
+                <div className="mb-6 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Search Controls</label>
+                      <input
+                        type="text"
+                        placeholder="Search by control ID, name, or description..."
+                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
+                    <div className="sm:w-48">
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Status</label>
+                      <select
+                        value={statusFilter}
+                        onChange={(e) => setStatusFilter(e.target.value)}
+                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">All Statuses</option>
+                        <option value="covered">Covered</option>
+                        <option value="partial">Partial</option>
+                        <option value="gap">Gaps</option>
+                      </select>
+                    </div>
+                    <div className="sm:w-48">
+                      <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Category</label>
+                      <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">All Categories</option>
+                        {analysisResults.categories.map(cat => (
+                          <option key={cat.name} value={cat.name}>{cat.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-sm text-slate-400">
+                    <span>
+                      Showing {filteredResults.length} of {totalControls} controls
+                    </span>
+                    <button
+                      onClick={() => {
+                        setSearchTerm('');
+                        setStatusFilter('');
+                        setCategoryFilter('');
+                      }}
+                      className="text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Analysis History Panel */}
               {showHistory && user && (
@@ -705,25 +827,35 @@ function Analyzer({ onNavigateHome }) {
                   </div>
 
                   <div className="space-y-4">
-                    {analysisResults.categories.map(category => (
-                      <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-lg overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
-                        <div className="p-3 border-b border-slate-700"><h4 className="font-semibold text-white">{category.name}</h4><p className="text-sm text-slate-400">{category.description}</p></div>
-                        <ul className="divide-y divide-slate-700">
-                          {category.results.map(result => (
-                            <li key={result.id} onClick={() => setModalData(result)} className="p-3 flex items-center justify-between hover:bg-slate-700/50 cursor-pointer transition-colors">
-                              <div className="flex items-start">
-                                  {renderStatusIcon(result.status)}
-                                  <div className="ml-3">
-                                      <p className="text-sm font-medium text-slate-200">{result.id}</p>
-                                      <p className="text-sm text-slate-400">{result.control}</p>
-                                  </div>
-                              </div>
-                              <span className={`capitalize text-xs font-medium px-2 py-1 rounded-full ${getStatusChipClass(result.status)}`}>{result.status}</span>
-                            </li>
-                          ))}
-                        </ul>
+                    {filteredResults.length > 0 ? (
+                      filteredResults.map(category => (
+                        <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-lg overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
+                          <div className="p-3 border-b border-slate-700">
+                            <h4 className="font-semibold text-white">{category.name}</h4>
+                            <p className="text-sm text-slate-400">{category.description}</p>
+                          </div>
+                          <ul className="divide-y divide-slate-700">
+                            {category.results.map(result => (
+                              <li key={result.id} onClick={() => setModalData(result)} className="p-3 flex items-center justify-between hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                <div className="flex items-start">
+                                    {renderStatusIcon(result.status)}
+                                    <div className="ml-3">
+                                        <p className="text-sm font-medium text-slate-200">{result.id}</p>
+                                        <p className="text-sm text-slate-400">{result.control}</p>
+                                    </div>
+                                </div>
+                                <span className={`capitalize text-xs font-medium px-2 py-1 rounded-full ${getStatusChipClass(result.status)}`}>{result.status}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-8 text-slate-400">
+                        <p className="font-medium">No controls match your current filters</p>
+                        <p className="text-sm">Try adjusting your search terms or filters</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               )}
