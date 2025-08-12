@@ -7,6 +7,9 @@ const Busboy = require('busboy');
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // Inline framework control structures to avoid import issues
+console.log('Defining allFrameworks...');
+
+// Simplified frameworks for testing
 const allFrameworks = {
   NIST_CSF: {
     name: "NIST Cybersecurity Framework (CSF) v2.0",
@@ -22,40 +25,6 @@ const allFrameworks = {
             status: "gap",
             details: "Asset inventory not maintained",
             recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
-          },
-          {
-            id: "ID.AM-2",
-            control: "Software platforms and applications within the organization are inventoried",
-            status: "gap",
-            details: "Software inventory not maintained",
-            recommendation: "Create and maintain software asset inventory including platforms and applications"
-          },
-          {
-            id: "ID.AM-3",
-            control: "Organizational communication and data flows are mapped",
-            status: "gap",
-            details: "Data flow mapping not performed",
-            recommendation: "Document and map all organizational communication and data flows"
-          }
-        ]
-      },
-      {
-        name: "PROTECT (PR)",
-        description: "Develop and implement appropriate safeguards to ensure delivery of critical services",
-        results: [
-          {
-            id: "PR.AC-1",
-            control: "Identities and credentials are issued, managed, verified, revoked, and audited for authorized devices, users and processes",
-            status: "gap",
-            details: "Identity and credential management not implemented",
-            recommendation: "Implement comprehensive identity and credential management system"
-          },
-          {
-            id: "PR.AC-2",
-            control: "Physical access to assets is controlled and monitored",
-            status: "gap",
-            details: "Physical access controls not implemented",
-            recommendation: "Implement physical access controls and monitoring systems"
           }
         ]
       }
@@ -75,111 +44,6 @@ const allFrameworks = {
             status: "gap",
             details: "Access control policy not established",
             recommendation: "Develop and implement comprehensive access control policy and procedures"
-          },
-          {
-            id: "AC-2",
-            control: "Account Management",
-            status: "gap",
-            details: "Account management not implemented",
-            recommendation: "Implement comprehensive account management system with lifecycle controls"
-          },
-          {
-            id: "AC-3",
-            control: "Access Enforcement",
-            status: "gap",
-            details: "Access enforcement not implemented",
-            recommendation: "Implement access enforcement mechanisms and controls"
-          },
-          {
-            id: "AC-4",
-            control: "Information Flow Enforcement",
-            status: "gap",
-            details: "Information flow enforcement not implemented",
-            recommendation: "Implement information flow enforcement controls and monitoring"
-          },
-          {
-            id: "AC-5",
-            control: "Separation of Duties",
-            status: "gap",
-            details: "Separation of duties not implemented",
-            recommendation: "Implement separation of duties controls to prevent conflicts of interest"
-          }
-        ]
-      },
-      {
-        name: "Audit and Accountability (AU)",
-        description: "Create, protect, and retain information system audit records",
-        results: [
-          {
-            id: "AU-1",
-            control: "Audit and Accountability Policy and Procedures",
-            status: "gap",
-            details: "Audit policy not established",
-            recommendation: "Develop and implement comprehensive audit and accountability policy and procedures"
-          },
-          {
-            id: "AU-2",
-            control: "Audit Events",
-            status: "gap",
-            details: "Audit events not defined",
-            recommendation: "Define and implement comprehensive audit event logging"
-          }
-        ]
-      }
-    ]
-  },
-  PCI_DSS: {
-    name: "PCI DSS v4.0",
-    description: "Payment Card Industry Data Security Standard",
-    categories: [
-      {
-        name: "Build and Maintain a Secure Network and Systems",
-        description: "Establish and maintain a secure network infrastructure",
-        results: [
-          {
-            id: "PCI DSS 1.1.1",
-            control: "All users are assigned a unique ID before allowing them to access system components or cardholder data",
-            status: "gap",
-            details: "User identification and authentication controls not implemented",
-            recommendation: "Implement unique user ID assignment system with proper authentication mechanisms"
-          }
-        ]
-      }
-    ]
-  },
-  ISO_27001: {
-    name: "ISO/IEC 27001:2022",
-    description: "Information Security Management System",
-    categories: [
-      {
-        name: "Organizational Controls",
-        description: "Controls that set the organizational context for information security",
-        results: [
-          {
-            id: "A.5.1",
-            control: "Information security policies",
-            status: "gap",
-            details: "Information security policies not established",
-            recommendation: "Develop comprehensive information security policies aligned with business objectives"
-          }
-        ]
-      }
-    ]
-  },
-  SOC_2: {
-    name: "SOC 2 Type II",
-    description: "Service Organization Control 2 Trust Service Criteria",
-    categories: [
-      {
-        name: "Security (CC6.1)",
-        description: "The entity's security policies and procedures protect against unauthorized access",
-        results: [
-          {
-            id: "CC6.1.1",
-            control: "The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives",
-            status: "gap",
-            details: "Logical access security controls not implemented",
-            recommendation: "Implement comprehensive logical access security controls including authentication, authorization, and monitoring"
           }
         ]
       }
@@ -187,10 +51,16 @@ const allFrameworks = {
   }
 };
 
+console.log('allFrameworks defined successfully. Keys:', Object.keys(allFrameworks));
+console.log('allFrameworks.NIST_CSF:', allFrameworks.NIST_CSF ? 'exists' : 'undefined');
+console.log('allFrameworks.NIST_800_53:', allFrameworks.NIST_800_53 ? 'exists' : 'undefined');
+
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
-    console.log('Available frameworks:', Object.keys(allFrameworks));
+    console.log('allFrameworks type:', typeof allFrameworks);
+    console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
+    console.log('Available frameworks:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
     console.log('Requested framework:', framework);
     
     // Get predefined control structure for the framework
