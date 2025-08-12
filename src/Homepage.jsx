@@ -72,7 +72,7 @@ function Homepage({ onNavigate }) {
         {/* Header */}
         <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-white tracking-tight">CTRLcheck</h1>
+            <h1 className="text-2xl font-bold text-white tracking-tight">ConformIQ</h1>
             <div className="flex items-center space-x-4">
               {user ? (
                 <>
@@ -115,7 +115,7 @@ function Homepage({ onNavigate }) {
                 Close Compliance Gaps, <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">Intelligently</span>.
               </h1>
               <p className="mt-6 text-lg text-slate-400 max-w-2xl mx-auto">
-                CTRLcheck uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
+                ConformIQ uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
               </p>
               <div className="mt-10">
                 <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
@@ -137,7 +137,8 @@ function Homepage({ onNavigate }) {
                   Upload your policy documents and let our AI instantly compare them against frameworks like NIST, PCI DSS, and ISO 27001 to pinpoint exact compliance gaps.
                 </FeatureCard>
                 <FeatureCard icon={<DocumentTextIcon className="w-8 h-8 text-purple-400" />} title="Automated Policy Generation">
-                  Don't just find problems—solve them. CTRLcheck generates ready-to-use policy text in your company's tone to fill identified gaps, saving you hours of writing.
+                  Don't just find problems—solve them. ConformIQ generates the exact policy language 
+                  you need to address each gap, saving you hours of research and writing.
                 </FeatureCard>
                 <FeatureCard icon={<ShieldCheckIcon className="w-8 h-8 text-green-400" />} title="Continuous Compliance">
                   Save your reports, track your compliance score over time, and easily re-assess your standards as frameworks or your internal policies evolve.
@@ -154,7 +155,8 @@ function Homepage({ onNavigate }) {
                 </div>
                 <div className="space-y-12">
                   <HowItWorksStep number="1" title="Upload Your Document">
-                    Securely upload your internal standards or policy document. CTRLcheck is ready to analyze `.txt`, `.docx`, `.pdf`, `.xlsx`, and `.xls` files.
+                    Securely upload your internal standards or policy document. ConformIQ is ready to 
+                    analyze and provide actionable insights.
                   </HowItWorksStep>
                   <HowItWorksStep number="2" title="Select a Framework & Analyze">
                     Choose an industry framework and click "Analyze." Our AI reads your document and performs a detailed, control-by-control gap analysis.
@@ -185,7 +187,7 @@ function Homepage({ onNavigate }) {
         {/* Footer */}
         <footer className="border-t border-slate-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex justify-between items-center text-sm text-slate-500">
-                <p>&copy; 2025 CTRLcheck. All rights reserved.</p>
+                <p>&copy; 2025 ConformIQ. All rights reserved.</p>
                 <div className="space-x-6">
                     <a href="#" className="hover:text-slate-300 transition-colors">Terms</a>
                     <a href="#" className="hover:text-slate-300 transition-colors">Privacy</a>

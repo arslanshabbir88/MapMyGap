@@ -1,6 +1,6 @@
-# CTRLcheck - AI-Powered Compliance Analyzer
+# ConformIQ - AI-Powered Compliance Analyzer
 
-CTRLcheck uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
+ConformIQ uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
 
 ## ✨ Features
 
@@ -18,7 +18,7 @@ CTRLcheck uses AI to analyze your internal standards against industry frameworks
 
 ```bash
 git clone <your-repo-url>
-cd ctrlcheck-app
+cd conformiq-app
 npm install
 ```
 
