@@ -338,7 +338,63 @@ function Analyzer({ onNavigateHome }) {
         .limit(10);
 
       if (error) throw error;
-      setAnalysisHistory(data || []);
+      
+      // Process the data to ensure proper structure
+      const processedData = (data || []).map(item => {
+        // Ensure we have the required structure
+        let processedItem = { ...item };
+        
+        // Handle different data structures
+        if (item.results && typeof item.results === 'string') {
+          try {
+            processedItem.results = JSON.parse(item.results);
+          } catch (e) {
+            console.error('Failed to parse results:', e);
+            processedItem.results = [];
+          }
+        }
+        
+        if (item.summary && typeof item.summary === 'string') {
+          try {
+            processedItem.summary = JSON.parse(item.summary);
+          } catch (e) {
+            console.error('Failed to parse summary:', e);
+            processedItem.summary = { score: 0, covered: 0, partial: 0, gaps: 0 };
+          }
+        }
+        
+        // Ensure summary has required fields
+        if (!processedItem.summary) {
+          processedItem.summary = { score: 0, covered: 0, partial: 0, gaps: 0 };
+        }
+        
+        // Calculate score if missing
+        if (processedItem.summary.score === undefined || processedItem.summary.score === null) {
+          if (processedItem.results && Array.isArray(processedItem.results)) {
+            let covered = 0, partial = 0, gaps = 0;
+            processedItem.results.forEach(category => {
+              if (category.results && Array.isArray(category.results)) {
+                category.results.forEach(result => {
+                  if (result.status === 'covered') covered++;
+                  else if (result.status === 'partial') partial++;
+                  else if (result.status === 'gap') gaps++;
+                });
+              }
+            });
+            const total = covered + partial + gaps;
+            processedItem.summary = {
+              score: total > 0 ? Math.round(((covered + partial * 0.5) / total) * 100) : 0,
+              covered,
+              partial,
+              gaps
+            };
+          }
+        }
+        
+        return processedItem;
+      });
+      
+      setAnalysisHistory(processedData);
     } catch (err) {
       console.error('Error loading history:', err);
     } finally {
@@ -350,17 +406,31 @@ function Analyzer({ onNavigateHome }) {
     if (!user) return;
     
     try {
+      // Ensure we have a proper filename
+      const displayName = filename || uploadedFile?.name || 'Untitled Document';
+      
+      // Ensure results and summary are properly structured
+      const dataToSave = {
+        user_id: user.id,
+        framework: selectedFramework,
+        filename: displayName,
+        results: results.categories || results,
+        summary: results.summary || {
+          score: 0,
+          covered: 0,
+          partial: 0,
+          gaps: 0
+        }
+      };
+      
       const { error } = await supabase
         .from('analysis_history')
-        .insert({
-          user_id: user.id,
-          framework: selectedFramework,
-          filename: filename,
-          results: results,
-          summary: results.summary
-        });
+        .insert(dataToSave);
 
       if (error) throw error;
+      
+      // Reload history to show the new entry
+      await loadAnalysisHistory();
     } catch (err) {
       console.error('Error saving analysis:', err);
     }
@@ -812,7 +882,25 @@ function Analyzer({ onNavigateHome }) {
               {/* Analysis History Panel */}
               {showHistory && user && (
                 <div className="mb-6 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
-                  <h3 className="text-lg font-semibold text-white mb-4">Analysis History</h3>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-white">Analysis History</h3>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={loadAnalysisHistory}
+                        disabled={isLoadingHistory}
+                        className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Refresh history"
+                      >
+                        {isLoadingHistory ? '↻' : '↻'}
+                      </button>
+                      <button
+                        onClick={() => setShowHistory(false)}
+                        className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500"
+                      >
+                        ← Back to Analysis
+                      </button>
+                    </div>
+                  </div>
                   {isLoadingHistory ? (
                     <div className="text-center py-4">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
@@ -822,15 +910,56 @@ function Analyzer({ onNavigateHome }) {
                     <div className="space-y-3">
                       {analysisHistory.map((item, index) => (
                         <div key={index} className="flex items-center justify-between p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-                          <div>
-                            <p className="text-white font-medium">{item.filename}</p>
-                            <p className="text-sm text-slate-400">{item.framework} • {new Date(item.created_at).toLocaleDateString()}</p>
+                          <div className="flex-1">
+                            <p className="text-white font-medium">{item.filename || 'Untitled Document'}</p>
+                            <p className="text-sm text-slate-400">
+                              {item.framework || 'Unknown Framework'} • {new Date(item.created_at).toLocaleDateString()}
+                            </p>
+                            {item.summary && (
+                              <div className="flex items-center space-x-4 mt-1 text-xs text-slate-500">
+                                <span>Covered: {item.summary.covered || 0}</span>
+                                <span>Partial: {item.summary.partial || 0}</span>
+                                <span>Gaps: {item.summary.gaps || 0}</span>
+                              </div>
+                            )}
                           </div>
                           <div className="flex items-center space-x-3">
-                            <span className="text-sm text-slate-300">Score: {item.summary.score}%</span>
+                            <span className="text-sm text-slate-300">
+                              Score: {item.summary?.score !== undefined ? `${item.summary.score}%` : 'N/A'}
+                            </span>
                             <button
-                              onClick={() => setAnalysisResults({ summary: item.summary, categories: item.results })}
-                              className="text-blue-400 hover:text-blue-300 text-sm transition-colors"
+                              onClick={() => {
+                                try {
+                                  // Validate the data before setting it
+                                  if (!item.results || !item.summary) {
+                                    alert('This historical analysis appears to be incomplete. Please run a new analysis.');
+                                    return;
+                                  }
+                                  
+                                  // Set the analysis results from history
+                                  setAnalysisResults({ 
+                                    summary: item.summary, 
+                                    categories: item.results 
+                                  });
+                                  // Set the framework to match the historical analysis
+                                  if (item.framework) {
+                                    setSelectedFramework(item.framework);
+                                  }
+                                  // Hide the history panel to show the results
+                                  setShowHistory(false);
+                                  // Scroll to the results section
+                                  setTimeout(() => {
+                                    const resultsSection = document.querySelector('[data-results-section]');
+                                    if (resultsSection) {
+                                      resultsSection.scrollIntoView({ behavior: 'smooth' });
+                                    }
+                                  }, 100);
+                                } catch (error) {
+                                  console.error('Error loading historical analysis:', error);
+                                  alert('Failed to load this historical analysis. Please try again or run a new analysis.');
+                                }
+                              }}
+                              className="text-blue-400 hover:text-blue-300 text-sm transition-colors px-3 py-1 rounded border border-blue-400/30 hover:bg-blue-400/10"
                             >
                               View
                             </button>
@@ -839,7 +968,16 @@ function Analyzer({ onNavigateHome }) {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-slate-400 text-center py-4">No analysis history yet. Run your first analysis to see it here.</p>
+                    <div className="text-center py-8">
+                      <p className="text-slate-400 mb-2">No analysis history yet.</p>
+                      <p className="text-sm text-slate-500">Run your first analysis to see it here.</p>
+                      <button
+                        onClick={() => setShowHistory(false)}
+                        className="mt-3 text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 rounded border border-blue-400/30 hover:bg-blue-400/10"
+                      >
+                        Start New Analysis
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
@@ -862,7 +1000,31 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
               {analysisResults && (
-                <div className="space-y-6 animate-fade-in">
+                <div className="space-y-6 animate-fade-in" data-results-section>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-white">Analysis Results</h3>
+                    <div className="flex items-center space-x-3">
+                      <button
+                        onClick={() => {
+                          setAnalysisResults(null);
+                          setUploadedFile(null);
+                          setFileContent('');
+                          setError(null);
+                        }}
+                        className="text-slate-400 hover:text-white transition-colors px-3 py-2 rounded border border-slate-600 hover:border-slate-500 text-sm"
+                      >
+                        New Analysis
+                      </button>
+                      {user && (
+                        <button
+                          onClick={() => setShowHistory(true)}
+                          className="text-blue-400 hover:text-blue-300 transition-colors px-3 py-2 rounded border border-blue-400/30 hover:bg-blue-400/10 text-sm"
+                        >
+                          View History
+                        </button>
+                      )}
+                    </div>
+                  </div>
                   <div className="p-4 bg-slate-900/50 rounded-lg gradient-border">
                       <h3 className="font-semibold text-white">Compliance Summary</h3>
                       <div className="mt-2 text-sm text-slate-400">
