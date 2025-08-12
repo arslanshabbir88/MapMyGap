@@ -104,7 +104,7 @@ const convertToCSV = (data) => {
 };
 
 // --- Modal Component ---
-const DetailModal = ({ result, fileContent, onClose }) => {
+const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
     if (!result) return null;
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedText, setGeneratedText] = useState('');
@@ -130,11 +130,9 @@ const DetailModal = ({ result, fileContent, onClose }) => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    fileContent,
-                    controlId: result.id,
-                    controlText: result.control,
-                    status: result.status,
-                    details: result.details || ''
+                    originalDocument: fileContent,
+                    targetControl: result.control,
+                    framework: selectedFramework
                 })
             });
             if (!resp.ok) {
@@ -142,7 +140,7 @@ const DetailModal = ({ result, fileContent, onClose }) => {
                 throw new Error(text || 'Failed to generate text');
             }
             const data = await resp.json();
-            setGeneratedText(data.sampleText || '');
+            setGeneratedText(data.generatedText || '');
         } catch (err) {
             setGenerationError(err.message || 'Generation failed');
         } finally {
@@ -520,7 +518,7 @@ function Analyzer({ onNavigateHome }) {
                       linear-gradient(to right, #38bdf8, #818cf8) border-box;
         }
       `}</style>
-      <DetailModal result={modalData} fileContent={fileContent} onClose={() => setModalData(null)} />
+                          <DetailModal result={modalData} fileContent={fileContent} selectedFramework={selectedFramework} onClose={() => setModalData(null)} />
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
         <header className="sticky top-0 z-10 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
