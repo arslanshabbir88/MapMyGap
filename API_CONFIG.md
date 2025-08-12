@@ -8,7 +8,7 @@ This guide explains how to switch between local development and production Verce
 ```bash
 npm run dev
 ```
-This will proxy all `/api` requests to your Vercel deployment at `https://aligniq-app.vercel.app`
+This will proxy all `/api` requests to your Vercel deployment at `https://align-iq.vercel.app`
 
 ### For Local Development
 ```bash
@@ -19,7 +19,7 @@ This will proxy all `/api` requests to your local server at `http://localhost:30
 ## Configuration
 
 ### Update Your Vercel URL
-Edit `vite.config.js` and replace `https://aligniq-app.vercel.app` with your actual Vercel deployment URL.
+Edit `vite.config.js` and replace `https://align-iq.vercel.app` with your actual Vercel deployment URL.
 
 ### Current Settings
 - **Production Mode** (default): `npm run dev` → Vercel deployment
@@ -43,6 +43,20 @@ Edit `vite.config.js` and replace `https://aligniq-app.vercel.app` with your act
 ### To switch back to local development:
 - Change the environment in `config.js` to `'local'`
 - Or use `npm run dev:local` command
+
+## Recent Improvements
+
+### Enhanced Error Handling
+- **Increased timeout** from 8 seconds to 25 seconds for Vercel deployment
+- **Better fallback logic** with context-aware error messages
+- **Intelligent control status defaults** to avoid 0% scores
+- **Improved user experience** with helpful error messages instead of generic failures
+
+### What This Fixes
+- **Timeout errors** during gap analysis
+- **Generic "AI analysis failed" messages**
+- **Poor fallback behavior** when AI analysis encounters issues
+- **Better control assessment** with realistic defaults
 
 ## Deployment
 

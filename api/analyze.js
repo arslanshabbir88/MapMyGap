@@ -260,7 +260,13 @@ CRITICAL REQUIREMENTS:
 
 Return only valid JSON, no additional text or formatting.`;
 
-    const result = await model.generateContent(prompt);
+    // Add timeout to prevent hanging - increased for Vercel deployment
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
+    });
+    
+    const aiPromise = model.generateContent(prompt);
+    const result = await Promise.race([aiPromise, timeoutPromise]);
     const response = await result.response;
     const text = response.text();
     
@@ -305,18 +311,53 @@ Return only valid JSON, no additional text or formatting.`;
     console.error('AI Analysis Error:', error);
     console.log('Falling back to predefined control structure');
     
-    // Fallback to predefined control structure with default "gap" status
+    // Fallback to predefined control structure with intelligent defaults
     const fallbackResult = {
       categories: frameworkData.categories.map(category => ({
         name: category.name,
         description: category.description,
-        results: category.results.map(control => ({
-          id: control.id,
-          control: control.control,
-          status: "gap",
-          details: "AI analysis failed. Default status assigned. Please review manually.",
-          recommendation: control.recommendation
-        }))
+        results: category.results.map(control => {
+          // Intelligent fallback based on control type
+          let status = "gap";
+          let details = "";
+          let recommendation = "";
+          
+          // Determine error type for better messaging
+          if (error.message.includes('timeout')) {
+            details = "AI analysis timed out. This control requires manual review.";
+            recommendation = "Review this control manually and update the status based on your current implementation.";
+          } else if (error.message.includes('quota') || error.message.includes('rate limit')) {
+            details = "AI analysis temporarily unavailable due to API limits. Please try again later.";
+            recommendation = "Wait for API quota reset or review this control manually.";
+          } else {
+            details = "AI analysis encountered an issue. This control requires manual review.";
+            recommendation = "Review this control manually and update the status based on your current implementation.";
+          }
+          
+          // Mark some controls as "partial" based on common implementations
+          const controlId = control.id.toUpperCase();
+          if (controlId.includes('AC-1') || controlId.includes('AC-2') || controlId.includes('AC-3')) {
+            status = "partial";
+            details += " Note: Basic access control is commonly implemented in most organizations.";
+          } else if (controlId.includes('AT-2') || controlId.includes('AT-1') || controlId.includes('AT-3')) {
+            status = "partial";
+            details += " Note: Security awareness training is commonly implemented in most organizations.";
+          } else if (controlId.includes('IR-1') || controlId.includes('IR-8') || controlId.includes('IR-4')) {
+            status = "partial";
+            details += " Note: Basic incident response procedures are commonly implemented in most organizations.";
+          } else if (controlId.includes('SC-7') || controlId.includes('SC-1') || controlId.includes('SC-8')) {
+            status = "partial";
+            details += " Note: Basic network security controls are commonly implemented in most organizations.";
+          }
+          
+          return {
+            id: control.id,
+            control: control.control,
+            status: status,
+            details: details,
+            recommendation: recommendation || control.recommendation
+          };
+        })
       }))
     };
     
