@@ -546,6 +546,222 @@ const allFrameworks = {
             recommendation: "Perform security certification of information systems"
           }
         ]
+      },
+      {
+        name: "Physical and Environmental Protection (PE)",
+        description: "Provide physical and environmental protection for organizational information systems",
+        results: [
+          {
+            id: "PE-1",
+            control: "Physical and Environmental Protection Policy and Procedures",
+            status: "gap",
+            details: "Physical security policy not established",
+            recommendation: "Develop physical and environmental protection policy and procedures"
+          },
+          {
+            id: "PE-2",
+            control: "Physical Access Authorizations",
+            status: "gap",
+            details: "Physical access authorization procedures not implemented",
+            recommendation: "Implement formal procedures for authorizing physical access"
+          },
+          {
+            id: "PE-3",
+            control: "Physical Access Control",
+            status: "gap",
+            details: "Physical access controls not implemented",
+            recommendation: "Implement physical access control systems and procedures"
+          }
+        ]
+      },
+      {
+        name: "Personnel Security (PS)",
+        description: "Ensure individuals occupying positions of responsibility are trustworthy",
+        results: [
+          {
+            id: "PS-1",
+            control: "Personnel Security Policy and Procedures",
+            status: "gap",
+            details: "Personnel security policy not established",
+            recommendation: "Develop personnel security policy and procedures"
+          },
+          {
+            id: "PS-2",
+            control: "Position Risk Designation",
+            status: "gap",
+            details: "Position risk designations not established",
+            recommendation: "Establish risk designations for all positions"
+          },
+          {
+            id: "PS-3",
+            control: "Personnel Screening",
+            status: "gap",
+            details: "Personnel screening procedures not implemented",
+            recommendation: "Implement background screening for all personnel"
+          }
+        ]
+      },
+      {
+        name: "Media Protection (MP)",
+        description: "Protect the confidentiality, integrity, and availability of information",
+        results: [
+          {
+            id: "MP-1",
+            control: "Media Protection Policy and Procedures",
+            status: "gap",
+            details: "Media protection policy not established",
+            recommendation: "Develop media protection policy and procedures"
+          },
+          {
+            id: "MP-2",
+            control: "Media Access",
+            status: "gap",
+            details: "Media access controls not implemented",
+            recommendation: "Implement controls to restrict access to media"
+          },
+          {
+            id: "MP-3",
+            control: "Media Marking",
+            status: "gap",
+            details: "Media marking procedures not implemented",
+            recommendation: "Implement procedures for marking media with appropriate labels"
+          }
+        ]
+      },
+      {
+        name: "System and Information Integrity (SI)",
+        description: "Identify, report, and correct information and information system flaws",
+        results: [
+          {
+            id: "SI-1",
+            control: "System and Information Integrity Policy and Procedures",
+            status: "gap",
+            details: "System integrity policy not established",
+            recommendation: "Develop system and information integrity policy and procedures"
+          },
+          {
+            id: "SI-2",
+            control: "Flaw Remediation",
+            status: "gap",
+            details: "Flaw remediation procedures not implemented",
+            recommendation: "Implement procedures for identifying and remediating system flaws"
+          },
+          {
+            id: "SI-3",
+            control: "Malicious Code Protection",
+            status: "gap",
+            details: "Malicious code protection not implemented",
+            recommendation: "Implement protection mechanisms against malicious code"
+          }
+        ]
+      },
+      {
+        name: "Maintenance (MA)",
+        description: "Perform periodic and timely maintenance on organizational information systems",
+        results: [
+          {
+            id: "MA-1",
+            control: "System Maintenance Policy and Procedures",
+            status: "gap",
+            details: "System maintenance policy not established",
+            recommendation: "Develop system maintenance policy and procedures"
+          },
+          {
+            id: "MA-2",
+            control: "Controlled Maintenance",
+            status: "gap",
+            details: "Controlled maintenance procedures not implemented",
+            recommendation: "Implement controlled maintenance procedures for systems"
+          },
+          {
+            id: "MA-3",
+            control: "Maintenance Tools",
+            status: "gap",
+            details: "Maintenance tool controls not implemented",
+            recommendation: "Implement controls for maintenance tools and equipment"
+          }
+        ]
+      },
+      {
+        name: "Risk Assessment (RA)",
+        description: "Assess the risk and magnitude of harm that could result from unauthorized access",
+        results: [
+          {
+            id: "RA-1",
+            control: "Risk Assessment Policy and Procedures",
+            status: "gap",
+            details: "Risk assessment policy not established",
+            recommendation: "Develop risk assessment policy and procedures"
+          },
+          {
+            id: "RA-2",
+            control: "Security Categorization",
+            status: "gap",
+            details: "Security categorization not performed",
+            recommendation: "Perform security categorization of information systems"
+          },
+          {
+            id: "RA-3",
+            control: "Risk Assessment",
+            status: "gap",
+            details: "Risk assessments not performed",
+            recommendation: "Perform comprehensive risk assessments of systems"
+          }
+        ]
+      },
+      {
+        name: "System and Services Acquisition (SA)",
+        description: "Allocate adequate resources to protect organizational information systems",
+        results: [
+          {
+            id: "SA-1",
+            control: "System and Services Acquisition Policy and Procedures",
+            status: "gap",
+            details: "Acquisition policy not established",
+            recommendation: "Develop system and services acquisition policy and procedures"
+          },
+          {
+            id: "SA-2",
+            control: "Allocation of Resources",
+            status: "gap",
+            details: "Resource allocation for security not established",
+            recommendation: "Establish adequate resource allocation for security controls"
+          },
+          {
+            id: "SA-3",
+            control: "System Development Life Cycle",
+            status: "gap",
+            details: "Secure development lifecycle not implemented",
+            recommendation: "Implement secure system development lifecycle processes"
+          }
+        ]
+      },
+      {
+        name: "Supply Chain Risk Management (SR)",
+        description: "Manage supply chain risks associated with organizational information systems",
+        results: [
+          {
+            id: "SR-1",
+            control: "Supply Chain Risk Management Policy and Procedures",
+            status: "gap",
+            details: "Supply chain risk management policy not established",
+            recommendation: "Develop supply chain risk management policy and procedures"
+          },
+          {
+            id: "SR-2",
+            control: "Supply Chain Risk Management Plan",
+            status: "gap",
+            details: "Supply chain risk management plan not developed",
+            recommendation: "Develop comprehensive supply chain risk management plan"
+          },
+          {
+            id: "SR-3",
+            control: "Supply Chain Controls and Processes",
+            status: "gap",
+            details: "Supply chain controls not implemented",
+            recommendation: "Implement controls and processes for supply chain management"
+          }
+        ]
       }
     ]
   },
@@ -1341,16 +1557,32 @@ Document: ${fileContent.substring(0, 6000)}
 Controls to analyze:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
-For each control, mark as:
-- "covered": Clear evidence of implementation
-- "partial": Some evidence but incomplete  
-- "gap": No evidence found
+CRITICAL REQUIREMENTS:
+1. For each control, carefully analyze the document content and mark as:
+   - "covered": Clear evidence of implementation (policies, procedures, systems, training, etc.)
+   - "partial": Some evidence but incomplete or not fully implemented
+   - "gap": No evidence found in the document
 
-Look for: policies, procedures, security measures, training, monitoring, access controls.
+2. Look for specific evidence like:
+   - Written policies and procedures
+   - Security measures and controls
+   - Training programs and awareness
+   - Monitoring and logging systems
+   - Access control mechanisms
+   - Incident response procedures
+   - Risk assessment processes
 
-Return JSON with same structure, only changing status/details/recommendation fields.
+3. IMPORTANT: If you find ANY evidence of security controls, policies, or procedures in the document, mark those controls as "covered" or "partial" - NOT as "gap"
 
-Be thorough but concise. Return valid JSON only.`;
+4. Return JSON with same structure, only changing status/details/recommendation fields
+5. Be thorough and analytical - this is for compliance assessment
+6. Return valid JSON only
+
+Example of what to look for:
+- "Access Control Policy" → mark AC-1 as "covered"
+- "User training program" → mark AT-2 as "covered" 
+- "Firewall configuration" → mark SC-7 as "covered"
+- "Incident response plan" → mark IR-8 as "covered"`;
 
          // Add timeout to prevent hanging
      const timeoutPromise = new Promise((_, reject) => {
@@ -1410,19 +1642,22 @@ Be thorough but concise. Return valid JSON only.`;
      // Check if AI provided meaningful analysis
      const totalControlsAnalyzed = gapCount + coveredCount + partialCount;
      const allGaps = gapCount === totalControlsAnalyzed;
+     const noCoveredOrPartial = coveredCount === 0 && partialCount === 0;
      
      console.log(`Total controls analyzed: ${totalControlsAnalyzed}`);
      console.log(`All controls marked as gaps: ${allGaps}`);
+     console.log(`No covered or partial controls: ${noCoveredOrPartial}`);
      
      // If AI didn't change any statuses or marked everything as gap, use fallback
-     if (allGaps && totalControlsAnalyzed > 0) {
-       console.log('AI marked all controls as gaps, this suggests analysis failure. Using fallback.');
-       throw new Error('AI analysis marked all controls as gaps - likely analysis failure');
+     if ((allGaps && totalControlsAnalyzed > 0) || noCoveredOrPartial) {
+       console.log('AI analysis appears to have failed - all controls marked as gaps or no meaningful analysis. Using fallback.');
+       throw new Error('AI analysis failed to provide meaningful results - likely analysis failure');
      }
      
      // If we have some non-gap results, the analysis was successful
      if (coveredCount > 0 || partialCount > 0) {
        console.log('AI analysis successful - found covered/partial controls');
+       console.log(`Coverage: ${((coveredCount + partialCount) / totalControlsAnalyzed * 100).toFixed(1)}%`);
      }
     
     return parsedResponse;
