@@ -1,29 +1,7 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Try different formidable import approaches
-let formidable;
-try {
-  formidable = require('formidable');
-  console.log('Formidable imported via require:', typeof formidable);
-  console.log('Formidable keys:', Object.keys(formidable));
-  
-  // Try to get the constructor - it might be the default export
-  if (typeof formidable === 'function') {
-    console.log('Formidable is a function, using directly');
-  } else if (formidable.IncomingForm) {
-    console.log('Formidable.IncomingForm available');
-  } else if (formidable.default) {
-    console.log('Formidable.default available');
-    formidable = formidable.default;
-  }
-} catch (error) {
-  console.error('Error importing formidable:', error);
-  throw new Error('Failed to import formidable package');
-}
-
-// Debug formidable import
-console.log('Final formidable type:', typeof formidable);
-console.log('Final formidable keys:', formidable ? Object.keys(formidable) : 'undefined');
+// Import busboy for file parsing
+const Busboy = require('busboy');
 
 // Initialize Google AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
@@ -362,34 +340,44 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Debug formidable usage
-    console.log('Creating formidable form...');
+    // Parse multipart form data using busboy
+    console.log('Parsing multipart form data...');
     
-    // Check if IncomingForm is available and create form
-    let form;
-    if (typeof formidable === 'function') {
-      console.log('Using formidable as constructor function');
-      form = new formidable({
-        maxFileSize: 10 * 1024 * 1024, // 10MB limit
-        allowEmptyFiles: false,
-      });
-    } else if (formidable.IncomingForm) {
-      console.log('Using formidable.IncomingForm constructor');
-      form = new formidable.IncomingForm({
-        maxFileSize: 10 * 1024 * 1024, // 10MB limit
-        allowEmptyFiles: false,
-      });
-    } else {
-      console.error('Formidable constructor not available. Available properties:', Object.keys(formidable));
-      throw new Error('Formidable constructor not available');
-    }
-    console.log('Form created successfully:', typeof form);
-
     const [fields, files] = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve([fields, files]);
+      const busboy = Busboy({ headers: req.headers });
+      const fields = {};
+      const files = {};
+      
+      busboy.on('field', (name, value) => {
+        fields[name] = value;
       });
+      
+      busboy.on('file', (name, file, info) => {
+        const { filename, encoding, mimeType } = info;
+        let buffer = [];
+        
+        file.on('data', (data) => {
+          buffer.push(data);
+        });
+        
+        file.on('end', () => {
+          files[name] = {
+            name: filename,
+            buffer: Buffer.concat(buffer),
+            mimeType: mimeType
+          };
+        });
+      });
+      
+      busboy.on('finish', () => {
+        resolve([fields, files]);
+      });
+      
+      busboy.on('error', (err) => {
+        reject(err);
+      });
+      
+      req.pipe(busboy);
     });
 
     if (!files.file || !fields.framework) {
@@ -401,15 +389,14 @@ module.exports = async function handler(req, res) {
 
     // Extract text from uploaded file
     let extractedText = '';
-    const fileName = file.name || file.originalFilename;
+    const fileName = file.name;
     const fileExt = fileName.split('.').pop().toLowerCase();
 
     // Basic text extraction (enhanced version would use proper libraries)
     switch (fileExt) {
       case 'txt':
-        // For formidable v2, we need to read the file from disk
-        const fs = require('fs');
-        extractedText = fs.readFileSync(file.path, 'utf8');
+        // For busboy, we have the file content as a buffer
+        extractedText = file.buffer.toString('utf8');
         break;
       case 'docx':
         // For now, return a message that DOCX processing is available
