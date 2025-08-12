@@ -60,6 +60,11 @@ console.log('allFrameworks.NIST_CSF:', allFrameworks.NIST_CSF ? 'exists' : 'unde
 console.log('allFrameworks.NIST_800_53:', allFrameworks.NIST_800_53 ? 'exists' : 'undefined');
 console.log('allFrameworks object:', JSON.stringify(allFrameworks, null, 2));
 
+// Additional verification
+console.log('allFrameworks === undefined:', allFrameworks === undefined);
+console.log('allFrameworks === null:', allFrameworks === null);
+console.log('typeof allFrameworks:', typeof allFrameworks);
+
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
@@ -71,12 +76,16 @@ async function analyzeWithAI(fileContent, framework) {
     console.log('Requested framework:', framework);
     console.log('allFrameworks[framework]:', allFrameworks ? allFrameworks[framework] : 'undefined');
     
+    // Additional debugging
+    console.log('Global allFrameworks reference:', global.allFrameworks);
+    console.log('This context allFrameworks:', this ? this.allFrameworks : 'no this context');
+    
     // Check if allFrameworks is accessible
     if (typeof allFrameworks === 'undefined') {
-      console.log('allFrameworks is undefined, trying to redefine...');
+      console.log('allFrameworks is undefined, using fallback frameworks...');
       
-      // Try to redefine frameworks if they're not accessible
-      const localFrameworks = {
+      // Use fallback frameworks when global ones are not accessible
+      const fallbackFrameworks = {
         NIST_CSF: {
           name: "NIST Cybersecurity Framework (CSF) v2.0",
           description: "National Institute of Standards and Technology Cybersecurity Framework",
@@ -117,20 +126,17 @@ async function analyzeWithAI(fileContent, framework) {
         }
       };
       
-      console.log('Local frameworks defined. Keys:', Object.keys(localFrameworks));
-      const frameworkData = localFrameworks[framework];
+      console.log('Fallback frameworks defined. Keys:', Object.keys(fallbackFrameworks));
+      const frameworkData = fallbackFrameworks[framework];
       
       if (!frameworkData) {
-        throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(localFrameworks).join(', ')}`);
+        throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(fallbackFrameworks).join(', ')}`);
       }
       
-      console.log('Using local frameworks. Framework data found:', frameworkData.name);
+      console.log('Using fallback frameworks. Framework data found:', frameworkData.name);
       console.log('Number of categories:', frameworkData.categories.length);
       
-      // Continue with local frameworks...
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-      
-      // For now, return the local framework data as fallback
+      // Return the fallback framework data
       return {
         categories: frameworkData.categories.map(category => ({
           name: category.name,
@@ -147,7 +153,15 @@ async function analyzeWithAI(fileContent, framework) {
     }
     
     // Get predefined control structure for the framework
-    const frameworkData = allFrameworks[framework];
+    let frameworkData;
+    try {
+      console.log('Attempting to access allFrameworks[framework]...');
+      frameworkData = allFrameworks[framework];
+      console.log('Successfully accessed framework data:', frameworkData ? 'exists' : 'undefined');
+    } catch (error) {
+      console.error('Error accessing allFrameworks[framework]:', error);
+      throw new Error(`Failed to access framework data: ${error.message}`);
+    }
     
     if (!frameworkData) {
       throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(allFrameworks).join(', ')}`);
