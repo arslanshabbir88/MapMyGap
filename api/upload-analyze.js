@@ -7,7 +7,10 @@ const Busboy = require('busboy');
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // Inline framework control structures to avoid import issues
-console.log('Defining allFrameworks...');
+console.log('=== FILE LOADING DEBUG ===');
+console.log('Starting to define allFrameworks...');
+console.log('GoogleGenerativeAI loaded:', typeof GoogleGenerativeAI);
+console.log('Busboy loaded:', typeof Busboy);
 
 // Simplified frameworks for testing
 const allFrameworks = {
@@ -51,17 +54,97 @@ const allFrameworks = {
   }
 };
 
+console.log('=== FRAMEWORK DEFINITION DEBUG ===');
 console.log('allFrameworks defined successfully. Keys:', Object.keys(allFrameworks));
 console.log('allFrameworks.NIST_CSF:', allFrameworks.NIST_CSF ? 'exists' : 'undefined');
 console.log('allFrameworks.NIST_800_53:', allFrameworks.NIST_800_53 ? 'exists' : 'undefined');
+console.log('allFrameworks object:', JSON.stringify(allFrameworks, null, 2));
 
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework) {
   try {
+    console.log('=== DEBUGGING FRAMEWORK ACCESS ===');
     console.log('allFrameworks type:', typeof allFrameworks);
+    console.log('allFrameworks value:', allFrameworks);
     console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
     console.log('Available frameworks:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
     console.log('Requested framework:', framework);
+    console.log('allFrameworks[framework]:', allFrameworks ? allFrameworks[framework] : 'undefined');
+    
+    // Check if allFrameworks is accessible
+    if (typeof allFrameworks === 'undefined') {
+      console.log('allFrameworks is undefined, trying to redefine...');
+      
+      // Try to redefine frameworks if they're not accessible
+      const localFrameworks = {
+        NIST_CSF: {
+          name: "NIST Cybersecurity Framework (CSF) v2.0",
+          description: "National Institute of Standards and Technology Cybersecurity Framework",
+          categories: [
+            {
+              name: "IDENTIFY (ID)",
+              description: "Develop an organizational understanding to manage cybersecurity risk",
+              results: [
+                {
+                  id: "ID.AM-1",
+                  control: "Physical devices and systems within the organization are inventoried",
+                  status: "gap",
+                  details: "Asset inventory not maintained",
+                  recommendation: "Implement comprehensive asset inventory system for all physical devices and systems"
+                }
+              ]
+            }
+          ]
+        },
+        NIST_800_53: {
+          name: "NIST SP 800-53 Rev. 5",
+          description: "Security and Privacy Controls for Information Systems and Organizations",
+          categories: [
+            {
+              name: "Access Control (AC)",
+              description: "Control access to information systems and resources",
+              results: [
+                {
+                  id: "AC-1",
+                  control: "Access Control Policy and Procedures",
+                  status: "gap",
+                  details: "Access control policy not established",
+                  recommendation: "Develop and implement comprehensive access control policy and procedures"
+                }
+              ]
+            }
+          ]
+        }
+      };
+      
+      console.log('Local frameworks defined. Keys:', Object.keys(localFrameworks));
+      const frameworkData = localFrameworks[framework];
+      
+      if (!frameworkData) {
+        throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(localFrameworks).join(', ')}`);
+      }
+      
+      console.log('Using local frameworks. Framework data found:', frameworkData.name);
+      console.log('Number of categories:', frameworkData.categories.length);
+      
+      // Continue with local frameworks...
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      
+      // For now, return the local framework data as fallback
+      return {
+        categories: frameworkData.categories.map(category => ({
+          name: category.name,
+          description: category.description,
+          results: category.results.map(control => ({
+            id: control.id,
+            control: control.control,
+            status: "gap",
+            details: "Using fallback framework data. Please review manually.",
+            recommendation: control.recommendation
+          }))
+        }))
+      };
+    }
     
     // Get predefined control structure for the framework
     const frameworkData = allFrameworks[framework];
@@ -286,7 +369,9 @@ module.exports = async function handler(req, res) {
     }
 
     // Use real AI analysis on extracted text
+    console.log('About to call analyzeWithAI with framework:', framework);
     const analysisResult = await analyzeWithAI(extractedText, framework);
+    console.log('analyzeWithAI completed successfully');
 
     // Return the analysis result
     res.status(200).json({
