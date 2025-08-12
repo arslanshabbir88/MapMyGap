@@ -33,7 +33,7 @@ const upload = multer({
 });
 
 // Real AI analysis function
-async function analyzeWithAI(fileContent, framework) {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 

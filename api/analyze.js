@@ -185,7 +185,7 @@ const allFrameworks = {
 };
 
 // Hybrid analysis function - uses predefined controls + AI analysis
-async function analyzeWithAI(fileContent, framework) {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
   try {
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);

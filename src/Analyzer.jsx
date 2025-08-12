@@ -260,6 +260,7 @@ function Analyzer({ onNavigateHome }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
+  const [selectedCategories, setSelectedCategories] = useState(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core NIST families
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -396,6 +397,9 @@ function Analyzer({ onNavigateHome }) {
         form.append('framework', selectedFramework);
         
         // Add selected control families for NIST 800-53
+        if (selectedFramework === 'NIST_800_53' && selectedCategories.length > 0) {
+          form.append('categories', JSON.stringify(selectedCategories));
+        }
 
         const response = await fetch('/api/upload-analyze', { method: 'POST', body: form });
         if (!response.ok) {
@@ -586,7 +590,16 @@ function Analyzer({ onNavigateHome }) {
                 <select 
                   id="framework" 
                   value={selectedFramework}
-                  onChange={(e) => { setSelectedFramework(e.target.value); setAnalysisResults(null); }}
+                  onChange={(e) => { 
+                    setSelectedFramework(e.target.value); 
+                    setAnalysisResults(null);
+                    // Reset categories when framework changes
+                    if (e.target.value === 'NIST_800_53') {
+                      setSelectedCategories(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core families
+                    } else {
+                      setSelectedCategories([]);
+                    }
+                  }}
                   className="w-full bg-slate-700 border border-slate-600 rounded-lg shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 >
                   {frameworkOptions.map(opt => <option key={opt.id} value={opt.id} disabled={!opt.enabled}>{opt.name}{!opt.enabled ? ' (Demo disabled)' : ''}</option>)}
@@ -594,6 +607,65 @@ function Analyzer({ onNavigateHome }) {
               </div>
 
               {/* Control Family Selection for NIST 800-53 */}
+              {selectedFramework === 'NIST_800_53' && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Control Families to Analyze
+                    <span className="text-xs text-slate-400 ml-2">
+                      (Select 3-8 families for optimal performance and cost)
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-48 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50">
+                    {[
+                      { code: 'AC', name: 'Access Control (AC)', description: 'Control access to information systems and resources' },
+                      { code: 'AU', name: 'Audit and Accountability (AU)', description: 'Create, protect, and retain audit records' },
+                      { code: 'IA', name: 'Identification and Authentication (IA)', description: 'Identify and authenticate users and devices' },
+                      { code: 'IR', name: 'Incident Response (IR)', description: 'Respond to and manage security incidents' },
+                      { code: 'SC', name: 'System and Communications Protection (SC)', description: 'Protect system boundaries and communications' },
+                      { code: 'AT', name: 'Awareness and Training (AT)', description: 'Ensure personnel are aware of security responsibilities' },
+                      { code: 'CA', name: 'Assessment, Authorization, and Monitoring (CA)', description: 'Assess and authorize systems' },
+                      { code: 'CM', name: 'Configuration Management (CM)', description: 'Manage system configurations and changes' },
+                      { code: 'CP', name: 'Contingency Planning (CP)', description: 'Plan for system recovery and continuity' },
+                      { code: 'PE', name: 'Physical and Environmental Protection (PE)', description: 'Protect physical assets and environment' },
+                      { code: 'PS', name: 'Personnel Security (PS)', description: 'Ensure personnel are trustworthy and qualified' },
+                      { code: 'MP', name: 'Media Protection (MP)', description: 'Protect and manage media throughout its lifecycle' },
+                      { code: 'SI', name: 'System and Information Integrity (SI)', description: 'Maintain system and information integrity' },
+                      { code: 'MA', name: 'Maintenance (MA)', description: 'Perform system maintenance securely' },
+                      { code: 'RA', name: 'Risk Assessment (RA)', description: 'Assess and manage security risks' },
+                      { code: 'SA', name: 'System and Services Acquisition (SA)', description: 'Acquire systems and services securely' },
+                      { code: 'SR', name: 'Supply Chain Risk Management (SR)', description: 'Manage supply chain risks' }
+                    ].map(family => (
+                      <label key={family.code} className="flex items-start space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(family.code)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedCategories([...selectedCategories, family.code]);
+                            } else {
+                              setSelectedCategories(selectedCategories.filter(c => c !== family.code));
+                            }
+                          }}
+                          className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                        />
+                        <div className="text-sm">
+                          <div className="font-medium text-slate-200">{family.code}</div>
+                          <div className="text-slate-400 text-xs">{family.name}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="mt-2 text-xs text-slate-400">
+                    Selected: {selectedCategories.length} families • 
+                    Estimated cost: ${((selectedCategories.length * 0.002) + 0.01).toFixed(3)} per analysis
+                  </div>
+                  {selectedCategories.length === 0 && (
+                    <div className="mt-2 text-sm text-red-400">
+                      Please select at least one control family to analyze.
+                    </div>
+                  )}
+                </div>
+              )}
               
 
               <div>

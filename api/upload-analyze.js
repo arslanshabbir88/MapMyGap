@@ -1252,7 +1252,7 @@ Focus on families that are clearly addressed or missing in the document content.
 }
 
 // Hybrid analysis function - uses smart filtering + AI analysis
- async function analyzeWithAI(fileContent, framework) {
+ async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
    // Declare filteredFrameworkData at function level to ensure it's always available
    let filteredFrameworkData = { categories: [] };
    
@@ -1486,65 +1486,98 @@ Focus on families that are clearly addressed or missing in the document content.
       // For NIST 800-53, use intelligent filtering to reduce AI processing time
       const totalControls = countTotalControls(frameworkData);
       
-      if (totalControls > 20) {
-        // If we have many controls, filter to most relevant ones
-        console.log('Large framework detected, applying intelligent filtering...');
+      if (selectedCategories && selectedCategories.length > 0) {
+        // User has selected specific categories - use those for maximum cost savings
+        console.log('User selected categories detected, applying strict filtering for cost optimization...');
+        console.log('Selected categories:', selectedCategories);
         
-        // Always include core control families
-        const coreFamilies = ['AC', 'AU', 'IA', 'SC', 'IR'];
-        const additionalFamilies = ['CM', 'CP', 'AT', 'CA', 'PE', 'PS', 'MP', 'SI', 'MA', 'RA', 'SA', 'SR'];
-        
-        // Filter to include core families + more additional ones for better coverage
         filteredFrameworkData = {
           ...frameworkData,
           categories: frameworkData.categories.filter(category => {
             const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-            console.log(`Checking category: ${category.name} -> code: ${categoryCode}`);
-            // Always include core families
-            if (coreFamilies.includes(categoryCode)) {
-              console.log(`Including core family: ${categoryCode}`);
-              return true;
-            }
-            // Include additional families with higher probability (80% instead of 50%)
-            if (additionalFamilies.includes(categoryCode)) {
-              const shouldInclude = Math.random() < 0.8; // 80% chance for additional families
-              console.log(`Additional family ${categoryCode}: ${shouldInclude ? 'including' : 'excluding'}`);
-              return shouldInclude;
-            }
-            console.log(`Excluding category: ${category.name} (no match)`);
-            return false;
+            const shouldInclude = selectedCategories.includes(categoryCode);
+            console.log(`Category ${category.name} (${categoryCode}): ${shouldInclude ? 'including' : 'excluding'} - user selection`);
+            return shouldInclude;
           })
         };
         
-        // Ensure we have at least 12-15 categories for comprehensive analysis
-        if (filteredFrameworkData.categories.length < 12) {
-          console.log('Filtered categories too few, expanding selection...');
-          const missingCategories = frameworkData.categories.filter(category => {
-            const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-            return !filteredFrameworkData.categories.some(fc => 
-              fc.name.match(/\(([A-Z]+)\)/)?.[1] === categoryCode
-            );
-          });
-          
-          // Add missing categories until we reach target
-          const targetCategories = 15;
-          const categoriesToAdd = missingCategories.slice(0, targetCategories - filteredFrameworkData.categories.length);
-          filteredFrameworkData.categories.push(...categoriesToAdd);
-          console.log(`Added ${categoriesToAdd.length} missing categories to reach target`);
-        }
-        
         const filteredControls = countTotalControls(filteredFrameworkData);
         const reduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
-        console.log(`Smart filtering applied: ${filteredControls}/${totalControls} controls (${reduction}% reduction)`);
+        console.log(`User category filtering applied: ${filteredControls}/${totalControls} controls (${reduction}% reduction)`);
         console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name.match(/\(([A-Z]+)\)/)?.[1] || c.name).join(', ')}`);
         
-        // Final safety check - ensure we have enough categories
-        if (filteredFrameworkData.categories.length < 10) {
-          console.log('WARNING: Too few categories after filtering, using all available categories');
-          filteredFrameworkData = frameworkData;
+        // Validate user selection
+        if (filteredFrameworkData.categories.length === 0) {
+          console.log('WARNING: No categories match user selection, falling back to smart filtering');
+          selectedCategories = null; // Reset to use smart filtering
+        } else {
+          console.log('User category filtering successful, skipping smart filtering');
+          // Skip to the end of this block
         }
-      } else {
-        console.log('Small framework, using all controls for accuracy');
+      }
+      
+      // If no user selection or user selection failed, apply smart filtering
+      if (!selectedCategories || selectedCategories.length === 0 || filteredFrameworkData.categories.length === 0) {
+        if (totalControls > 20) {
+          // If we have many controls, filter to most relevant ones
+          console.log('Large framework detected, applying intelligent filtering...');
+          
+          // Always include core control families
+          const coreFamilies = ['AC', 'AU', 'IA', 'SC', 'IR'];
+          const additionalFamilies = ['CM', 'CP', 'AT', 'CA', 'PE', 'PS', 'MP', 'SI', 'MA', 'RA', 'SA', 'SR'];
+          
+          // Filter to include core families + more additional ones for better coverage
+          filteredFrameworkData = {
+            ...frameworkData,
+            categories: frameworkData.categories.filter(category => {
+              const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+              console.log(`Checking category: ${category.name} -> code: ${categoryCode}`);
+              // Always include core families
+              if (coreFamilies.includes(categoryCode)) {
+                console.log(`Including core family: ${categoryCode}`);
+                return true;
+              }
+              // Include additional families with higher probability (80% instead of 50%)
+              if (additionalFamilies.includes(categoryCode)) {
+                const shouldInclude = Math.random() < 0.8; // 80% chance for additional families
+                console.log(`Additional family ${categoryCode}: ${shouldInclude ? 'including' : 'excluding'}`);
+                return shouldInclude;
+              }
+              console.log(`Excluding category: ${category.name} (no match)`);
+              return false;
+            })
+          };
+          
+          // Ensure we have at least 12-15 categories for comprehensive analysis
+          if (filteredFrameworkData.categories.length < 12) {
+            console.log('Filtered categories too few, expanding selection...');
+            const missingCategories = frameworkData.categories.filter(category => {
+              const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+              return !filteredFrameworkData.categories.some(fc => 
+                fc.name.match(/\(([A-Z]+)\)/)?.[1] === categoryCode
+              );
+            });
+            
+            // Add missing categories until we reach target
+            const targetCategories = 15;
+            const categoriesToAdd = missingCategories.slice(0, targetCategories - filteredFrameworkData.categories.length);
+            filteredFrameworkData.categories.push(...categoriesToAdd);
+            console.log(`Added ${categoriesToAdd.length} missing categories to reach target`);
+          }
+          
+          const filteredControls = countTotalControls(filteredFrameworkData);
+          const reduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
+          console.log(`Smart filtering applied: ${filteredControls}/${totalControls} controls (${reduction}% reduction)`);
+          console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name.match(/\(([A-Z]+)\)/)?.[1] || c.name).join(', ')}`);
+          
+          // Final safety check - ensure we have enough categories
+          if (filteredFrameworkData.categories.length < 10) {
+            console.log('WARNING: Too few categories after filtering, using all available categories');
+            filteredFrameworkData = frameworkData;
+          }
+        } else {
+          console.log('Small framework, using all controls for accuracy');
+        }
       }
     }
     
@@ -1857,6 +1890,7 @@ module.exports = async function handler(req, res) {
 
     const file = files.file;
     const framework = fields.framework;
+    const selectedCategories = fields.categories ? JSON.parse(fields.categories) : null;
 
     // Extract text from uploaded file
     let extractedText = '';
@@ -1912,9 +1946,12 @@ module.exports = async function handler(req, res) {
          // Use real AI analysis on extracted text with timeout protection
      console.log('About to call analyzeWithAI with framework:', framework);
      console.log('Document length:', extractedText.length, 'characters');
+     if (selectedCategories) {
+       console.log('Selected categories for filtering:', selectedCategories);
+     }
      
      const analysisStartTime = Date.now();
-     const analysisResult = await analyzeWithAI(extractedText, framework);
+     const analysisResult = await analyzeWithAI(extractedText, framework, selectedCategories);
      const analysisTime = Date.now() - analysisStartTime;
      
      console.log(`analyzeWithAI completed successfully in ${analysisTime}ms`);
