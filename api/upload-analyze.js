@@ -1256,60 +1256,45 @@ async function analyzeWithAI(fileContent, framework) {
       console.log('Cache status:', nistControlsCache ? `Valid (age: ${Math.round((Date.now() - nistControlsCacheTime) / 1000 / 60)} minutes)` : 'None');
     }
 
-    // SMART FILTERING: Identify relevant control families to reduce token usage
+    // DISABLE SMART FILTERING FOR NOW - Use full framework to ensure proper analysis
     let filteredFrameworkData = frameworkData;
-    if (framework === 'NIST_800_53') {
-      console.log('=== APPLYING SMART FILTERING ===');
-      
-      // Check if user provided specific control families
-      const userSelectedFamilies = req.body.selectedFamilies ? JSON.parse(req.body.selectedFamilies) : [];
-      
-      let relevantFamilies;
-      if (userSelectedFamilies.length > 0) {
-        console.log('Using user-selected control families:', userSelectedFamilies);
-        relevantFamilies = userSelectedFamilies;
-      } else {
-        console.log('No user selection, using AI-based smart filtering');
-        relevantFamilies = await identifyRelevantControls(fileContent, framework);
-        
-        // Make filtering less aggressive - include more families by default
-        if (relevantFamilies.length < 5) {
-          // Add common families if AI only identified a few
-          const commonFamilies = ['AC', 'AU', 'IA', 'SC', 'IR', 'CM', 'CP', 'AT', 'CA'];
-          relevantFamilies = [...new Set([...relevantFamilies, ...commonFamilies.slice(0, 8)])];
-          console.log('Expanded relevant families to:', relevantFamilies);
-        }
-      }
-      
-      // Filter framework to only include relevant control families
-      filteredFrameworkData = {
-        ...frameworkData,
-        categories: frameworkData.categories.filter(category => {
-          const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-          const isRelevant = relevantFamilies.includes(categoryCode);
-          console.log(`Category ${category.name} (${categoryCode}): ${isRelevant ? 'RELEVANT' : 'FILTERED OUT'}`);
-          return isRelevant;
-        })
-      };
-      
-      const filteredControls = countTotalControls(filteredFrameworkData);
-      const tokenReduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
-      console.log(`Smart filtering applied: ${filteredControls}/${totalControls} controls (${tokenReduction}% reduction)`);
-      console.log('Relevant families:', relevantFamilies);
-    }
+    console.log('=== USING FULL FRAMEWORK (Smart filtering disabled) ===');
+    console.log('Total controls available:', countTotalControls(frameworkData));
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    // Map framework IDs to display names
-    const frameworkNames = {
-      'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
-      'NIST_800_53': 'NIST SP 800-53',
-      'PCI_DSS': 'PCI DSS v4.0',
-      'ISO_27001': 'ISO/IEC 27001:2022',
-      'SOC_2': 'SOC 2 Type II'
-    };
+     // Map framework IDs to display names
+     const frameworkNames = {
+       'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
+       'NIST_800_53': 'NIST SP 800-53',
+       'PCI_DSS': 'PCI DSS v4.0',
+       'ISO_27001': 'ISO/IEC 27001:2022',
+       'SOC_2': 'SOC 2 Type II'
+     };
 
-    const frameworkName = frameworkNames[framework] || framework;
+     const frameworkName = frameworkNames[framework] || framework;
+     
+     // First, test if AI can analyze the content at all
+     console.log('=== TESTING AI CAPABILITY ===');
+     try {
+       const testPrompt = `Analyze this document content and identify if it contains any cybersecurity-related information. Return only "YES" or "NO".
+
+Document Content (first 1000 characters):
+${fileContent.substring(0, 1000)}
+
+Does this document contain cybersecurity information?`;
+       
+       const testResult = await model.generateContent(testPrompt);
+       const testResponse = await testResult.response;
+       const testText = testResponse.text();
+       console.log('AI Test Response:', testText);
+       
+       if (testText.toLowerCase().includes('no') && !testText.toLowerCase().includes('yes')) {
+         console.log('AI indicates no cybersecurity content found - this may explain 0% scores');
+       }
+     } catch (error) {
+       console.error('AI test failed:', error);
+     }
 
     // Create a comprehensive prompt for AI analysis with filtered control structure
     const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
@@ -1321,10 +1306,10 @@ Framework: ${frameworkName}
 
 IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
 
-EXACT CONTROL STRUCTURE TO USE (Smart-filtered for relevance):
+EXACT CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
-Your task is to analyze the document content and determine the compliance status for each control in the structure above. For each control, analyze the document content and determine if the control is:
+Your task is to analyze the document content and determine the compliance status for each control. For each control, analyze the document content and determine if the control is:
 - "covered": Fully addressed in the document (clear evidence of implementation)
 - "partial": Partially addressed but needs improvement (some evidence but incomplete)
 - "gap": Not addressed at all (no evidence found)
@@ -1333,19 +1318,25 @@ ANALYSIS INSTRUCTIONS:
 1. Read through the document content carefully
 2. For each control, search for relevant keywords, policies, procedures, or descriptions
 3. Look for specific evidence like:
-   - Policy statements
-   - Procedure descriptions
-   - Implementation details
-   - Security measures mentioned
-   - Training programs
-   - Monitoring systems
-   - Incident response plans
-   - Access controls
-   - Audit procedures
+   - Policy statements (e.g., "We have a policy that...", "Our policy requires...")
+   - Procedure descriptions (e.g., "The procedure for...", "We follow these steps...")
+   - Implementation details (e.g., "We implement...", "Our system includes...")
+   - Security measures (e.g., "We use firewalls...", "Access is controlled by...")
+   - Training programs (e.g., "Employees receive training...", "We conduct security awareness...")
+   - Monitoring systems (e.g., "We monitor...", "Our system logs...")
+   - Incident response plans (e.g., "In case of incident...", "Our response procedure...")
+   - Access controls (e.g., "User access is managed...", "We control access through...")
+   - Audit procedures (e.g., "We audit...", "Regular reviews are conducted...")
 
 4. If you find clear evidence of a control being implemented, mark it as "covered"
 5. If you find partial evidence or mentions but not full implementation, mark it as "partial"
 6. If you find no evidence at all, mark it as "gap"
+
+EXAMPLE ANALYSIS:
+For a control like "Access Control Policy and Procedures":
+- If document mentions "We have an access control policy that defines user permissions", mark as "covered"
+- If document mentions "Access control is important" but no policy details, mark as "partial"
+- If document has no mention of access control policies, mark as "gap"
 
 Return your analysis in this exact JSON format, using the EXACT control structure provided:
 {
@@ -1374,6 +1365,7 @@ CRITICAL REQUIREMENTS:
 - Be thorough in your analysis - don't default to "gap" without careful consideration
 - If content is insufficient, mark as "gap" with clear guidance
 - Provide actionable recommendations that match the document's context
+- IMPORTANT: Look for ANY evidence, even if it's just a mention or partial implementation
 
 Return only valid JSON, no additional text or formatting.`;
 
@@ -1392,30 +1384,42 @@ Return only valid JSON, no additional text or formatting.`;
     const parsedResponse = JSON.parse(jsonMatch[0]);
     console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
     
-    // Validate that the AI actually changed some statuses
-    let gapCount = 0;
-    let coveredCount = 0;
-    let partialCount = 0;
-    
-    if (parsedResponse.categories) {
-      parsedResponse.categories.forEach(category => {
-        if (category.results) {
-          category.results.forEach(control => {
-            if (control.status === 'gap') gapCount++;
-            else if (control.status === 'covered') coveredCount++;
-            else if (control.status === 'partial') partialCount++;
-          });
-        }
-      });
-    }
-    
-    console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
-    
-    // If AI didn't change any statuses, use fallback
-    if (gapCount === frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0)) {
-      console.log('AI did not change any statuses, using fallback');
-      throw new Error('AI analysis did not provide meaningful status updates');
-    }
+         // Validate that the AI actually changed some statuses
+     let gapCount = 0;
+     let coveredCount = 0;
+     let partialCount = 0;
+     
+     if (parsedResponse.categories) {
+       parsedResponse.categories.forEach(category => {
+         if (category.results) {
+           category.results.forEach(control => {
+             if (control.status === 'gap') gapCount++;
+             else if (control.status === 'covered') coveredCount++;
+             else if (control.status === 'partial') partialCount++;
+           });
+         }
+       });
+     }
+     
+     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
+     
+     // Check if AI provided meaningful analysis
+     const totalControlsAnalyzed = gapCount + coveredCount + partialCount;
+     const allGaps = gapCount === totalControlsAnalyzed;
+     
+     console.log(`Total controls analyzed: ${totalControlsAnalyzed}`);
+     console.log(`All controls marked as gaps: ${allGaps}`);
+     
+     // If AI didn't change any statuses or marked everything as gap, use fallback
+     if (allGaps && totalControlsAnalyzed > 0) {
+       console.log('AI marked all controls as gaps, this suggests analysis failure. Using fallback.');
+       throw new Error('AI analysis marked all controls as gaps - likely analysis failure');
+     }
+     
+     // If we have some non-gap results, the analysis was successful
+     if (coveredCount > 0 || partialCount > 0) {
+       console.log('AI analysis successful - found covered/partial controls');
+     }
     
     return parsedResponse;
   } catch (error) {
