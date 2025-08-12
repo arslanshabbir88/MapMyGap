@@ -691,16 +691,6 @@ function Analyzer({ onNavigateHome }) {
                       {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                     </span>
                   </div>
-                  <button
-                    onClick={() => {
-                      setShowHistory(!showHistory);
-                      if (!showHistory) loadAnalysisHistory();
-                    }}
-                    className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-slate-700/50"
-                  >
-                    <HistoryIcon />
-                    <span className="text-sm">History</span>
-                  </button>
                 </div>
               )}
               <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
@@ -793,9 +783,27 @@ function Analyzer({ onNavigateHome }) {
                     </span>
                   </div>
                   
-                  <p className="text-xs text-slate-400 mb-3">
-                    Select 3-8 families for optimal performance and cost savings
-                  </p>
+                  <div className="mb-3 p-2 bg-slate-700/30 rounded-lg border border-slate-600">
+                    <div className="flex items-center space-x-4 text-xs text-slate-400">
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 bg-red-500 rounded-full"></span>
+                        <span>Critical</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
+                        <span>Important</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <span className="w-2 h-2 bg-slate-500 rounded-full"></span>
+                        <span>Standard</span>
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">
+                      Priority indicates the typical importance of controls in this family for most organizations
+                    </p>
+                  </div>
+                  
+
 
                   {/* Search and Filter */}
                   <div className="mb-3">
@@ -852,7 +860,8 @@ function Analyzer({ onNavigateHome }) {
                                 family.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
                                 'bg-slate-500/20 text-slate-300'
                               }`}>
-                                {family.priority}
+                                {family.priority === 'high' ? 'Critical' :
+                                 family.priority === 'medium' ? 'Important' : 'Standard'}
                               </span>
                             </div>
                             <div className="text-slate-400 text-xs mt-1">{family.description}</div>
