@@ -1726,7 +1726,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           console.log('User category filtering successful, skipping smart filtering entirely');
           // User selection successful - skip smart filtering entirely
           // Set a flag to skip smart filtering instead of early return
-          const skipSmartFiltering = true;
+          skipSmartFiltering = true;
         }
       }
       
@@ -1799,6 +1799,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Total controls for AI analysis:', countTotalControls(filteredFrameworkData));
     console.log('Categories being analyzed:', filteredFrameworkData.categories.map(c => c.name).join(', '));
     console.log('Category codes:', filteredFrameworkData.categories.map(c => c.name.match(/\(([A-Z]+)\)/)?.[1] || 'N/A').join(', '));
+    console.log('=== CATEGORY FILTERING DEBUG ===');
+    console.log('User selected categories:', selectedCategories);
+    console.log('skipSmartFiltering flag:', skipSmartFiltering);
+    console.log('Final filtered categories count:', filteredFrameworkData.categories.length);
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
