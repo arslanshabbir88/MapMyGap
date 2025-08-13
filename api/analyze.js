@@ -189,6 +189,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   try {
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);
+    console.log('Analysis Strictness Level:', strictness);
     
     // Get predefined control structure for the framework
     const frameworkData = allFrameworks[framework];
@@ -260,9 +261,25 @@ CRITICAL REQUIREMENTS:
 - Provide actionable recommendations that match the document's context
 
 ANALYSIS STRICTNESS LEVEL: ${strictness}
-- STRICT: Only mark as "covered" if there is explicit, detailed evidence. Be conservative in scoring.
-- BALANCED: Mark as "covered" if there is reasonable evidence or clear intent. Standard analysis approach.
-- LENIENT: Mark as "covered" if there is any reasonable indication of coverage or intent. Be generous in scoring.
+
+STRICT MODE (High Precision):
+- Only mark as "covered" if there is EXPLICIT, DETAILED evidence
+- Look for specific policy names, procedure references, system names
+- Require clear, unambiguous language about implementation
+- Be very conservative - when in doubt, mark as "partial" or "gap"
+- Example: "Access Control Policy" alone is NOT enough - need details about what it covers
+
+BALANCED MODE (Standard):
+- Mark as "covered" if there is reasonable evidence or clear intent
+- Accept general policy statements with some implementation details
+- Standard compliance assessment approach
+- Example: "Access Control Policy" + basic implementation details is sufficient
+
+LENIENT MODE (Intent Recognition):
+- Mark as "covered" if there is ANY reasonable indication of coverage or intent
+- Accept general policy statements, organizational intent, or planning
+- Be generous in interpretation - look for implied controls
+- Example: "Access Control Policy" or "we control access" is sufficient
 
 Return only valid JSON, no additional text or formatting.`;
 
@@ -277,6 +294,10 @@ Return only valid JSON, no additional text or formatting.`;
     const text = response.text();
     
     console.log('AI Response Text:', text);
+    console.log('AI Response Length:', text.length);
+    console.log('Strictness level used:', strictness);
+    
+    // Check if AI returned an error message
     
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);

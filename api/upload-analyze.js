@@ -1261,6 +1261,7 @@ Focus on families that are clearly addressed or missing in the document content.
      console.log('allFrameworks type:', typeof allFrameworks);
      console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
      console.log('Requested framework:', framework);
+     console.log('Analysis Strictness Level:', strictness);
     
     // Additional debugging
     console.log('Global allFrameworks reference:', global.allFrameworks);
@@ -1654,9 +1655,25 @@ CRITICAL REQUIREMENTS:
    - Risk management processes
 
 3. ANALYSIS STRICTNESS LEVEL: ${strictness}
-   - STRICT: Only mark as "covered" if there is explicit, detailed evidence. Be conservative in scoring.
-   - BALANCED: Mark as "covered" if there is reasonable evidence or clear intent. Standard analysis approach.
-   - LENIENT: Mark as "covered" if there is any reasonable indication of coverage or intent. Be generous in scoring.
+   
+   STRICT MODE (High Precision):
+   - Only mark as "covered" if there is EXPLICIT, DETAILED evidence
+   - Look for specific policy names, procedure references, system names
+   - Require clear, unambiguous language about implementation
+   - Be very conservative - when in doubt, mark as "partial" or "gap"
+   - Example: "Access Control Policy" alone is NOT enough - need details about what it covers
+   
+   BALANCED MODE (Standard):
+   - Mark as "covered" if there is reasonable evidence or clear intent
+   - Accept general policy statements with some implementation details
+   - Standard compliance assessment approach
+   - Example: "Access Control Policy" + basic implementation details is sufficient
+   
+   LENIENT MODE (Intent Recognition):
+   - Mark as "covered" if there is ANY reasonable indication of coverage or intent
+   - Accept general policy statements, organizational intent, or planning
+   - Be generous in interpretation - look for implied controls
+   - Example: "Access Control Policy" or "we control access" is sufficient
 
 4. CRITICAL: Based on strictness level, adjust evidence requirements:
    - STRICT: Look for explicit, detailed evidence only
@@ -1691,6 +1708,7 @@ Example of what to look for:
     
          console.log('AI Response Text:', text);
      console.log('AI Response Length:', text.length);
+     console.log('Strictness level used:', strictness);
      
      // Check if AI returned an error message
      if (text.toLowerCase().includes('error') || text.toLowerCase().includes('sorry') || text.toLowerCase().includes('cannot')) {

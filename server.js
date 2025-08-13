@@ -35,6 +35,10 @@ const upload = multer({
 // Real AI analysis function
 async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
   try {
+    console.log('Analyzing document with framework:', framework);
+    console.log('Analysis Strictness Level:', strictness);
+    
+    // Get framework data
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Map framework IDs to display names
@@ -60,14 +64,14 @@ Please provide a comprehensive compliance analysis in the following JSON format:
   "categories": [
     {
       "name": "Category Name",
-      "description": "Category description",
+      "description": "Category Description",
       "results": [
         {
           "id": "Control ID",
-          "control": "Control description",
+          "control": "Control Description",
           "status": "covered|partial|gap",
           "details": "Detailed analysis of compliance status",
-          "recommendation": "Specific recommendation to achieve compliance"
+          "recommendation": "Specific recommendation for improvement"
         }
       ]
     }
@@ -84,9 +88,25 @@ Guidelines:
 - For NIST frameworks, focus on the specific control families and subcategories
 
 ANALYSIS STRICTNESS LEVEL: ${strictness}
-- STRICT: Only mark as "covered" if there is explicit, detailed evidence. Be conservative in scoring.
-- BALANCED: Mark as "covered" if there is reasonable evidence or clear intent. Standard analysis approach.
-- LENIENT: Mark as "covered" if there is any reasonable indication of coverage or intent. Be generous in scoring.
+
+STRICT MODE (High Precision):
+- Only mark as "covered" if there is EXPLICIT, DETAILED evidence
+- Look for specific policy names, procedure references, system names
+- Require clear, unambiguous language about implementation
+- Be very conservative - when in doubt, mark as "partial" or "gap"
+- Example: "Access Control Policy" alone is NOT enough - need details about what it covers
+
+BALANCED MODE (Standard):
+- Mark as "covered" if there is reasonable evidence or clear intent
+- Accept general policy statements with some implementation details
+- Standard compliance assessment approach
+- Example: "Access Control Policy" + basic implementation details is sufficient
+
+LENIENT MODE (Intent Recognition):
+- Mark as "covered" if there is ANY reasonable indication of coverage or intent
+- Accept general policy statements, organizational intent, or planning
+- Be generous in interpretation - look for implied controls
+- Example: "Access Control Policy" or "we control access" is sufficient
 
 Return only valid JSON, no additional text.`;
 
