@@ -408,6 +408,31 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Framework data found:', frameworkData.name);
     console.log('Number of categories:', frameworkData.categories.length);
 
+    // Apply category filtering if user has selected specific categories
+    let filteredFrameworkData = frameworkData;
+    if (selectedCategories && selectedCategories.length > 0) {
+      console.log('User selected categories detected, applying strict filtering for cost optimization...');
+      console.log('Selected categories:', selectedCategories);
+      
+      filteredFrameworkData = {
+        ...frameworkData,
+        categories: frameworkData.categories.filter(category => {
+          const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+          const shouldInclude = selectedCategories.includes(categoryCode);
+          console.log(`Category ${category.name} (${categoryCode}): ${shouldInclude ? 'including' : 'excluding'} - user selection`);
+          return shouldInclude;
+        })
+      };
+      
+      console.log(`User category filtering applied: ${filteredFrameworkData.categories.length}/${frameworkData.categories.length} categories`);
+      console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name.match(/\(([A-Z]+)\)/)?.[1] || c.name).join(', ')}`);
+      
+      // Validate user selection
+      if (filteredFrameworkData.categories.length === 0) {
+        throw new Error('No categories match user selection. Please check your category selection.');
+      }
+    }
+
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     // Map framework IDs to display names
@@ -433,7 +458,7 @@ Analysis Strictness Level: ${strictness}
 IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
 
 EXACT CONTROL STRUCTURE TO USE:
-${JSON.stringify(frameworkData.categories, null, 2)}
+${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
 Your task is to analyze the document content and determine the compliance status for each control in the structure above. For each control, analyze the document content and determine if the control is:
 - "covered": Fully addressed in the document

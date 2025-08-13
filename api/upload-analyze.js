@@ -1720,7 +1720,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           selectedCategories = null; // Reset to use smart filtering
         } else {
           console.log('User category filtering successful, skipping smart filtering');
-          // Skip to the end of this block
+          // User selection successful - skip smart filtering entirely
+          return filteredFrameworkData;
         }
       }
       
