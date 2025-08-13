@@ -15,22 +15,30 @@ import './App.css';
 
 // Environment validation - makes it harder for copycats
 const validateEnvironment = () => {
-  const requiredVars = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'];
-  const missing = requiredVars.filter(varName => !import.meta.env[varName]);
-  
-  if (missing.length > 0) {
-    console.error('Missing required environment variables:', missing);
-    return false;
+  try {
+    const requiredVars = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'];
+    const missing = requiredVars.filter(varName => !import.meta.env[varName]);
+    
+    if (missing.length > 0) {
+      console.error('Missing required environment variables:', missing);
+      // Don't block rendering, just log the error
+      return true;
+    }
+    
+    // Additional validation to prevent unauthorized use
+    const domain = window.location.hostname;
+    if (!domain.includes('vercel.app') && !domain.includes('localhost') && !domain.includes('127.0.0.1')) {
+      console.warn('Unauthorized domain detected:', domain);
+      // Don't block rendering, just log the warning
+      return true;
+    }
+    
+    return true;
+  } catch (error) {
+    console.error('Environment validation error:', error);
+    // Don't block rendering on validation errors
+    return true;
   }
-  
-  // Additional validation to prevent unauthorized use
-  const domain = window.location.hostname;
-  if (!domain.includes('vercel.app') && !domain.includes('localhost')) {
-    console.warn('Unauthorized domain detected');
-    return false;
-  }
-  
-  return true;
 };
 
 
@@ -138,180 +146,16 @@ const convertToCSV = (data) => {
   return csvContent;
 };
 
-// --- Modal Component ---
-const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
-    if (!result) return null;
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [generatedText, setGeneratedText] = useState('');
-    const [generationError, setGenerationError] = useState('');
-    const [copySuccess, setCopySuccess] = useState(false);
-
-    const getStatusChipClass = (status) => {
-        switch (status) {
-          case 'covered': return 'bg-green-500/10 text-green-400 border-green-500/20';
-          case 'partial': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
-          case 'gap': return 'bg-red-500/10 text-red-400 border-red-500/20';
-          default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-        }
-    };
-
-    const handleGenerateText = async () => {
-        if (!result) return;
-        try {
-            setGenerationError('');
-            setGeneratedText('');
-            setIsGenerating(true);
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
-            
-            const resp = await fetch('/api/generate-control-text', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    originalDocument: fileContent,
-                    targetControl: result.control,
-                    framework: selectedFramework
-                }),
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            if (!resp.ok) {
-                const text = await resp.text();
-                try {
-                    // Try to parse as JSON for better error handling
-                    const errorData = JSON.parse(text);
-                    if (errorData.error === 'API rate limit exceeded') {
-                        setGenerationError(`Rate limit exceeded: ${errorData.details} ${errorData.suggestion}`);
-                    } else if (errorData.error === 'AI generation timed out') {
-                        setGenerationError(`AI generation timed out: ${errorData.details} ${errorData.suggestion}`);
-                    } else if (errorData.error === 'Authentication failed') {
-                        setGenerationError(`Authentication failed: ${errorData.details} ${errorData.suggestion}`);
-                    } else if (errorData.error === 'Google AI service error') {
-                        setGenerationError(`Google AI service error: ${errorData.details} ${errorData.suggestion}`);
-                    } else if (errorData.error === 'Configuration error') {
-                        setGenerationError(`Configuration error: ${errorData.details} ${errorData.suggestion}`);
-                    } else if (errorData.error === 'Service temporarily unavailable') {
-                        setGenerationError(`Service unavailable: ${errorData.details} ${errorData.suggestion}`);
-                    } else {
-                        setGenerationError(`${errorData.error}: ${errorData.details || ''} ${errorData.suggestion || ''}`.trim());
-                    }
-                } catch {
-                    // If not JSON, use the raw text
-                    setGenerationError(text || 'Failed to generate text');
-                }
-                return;
-            }
-            const data = await resp.json();
-            setGeneratedText(data.generatedText || '');
-        } catch (err) {
-            if (err.name === 'AbortError') {
-                setGenerationError('Request timed out. Please try again or review manually.');
-            } else {
-                setGenerationError(err.message || 'Generation failed');
-            }
-        } finally {
-            setIsGenerating(false);
-        }
-    };
-
-    const handleCopyText = async () => {
-        if (generatedText) {
-            const success = await copyToClipboard(generatedText);
-            if (success) {
-                setCopySuccess(true);
-                setTimeout(() => setCopySuccess(false), 2000);
-            }
-        }
-    };
-
-    const handleCopyControl = async () => {
-        const controlText = `${result.id}: ${result.control}\n\nStatus: ${result.status}\nDetails: ${result.details || 'N/A'}\nRecommendation: ${result.recommendation || 'N/A'}`;
-        const success = await copyToClipboard(controlText);
-        if (success) {
-            setCopySuccess(true);
-            setTimeout(() => setCopySuccess(false), 2000);
-        }
-    };
-
-    return (
-        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
-            <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 animate-scale-in">
-                <div className="p-6 border-b border-slate-700 flex justify-between items-start">
-                    <div>
-                        <h3 className="text-lg font-bold text-white">{result.id}: {result.control}</h3>
-                        <span className={`mt-2 inline-block capitalize text-xs font-medium px-2 py-1 rounded-full border ${getStatusChipClass(result.status)}`}>
-                            {result.status}
-                        </span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <button 
-                            onClick={handleCopyControl}
-                            className="p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-700/50"
-                            title="Copy control details"
-                        >
-                            <ClipboardIcon />
-                        </button>
-                        <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
-                            <Icon path="M6 18L18 6M6 6l12 12" />
-                        </button>
-                    </div>
-                </div>
-                <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
-                    <div>
-                        <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><XCircleIcon /><span className="ml-2">Gap Analysis</span></h4>
-                        <p className="text-slate-400 text-sm leading-6">{result.details}</p>
-                    </div>
-                    <div>
-                        <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><LightbulbIcon /><span className="ml-2">Recommendation</span></h4>
-                        <p className="text-slate-400 text-sm leading-6">{result.recommendation}</p>
-                    </div>
-                    {(result.status === 'gap' || result.status === 'partial') && (
-                        <div>
-                            <button 
-                                onClick={handleGenerateText}
-                                disabled={isGenerating}
-                                className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
-                            >
-                                <SparklesIcon />
-                                {isGenerating ? 'Generating...' : 'Generate Control Text'}
-                            </button>
-                            {generationError && (
-                              <p className="mt-3 text-sm text-red-400">{generationError}</p>
-                            )}
-                            {generatedText && (
-                              <div className="mt-4 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
-                                <div className="flex justify-between items-start mb-2">
-                                  <h5 className="text-slate-200 font-semibold">Suggested Control Text</h5>
-                                  <button 
-                                    onClick={handleCopyText}
-                                    className="inline-flex items-center px-3 py-1 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
-                                  >
-                                    <ClipboardIcon />
-                                    {copySuccess ? 'Copied!' : 'Copy'}
-                                  </button>
-                                </div>
-                                <pre className="whitespace-pre-wrap text-slate-300 text-sm leading-6">{generatedText}</pre>
-                              </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-                 <div className="px-6 py-4 bg-slate-800/50 rounded-b-2xl text-right">
-                    <button onClick={onClose} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors">
-                        Close
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
-};
+// DetailModal component moved inside main Analyzer function
 
 // --- Main App Component ---
 
 function Analyzer({ onNavigateHome }) {
+  console.log('Analyzer component mounting...');
+  
   // Environment validation - prevents unauthorized use
   useEffect(() => {
+    console.log('Analyzer useEffect running...');
     if (!validateEnvironment()) {
       console.error('Environment validation failed - application may not function correctly');
       // You could add additional protection here like redirecting or disabling features
@@ -334,7 +178,179 @@ function Analyzer({ onNavigateHome }) {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [analysisStrictness, setAnalysisStrictness] = useState('balanced'); // 'strict', 'balanced', 'lenient'
 
+  console.log('About to call useAuth...');
   const { user, supabase } = useAuth();
+  console.log('useAuth result:', { user: !!user, supabase: !!supabase });
+
+  // DetailModal component - defined inside main function to use hooks properly
+  const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
+    if (!result) return null;
+    
+    const [isGenerating, setIsGenerating] = useState(false);
+    const [generatedText, setGeneratedText] = useState('');
+    const [generationError, setGenerationError] = useState('');
+    const [copySuccess, setCopySuccess] = useState(false);
+
+    const getStatusChipClass = (status) => {
+      switch (status) {
+        case 'covered': return 'bg-green-500/10 text-green-400 border-green-500/20';
+        case 'partial': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+        case 'gap': return 'bg-red-500/10 text-red-400 border-red-500/20';
+        default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+      }
+    };
+
+    const handleGenerateText = async () => {
+      if (!result) return;
+      try {
+        setGenerationError('');
+        setGeneratedText('');
+        setIsGenerating(true);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+        
+        const resp = await fetch('/api/generate-control-text', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            originalDocument: fileContent,
+            targetControl: result.control,
+            framework: selectedFramework
+          }),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        if (!resp.ok) {
+          const text = await resp.text();
+          try {
+            // Try to parse as JSON for better error handling
+            const errorData = JSON.parse(text);
+            if (errorData.error === 'API rate limit exceeded') {
+              setGenerationError(`Rate limit exceeded: ${errorData.details} ${errorData.suggestion}`);
+            } else if (errorData.error === 'AI generation timed out') {
+              setGenerationError(`AI generation timed out: ${errorData.details} ${errorData.suggestion}`);
+            } else if (errorData.error === 'Authentication failed') {
+              setGenerationError(`Authentication failed: ${errorData.details} ${errorData.suggestion}`);
+            } else if (errorData.error === 'Google AI service error') {
+              setGenerationError(`Google AI service error: ${errorData.details} ${errorData.suggestion}`);
+            } else if (errorData.error === 'Configuration error') {
+              setGenerationError(`Configuration error: ${errorData.details} ${errorData.suggestion}`);
+            } else if (errorData.error === 'Service temporarily unavailable') {
+              setGenerationError(`Service unavailable: ${errorData.details} ${errorData.suggestion}`);
+            } else {
+              setGenerationError(`${errorData.error}: ${errorData.details || ''} ${errorData.suggestion || ''}`.trim());
+            }
+          } catch {
+            // If not JSON, use the raw text
+            setGenerationError(text || 'Failed to generate text');
+          }
+          return;
+        }
+        const data = await resp.json();
+        setGeneratedText(data.generatedText || '');
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          setGenerationError('Request timed out. Please try again or review manually.');
+        } else {
+          setGenerationError(err.message || 'Generation failed');
+        }
+      } finally {
+        setIsGenerating(false);
+      }
+    };
+
+    const handleCopyText = async () => {
+      if (generatedText) {
+        const success = await copyToClipboard(generatedText);
+        if (success) {
+          setCopySuccess(true);
+          setTimeout(() => setCopySuccess(false), 2000);
+        }
+      }
+    };
+
+    const handleCopyControl = async () => {
+      const controlText = `${result.id}: ${result.control}\n\nStatus: ${result.status}\nDetails: ${result.details || 'N/A'}\nRecommendation: ${result.recommendation || 'N/A'}`;
+      const success = await copyToClipboard(controlText);
+      if (success) {
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      }
+    };
+
+    return (
+      <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
+        <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 animate-scale-in">
+          <div className="p-6 border-b border-slate-700 flex justify-between items-start">
+            <div>
+              <h3 className="text-lg font-bold text-white">{result.id}: {result.control}</h3>
+              <span className={`mt-2 inline-block capitalize text-xs font-medium px-2 py-1 rounded-full border ${getStatusChipClass(result.status)}`}>
+                {result.status}
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={handleCopyControl}
+                className="p-2 text-slate-400 hover:text-white transition-colors rounded-lg hover:bg-slate-700/50"
+                title="Copy control details"
+              >
+                <ClipboardIcon />
+              </button>
+              <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+                <Icon path="M6 18L18 6M6 6l12 12" />
+              </button>
+            </div>
+          </div>
+          <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
+            <div>
+              <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><XCircleIcon /><span className="ml-2">Gap Analysis</span></h4>
+              <p className="text-slate-400 text-sm leading-6">{result.details}</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><LightbulbIcon /><span className="ml-2">Recommendation</span></h4>
+              <p className="text-slate-400 text-sm leading-6">{result.recommendation}</p>
+            </div>
+            {(result.status === 'gap' || result.status === 'partial') && (
+              <div>
+                <button 
+                  onClick={handleGenerateText}
+                  disabled={isGenerating}
+                  className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
+                >
+                  <SparklesIcon />
+                  {isGenerating ? 'Generating...' : 'Generate Control Text'}
+                </button>
+                {generationError && (
+                  <p className="mt-3 text-sm text-red-400">{generationError}</p>
+                )}
+                {generatedText && (
+                  <div className="mt-4 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
+                    <div className="flex justify-between items-start mb-2">
+                      <h5 className="text-slate-200 font-semibold">Suggested Control Text</h5>
+                      <button 
+                        onClick={handleCopyText}
+                        className="inline-flex items-center px-3 py-1 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors"
+                      >
+                        <ClipboardIcon />
+                        {copySuccess ? 'Copied!' : 'Copy'}
+                      </button>
+                    </div>
+                    <pre className="whitespace-pre-wrap text-slate-300 text-sm leading-6">{generatedText}</pre>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="px-6 py-4 bg-slate-800/50 rounded-b-2xl text-right">
+            <button onClick={onClose} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const getFileExt = (name) => (name?.split('.').pop() || '').toLowerCase();
   const isTextFile = (file) => file?.type === 'text/plain' || getFileExt(file?.name) === 'txt';
@@ -668,6 +684,8 @@ function Analyzer({ onNavigateHome }) {
     { id: 'FFIEC_CAT', name: 'FFIEC Cybersecurity Assessment Tool', enabled: false },
     { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: false },
   ];
+  
+  console.log('Analyzer component rendering JSX...');
   
   return (
     <>
