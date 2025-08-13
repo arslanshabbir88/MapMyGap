@@ -533,7 +533,20 @@ function Analyzer({ onNavigateHome }) {
 
     if (isTextFile(file)) {
       const reader = new FileReader();
-      reader.onload = (e) => setFileContent(e.target.result);
+      reader.onload = (e) => {
+        console.log('=== TEXT FILE READING DEBUG ===');
+        console.log('File name:', file.name);
+        console.log('File size:', file.size);
+        console.log('File type:', file.type);
+        console.log('Content length:', e.target.result.length);
+        console.log('Content preview (first 500 chars):', e.target.result.substring(0, 500));
+        console.log('Content preview (last 500 chars):', e.target.result.substring(Math.max(0, e.target.result.length - 500));
+        setFileContent(e.target.result);
+      };
+      reader.onerror = (e) => {
+        console.error('FileReader error:', e);
+        setError('Failed to read text file');
+      };
       reader.readAsText(file);
     } else {
       // We'll extract text on the server for non-txt files
@@ -550,15 +563,26 @@ function Analyzer({ onNavigateHome }) {
     try {
       let result;
       if (isTextFile(uploadedFile) && fileContent) {
+        console.log('=== TEXT FILE ANALYSIS DEBUG ===');
+        console.log('File type: Text file');
+        console.log('File content length:', fileContent.length);
+        console.log('File content preview (first 500 chars):', fileContent.substring(0, 500));
+        console.log('Selected framework:', selectedFramework);
+        console.log('Selected categories:', selectedCategories);
+        console.log('Strictness level:', analysisStrictness);
+        
+        const requestBody = { 
+          fileContent, 
+          framework: selectedFramework,
+          strictness: analysisStrictness,
+          selectedCategories: selectedCategories
+        };
+        console.log('Request body being sent:', requestBody);
+        
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            fileContent, 
-            framework: selectedFramework,
-            strictness: analysisStrictness,
-            selectedCategories: selectedCategories
-          }),
+          body: JSON.stringify(requestBody),
         });
         if (!response.ok) {
           const errorText = await response.text();
