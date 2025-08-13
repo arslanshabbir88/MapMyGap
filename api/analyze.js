@@ -186,8 +186,9 @@ const allFrameworks = {
 };
 
 // Generate a unique hash for document content to enable caching
-function generateDocumentHash(content, framework) {
-  return crypto.createHash('sha256').update(content + framework).digest('hex');
+function generateDocumentHash(content, framework, selectedCategories = null) {
+  const categoryString = selectedCategories ? JSON.stringify(selectedCategories.sort()) : '';
+  return crypto.createHash('sha256').update(content + framework + categoryString).digest('hex');
 }
 
 // Check if we have cached AI analysis results for this document
@@ -237,6 +238,11 @@ async function cacheAnalysisResults(documentHash, framework, results) {
 // Post-process AI results based on strictness level to ensure strictness affects scoring
 function adjustResultsForStrictness(results, strictness) {
   console.log(`Post-processing results for strictness level: ${strictness}`);
+  console.log('Results structure:', {
+    categoriesCount: results.categories?.length || 0,
+    firstCategory: results.categories?.[0]?.name || 'none',
+    firstCategoryControls: results.categories?.[0]?.results?.length || 0
+  });
   
   // Count initial statuses
   let initialCounts = { covered: 0, partial: 0, gap: 0 };
@@ -380,7 +386,7 @@ function adjustResultsForStrictness(results, strictness) {
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
   // Generate document hash early for use throughout the function
-  const documentHash = generateDocumentHash(fileContent, framework);
+  const documentHash = generateDocumentHash(fileContent, framework, selectedCategories);
   
   try {
     console.log('Available frameworks:', Object.keys(allFrameworks));
@@ -677,7 +683,7 @@ Return only valid JSON, no additional text or formatting.`;
     
     // Only use fallback if AI didn't provide any analysis at all
     // Allow AI to return all gaps if that's what the analysis shows
-    const totalControls = frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
+    const totalControls = filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
     if (totalControls === 0) {
       console.log('AI analysis failed - no controls to analyze. Using fallback.');
       throw new Error('AI analysis failed - no controls available');
@@ -699,7 +705,7 @@ Return only valid JSON, no additional text or formatting.`;
     
     // Fallback to predefined control structure with intelligent defaults
     const fallbackResult = {
-      categories: frameworkData.categories.map(category => ({
+      categories: filteredFrameworkData.categories.map(category => ({
         name: category.name,
         description: category.description,
         results: category.results.map(control => {
