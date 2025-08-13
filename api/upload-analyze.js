@@ -1828,6 +1828,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           // Set a flag to skip smart filtering instead of early return
           skipSmartFiltering = true;
         }
+        
+        // Ensure filteredFrameworkData is properly set for the rest of the function
+        console.log('✅ Nuclear filtering completed successfully');
+        console.log('Final filteredFrameworkData structure:', JSON.stringify(filteredFrameworkData, null, 2));
       }
       
       // If no user selection or user selection failed, apply smart filtering
@@ -1894,6 +1898,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           console.log('Small framework, using all controls for accuracy');
         }
       }
+    }
+    
+    // FINAL SAFETY CHECK: Ensure filteredFrameworkData is always defined
+    if (!filteredFrameworkData || !filteredFrameworkData.categories) {
+      console.error('🚨 CRITICAL: filteredFrameworkData is undefined or has no categories!');
+      console.error('Current filteredFrameworkData:', filteredFrameworkData);
+      throw new Error('Framework data filtering failed - data structure is invalid');
     }
     
     console.log('Total controls for AI analysis:', countTotalControls(filteredFrameworkData));
