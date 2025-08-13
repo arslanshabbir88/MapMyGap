@@ -47,51 +47,20 @@ function adjustResultsForStrictness(results, strictness) {
   });
   console.log('Initial status counts:', initialCounts);
   
-  if (strictness === 'balanced') {
-    // Balanced mode - make moderate adjustments to differentiate from strict
-    console.log('Balanced mode - making moderate adjustments');
-    
-    // If AI was too conservative, be slightly more generous than strict
-    let gapToPartial = 0;
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      // AI was too conservative - upgrade more gaps to partial than strict mode
-      gapToPartial = Math.floor(initialCounts.gap * 0.5); // 50% of gaps -> partial (vs 30% in strict)
-      console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
-    }
-    
-    if (gapToPartial > 0) {
-      const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
-      let gapConverted = 0;
-      
-      adjustedResults.categories.forEach(category => {
-        category.results.forEach(result => {
-          if (result.status === 'gap' && gapConverted < gapToPartial) {
-            result.status = 'partial';
-            result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
-            gapConverted++;
-          }
-        });
-      });
-      
-      return adjustedResults;
-    }
-    
-    return results;
-  }
-  
   const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
   
   if (strictness === 'strict') {
-    // Make strict mode more conservative - systematically downgrade
-    let coveredToPartial = Math.floor(initialCounts.covered * 0.5); // 50% of covered -> partial
-    let partialToGap = Math.floor(initialCounts.partial * 0.2); // 20% of partial to gap
+    // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
+    console.log('Strict mode - making conservative adjustments');
     
-    // If AI was too conservative and marked everything as gap, upgrade some to partial
+    let coveredToPartial = Math.floor(initialCounts.covered * 0.6); // 60% of covered -> partial
+    let partialToGap = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> gap
+    
+    // If AI was too conservative and marked everything as gap, upgrade very few to partial
     let gapToPartial = 0;
     if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      // AI was too conservative - upgrade some gaps to partial to show strict mode is working
-      gapToPartial = Math.floor(initialCounts.gap * 0.3); // 30% of gaps -> partial
-      console.log(`Strict mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
+      gapToPartial = Math.floor(initialCounts.gap * 0.15); // Only 15% of gaps -> partial (very conservative)
+      console.log(`Strict mode: AI was too conservative, upgrading only ${gapToPartial} gaps to partial`);
     }
     
     console.log(`Strict mode: Converting ${coveredToPartial} covered to partial, ${partialToGap} partial to gap, ${gapToPartial} gaps to partial`);
@@ -118,10 +87,45 @@ function adjustResultsForStrictness(results, strictness) {
       });
     });
     
+  } else if (strictness === 'balanced') {
+    // BALANCED MODE: Moderate adjustments - more generous than strict but not as generous as lenient
+    console.log('Balanced mode - making moderate adjustments');
+    
+    // If AI was too conservative, be moderately generous
+    let gapToPartial = 0;
+    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
+      gapToPartial = Math.floor(initialCounts.gap * 0.4); // 40% of gaps -> partial (moderate)
+      console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
+    }
+    
+    // Also upgrade some partial to covered for balanced mode
+    let partialToCovered = Math.floor(initialCounts.partial * 0.2); // 20% of partial -> covered
+    
+    if (gapToPartial > 0 || partialToCovered > 0) {
+      let gapConverted = 0;
+      let partialConverted = 0;
+      
+      adjustedResults.categories.forEach(category => {
+        category.results.forEach(result => {
+          if (result.status === 'gap' && gapConverted < gapToPartial) {
+            result.status = 'partial';
+            result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
+            gapConverted++;
+          } else if (result.status === 'partial' && partialConverted < partialToCovered) {
+            result.status = 'covered';
+            result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
+            partialConverted++;
+          }
+        });
+      });
+    }
+    
   } else if (strictness === 'lenient') {
-    // Make lenient mode more generous - systematically upgrade
-    let gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gap -> partial
-    let partialToCovered = Math.floor(initialCounts.partial * 0.5); // 50% of partial -> covered
+    // LENIENT MODE: Most generous - systematically upgrade
+    console.log('Lenient mode - making generous adjustments');
+    
+    let gapToPartial = Math.floor(initialCounts.gap * 0.7); // 70% of gap -> partial (more generous)
+    let partialToCovered = Math.floor(initialCounts.partial * 0.6); // 60% of partial -> covered (more generous)
     
     console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered`);
     
