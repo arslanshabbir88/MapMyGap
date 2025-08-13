@@ -1783,6 +1783,36 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           return `${c.name}: ${families.join(', ')}`;
         }));
         
+        // EXTREME DEBUGGING: Check every single control to ensure no AU controls exist
+        console.log('=== EXTREME DEBUGGING ===');
+        let auControlsFound = 0;
+        let acControlsFound = 0;
+        
+        filteredFrameworkData.categories.forEach(category => {
+          console.log(`Checking category: ${category.name}`);
+          category.results.forEach(control => {
+            const controlFamily = control.id.split('-')[0];
+            if (controlFamily === 'AU') {
+              auControlsFound++;
+              console.log(`🚨 FOUND AU CONTROL: ${control.id} in category ${category.name}`);
+            } else if (controlFamily === 'AC') {
+              acControlsFound++;
+              console.log(`✅ AC Control: ${control.id}`);
+            } else {
+              console.log(`⚠️ Other control: ${control.id} (family: ${controlFamily})`);
+            }
+          });
+        });
+        
+        console.log(`=== FINAL COUNT ===`);
+        console.log(`AC Controls: ${acControlsFound}`);
+        console.log(`AU Controls: ${auControlsFound}`);
+        
+        if (auControlsFound > 0) {
+          console.error(`🚨 CRITICAL ERROR: ${auControlsFound} AU controls found after filtering!`);
+          throw new Error(`Category filtering failed - ${auControlsFound} AU controls still present`);
+        }
+        
         const filteredControls = countTotalControls(filteredFrameworkData);
         const reduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
         console.log(`User category filtering applied: ${filteredControls}/${totalControls} controls (${reduction}% reduction)`);
@@ -2111,15 +2141,25 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
       throw new Error(`Failed to parse AI JSON response: ${parseError.message}`);
     }
     
-    // Validate that the AI actually changed some statuses
+    // CRITICAL: Validate that AI response doesn't contain unauthorized control families
+    console.log('=== AI RESPONSE VALIDATION ===');
     let gapCount = 0;
     let coveredCount = 0;
     let partialCount = 0;
+    let unauthorizedControls = [];
     
     if (parsedResponse.categories) {
       parsedResponse.categories.forEach(category => {
         if (category.results) {
           category.results.forEach(control => {
+            // Check control family
+            const controlFamily = control.id.split('-')[0];
+            if (!selectedCategories.includes(controlFamily)) {
+              unauthorizedControls.push(`${control.id} (${controlFamily})`);
+              console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
+            }
+            
+            // Count statuses
             if (control.status === 'gap') gapCount++;
             else if (control.status === 'covered') coveredCount++;
             else if (control.status === 'partial') partialCount++;
@@ -2128,7 +2168,13 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
       });
     }
     
+    if (unauthorizedControls.length > 0) {
+      console.error(`🚨 CRITICAL: AI returned ${unauthorizedControls.length} unauthorized controls:`, unauthorizedControls);
+      throw new Error(`AI response contains unauthorized controls: ${unauthorizedControls.join(', ')}`);
+    }
+    
     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
+    console.log(`✅ All controls in AI response are from authorized families: ${selectedCategories.join(', ')}`);
     
     // Check if AI provided meaningful analysis
     const totalControlsAnalyzed = gapCount + coveredCount + partialCount;
