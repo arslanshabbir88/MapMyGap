@@ -1654,9 +1654,21 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         
         if (liveNISTControls) {
           console.log('Using live NIST controls from OSCAL API');
+          console.log('Live controls structure:', {
+            name: liveNISTControls.name,
+            categoriesCount: liveNISTControls.categories?.length || 0,
+            firstCategory: liveNISTControls.categories?.[0]?.name || 'none',
+            firstCategoryControls: liveNISTControls.categories?.[0]?.results?.length || 0
+          });
           frameworkData = liveNISTControls;
         } else {
           console.log('Live controls failed, using static NIST controls');
+          console.log('Static controls structure:', {
+            name: allFrameworks[framework]?.name,
+            categoriesCount: allFrameworks[framework]?.categories?.length || 0,
+            firstCategory: allFrameworks[framework]?.categories?.[0]?.name || 'none',
+            firstCategoryControls: allFrameworks[framework]?.categories?.[0]?.results?.length || 0
+          });
           frameworkData = allFrameworks[framework];
         }
       } else {
@@ -1702,6 +1714,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         
         console.log('Available categories in framework:', frameworkData.categories.map(c => c.name));
         console.log('User selected categories:', selectedCategories);
+        console.log('Framework data structure:', {
+          totalCategories: frameworkData.categories.length,
+          categoryNames: frameworkData.categories.map(c => c.name),
+          firstCategoryControls: frameworkData.categories[0]?.results?.length || 0
+        });
         
         filteredFrameworkData = {
           ...frameworkData,
@@ -1732,7 +1749,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       
       // If no user selection or user selection failed, apply smart filtering
       // IMPORTANT: Only apply smart filtering if user has NOT selected specific categories
-      if (!selectedCategories || selectedCategories.length === 0 || !skipSmartFiltering) {
+      if ((!selectedCategories || selectedCategories.length === 0) && !skipSmartFiltering) {
         if (totalControls > 20) {
           // If we have many controls, filter to most relevant ones
           console.log('Large framework detected, applying intelligent filtering...');
