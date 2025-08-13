@@ -1304,6 +1304,11 @@ async function cacheAnalysisResults(documentHash, framework, results) {
 // Post-process AI results based on strictness level to ensure strictness affects scoring
 function adjustResultsForStrictness(results, strictness) {
   console.log(`Post-processing results for strictness level: ${strictness}`);
+  console.log('Results structure:', {
+    categoriesCount: results.categories?.length || 0,
+    firstCategory: results.categories?.[0]?.name || 'none',
+    firstCategoryControls: results.categories?.[0]?.results?.length || 0
+  });
   
   // Count initial statuses
   let initialCounts = { covered: 0, partial: 0, gap: 0 };
@@ -1720,12 +1725,30 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           firstCategoryControls: frameworkData.categories[0]?.results?.length || 0
         });
         
+        // Force strict category filtering - only include exactly what user selected
         filteredFrameworkData = {
           ...frameworkData,
           categories: frameworkData.categories.filter(category => {
             const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
             const shouldInclude = selectedCategories.includes(categoryCode);
             console.log(`Category ${category.name} (${categoryCode}): ${shouldInclude ? 'including' : 'excluding'} - user selection`);
+            
+            // Additional safety check - ensure we only get the exact category requested
+            if (shouldInclude) {
+              // Double-check that this category only contains controls from the selected family
+              const categoryControls = category.results || [];
+              const validControls = categoryControls.filter(control => {
+                const controlFamily = control.id.split('-')[0]; // Extract AC from AC-1, AU from AU-1, etc.
+                return selectedCategories.includes(controlFamily);
+              });
+              
+              if (validControls.length !== categoryControls.length) {
+                console.log(`WARNING: Category ${category.name} contains controls from other families. Filtering to only include ${selectedCategories.join(', ')} controls.`);
+                // Replace the category results with only valid controls
+                category.results = validControls;
+              }
+            }
+            
             return shouldInclude;
           })
         };
