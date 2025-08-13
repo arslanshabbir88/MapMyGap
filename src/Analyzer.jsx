@@ -556,7 +556,8 @@ function Analyzer({ onNavigateHome }) {
           body: JSON.stringify({ 
             fileContent, 
             framework: selectedFramework,
-            strictness: analysisStrictness 
+            strictness: analysisStrictness,
+            selectedCategories: selectedCategories
           }),
         });
         if (!response.ok) {
