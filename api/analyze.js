@@ -393,6 +393,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     if (cachedResults) {
       console.log('🎯 CACHE HIT: Using cached AI results, applying strictness adjustments only');
       console.log('💰 SAVED: AI tokens and API costs!');
+      console.log('Applying strictness adjustments to cached results:', strictness);
       return adjustResultsForStrictness(cachedResults, strictness);
     }
     
@@ -413,6 +414,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     if (selectedCategories && selectedCategories.length > 0) {
       console.log('User selected categories detected, applying strict filtering for cost optimization...');
       console.log('Selected categories:', selectedCategories);
+      console.log('Analysis strictness level:', strictness);
       
       filteredFrameworkData = {
         ...frameworkData,
@@ -770,15 +772,12 @@ module.exports = async function handler(req, res) {
     // Use real AI analysis with strictness parameter
     const analysisResult = await analyzeWithAI(fileContent, framework, null, strictness);
 
-    // Post-process AI results based on strictness level to ensure strictness affects scoring
-    const processedAnalysisResult = adjustResultsForStrictness(analysisResult, strictness);
-
-    // Return in the expected format
+    // Return in the expected format (strictness adjustments already applied in analyzeWithAI)
     res.status(200).json({
       candidates: [{
         content: {
           parts: [{
-            text: JSON.stringify(processedAnalysisResult, null, 2)
+            text: JSON.stringify(analysisResult, null, 2)
           }]
         }
       }]
