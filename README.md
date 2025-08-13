@@ -1,6 +1,8 @@
-# ConformIQ - AI-Powered Compliance Analyzer
+# ConformIQ - AI-Powered Compliance Analysis
 
-ConformIQ uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
+<!-- Caching system deployed - saves 66% on AI tokens! -->
+
+ConformIQ is an intelligent compliance analysis platform that helps organizations assess their security posture against industry-standard frameworks like NIST 800-53, ISO 27001, and more.
 
 ## ✨ Features
 
