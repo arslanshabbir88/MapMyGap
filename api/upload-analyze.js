@@ -1451,6 +1451,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   
   // Declare filteredFrameworkData at function level to ensure it's always available
   let filteredFrameworkData = { categories: [] };
+  let skipSmartFiltering = false;
   
   try {
     console.log('=== SMART ANALYSIS: Starting with filtered controls ===');
@@ -1724,13 +1725,14 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         } else {
           console.log('User category filtering successful, skipping smart filtering entirely');
           // User selection successful - skip smart filtering entirely
-          return filteredFrameworkData;
+          // Set a flag to skip smart filtering instead of early return
+          const skipSmartFiltering = true;
         }
       }
       
       // If no user selection or user selection failed, apply smart filtering
       // IMPORTANT: Only apply smart filtering if user has NOT selected specific categories
-      if (!selectedCategories || selectedCategories.length === 0) {
+      if (!selectedCategories || selectedCategories.length === 0 || !skipSmartFiltering) {
         if (totalControls > 20) {
           // If we have many controls, filter to most relevant ones
           console.log('Large framework detected, applying intelligent filtering...');
