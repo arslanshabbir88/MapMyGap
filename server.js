@@ -33,7 +33,7 @@ const upload = multer({
 });
 
 // Real AI analysis function
-async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -52,6 +52,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
 
 Document Content:
 ${fileContent.substring(0, 8000)} // Limit content to avoid token limits
+
+Analysis Strictness Level: ${strictness}
 
 Please provide a comprehensive compliance analysis in the following JSON format:
 {
@@ -81,6 +83,11 @@ Guidelines:
 - If content is insufficient, mark as "gap" with clear guidance
 - For NIST frameworks, focus on the specific control families and subcategories
 
+ANALYSIS STRICTNESS LEVEL: ${strictness}
+- STRICT: Only mark as "covered" if there is explicit, detailed evidence. Be conservative in scoring.
+- BALANCED: Mark as "covered" if there is reasonable evidence or clear intent. Standard analysis approach.
+- LENIENT: Mark as "covered" if there is any reasonable indication of coverage or intent. Be generous in scoring.
+
 Return only valid JSON, no additional text.`;
 
     const result = await model.generateContent(prompt);
@@ -103,14 +110,14 @@ Return only valid JSON, no additional text.`;
 // Real API endpoint for AI analysis
 app.post('/analyze', async (req, res) => {
   try {
-    const { fileContent, framework } = req.body;
+    const { fileContent, framework, strictness = 'balanced' } = req.body;
 
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing file content or framework.' });
     }
 
-    // Use real AI analysis
-    const analysisResult = await analyzeWithAI(fileContent, framework);
+    // Use real AI analysis with strictness parameter
+    const analysisResult = await analyzeWithAI(fileContent, framework, null, strictness);
 
     // Return in the expected format
     res.status(200).json({
@@ -136,7 +143,7 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded.' });
     }
 
-    const { framework } = req.body;
+    const { framework, strictness = 'balanced' } = req.body;
     if (!framework) {
       return res.status(400).json({ error: 'Missing framework parameter.' });
     }
@@ -211,8 +218,8 @@ app.post('/upload-analyze', upload.single('file'), async (req, res) => {
         return res.status(400).json({ error: 'Unsupported file type.' });
     }
 
-    // Use real AI analysis on extracted text
-    const analysisResult = await analyzeWithAI(extractedText, framework);
+    // Use real AI analysis on extracted text with strictness parameter
+    const analysisResult = await analyzeWithAI(extractedText, framework, null, strictness);
 
     // Return the analysis result
     res.status(200).json({

@@ -1252,7 +1252,7 @@ Focus on families that are clearly addressed or missing in the document content.
 }
 
 // Hybrid analysis function - uses smart filtering + AI analysis
- async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
+ async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
    // Declare filteredFrameworkData at function level to ensure it's always available
    let filteredFrameworkData = { categories: [] };
    
@@ -1628,6 +1628,8 @@ Document: ${fileContent.substring(0, 6000)}
 Controls to analyze:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
+Analysis Strictness Level: ${strictness}
+
 CRITICAL REQUIREMENTS:
 1. For each control, carefully analyze the document content and mark as:
    - "covered": Clear evidence of implementation (policies, procedures, systems, training, etc.)
@@ -1651,21 +1653,21 @@ CRITICAL REQUIREMENTS:
    - Incident response capabilities
    - Risk management processes
 
-3. CRITICAL: Be VERY GENEROUS in finding evidence. Look for:
-   - ANY mention of security, policies, procedures, training, controls
-   - ANY mention of access control, authentication, authorization
-   - ANY mention of monitoring, logging, auditing
-   - ANY mention of incident response, risk management
-   - ANY mention of compliance, standards, frameworks
-   - ANY mention of employee training, awareness programs
-   - ANY mention of technical controls, firewalls, encryption
-   - ANY mention of physical security, environmental controls
+3. ANALYSIS STRICTNESS LEVEL: ${strictness}
+   - STRICT: Only mark as "covered" if there is explicit, detailed evidence. Be conservative in scoring.
+   - BALANCED: Mark as "covered" if there is reasonable evidence or clear intent. Standard analysis approach.
+   - LENIENT: Mark as "covered" if there is any reasonable indication of coverage or intent. Be generous in scoring.
 
-4. IMPORTANT: If you find ANY evidence of security controls, policies, or procedures in the document, mark those controls as "covered" or "partial" - NOT as "gap"
+4. CRITICAL: Based on strictness level, adjust evidence requirements:
+   - STRICT: Look for explicit, detailed evidence only
+   - BALANCED: Look for reasonable evidence and clear intent
+   - LENIENT: Look for ANY reasonable indication of coverage or intent
 
-5. Return JSON with same structure, only changing status/details/recommendation fields
-6. Be thorough and analytical - this is for compliance assessment
-7. Return valid JSON only
+5. IMPORTANT: If you find ANY evidence of security controls, policies, or procedures in the document, mark those controls as "covered" or "partial" - NOT as "gap"
+
+6. Return JSON with same structure, only changing status/details/recommendation fields
+7. Be thorough and analytical - this is for compliance assessment
+8. Return valid JSON only
 
 Example of what to look for:
 - "Access Control Policy" → mark AC-1 as "covered"
@@ -1907,6 +1909,7 @@ module.exports = async function handler(req, res) {
     const file = files.file;
     const framework = fields.framework;
     const selectedCategories = fields.categories ? JSON.parse(fields.categories) : null;
+    const strictness = fields.strictness || 'balanced';
 
     // Extract text from uploaded file
     let extractedText = '';
@@ -1967,7 +1970,7 @@ module.exports = async function handler(req, res) {
      }
      
      const analysisStartTime = Date.now();
-     const analysisResult = await analyzeWithAI(extractedText, framework, selectedCategories);
+     const analysisResult = await analyzeWithAI(extractedText, framework, selectedCategories, strictness);
      const analysisTime = Date.now() - analysisStartTime;
      
      console.log(`analyzeWithAI completed successfully in ${analysisTime}ms`);

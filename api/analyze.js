@@ -185,7 +185,7 @@ const allFrameworks = {
 };
 
 // Hybrid analysis function - uses predefined controls + AI analysis
-async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
   try {
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);
@@ -220,6 +220,7 @@ Document Content:
 ${fileContent.substring(0, 8000)}
 
 Framework: ${frameworkName}
+Analysis Strictness Level: ${strictness}
 
 IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
 
@@ -257,6 +258,11 @@ CRITICAL REQUIREMENTS:
 - Base your analysis on actual content found in the document
 - If content is insufficient, mark as "gap" with clear guidance
 - Provide actionable recommendations that match the document's context
+
+ANALYSIS STRICTNESS LEVEL: ${strictness}
+- STRICT: Only mark as "covered" if there is explicit, detailed evidence. Be conservative in scoring.
+- BALANCED: Mark as "covered" if there is reasonable evidence or clear intent. Standard analysis approach.
+- LENIENT: Mark as "covered" if there is any reasonable indication of coverage or intent. Be generous in scoring.
 
 Return only valid JSON, no additional text or formatting.`;
 
@@ -371,14 +377,14 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { fileContent, framework } = req.body;
+    const { fileContent, framework, strictness = 'balanced' } = req.body;
 
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing file content or framework.' });
     }
 
-    // Use real AI analysis
-    const analysisResult = await analyzeWithAI(fileContent, framework);
+    // Use real AI analysis with strictness parameter
+    const analysisResult = await analyzeWithAI(fileContent, framework, null, strictness);
 
     // Return in the expected format
     res.status(200).json({

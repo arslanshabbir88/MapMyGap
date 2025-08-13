@@ -290,6 +290,7 @@ function Analyzer({ onNavigateHome }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+  const [analysisStrictness, setAnalysisStrictness] = useState('balanced'); // 'strict', 'balanced', 'lenient'
 
   const { user, supabase } = useAuth();
 
@@ -494,7 +495,11 @@ function Analyzer({ onNavigateHome }) {
         const response = await fetch('/api/analyze', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fileContent, framework: selectedFramework }),
+          body: JSON.stringify({ 
+            fileContent, 
+            framework: selectedFramework,
+            strictness: analysisStrictness 
+          }),
         });
         if (!response.ok) {
           const errorText = await response.text();
@@ -505,6 +510,7 @@ function Analyzer({ onNavigateHome }) {
         const form = new FormData();
         form.append('file', uploadedFile);
         form.append('framework', selectedFramework);
+        form.append('strictness', analysisStrictness);
         
         // Add selected control families for NIST 800-53
         if (selectedFramework === 'NIST_800_53' && selectedCategories.length > 0) {
@@ -1016,6 +1022,68 @@ function Analyzer({ onNavigateHome }) {
                   </div>
                 </div>
               )}
+
+              {/* Analysis Strictness Control */}
+              <div className="mb-6 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                <div className="mb-3">
+                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                    Analysis Strictness
+                  </label>
+                  <p className="text-xs text-slate-400 mb-3">
+                    Control how strictly the AI analyzes your policy against compliance controls
+                  </p>
+                </div>
+                
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="strict"
+                      name="strictness"
+                      value="strict"
+                      checked={analysisStrictness === 'strict'}
+                      onChange={(e) => setAnalysisStrictness(e.target.value)}
+                      className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="strict" className="text-sm text-slate-300">
+                      <span className="font-medium">Strict</span>
+                      <span className="text-xs text-slate-400 block">High precision, formal compliance</span>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="balanced"
+                      name="strictness"
+                      value="balanced"
+                      checked={analysisStrictness === 'balanced'}
+                      onChange={(e) => setAnalysisStrictness(e.target.value)}
+                      className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="balanced" className="text-sm text-slate-300">
+                      <span className="font-medium">Balanced</span>
+                      <span className="text-xs text-slate-400 block">Standard analysis, most use cases</span>
+                    </label>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      id="lenient"
+                      name="strictness"
+                      value="lenient"
+                      checked={analysisStrictness === 'lenient'}
+                      onChange={(e) => setAnalysisStrictness(e.target.value)}
+                      className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 focus:ring-blue-500 focus:ring-2"
+                    />
+                    <label htmlFor="lenient" className="text-sm text-slate-300">
+                      <span className="font-medium">Lenient</span>
+                      <span className="text-xs text-slate-400 block">Intent recognition, policy development</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
 
               <button
                 onClick={handleAnalyze}
