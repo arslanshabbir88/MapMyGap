@@ -1722,22 +1722,15 @@ CRITICAL REQUIREMENTS:
    - "partial": Some evidence but incomplete or not fully implemented
    - "gap": No evidence found in the document
 
-2. Look for specific evidence like:
-   - Written policies and procedures
-   - Security measures and controls
-   - Training programs and awareness
-   - Monitoring and logging systems
-   - Access control mechanisms
-   - Incident response procedures
-   - Risk assessment processes
-   - Security awareness programs
-   - Access management systems
-   - Network security controls
-   - Data protection measures
-   - Compliance frameworks mentioned
-   - Security training materials
-   - Incident response capabilities
-   - Risk management processes
+2. INTELLIGENT EVIDENCE RECOGNITION - Look for evidence in multiple forms:
+   - Explicit policies: "Access Control Policy", "Security Policy", "Information Security Policy"
+   - Procedural language: "procedures to manage", "processes for", "guidelines for"
+   - Implementation details: "systems are configured", "we implement", "our organization maintains"
+   - Organizational statements: "we control access", "access is managed", "we monitor"
+   - Training references: "training programs", "awareness", "employee education"
+   - Technical controls: "firewalls", "authentication", "encryption", "monitoring"
+   - Governance: "roles and responsibilities", "accountability", "oversight"
+   - Risk management: "risk assessment", "risk management", "risk controls"
 
 3. ANALYSIS STRICTNESS LEVEL: ${strictness}
    
@@ -1771,15 +1764,68 @@ CRITICAL REQUIREMENTS:
 7. Be thorough and analytical - this is for compliance assessment
 8. Return valid JSON only
 
-Example of what to look for:
-- "Access Control Policy" → mark AC-1 as "covered"
-- "User training program" → mark AT-2 as "covered" 
-- "Firewall configuration" → mark SC-7 as "covered"
-- "Incident response plan" → mark IR-8 as "covered"
-- "Security awareness" → mark AT-2 as "covered"
-- "Risk assessment" → mark RA-1 as "covered"
-- "Employee screening" → mark PS-3 as "covered"
-- "Physical security" → mark PE-1 as "covered"`;
+INTELLIGENT CONTROL MAPPING EXAMPLES:
+Access Control (AC) Family:
+- AC-1: "Access Control Policy", "access management procedures", "we control access to systems"
+- AC-2: "account management", "user accounts", "account creation process"
+- AC-3: "access enforcement", "access control mechanisms", "system access controls"
+- AC-4: "information flow enforcement", "data flow controls", "information sharing policies"
+- AC-5: "separation of duties", "role separation", "divided responsibilities"
+- AC-6: "least privilege", "minimum access", "need-to-know basis"
+- AC-7: "unsuccessful logon attempts", "failed login handling", "account lockout"
+- AC-8: "system use notification", "login banners", "system monitoring notices"
+- AC-9: "previous logon notification", "last login information", "session tracking"
+- AC-10: "concurrent session control", "session limits", "multiple session management"
+
+Audit and Accountability (AU) Family:
+- AU-1: "audit policy", "logging procedures", "audit requirements"
+- AU-2: "audit events", "what we log", "audit logging"
+- AU-3: "audit record content", "log content", "audit information"
+
+Security Assessment (CA) Family:
+- CA-1: "security assessment", "compliance review", "security evaluation"
+- CA-2: "security assessments", "ongoing reviews", "periodic assessments"
+
+Configuration Management (CM) Family:
+- CM-1: "configuration management", "system configuration", "configuration policies"
+- CM-2: "baseline configurations", "standard configurations", "system baselines"
+
+Incident Response (IR) Family:
+- IR-1: "incident response", "incident handling", "response procedures"
+- IR-4: "incident handling", "incident management", "response capabilities"
+- IR-8: "incident response plan", "response procedures", "incident management"
+
+Risk Assessment (RA) Family:
+- RA-1: "risk assessment", "risk management", "risk evaluation"
+- RA-2: "security categorization", "system classification", "risk categorization"
+
+System and Communications Protection (SC) Family:
+- SC-1: "system security", "security controls", "system protection"
+- SC-7: "boundary protection", "network security", "firewall configuration"
+- SC-8: "transmission confidentiality", "data encryption", "secure communications"
+
+System and Information Integrity (SI) Family:
+- SI-1: "system integrity", "information integrity", "data integrity"
+- SI-2: "flaw remediation", "patch management", "vulnerability management"
+- SI-3: "malicious code protection", "antivirus", "malware protection"
+- SI-4: "system monitoring", "system surveillance", "monitoring capabilities"
+- SI-7: "software integrity", "software validation", "code integrity"
+
+Training and Awareness (AT) Family:
+- AT-2: "security training", "awareness programs", "employee education"
+- AT-3: "role-based training", "job-specific training", "position training"
+
+Personnel Security (PS) Family:
+- PS-3: "personnel screening", "background checks", "employee vetting"
+- PS-4: "personnel termination", "access termination", "account deactivation"
+- PS-6: "access agreements", "security agreements", "confidentiality agreements"
+
+Physical and Environmental Protection (PE) Family:
+- PE-1: "physical security", "facility security", "building security"
+- PE-3: "physical access control", "facility access", "building access"
+- PE-6: "physical monitoring", "surveillance", "physical monitoring"
+
+IMPORTANT: Look for these patterns in ANY form - they don't have to be exact matches. If the document describes implementing access controls, managing user accounts, or having security policies, mark the relevant controls as "covered" or "partial" based on the strictness level.`;
 
     // Add timeout to prevent hanging - increased for Vercel deployment
     const timeoutPromise = new Promise((_, reject) => {
