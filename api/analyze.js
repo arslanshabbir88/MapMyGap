@@ -806,14 +806,22 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { fileContent, framework, strictness = 'balanced' } = req.body;
+    const { fileContent, framework, strictness = 'balanced', selectedCategories } = req.body;
+    
+    console.log('=== REQUEST DEBUG ===');
+    console.log('Request body keys:', Object.keys(req.body));
+    console.log('Framework:', framework);
+    console.log('Strictness:', strictness);
+    console.log('Selected categories:', selectedCategories);
+    console.log('File content length:', fileContent?.length || 0);
+    console.log('File content preview:', fileContent?.substring(0, 200) || 'No content');
 
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing file content or framework.' });
     }
 
     // Use real AI analysis with strictness parameter
-    const analysisResult = await analyzeWithAI(fileContent, framework, null, strictness);
+    const analysisResult = await analyzeWithAI(fileContent, framework, selectedCategories, strictness);
 
     // Return in the expected format (strictness adjustments already applied in analyzeWithAI)
     res.status(200).json({
