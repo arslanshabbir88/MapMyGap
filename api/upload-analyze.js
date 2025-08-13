@@ -1699,6 +1699,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         console.log('User selected categories detected, applying strict filtering for cost optimization...');
         console.log('Selected categories:', selectedCategories);
         
+        console.log('Available categories in framework:', frameworkData.categories.map(c => c.name));
+        console.log('User selected categories:', selectedCategories);
+        
         filteredFrameworkData = {
           ...frameworkData,
           categories: frameworkData.categories.filter(category => {
@@ -1716,17 +1719,18 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         
         // Validate user selection
         if (filteredFrameworkData.categories.length === 0) {
-          console.log('WARNING: No categories match user selection, falling back to smart filtering');
-          selectedCategories = null; // Reset to use smart filtering
+          console.log('ERROR: No categories match user selection. This should not happen with valid category codes.');
+          throw new Error(`No categories found for selected codes: ${selectedCategories.join(', ')}. Please check your category selection.`);
         } else {
-          console.log('User category filtering successful, skipping smart filtering');
+          console.log('User category filtering successful, skipping smart filtering entirely');
           // User selection successful - skip smart filtering entirely
           return filteredFrameworkData;
         }
       }
       
       // If no user selection or user selection failed, apply smart filtering
-      if (!selectedCategories || selectedCategories.length === 0 || filteredFrameworkData.categories.length === 0) {
+      // IMPORTANT: Only apply smart filtering if user has NOT selected specific categories
+      if (!selectedCategories || selectedCategories.length === 0) {
         if (totalControls > 20) {
           // If we have many controls, filter to most relevant ones
           console.log('Large framework detected, applying intelligent filtering...');
