@@ -1725,49 +1725,63 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           firstCategoryControls: frameworkData.categories[0]?.results?.length || 0
         });
         
-        // CRITICAL FIX: Force strict category filtering - only include exactly what user selected
-        console.log('=== FORCING STRICT CATEGORY FILTERING ===');
+        // NUCLEAR OPTION: Create a completely clean, filtered structure
+        console.log('=== NUCLEAR CATEGORY FILTERING ===');
         console.log('Original framework categories:', frameworkData.categories.map(c => c.name));
         console.log('User selected categories:', selectedCategories);
         
-        // Create a completely new filtered structure with only the selected categories
-        const filteredCategories = [];
+        // Create a completely new, clean structure with ONLY the selected control families
+        const cleanCategories = [];
         
-        frameworkData.categories.forEach(category => {
-          const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-          const shouldInclude = selectedCategories.includes(categoryCode);
+        // For each selected category, create a clean structure
+        selectedCategories.forEach(selectedFamily => {
+          console.log(`Creating clean structure for family: ${selectedFamily}`);
           
-          console.log(`Processing category: ${category.name} (${categoryCode}) - ${shouldInclude ? 'INCLUDING' : 'EXCLUDING'}`);
+          // Find the original category for this family
+          const originalCategory = frameworkData.categories.find(cat => {
+            const categoryCode = cat.name.match(/\(([A-Z]+)\)/)?.[1];
+            return categoryCode === selectedFamily;
+          });
           
-          if (shouldInclude) {
-            // Only include controls that match the selected family
-            const validControls = (category.results || []).filter(control => {
+          if (originalCategory) {
+            // Filter controls to ONLY include controls from this family
+            const familyControls = (originalCategory.results || []).filter(control => {
               const controlFamily = control.id.split('-')[0];
-              const isValid = selectedCategories.includes(controlFamily);
+              const isValid = controlFamily === selectedFamily;
               console.log(`  Control ${control.id}: family=${controlFamily}, valid=${isValid}`);
               return isValid;
             });
             
-            if (validControls.length > 0) {
-              filteredCategories.push({
-                ...category,
-                results: validControls
+            if (familyControls.length > 0) {
+              cleanCategories.push({
+                name: originalCategory.name,
+                description: originalCategory.description,
+                results: familyControls
               });
-              console.log(`  Added category ${category.name} with ${validControls.length} valid controls`);
+              console.log(`  Added clean category ${originalCategory.name} with ${familyControls.length} controls`);
             } else {
-              console.log(`  Skipping category ${category.name} - no valid controls found`);
+              console.log(`  WARNING: No valid controls found for family ${selectedFamily}`);
             }
+          } else {
+            console.log(`  ERROR: No category found for family ${selectedFamily}`);
           }
         });
         
+        // Replace the entire framework data with our clean structure
         filteredFrameworkData = {
-          ...frameworkData,
-          categories: filteredCategories
+          name: frameworkData.name,
+          description: frameworkData.description,
+          categories: cleanCategories
         };
         
-        console.log('=== FILTERING COMPLETE ===');
-        console.log('Final filtered categories:', filteredFrameworkData.categories.map(c => c.name));
-        console.log('Total controls after filtering:', countTotalControls(filteredFrameworkData));
+        console.log('=== NUCLEAR FILTERING COMPLETE ===');
+        console.log('Clean categories created:', filteredFrameworkData.categories.map(c => c.name));
+        console.log('Total controls in clean structure:', countTotalControls(filteredFrameworkData));
+        console.log('Control families in clean structure:', filteredFrameworkData.categories.map(c => {
+          const controls = c.results || [];
+          const families = [...new Set(controls.map(control => control.id.split('-')[0]))];
+          return `${c.name}: ${families.join(', ')}`;
+        }));
         
         const filteredControls = countTotalControls(filteredFrameworkData);
         const reduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
