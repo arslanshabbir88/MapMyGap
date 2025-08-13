@@ -540,7 +540,7 @@ function Analyzer({ onNavigateHome }) {
         console.log('File type:', file.type);
         console.log('Content length:', e.target.result.length);
         console.log('Content preview (first 500 chars):', e.target.result.substring(0, 500));
-        console.log('Content preview (last 500 chars):', e.target.result.substring(Math.max(0, e.target.result.length - 500));
+        console.log('Content preview (last 500 chars):', e.target.result.substring(Math.max(0, e.target.result.length - 500)));
         setFileContent(e.target.result);
       };
       reader.onerror = (e) => {
