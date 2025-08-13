@@ -478,6 +478,15 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     const frameworkName = frameworkNames[framework] || framework;
 
     // Create a comprehensive prompt for AI analysis with exact control structure
+    console.log('=== AI PROMPT DEBUG ===');
+    console.log('Document content length:', fileContent.length);
+    console.log('Document content preview:', fileContent.substring(0, 200));
+    console.log('Framework name:', frameworkName);
+    console.log('Strictness level:', strictness);
+    console.log('Filtered framework data:', JSON.stringify(filteredFrameworkData, null, 2));
+    console.log('Categories being sent to AI:', filteredFrameworkData.categories.map(c => c.name));
+    console.log('Total controls being sent to AI:', filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0));
+    
     const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
 
 Document Content:
@@ -670,9 +679,14 @@ Return only valid JSON, no additional text or formatting.`;
     const response = await result.response;
     const text = response.text();
     
+    console.log('=== AI RESPONSE DEBUG ===');
     console.log('AI Response Text:', text);
     console.log('AI Response Length:', text.length);
     console.log('Strictness level used:', strictness);
+    console.log('AI Response contains "categories":', text.includes('"categories"'));
+    console.log('AI Response contains "results":', text.includes('"results"'));
+    console.log('AI Response contains "AC-1":', text.includes('AC-1'));
+    console.log('AI Response contains "Access Control":', text.includes('Access Control'));
     
     // Check if AI returned an error message
     
