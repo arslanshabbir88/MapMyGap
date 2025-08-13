@@ -57,10 +57,10 @@ function adjustResultsForStrictness(results, strictness) {
             adjustmentsMade++;
           }
         }
-        // Upgrade 20% of "gap" to "partial" for strict mode
-        if (result.status === 'gap' && adjustmentsMade % 5 === 0) { // Every 5th gap control
-          result.status = 'partial';
-          result.details = `Upgraded to partial due to strict analysis requirements. ${result.details}`;
+        // Downgrade 20% of "partial" to "gap" for strict mode
+        if (result.status === 'partial' && adjustmentsMade % 5 === 0) { // Every 5th partial control
+          result.status = 'gap';
+          result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
           adjustmentsMade++;
         }
       } else if (strictness === 'lenient') {
