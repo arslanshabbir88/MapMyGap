@@ -1938,7 +1938,10 @@ Example of what to look for:
     };
     
     console.log('Fallback result created with', fallbackResult.categories.length, 'categories');
-    return fallbackResult;
+    
+    // Apply strictness adjustments to fallback results
+    console.log('Applying strictness adjustments to fallback results for level:', strictness);
+    return adjustResultsForStrictness(fallbackResult, strictness);
   }
 }
 
