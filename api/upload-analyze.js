@@ -2181,7 +2181,8 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     
     if (unauthorizedControls.length > 0) {
       console.error(`🚨 CRITICAL: AI returned ${unauthorizedControls.length} unauthorized controls:`, unauthorizedControls);
-      throw new Error(`AI response contains unauthorized controls: ${unauthorizedControls.join(', ')}`);
+      console.error('🚨 NUCLEAR OPTION: Rejecting AI response and using fallback to prevent unauthorized controls');
+      throw new Error(`AI response contains unauthorized controls: ${unauthorizedControls.join(', ')} - using fallback instead`);
     }
     
     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
@@ -2242,6 +2243,29 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
         }]
       };
     }
+    
+    // NUCLEAR FALLBACK: Ensure fallback also only contains authorized controls
+    console.log('=== NUCLEAR FALLBACK VALIDATION ===');
+    console.log('Creating fallback with filteredFrameworkData categories:', filteredFrameworkData.categories.map(c => c.name));
+    
+    // Double-check that fallback only contains authorized controls
+    let fallbackUnauthorizedControls = [];
+    filteredFrameworkData.categories.forEach(category => {
+      category.results.forEach(control => {
+        const controlFamily = control.id.split('-')[0];
+        if (!selectedCategories.includes(controlFamily)) {
+          fallbackUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+          console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+        }
+      });
+    });
+    
+    if (fallbackUnauthorizedControls.length > 0) {
+      console.error(`🚨 CRITICAL: Fallback contains ${fallbackUnauthorizedControls.length} unauthorized controls!`);
+      throw new Error(`Fallback logic failed - contains unauthorized controls: ${fallbackUnauthorizedControls.join(', ')}`);
+    }
+    
+    console.log('✅ Fallback validation passed - all controls are authorized');
     
     // Use the filtered framework data for fallback with intelligent defaults
     const fallbackResult = {
@@ -2307,7 +2331,28 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     
     // Apply strictness adjustments to fallback results
     console.log('Applying strictness adjustments to fallback results for level:', strictness);
-    return adjustResultsForStrictness(fallbackResult, strictness);
+    const adjustedFallback = adjustResultsForStrictness(fallbackResult, strictness);
+    
+    // FINAL NUCLEAR CHECK: Validate adjusted results before returning
+    console.log('=== FINAL NUCLEAR VALIDATION ===');
+    let finalUnauthorizedControls = [];
+    adjustedFallback.categories.forEach(category => {
+      category.results.forEach(control => {
+        const controlFamily = control.id.split('-')[0];
+        if (!selectedCategories.includes(controlFamily)) {
+          finalUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+          console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+        }
+      });
+    });
+    
+    if (finalUnauthorizedControls.length > 0) {
+      console.error(`🚨 CRITICAL: Final results contain ${finalUnauthorizedControls.length} unauthorized controls!`);
+      throw new Error(`Final validation failed - results contain unauthorized controls: ${finalUnauthorizedControls.join(', ')}`);
+    }
+    
+    console.log('✅ FINAL VALIDATION PASSED - No unauthorized controls in results');
+    return adjustedFallback;
   }
 }
 
