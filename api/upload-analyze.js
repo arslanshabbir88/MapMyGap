@@ -1458,6 +1458,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   let filteredFrameworkData = { categories: [] };
   let skipSmartFiltering = false;
   
+  console.log('🔍 DEBUG: filteredFrameworkData initialized as:', JSON.stringify(filteredFrameworkData));
+  
   try {
     console.log('=== SMART ANALYSIS: Starting with filtered controls ===');
     console.log('allFrameworks type:', typeof allFrameworks);
@@ -1802,6 +1804,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           categories: cleanCategories
         };
         
+        console.log('🔍 DEBUG: filteredFrameworkData set to:', JSON.stringify(filteredFrameworkData, null, 2));
+        
         console.log('=== NUCLEAR FILTERING COMPLETE ===');
         console.log('Clean categories created:', filteredFrameworkData.categories.map(c => c.name));
         console.log('Total controls in clean structure:', countTotalControls(filteredFrameworkData));
@@ -1929,6 +1933,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     }
     
     // FINAL SAFETY CHECK: Ensure filteredFrameworkData is always defined
+    console.log('🔍 DEBUG: Before safety check, filteredFrameworkData is:', JSON.stringify(filteredFrameworkData));
+    console.log('🔍 DEBUG: filteredFrameworkData type:', typeof filteredFrameworkData);
+    console.log('🔍 DEBUG: filteredFrameworkData.categories type:', typeof filteredFrameworkData?.categories);
+    
     if (!filteredFrameworkData || !filteredFrameworkData.categories) {
       console.error('🚨 CRITICAL: filteredFrameworkData is undefined or has no categories!');
       console.error('Current filteredFrameworkData:', filteredFrameworkData);
