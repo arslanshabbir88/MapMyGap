@@ -1273,47 +1273,55 @@ function adjustResultsForStrictness(results, strictness) {
   }
   
   const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
-  let adjustmentsMade = 0;
   
-  adjustedResults.categories.forEach(category => {
-    category.results.forEach(result => {
-      if (strictness === 'strict') {
-        // Make strict mode more conservative - systematically downgrade
-        if (result.status === 'covered') {
-          // Downgrade 50% of "covered" to "partial" for strict mode
-          if (adjustmentsMade % 2 === 0) { // Every other covered control
-            result.status = 'partial';
-            result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
-            adjustmentsMade++;
-          }
-        }
-        // Downgrade 20% of "partial" to "gap" for strict mode
-        if (result.status === 'partial' && adjustmentsMade % 5 === 0) { // Every 5th partial control
+  if (strictness === 'strict') {
+    // Make strict mode more conservative - systematically downgrade
+    let coveredToPartial = Math.floor(initialCounts.covered * 0.5); // 50% of covered -> partial
+    let partialToGap = Math.floor(initialCounts.partial * 0.2); // 20% of partial -> gap
+    
+    console.log(`Strict mode: Converting ${coveredToPartial} covered to partial, ${partialToGap} partial to gap`);
+    
+    let coveredConverted = 0;
+    let partialConverted = 0;
+    
+    adjustedResults.categories.forEach(category => {
+      category.results.forEach(result => {
+        if (result.status === 'covered' && coveredConverted < coveredToPartial) {
+          result.status = 'partial';
+          result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
+          coveredConverted++;
+        } else if (result.status === 'partial' && partialConverted < partialToGap) {
           result.status = 'gap';
           result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
-          adjustmentsMade++;
+          partialConverted++;
         }
-      } else if (strictness === 'lenient') {
-        // Make lenient mode more generous - systematically upgrade
-        if (result.status === 'gap') {
-          // Upgrade 60% of "gap" to "partial" for lenient mode
-          if (adjustmentsMade % 5 < 3) { // 3 out of every 5 gap controls
-            result.status = 'partial';
-            result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
-            adjustmentsMade++;
-          }
-        }
-        if (result.status === 'partial') {
-          // Upgrade 50% of "partial" to "covered" for lenient mode
-          if (adjustmentsMade % 2 === 0) { // Every other partial control
-            result.status = 'covered';
-            result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
-            adjustmentsMade++;
-          }
-        }
-      }
+      });
     });
-  });
+    
+  } else if (strictness === 'lenient') {
+    // Make lenient mode more generous - systematically upgrade
+    let gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gap -> partial
+    let partialToCovered = Math.floor(initialCounts.partial * 0.5); // 50% of partial -> covered
+    
+    console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered`);
+    
+    let gapConverted = 0;
+    let partialConverted = 0;
+    
+    adjustedResults.categories.forEach(category => {
+      category.results.forEach(result => {
+        if (result.status === 'gap' && gapConverted < gapToPartial) {
+          result.status = 'partial';
+          result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
+          gapConverted++;
+        } else if (result.status === 'partial' && partialConverted < partialToCovered) {
+          result.status = 'covered';
+          result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
+          partialConverted++;
+        }
+      });
+    });
+  }
   
   // Count final statuses
   let finalCounts = { covered: 0, partial: 0, gap: 0 };
@@ -1325,7 +1333,7 @@ function adjustResultsForStrictness(results, strictness) {
     });
   });
   
-  console.log(`Post-processing completed for ${strictness} mode. Made ${adjustmentsMade} adjustments.`);
+  console.log(`Post-processing completed for ${strictness} mode.`);
   console.log('Final status counts:', finalCounts);
   console.log('Status changes:', {
     covered: finalCounts.covered - initialCounts.covered,
@@ -1731,6 +1739,7 @@ CRITICAL REQUIREMENTS:
    - Technical controls: "firewalls", "authentication", "encryption", "monitoring"
    - Governance: "roles and responsibilities", "accountability", "oversight"
    - Risk management: "risk assessment", "risk management", "risk controls"
+   - IMPLIED CONTROLS: Look for organizational intent, planning, or general security practices
 
 3. ANALYSIS STRICTNESS LEVEL: ${strictness}
    
@@ -1747,16 +1756,25 @@ CRITICAL REQUIREMENTS:
    - Standard compliance assessment approach
    - Example: "Access Control Policy" + basic implementation details is sufficient
    
-   LENIENT MODE (Intent Recognition):
-   - Mark as "covered" if there is ANY reasonable indication of coverage or intent
-   - Accept general policy statements, organizational intent, or planning
-   - Be generous in interpretation - look for implied controls
-   - Example: "Access Control Policy" or "we control access" is sufficient
+   LENIENT MODE (Intent Recognition - BE GENEROUS):
+   - Mark as "covered" if there is ANY reasonable indication of coverage, intent, or planning
+   - Accept general policy statements, organizational intent, planning, or implied controls
+   - Be VERY generous in interpretation - look for ANY security-related language
+   - If the document mentions security, policies, or controls in ANY way, prefer "covered" over "partial"
+   - Examples that should be "covered" in lenient mode:
+     * "Access Control Policy" → COVERED (even without details)
+     * "We control access to systems" → COVERED
+     * "Security policies are in place" → COVERED
+     * "Our organization maintains security controls" → COVERED
+     * "We have procedures for managing access" → COVERED
+     * "Security awareness training" → COVERED
+     * "Risk management processes" → COVERED
+   - Only mark as "gap" if there is absolutely NO security-related content
 
 4. CRITICAL: Based on strictness level, adjust evidence requirements:
    - STRICT: Look for explicit, detailed evidence only
    - BALANCED: Look for reasonable evidence and clear intent
-   - LENIENT: Look for ANY reasonable indication of coverage or intent
+   - LENIENT: Look for ANY reasonable indication of coverage, intent, or planning - BE GENEROUS
 
 5. IMPORTANT: If you find ANY evidence of security controls, policies, or procedures in the document, mark those controls as "covered" or "partial" - NOT as "gap"
 
