@@ -1725,33 +1725,49 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           firstCategoryControls: frameworkData.categories[0]?.results?.length || 0
         });
         
-        // Force strict category filtering - only include exactly what user selected
+        // CRITICAL FIX: Force strict category filtering - only include exactly what user selected
+        console.log('=== FORCING STRICT CATEGORY FILTERING ===');
+        console.log('Original framework categories:', frameworkData.categories.map(c => c.name));
+        console.log('User selected categories:', selectedCategories);
+        
+        // Create a completely new filtered structure with only the selected categories
+        const filteredCategories = [];
+        
+        frameworkData.categories.forEach(category => {
+          const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+          const shouldInclude = selectedCategories.includes(categoryCode);
+          
+          console.log(`Processing category: ${category.name} (${categoryCode}) - ${shouldInclude ? 'INCLUDING' : 'EXCLUDING'}`);
+          
+          if (shouldInclude) {
+            // Only include controls that match the selected family
+            const validControls = (category.results || []).filter(control => {
+              const controlFamily = control.id.split('-')[0];
+              const isValid = selectedCategories.includes(controlFamily);
+              console.log(`  Control ${control.id}: family=${controlFamily}, valid=${isValid}`);
+              return isValid;
+            });
+            
+            if (validControls.length > 0) {
+              filteredCategories.push({
+                ...category,
+                results: validControls
+              });
+              console.log(`  Added category ${category.name} with ${validControls.length} valid controls`);
+            } else {
+              console.log(`  Skipping category ${category.name} - no valid controls found`);
+            }
+          }
+        });
+        
         filteredFrameworkData = {
           ...frameworkData,
-          categories: frameworkData.categories.filter(category => {
-            const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-            const shouldInclude = selectedCategories.includes(categoryCode);
-            console.log(`Category ${category.name} (${categoryCode}): ${shouldInclude ? 'including' : 'excluding'} - user selection`);
-            
-            // Additional safety check - ensure we only get the exact category requested
-            if (shouldInclude) {
-              // Double-check that this category only contains controls from the selected family
-              const categoryControls = category.results || [];
-              const validControls = categoryControls.filter(control => {
-                const controlFamily = control.id.split('-')[0]; // Extract AC from AC-1, AU from AU-1, etc.
-                return selectedCategories.includes(controlFamily);
-              });
-              
-              if (validControls.length !== categoryControls.length) {
-                console.log(`WARNING: Category ${category.name} contains controls from other families. Filtering to only include ${selectedCategories.join(', ')} controls.`);
-                // Replace the category results with only valid controls
-                category.results = validControls;
-              }
-            }
-            
-            return shouldInclude;
-          })
+          categories: filteredCategories
         };
+        
+        console.log('=== FILTERING COMPLETE ===');
+        console.log('Final filtered categories:', filteredFrameworkData.categories.map(c => c.name));
+        console.log('Total controls after filtering:', countTotalControls(filteredFrameworkData));
         
         const filteredControls = countTotalControls(filteredFrameworkData);
         const reduction = ((totalControls - filteredControls) / totalControls * 100).toFixed(1);
@@ -1883,6 +1899,8 @@ Does this document contain cybersecurity information?`;
     const prompt = `Analyze this document against ${frameworkName} framework. Use EXACT control structure below.
 
 Document: ${fileContent.substring(0, 6000)}
+
+CRITICAL: You are ONLY analyzing the following control families: ${selectedCategories ? selectedCategories.join(', ') : 'All available'}
 
 Controls to analyze:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
