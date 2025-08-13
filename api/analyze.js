@@ -388,6 +388,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   // Generate document hash early for use throughout the function
   const documentHash = generateDocumentHash(fileContent, framework, selectedCategories);
   
+  // Declare filteredFrameworkData at function level to ensure it's always available
+  let filteredFrameworkData = { categories: [] };
+  
   try {
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);
