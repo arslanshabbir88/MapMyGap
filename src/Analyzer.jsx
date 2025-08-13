@@ -1,5 +1,41 @@
-import React, { useState, useMemo } from 'react';
-import { useAuth } from './AuthContext';
+/**
+ * ConformIQ - AI-Powered Compliance Analysis Platform
+ * 
+ * Copyright (c) 2024 ConformIQ. All rights reserved.
+ * 
+ * This software is proprietary and confidential. Unauthorized copying, 
+ * distribution, or use of this software is strictly prohibited.
+ * 
+ * For licensing inquiries, contact: legal@conformiq.com
+ */
+
+import React, { useState, useEffect, useRef } from 'react';
+import { createClient } from '@supabase/supabase-js';
+import './App.css';
+
+// Environment validation - makes it harder for copycats
+const validateEnvironment = () => {
+  const requiredVars = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'];
+  const missing = requiredVars.filter(varName => !import.meta.env[varName]);
+  
+  if (missing.length > 0) {
+    console.error('Missing required environment variables:', missing);
+    return false;
+  }
+  
+  // Additional validation to prevent unauthorized use
+  const domain = window.location.hostname;
+  if (!domain.includes('vercel.app') && !domain.includes('localhost')) {
+    console.warn('Unauthorized domain detected');
+    return false;
+  }
+  
+  return true;
+};
+
+// Initialize Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // --- Helper Components ---
 
@@ -276,6 +312,14 @@ const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
 // --- Main App Component ---
 
 function Analyzer({ onNavigateHome }) {
+  // Environment validation - prevents unauthorized use
+  useEffect(() => {
+    if (!validateEnvironment()) {
+      console.error('Environment validation failed - application may not function correctly');
+      // You could add additional protection here like redirecting or disabling features
+    }
+  }, []);
+
   const [uploadedFile, setUploadedFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);

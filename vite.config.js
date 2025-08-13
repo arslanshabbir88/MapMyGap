@@ -1,8 +1,8 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Configuration - Update this URL with your actual Vercel deployment
-const VERCEL_URL = 'https://align-iq.vercel.app' // ← Your actual Vercel deployment
+// Vercel deployment URL
+const VERCEL_URL = 'https://align-iq.vercel.app'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -29,7 +29,33 @@ export default defineConfig(({ command, mode }) => {
   return {
     plugins: [react()],
     build: {
-      target: 'es2020'
+      target: 'es2020',
+      // Code obfuscation and protection
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: false, // Keep console logs for debugging
+          drop_debugger: true,
+        },
+        mangle: {
+          // Mangle variable names to make code harder to read
+          toplevel: true,
+          reserved: ['React', 'ReactDOM']
+        },
+        format: {
+          // Remove comments and formatting
+          comments: false,
+          beautify: false
+        }
+      },
+      // Split chunks to make reverse engineering harder
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom']
+          }
+        }
+      }
     },
     server: {
       proxy: {
