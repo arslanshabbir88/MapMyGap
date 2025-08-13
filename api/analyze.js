@@ -101,6 +101,41 @@ const allFrameworks = {
             status: "gap",
             details: "Separation of duties not implemented",
             recommendation: "Implement separation of duties controls to prevent conflicts of interest"
+          },
+          {
+            id: "AC-6",
+            control: "Least Privilege",
+            status: "gap",
+            details: "Least privilege principle not implemented",
+            recommendation: "Implement least privilege access controls"
+          },
+          {
+            id: "AC-7",
+            control: "Unsuccessful Logon Attempts",
+            status: "gap",
+            details: "Logon attempt limits not configured",
+            recommendation: "Configure limits on unsuccessful logon attempts"
+          },
+          {
+            id: "AC-8",
+            control: "System Use Notification",
+            status: "gap",
+            details: "System use notifications not displayed",
+            recommendation: "Display appropriate system use notifications"
+          },
+          {
+            id: "AC-9",
+            control: "Previous Logon Notification",
+            status: "gap",
+            details: "Previous logon notifications not implemented",
+            recommendation: "Implement notifications for previous logon information"
+          },
+          {
+            id: "AC-10",
+            control: "Concurrent Session Control",
+            status: "gap",
+            details: "Concurrent session control not implemented",
+            recommendation: "Implement controls to limit concurrent user sessions"
           }
         ]
       },
@@ -121,6 +156,136 @@ const allFrameworks = {
             status: "gap",
             details: "Audit events not defined",
             recommendation: "Define and implement comprehensive audit event logging"
+          },
+          {
+            id: "AU-3",
+            control: "Content of Audit Records",
+            status: "gap",
+            details: "Audit record content not defined",
+            recommendation: "Define and implement comprehensive audit record content requirements"
+          },
+          {
+            id: "AU-4",
+            control: "Audit Storage Capacity",
+            status: "gap",
+            details: "Audit storage capacity not managed",
+            recommendation: "Implement audit storage capacity management and monitoring"
+          },
+          {
+            id: "AU-5",
+            control: "Response to Audit Processing Failures",
+            status: "gap",
+            details: "Audit processing failure response not defined",
+            recommendation: "Define and implement response procedures for audit processing failures"
+          },
+          {
+            id: "AU-6",
+            control: "Audit Review, Analysis, and Reporting",
+            status: "gap",
+            details: "Audit review and analysis not implemented",
+            recommendation: "Implement regular audit review, analysis, and reporting procedures"
+          }
+        ]
+      },
+      {
+        name: "Identification and Authentication (IA)",
+        description: "Establish and manage the identity and authentication of users, processes, and devices",
+        results: [
+          {
+            id: "IA-1",
+            control: "Identification and Authentication Policy and Procedures",
+            status: "gap",
+            details: "Identification and authentication policy not established",
+            recommendation: "Develop and implement comprehensive identification and authentication policy and procedures"
+          },
+          {
+            id: "IA-2",
+            control: "Identification and Authentication (Organizational Users)",
+            status: "gap",
+            details: "User identification and authentication not implemented",
+            recommendation: "Implement multi-factor authentication for all organizational users"
+          },
+          {
+            id: "IA-3",
+            control: "Device Identification and Authentication",
+            status: "gap",
+            details: "Device identification and authentication not implemented",
+            recommendation: "Implement device identification and authentication mechanisms"
+          }
+        ]
+      },
+      {
+        name: "Incident Response (IR)",
+        description: "Establish an operational incident handling capability for information systems",
+        results: [
+          {
+            id: "IR-1",
+            control: "Incident Response Policy and Procedures",
+            status: "gap",
+            details: "Incident response policy not established",
+            recommendation: "Develop and implement comprehensive incident response policy and procedures"
+          },
+          {
+            id: "IR-2",
+            control: "Incident Response Training",
+            status: "gap",
+            details: "Incident response training not implemented",
+            recommendation: "Provide incident response training to personnel with incident response responsibilities"
+          },
+          {
+            id: "IR-3",
+            control: "Incident Response Testing",
+            status: "gap",
+            details: "Incident response testing not implemented",
+            recommendation: "Test incident response capability on an annual basis"
+          },
+          {
+            id: "IR-4",
+            control: "Incident Handling",
+            status: "gap",
+            details: "Incident handling procedures not implemented",
+            recommendation: "Implement incident handling procedures for security incidents"
+          }
+        ]
+      },
+      {
+        name: "System and Communications Protection (SC)",
+        description: "Monitor, control, and protect organizational communications",
+        results: [
+          {
+            id: "SC-1",
+            control: "System and Communications Protection Policy and Procedures",
+            status: "gap",
+            details: "System and communications protection policy not established",
+            recommendation: "Develop and implement comprehensive system and communications protection policy and procedures"
+          },
+          {
+            id: "SC-2",
+            control: "Application Partitioning",
+            status: "gap",
+            details: "Application partitioning not implemented",
+            recommendation: "Implement application partitioning to separate user functionality from system management functionality"
+          },
+          {
+            id: "SC-3",
+            control: "Security Function Isolation",
+            status: "gap",
+            details: "Security function isolation not implemented",
+            recommendation: "Implement security function isolation to prevent unauthorized access to security functions"
+          },
+          {
+            id: "SC-7",
+            control: "Boundary Protection",
+            status: "gap",
+            details: "Boundary protection not implemented",
+            recommendation: "Implement boundary protection mechanisms to control communications at managed interfaces"
+          },
+          {
+            id: "SC-8",
+            control: "Transmission Confidentiality and Integrity",
+            status: "gap",
+            details: "Transmission confidentiality and integrity not implemented",
+            recommendation: "Implement transmission confidentiality and integrity controls to protect information in transit"
           }
         ]
       }
