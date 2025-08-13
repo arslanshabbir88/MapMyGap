@@ -1846,10 +1846,18 @@ Example of what to look for:
     console.log(`All controls marked as gaps: ${allGaps}`);
     console.log(`No covered or partial controls: ${noCoveredOrPartial}`);
     
-    // If AI didn't change any statuses or marked everything as gap, use fallback
-    if ((allGaps && totalControlsAnalyzed > 0) || noCoveredOrPartial) {
-      console.log('AI analysis appears to have failed - all controls marked as gaps or no meaningful analysis. Using fallback.');
-      throw new Error('AI analysis failed to provide meaningful results - likely analysis failure');
+    // Only use fallback if AI didn't provide any analysis at all
+    // Allow AI to return all gaps if that's what the analysis shows
+    if (totalControlsAnalyzed === 0) {
+      console.log('AI analysis failed - no controls analyzed. Using fallback.');
+      throw new Error('AI analysis failed to analyze any controls');
+    }
+    
+    // Log the analysis results for debugging
+    if (allGaps) {
+      console.log('AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
+    } else if (noCoveredOrPartial) {
+      console.log('AI analysis completed - no covered/partial controls found. This may be accurate for the document.');
     }
     
     // If we have some non-gap results, the analysis was successful

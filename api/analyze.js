@@ -384,10 +384,17 @@ Return only valid JSON, no additional text or formatting.`;
     
     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
     
-    // If AI didn't change any statuses, use fallback
-    if (gapCount === frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0)) {
-      console.log('AI did not change any statuses, using fallback');
-      throw new Error('AI analysis did not provide meaningful status updates');
+    // Only use fallback if AI didn't provide any analysis at all
+    // Allow AI to return all gaps if that's what the analysis shows
+    const totalControls = frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
+    if (totalControls === 0) {
+      console.log('AI analysis failed - no controls to analyze. Using fallback.');
+      throw new Error('AI analysis failed - no controls available');
+    }
+    
+    // Log the analysis results for debugging
+    if (gapCount === totalControls) {
+      console.log('AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
     }
     
     return parsedResponse;
