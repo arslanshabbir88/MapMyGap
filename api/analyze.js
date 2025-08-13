@@ -421,25 +421,45 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     // Apply category filtering if user has selected specific categories
     let filteredFrameworkData = frameworkData;
     if (selectedCategories && selectedCategories.length > 0) {
+      console.log('=== CATEGORY FILTERING DEBUG ===');
       console.log('User selected categories detected, applying strict filtering for cost optimization...');
       console.log('Selected categories:', selectedCategories);
       console.log('Analysis strictness level:', strictness);
+      console.log('Available framework categories:', frameworkData.categories.map(c => c.name));
+      
+      // Debug each category to see what's happening
+      frameworkData.categories.forEach(category => {
+        const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+        const shouldInclude = selectedCategories.includes(categoryCode);
+        console.log(`Category: "${category.name}" -> Extracted code: "${categoryCode}" -> Should include: ${shouldInclude}`);
+        console.log(`  Category name pattern match: ${category.name.match(/\(([A-Z]+)\)/)}`);
+        console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
+        console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
+      });
       
       filteredFrameworkData = {
         ...frameworkData,
         categories: frameworkData.categories.filter(category => {
           const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
           const shouldInclude = selectedCategories.includes(categoryCode);
-          console.log(`Category ${category.name} (${categoryCode}): ${shouldInclude ? 'including' : 'excluding'} - user selection`);
+          console.log(`Filtering: ${category.name} (${categoryCode}): ${shouldInclude ? 'INCLUDING' : 'EXCLUDING'}`);
           return shouldInclude;
         })
       };
       
-      console.log(`User category filtering applied: ${filteredFrameworkData.categories.length}/${frameworkData.categories.length} categories`);
-      console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name.match(/\(([A-Z]+)\)/)?.[1] || c.name).join(', ')}`);
+      console.log(`=== FILTERING RESULTS ===`);
+      console.log(`Original categories: ${frameworkData.categories.length}`);
+      console.log(`Filtered categories: ${filteredFrameworkData.categories.length}`);
+      console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name).join(', ')}`);
+      console.log(`Categories excluded: ${frameworkData.categories.filter(c => {
+        const code = c.name.match(/\(([A-Z]+)\)/)?.[1];
+        return !selectedCategories.includes(code);
+      }).map(c => c.name).join(', ')}`);
       
       // Validate user selection
       if (filteredFrameworkData.categories.length === 0) {
+        console.error('🚨 CRITICAL: No categories match user selection!');
+        console.error('This means the filtering logic is too strict or there\'s a pattern matching issue.');
         throw new Error('No categories match user selection. Please check your category selection.');
       }
     }
