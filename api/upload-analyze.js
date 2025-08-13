@@ -1,4 +1,5 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const crypto = require('crypto');
 
 // Import busboy for file parsing
 const Busboy = require('busboy');
@@ -1251,6 +1252,55 @@ Focus on families that are clearly addressed or missing in the document content.
   }
 }
 
+// Generate a unique hash for document content to enable caching
+function generateDocumentHash(content, framework) {
+  return crypto.createHash('sha256').update(content + framework).digest('hex');
+}
+
+// Check if we have cached AI analysis results for this document
+async function getCachedAnalysis(documentHash, framework) {
+  try {
+    // For now, we'll use a simple in-memory cache
+    // In production, you could extend this to use Supabase or Redis
+    if (!global.analysisCache) {
+      global.analysisCache = new Map();
+    }
+    
+    const cacheKey = `${documentHash}_${framework}`;
+    const cached = global.analysisCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) { // 24 hour cache
+      console.log('Cache HIT: Using cached AI analysis results');
+      return cached.results;
+    }
+    
+    console.log('Cache MISS: No cached results found');
+    return null;
+  } catch (error) {
+    console.error('Cache lookup error:', error);
+    return null;
+  }
+}
+
+// Cache AI analysis results for future use
+async function cacheAnalysisResults(documentHash, framework, results) {
+  try {
+    if (!global.analysisCache) {
+      global.analysisCache = new Map();
+    }
+    
+    const cacheKey = `${documentHash}_${framework}`;
+    global.analysisCache.set(cacheKey, {
+      results: results,
+      timestamp: Date.now()
+    });
+    
+    console.log('Cached AI analysis results for future use');
+  } catch (error) {
+    console.error('Cache storage error:', error);
+  }
+}
+
 // Post-process AI results based on strictness level to ensure strictness affects scoring
 function adjustResultsForStrictness(results, strictness) {
   console.log(`Post-processing results for strictness level: ${strictness}`);
@@ -1396,6 +1446,9 @@ function adjustResultsForStrictness(results, strictness) {
 
 // Hybrid analysis function - uses smart filtering + AI analysis
 async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
+  // Generate document hash early for use throughout the function
+  const documentHash = generateDocumentHash(fileContent, framework);
+  
   // Declare filteredFrameworkData at function level to ensure it's always available
   let filteredFrameworkData = { categories: [] };
   
@@ -1405,6 +1458,17 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('allFrameworks keys:', allFrameworks ? Object.keys(allFrameworks) : 'undefined');
     console.log('Requested framework:', framework);
     console.log('Analysis Strictness Level:', strictness);
+    console.log('Document hash:', documentHash.substring(0, 16) + '...');
+    
+    // Check cache first to save AI tokens
+    const cachedResults = await getCachedAnalysis(documentHash, framework);
+    if (cachedResults) {
+      console.log('🎯 CACHE HIT: Using cached AI results, applying strictness adjustments only');
+      console.log('💰 SAVED: AI tokens and API costs!');
+      return adjustResultsForStrictness(cachedResults, strictness);
+    }
+    
+    console.log('🔄 CACHE MISS: Running AI analysis (this will use tokens)');
     
     // Additional debugging
     console.log('Global allFrameworks reference:', global.allFrameworks);
@@ -2012,6 +2076,10 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
       console.log(`Coverage: ${((coveredCount + partialCount) / totalControlsAnalyzed * 100).toFixed(1)}%`);
     }
     
+    // Cache the AI analysis results for future use (saves tokens!)
+    await cacheAnalysisResults(documentHash, framework, parsedResponse);
+    console.log('💾 Cached AI analysis results for future strictness adjustments');
+    
     return adjustResultsForStrictness(parsedResponse, strictness);
   } catch (error) {
     console.error('AI Analysis Error:', error);
@@ -2092,6 +2160,10 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     };
     
     console.log('Fallback result created with', fallbackResult.categories.length, 'categories');
+    
+    // Cache the fallback results for future use (even fallbacks can be cached)
+    await cacheAnalysisResults(documentHash, framework, fallbackResult);
+    console.log('💾 Cached fallback results for future strictness adjustments');
     
     // Apply strictness adjustments to fallback results
     console.log('Applying strictness adjustments to fallback results for level:', strictness);
