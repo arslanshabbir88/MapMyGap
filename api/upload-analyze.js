@@ -1471,7 +1471,35 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     if (cachedResults) {
       console.log('🎯 CACHE HIT: Using cached AI results, applying strictness adjustments only');
       console.log('💰 SAVED: AI tokens and API costs!');
-      return adjustResultsForStrictness(cachedResults, strictness);
+      
+      // CRITICAL: Even cache hits need to validate that they don't contain unauthorized controls
+      if (selectedCategories && selectedCategories.length > 0) {
+        console.log('=== CACHE HIT VALIDATION ===');
+        let cacheUnauthorizedControls = [];
+        
+        cachedResults.categories.forEach(category => {
+          category.results.forEach(control => {
+            const controlFamily = control.id.split('-')[0];
+            if (!selectedCategories.includes(controlFamily)) {
+              cacheUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+              console.log(`🚨 CACHE UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+            }
+          });
+        });
+        
+        if (cacheUnauthorizedControls.length > 0) {
+          console.error(`🚨 CRITICAL: Cached results contain ${cacheUnauthorizedControls.length} unauthorized controls!`);
+          console.error('Invalid controls:', cacheUnauthorizedControls);
+          console.log('🚨 Rejecting cache hit and running fresh analysis to prevent unauthorized controls');
+          // Don't return - continue with fresh analysis
+        } else {
+          console.log('✅ Cache validation passed - all controls are authorized');
+          return adjustResultsForStrictness(cachedResults, strictness);
+        }
+      } else {
+        // No category restrictions, safe to use cache
+        return adjustResultsForStrictness(cachedResults, strictness);
+      }
     }
     
     console.log('🔄 CACHE MISS: Running AI analysis (this will use tokens)');
