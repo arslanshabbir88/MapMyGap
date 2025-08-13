@@ -10,7 +10,7 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { createClient } from '@supabase/supabase-js';
+import { useAuth } from './AuthContext';
 import './App.css';
 
 // Environment validation - makes it harder for copycats
@@ -33,9 +33,7 @@ const validateEnvironment = () => {
   return true;
 };
 
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
 
 // --- Helper Components ---
 
