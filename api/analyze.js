@@ -584,7 +584,6 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Number of categories:', frameworkData.categories.length);
 
     // Apply category filtering if user has selected specific categories
-    let filteredFrameworkData = frameworkData;
     if (selectedCategories && selectedCategories.length > 0) {
       console.log('=== CATEGORY FILTERING DEBUG ===');
       console.log('User selected categories detected, applying strict filtering for cost optimization...');
@@ -655,7 +654,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
 
 Document Content:
-${fileContent.substring(0, 8000)}
+${fileContent.substring(0, 15000)}
 
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
@@ -681,8 +680,8 @@ Return your analysis in this exact JSON format, using the EXACT control structur
           "id": "EXACT_CONTROL_ID_FROM_STRUCTURE",
           "control": "EXACT_CONTROL_DESCRIPTION_FROM_STRUCTURE",
           "status": "covered|partial|gap",
-          "details": "Detailed analysis explaining why this status was assigned based on document content",
-          "recommendation": "Specific, actionable recommendation to achieve compliance"
+          "details": "Brief explanation of why this status was assigned",
+          "recommendation": "Specific recommendation to achieve compliance"
         }
       ]
     }
@@ -694,143 +693,15 @@ CRITICAL REQUIREMENTS:
 - Do not change control IDs, names, or descriptions
 - Only modify the status, details, and recommendation fields
 - Base your analysis on actual content found in the document
-- If content is insufficient, mark as "gap" with clear guidance
-- Provide actionable recommendations that match the document's context
-
-INTELLIGENT EVIDENCE RECOGNITION - Look for evidence in multiple forms:
-- Explicit policies: "Access Control Policy", "Security Policy", "Information Security Policy"
-- Procedural language: "procedures to manage", "processes for", "guidelines for"
-- Implementation details: "systems are configured", "we implement", "our organization maintains"
-- Organizational statements: "we control access", "access is managed", "we monitor"
-- Training references: "training programs", "awareness", "employee education"
-- Technical controls: "firewalls", "authentication", "encryption", "monitoring"
-- Governance: "roles and responsibilities", "accountability", "oversight"
-- Risk management: "risk assessment", "risk management", "risk controls"
+- Provide brief, actionable recommendations
 
 ANALYSIS STRICTNESS LEVEL: ${strictness}
 
-STRICT MODE (High Precision):
-- Only mark as "covered" if there is EXPLICIT, DETAILED evidence
-- Look for specific policy names, procedure references, system names
-- Require clear, unambiguous language about implementation
-- Be very conservative - when in doubt, mark as "partial" or "gap"
-- Example: "Access Control Policy" alone is NOT enough - need details about what it covers
+STRICT MODE: Only mark as "covered" if there is EXPLICIT, DETAILED evidence
+BALANCED MODE: Mark as "covered" if there is reasonable evidence or clear intent
+LENIENT MODE: Mark as "covered" if there is ANY reasonable indication of coverage
 
-BALANCED MODE (Standard):
-- Mark as "covered" if there is reasonable evidence, clear intent, OR general policy statements
-- Accept general policy statements, organizational intent, or planning
-- Standard compliance assessment approach - be reasonable, not overly strict
-- Examples that should be "covered" in balanced mode:
-  * "Access Control Policy" → COVERED (policy exists)
-  * "We control access to systems" → COVERED (clear intent)
-  * "Security policies are in place" → COVERED (policy exists)
-  * "Our organization maintains security controls" → COVERED (controls exist)
-  * "We have procedures for managing access" → COVERED (procedures exist)
-  * "Access management procedures" → COVERED (procedures exist)
-  * "User account management" → COVERED (account management exists)
-  * "System access controls" → COVERED (access controls exist)
-  * "Information flow controls" → COVERED (flow controls exist)
-  * "Separation of duties" → COVERED (duties are separated)
-  * "Least privilege principle" → COVERED (principle is applied)
-  * "Login attempt limits" → COVERED (limits are in place)
-  * "System use notifications" → COVERED (notifications exist)
-  * "Previous login information" → COVERED (information is provided)
-  * "Concurrent session control" → COVERED (control is implemented)
-- Only mark as "gap" if there is clearly NO evidence of the control
-- When in doubt, prefer "partial" over "gap"
-
-LENIENT MODE (Intent Recognition - BE GENEROUS):
-- Mark as "covered" if there is ANY reasonable indication of coverage, intent, or planning
-- Accept general policy statements, organizational intent, planning, or implied controls
-- Be VERY generous in interpretation - look for ANY security-related language
-- If the document mentions security, policies, or controls in ANY way, prefer "covered" over "partial"
-- Examples that should be "covered" in lenient mode:
-  * "Access Control Policy" → COVERED (even without details)
-  * "We control access to systems" → COVERED
-  * "Security policies are in place" → COVERED
-  * "Our organization maintains security controls" → COVERED
-  * "We have procedures for managing access" → COVERED
-  * "Security awareness training" → COVERED
-  * "Risk management processes" → COVERED
-  * "Access management procedures" → COVERED
-  * "User account management" → COVERED
-  * "System access controls" → COVERED
-  * "Information flow controls" → COVERED
-  * "Separation of duties" → COVERED
-  * "Least privilege principle" → COVERED
-  * "Login attempt limits" → COVERED
-  * "System use notifications" → COVERED
-  * "Previous login information" → COVERED
-  * "Concurrent session control" → COVERED
-  * "Access control mechanisms" → COVERED
-  * "User access management" → COVERED
-  * "System access management" → COVERED
-- Only mark as "gap" if there is absolutely NO security-related content
-- When in doubt, prefer "covered" over "partial" in lenient mode
-- Look for ANY mention of access, control, management, procedures, policies, or security
-
-INTELLIGENT CONTROL MAPPING EXAMPLES:
-Access Control (AC) Family:
-- AC-1: "Access Control Policy", "access management procedures", "we control access to systems"
-- AC-2: "account management", "user accounts", "account creation process"
-- AC-3: "access enforcement", "access control mechanisms", "system access controls"
-- AC-4: "information flow enforcement", "data flow controls", "information sharing policies"
-- AC-5: "separation of duties", "role separation", "divided responsibilities"
-- AC-6: "least privilege", "minimum access", "need-to-know basis"
-- AC-7: "unsuccessful logon attempts", "failed login handling", "account lockout"
-- AC-8: "system use notification", "login banners", "system monitoring notices"
-- AC-9: "previous logon notification", "last login information", "session tracking"
-- AC-10: "concurrent session control", "session limits", "multiple session management"
-
-Audit and Accountability (AU) Family:
-- AU-1: "audit policy", "logging procedures", "audit requirements"
-- AU-2: "audit events", "what we log", "audit logging"
-- AU-3: "audit record content", "log content", "audit information"
-
-Security Assessment (CA) Family:
-- CA-1: "security assessment", "compliance review", "security evaluation"
-- CA-2: "security assessments", "ongoing reviews", "periodic assessments"
-
-Configuration Management (CM) Family:
-- CM-1: "configuration management", "system configuration", "configuration policies"
-- CM-2: "baseline configurations", "standard configurations", "system baselines"
-
-Incident Response (IR) Family:
-- IR-1: "incident response", "incident handling", "response procedures"
-- IR-4: "incident handling", "incident management", "response capabilities"
-- IR-8: "incident response plan", "response procedures", "incident management"
-
-Risk Assessment (RA) Family:
-- RA-1: "risk assessment", "risk management", "risk evaluation"
-- RA-2: "security categorization", "system classification", "risk categorization"
-
-System and Communications Protection (SC) Family:
-- SC-1: "system security", "security controls", "system protection"
-- SC-7: "boundary protection", "network security", "firewall configuration"
-- SC-8: "transmission confidentiality", "data encryption", "secure communications"
-
-System and Information Integrity (SI) Family:
-- SI-1: "system integrity", "information integrity", "data integrity"
-- SI-2: "flaw remediation", "patch management", "vulnerability management"
-- SI-3: "malicious code protection", "antivirus", "malware protection"
-- SI-4: "system monitoring", "system surveillance", "monitoring capabilities"
-- SI-7: "software integrity", "software validation", "code integrity"
-
-Training and Awareness (AT) Family:
-- AT-2: "security training", "awareness programs", "employee education"
-- AT-3: "role-based training", "job-specific training", "position training"
-
-Personnel Security (PS) Family:
-- PS-3: "personnel screening", "background checks", "employee vetting"
-- PS-4: "personnel termination", "access termination", "account deactivation"
-- PS-6: "access agreements", "security agreements", "confidentiality agreements"
-
-Physical and Environmental Protection (PE) Family:
-- PE-1: "physical security", "facility security", "building security"
-- PE-3: "physical access control", "facility access", "building access"
-- PE-6: "physical monitoring", "surveillance", "physical monitoring"
-
-IMPORTANT: Look for these patterns in ANY form - they don't have to be exact matches. If the document describes implementing access controls, managing user accounts, or having security policies, mark the relevant controls as "covered" or "partial" based on the strictness level.
+Look for evidence like: policies, procedures, "we implement", "our organization maintains", "access controls", "security policies", etc.
 
 Return only valid JSON, no additional text or formatting.`;
 
@@ -864,22 +735,28 @@ Return only valid JSON, no additional text or formatting.`;
     const parsedResponse = JSON.parse(jsonMatch[0]);
     console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
     
+    // Validate that the AI actually returned categories and results
+    if (!parsedResponse.categories || parsedResponse.categories.length === 0) {
+      console.error('🚨 AI returned empty categories array - this indicates a prompt or parsing issue');
+      console.error('AI Response Text:', text);
+      console.error('Parsed Response:', parsedResponse);
+      throw new Error('AI analysis failed - returned empty categories. This may indicate the prompt was too complex or the AI misunderstood the request.');
+    }
+    
     // Validate that the AI actually changed some statuses
     let gapCount = 0;
     let coveredCount = 0;
     let partialCount = 0;
     
-    if (parsedResponse.categories) {
-      parsedResponse.categories.forEach(category => {
-        if (category.results) {
-          category.results.forEach(control => {
-            if (control.status === 'gap') gapCount++;
-            else if (control.status === 'covered') coveredCount++;
-            else if (control.status === 'partial') partialCount++;
-          });
-        }
-      });
-    }
+    parsedResponse.categories.forEach(category => {
+      if (category.results) {
+        category.results.forEach(control => {
+          if (control.status === 'gap') gapCount++;
+          else if (control.status === 'covered') coveredCount++;
+          else if (control.status === 'partial') partialCount++;
+        });
+      }
+    });
     
     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
     
