@@ -94,12 +94,12 @@ function adjustResultsForStrictness(results, strictness) {
     // If AI was too conservative, be moderately generous
     let gapToPartial = 0;
     if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.4); // 40% of gaps -> partial (moderate)
+      gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gaps -> partial (moderate)
       console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
     // Also upgrade some partial to covered for balanced mode
-    let partialToCovered = Math.floor(initialCounts.partial * 0.2); // 20% of partial -> covered
+    let partialToCovered = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> covered
     
     if (gapToPartial > 0 || partialToCovered > 0) {
       let gapConverted = 0;
@@ -124,8 +124,15 @@ function adjustResultsForStrictness(results, strictness) {
     // LENIENT MODE: Most generous - systematically upgrade
     console.log('Lenient mode - making generous adjustments');
     
-    let gapToPartial = Math.floor(initialCounts.gap * 0.7); // 70% of gap -> partial (more generous)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.6); // 60% of partial -> covered (more generous)
+    // In lenient mode, be VERY aggressive about upgrading gaps
+    let gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gap -> partial (very generous)
+    let partialToCovered = Math.floor(initialCounts.partial * 0.8); // 80% of partial -> covered (very generous)
+    
+    // If AI was extremely conservative, upgrade even more aggressively
+    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
+      gapToPartial = Math.floor(initialCounts.gap * 0.95); // 95% of gaps -> partial when AI is too conservative
+      console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
+    }
     
     console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered`);
     
@@ -251,7 +258,18 @@ STRICT MODE (High Precision):
      * "Security policies are in place" → COVERED (policy exists)
      * "Our organization maintains security controls" → COVERED (controls exist)
      * "We have procedures for managing access" → COVERED (procedures exist)
+     * "Access management procedures" → COVERED (procedures exist)
+     * "User account management" → COVERED (account management exists)
+     * "System access controls" → COVERED (access controls exist)
+     * "Information flow controls" → COVERED (flow controls exist)
+     * "Separation of duties" → COVERED (duties are separated)
+     * "Least privilege principle" → COVERED (principle is applied)
+     * "Login attempt limits" → COVERED (limits are in place)
+     * "System use notifications" → COVERED (notifications exist)
+     * "Previous login information" → COVERED (information is provided)
+     * "Concurrent session control" → COVERED (control is implemented)
    - Only mark as "gap" if there is clearly NO evidence of the control
+   - When in doubt, prefer "partial" over "gap"
 
 LENIENT MODE (Intent Recognition - BE GENEROUS):
 - Mark as "covered" if there is ANY reasonable indication of coverage, intent, or planning
@@ -266,7 +284,22 @@ LENIENT MODE (Intent Recognition - BE GENEROUS):
   * "We have procedures for managing access" → COVERED
   * "Security awareness training" → COVERED
   * "Risk management processes" → COVERED
+  * "Access management procedures" → COVERED
+  * "User account management" → COVERED
+  * "System access controls" → COVERED
+  * "Information flow controls" → COVERED
+  * "Separation of duties" → COVERED
+  * "Least privilege principle" → COVERED
+  * "Login attempt limits" → COVERED
+  * "System use notifications" → COVERED
+  * "Previous login information" → COVERED
+  * "Concurrent session control" → COVERED
+  * "Access control mechanisms" → COVERED
+  * "User access management" → COVERED
+  * "System access management" → COVERED
 - Only mark as "gap" if there is absolutely NO security-related content
+- When in doubt, prefer "covered" over "partial" in lenient mode
+- Look for ANY mention of access, control, management, procedures, policies, or security
 
 INTELLIGENT CONTROL MAPPING EXAMPLES:
 Access Control (AC) Family:
