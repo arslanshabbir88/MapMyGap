@@ -2366,6 +2366,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   // Declare filteredFrameworkData at function level to ensure it's always available
   let filteredFrameworkData = { categories: [] };
   let skipSmartFiltering = false;
+  let parsedResponse = null; // Declare at function level for error handling
   
   console.log('🔍 DEBUG: filteredFrameworkData initialized as:', JSON.stringify(filteredFrameworkData));
   
@@ -2507,13 +2508,18 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000);
     });
     
+    console.log('🚀 Starting AI analysis with timeout...');
     const aiPromise = model.generateContent(prompt);
+    console.log('🤖 AI promise created, racing with timeout...');
+    
     const result = await Promise.race([aiPromise, timeoutPromise]);
+    console.log('✅ AI analysis completed successfully');
+    
     const response = await result.response;
     const text = response.text();
     
-    console.log('AI Response Text:', text);
-    console.log('AI Response Length:', text.length);
+    console.log('📝 AI Response received, length:', text.length);
+    console.log('🔍 First 200 chars of AI response:', text.substring(0, 200));
     
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -2556,12 +2562,31 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('💾 Cached AI analysis results for future strictness adjustments');
     
     // Apply strictness adjustments and return
-    return adjustResultsForStrictness(parsedResponse, strictness);
+    console.log('✅ AI ANALYSIS SUCCESSFUL: Returning adjusted results');
+    const finalResults = adjustResultsForStrictness(parsedResponse, strictness);
+    console.log('Final results structure:', {
+      categories: finalResults.categories?.length || 0,
+      totalControls: finalResults.categories?.reduce((sum, cat) => sum + (cat.results?.length || 0), 0) || 0
+    });
+    return finalResults;
+    
   } catch (error) {
-    console.error('AI Analysis Error:', error);
+    console.error('🚨 AI Analysis Error:', error);
+    console.error('Error stack:', error.stack);
     console.log('Falling back to predefined control structure');
     
-    // Use the filtered framework data for fallback
+    // Check if we actually have valid AI results that we can use
+    if (typeof parsedResponse !== 'undefined' && parsedResponse && parsedResponse.categories) {
+      console.log('⚠️ WARNING: We have valid AI results but still hit error. Using AI results instead of fallback.');
+      console.log('AI results found:', parsedResponse.categories.length, 'categories');
+      
+      // Apply strictness adjustments and return the AI results
+      const finalResults = adjustResultsForStrictness(parsedResponse, strictness);
+      console.log('✅ Using AI results despite error, returning adjusted results');
+      return finalResults;
+    }
+    
+    // Use the filtered framework data for fallback with intelligent defaults
     if (!filteredFrameworkData.categories || filteredFrameworkData.categories.length === 0) {
        console.error('filteredFrameworkData has no valid categories, creating minimal structure');
        
