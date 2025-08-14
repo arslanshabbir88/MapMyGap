@@ -681,7 +681,16 @@ function Analyzer({ onNavigateHome }) {
           });
           
           const total = covered + partial + gaps;
+          // IMPORTANT: Calculate score from ADJUSTED results (after strictness adjustments)
           const score = total > 0 ? Math.round(((covered + partial * 0.5) / total) * 100) : 0;
+          
+          console.log('=== FRONTEND SCORE CALCULATION ===');
+          console.log('Adjusted Results - Covered:', covered, 'Partial:', partial, 'Gaps:', gaps);
+          console.log('Total Controls:', total);
+          console.log('Calculated Score:', score + '%');
+          console.log('Score Formula: ((Covered + Partial*0.5) / Total) * 100');
+          console.log('Score Calculation:', `((${covered} + ${partial}*0.5) / ${total}) * 100 = ${score}%`);
+          
           const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
           setAnalysisResults(results);
           
