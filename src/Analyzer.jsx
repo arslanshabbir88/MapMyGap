@@ -586,9 +586,24 @@ function Analyzer({ onNavigateHome }) {
 
   const handleAnalyze = async () => {
     if (!uploadedFile) return;
-    setIsAnalyzing(true);
-    setError(null);
+    
+    // Force clear any existing results and cache
     setAnalysisResults(null);
+    setError(null);
+    
+    // Force refresh the page cache
+    if (window.location.reload) {
+      try {
+        // Clear any stored data
+        sessionStorage.clear();
+        localStorage.removeItem('analysis-cache');
+        console.log('🧹 Cleared session storage and local storage');
+      } catch (e) {
+        console.log('Storage clearing failed:', e);
+      }
+    }
+    
+    setIsAnalyzing(true);
 
     try {
       let result;
@@ -605,13 +620,25 @@ function Analyzer({ onNavigateHome }) {
           fileContent, 
           framework: selectedFramework,
           strictness: analysisStrictness,
-          selectedCategories: selectedCategories
+          selectedCategories: selectedCategories,
+          timestamp: Date.now(),
+          random: Math.random().toString()
         };
         console.log('Request body being sent:', requestBody);
         
-        const response = await fetch('/api/analyze', {
+        // Add cache-busting query parameter for text analysis too
+        const textCacheBuster = Date.now();
+        const textApiUrl = `/api/analyze?cb=${textCacheBuster}`;
+        console.log('🚀 Text analysis cache buster:', textCacheBuster, 'API URL:', textApiUrl);
+        
+        const response = await fetch(textApiUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'X-Cache-Buster': textCacheBuster.toString()
+          },
           body: JSON.stringify(requestBody),
         });
         if (!response.ok) {
@@ -634,13 +661,35 @@ function Analyzer({ onNavigateHome }) {
         const cacheBuster = Date.now();
         const apiUrl = `/api/upload-analyze?cb=${cacheBuster}`;
         console.log('🚀 Frontend cache buster:', cacheBuster, 'API URL:', apiUrl);
+        
+        // Clear browser cache for this request
+        if ('caches' in window) {
+          try {
+            caches.keys().then(names => {
+              names.forEach(name => {
+                if (name.includes('upload-analyze') || name.includes('api')) {
+                  caches.delete(name);
+                  console.log('🧹 Cleared browser cache:', name);
+                }
+              });
+            });
+          } catch (e) {
+            console.log('Browser cache clearing failed:', e);
+          }
+        }
+        
+        // Add unique timestamp to form data to prevent any caching
+        form.append('timestamp', cacheBuster.toString());
+        form.append('random', Math.random().toString());
+        
         const response = await fetch(apiUrl, { 
           method: 'POST', 
           body: form,
           headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
-            'X-Cache-Buster': cacheBuster.toString()
+            'X-Cache-Buster': cacheBuster.toString(),
+            'X-Request-ID': `${cacheBuster}-${Math.random().toString(36).substr(2, 9)}`
           }
         });
         if (!response.ok) {
