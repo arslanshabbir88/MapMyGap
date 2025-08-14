@@ -630,7 +630,19 @@ function Analyzer({ onNavigateHome }) {
           form.append('categories', JSON.stringify(selectedCategories));
         }
 
-        const response = await fetch('/api/upload-analyze', { method: 'POST', body: form });
+        // Add cache-busting query parameter to prevent any caching
+        const cacheBuster = Date.now();
+        const apiUrl = `/api/upload-analyze?cb=${cacheBuster}`;
+        console.log('🚀 Frontend cache buster:', cacheBuster, 'API URL:', apiUrl);
+        const response = await fetch(apiUrl, { 
+          method: 'POST', 
+          body: form,
+          headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'X-Cache-Buster': cacheBuster.toString()
+          }
+        });
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(errorText);
