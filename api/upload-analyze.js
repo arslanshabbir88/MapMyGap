@@ -2287,19 +2287,24 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     // filteredFrameworkData is already defined at function level, but ensure it has valid content
     if (!filteredFrameworkData.categories || filteredFrameworkData.categories.length === 0) {
       console.error('filteredFrameworkData has no valid categories, creating minimal structure');
+      
+      // Create a minimal structure that matches the user's selected categories
+      const firstCategory = selectedCategories[0] || 'AC';
       filteredFrameworkData = {
         categories: [{
-          name: "General Controls",
-          description: "Basic security controls",
+          name: `${firstCategory} Controls`,
+          description: `Basic ${firstCategory} security controls`,
           results: [{
-            id: "GEN-1",
-            control: "Basic Security Control",
+            id: `${firstCategory}-1`,
+            control: `Basic ${firstCategory} Security Control`,
             status: "gap",
             details: "AI analysis failed and no framework data available. Please review manually.",
-            recommendation: "Implement basic security controls based on your organization's needs."
+            recommendation: `Implement basic ${firstCategory} security controls based on your organization's needs.`
           }]
         }]
       };
+      
+      console.log(`Created minimal fallback structure for category: ${firstCategory}`);
     }
     
     // NUCLEAR FALLBACK: Ensure fallback also only contains authorized controls
