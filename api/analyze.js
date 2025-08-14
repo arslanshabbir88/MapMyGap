@@ -433,9 +433,10 @@ function adjustResultsForStrictness(results, strictness) {
   
   const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
   
-  if (strictness === 'strict') {
+    if (strictness === 'strict') {
     // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
     console.log('Strict mode - making conservative adjustments');
+    console.log('Initial counts - Covered:', initialCounts.covered, 'Partial:', initialCounts.partial, 'Gap:', initialCounts.gap);
     
     let coveredToPartial = Math.floor(initialCounts.covered * 0.6); // 60% of covered -> partial
     let partialToGap = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> gap
@@ -459,21 +460,27 @@ function adjustResultsForStrictness(results, strictness) {
           result.status = 'partial';
           result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
           coveredConverted++;
+          console.log(`Strict mode: Converted ${result.id} from covered to partial (${coveredConverted}/${coveredToPartial})`);
         } else if (result.status === 'partial' && partialConverted < partialToGap) {
           result.status = 'gap';
           result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
           partialConverted++;
+          console.log(`Strict mode: Converted ${result.id} from partial to gap (${partialConverted}/${partialToGap})`);
         } else if (result.status === 'gap' && gapConverted < gapToPartial) {
           result.status = 'partial';
           result.details = `Upgraded to partial due to strict analysis requirements (AI was too conservative). ${result.details}`;
-          gapConverted++;
+           gapConverted++;
+           console.log(`Strict mode: Converted ${result.id} from gap to partial (${gapConverted}/${gapToPartial})`);
         }
       });
     });
     
+    console.log(`Strict mode: Final conversion counts - Covered->Partial: ${coveredConverted}, Partial->Gap: ${partialConverted}, Gap->Partial: ${gapConverted}`);
+    
   } else if (strictness === 'balanced') {
     // BALANCED MODE: Moderate adjustments - more generous than strict but not as generous as lenient
     console.log('Balanced mode - making moderate adjustments');
+    console.log('Initial counts - Covered:', initialCounts.covered, 'Partial:', initialCounts.partial, 'Gap:', initialCounts.gap);
     
     // If AI was too conservative, be moderately generous
     let gapToPartial = 0;
@@ -495,18 +502,25 @@ function adjustResultsForStrictness(results, strictness) {
             result.status = 'partial';
             result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
             gapConverted++;
+            console.log(`Balanced mode: Converted ${result.id} from gap to partial (${gapConverted}/${gapToPartial})`);
           } else if (result.status === 'partial' && partialConverted < partialToCovered) {
             result.status = 'covered';
             result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
             partialConverted++;
+            console.log(`Balanced mode: Converted ${result.id} from partial to covered (${partialConverted}/${partialToCovered})`);
           }
         });
       });
+      
+      console.log(`Balanced mode: Final conversion counts - Gap->Partial: ${gapConverted}, Partial->Covered: ${partialConverted}`);
+    } else {
+      console.log('Balanced mode: No adjustments needed - AI results are already reasonable');
     }
     
   } else if (strictness === 'lenient') {
     // LENIENT MODE: Most generous - systematically upgrade
     console.log('Lenient mode - making generous adjustments');
+    console.log('Initial counts - Covered:', initialCounts.covered, 'Partial:', initialCounts.partial, 'Gap:', initialCounts.gap);
     
     // In lenient mode, be VERY aggressive about upgrading gaps
     let gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gap -> partial (very generous)
@@ -529,13 +543,17 @@ function adjustResultsForStrictness(results, strictness) {
           result.status = 'partial';
           result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
           gapConverted++;
+          console.log(`Lenient mode: Converted ${result.id} from gap to partial (${gapConverted}/${gapToPartial})`);
         } else if (result.status === 'partial' && partialConverted < partialToCovered) {
           result.status = 'covered';
           result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
           partialConverted++;
+          console.log(`Lenient mode: Converted ${result.id} from partial to covered (${partialConverted}/${partialToCovered})`);
         }
       });
     });
+    
+    console.log(`Lenient mode: Final conversion counts - Gap->Partial: ${gapConverted}, Partial->Covered: ${partialConverted}`);
   }
   
   // Count final statuses
@@ -810,30 +828,46 @@ Return only valid JSON, no additional text or formatting.`;
       console.log('AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
     }
     
-    // Apply strictness adjustments to AI results
-    console.log('=== BEFORE STRICTNESS ADJUSTMENTS ===');
-    console.log('AI Results - Gaps:', gapCount, 'Covered:', coveredCount, 'Partial:', partialCount);
-    
-    const adjustedResults = adjustResultsForStrictness(parsedResponse, strictness);
-    
-    // Count final results after strictness adjustments
-    let finalGapCount = 0;
-    let finalCoveredCount = 0;
-    let finalPartialCount = 0;
-    
-    adjustedResults.categories.forEach(category => {
-      if (category.results) {
-        category.results.forEach(control => {
-          if (control.status === 'gap') finalGapCount++;
-          else if (control.status === 'covered') finalCoveredCount++;
-          else if (control.status === 'partial') finalPartialCount++;
-        });
-      }
-    });
-    
-    console.log('=== AFTER STRICTNESS ADJUSTMENTS ===');
-    console.log('Final Results - Gaps:', finalGapCount, 'Covered:', finalCoveredCount, 'Partial:', finalPartialCount);
-    console.log('Strictness adjustments applied successfully for level:', strictness);
+         // Apply strictness adjustments to AI results
+     console.log('=== BEFORE STRICTNESS ADJUSTMENTS ===');
+     console.log('AI Results - Gaps:', gapCount, 'Covered:', coveredCount, 'Partial:', partialCount);
+     console.log('Total controls analyzed:', gapCount + coveredCount + partialCount);
+     
+     // Show some examples of what the AI returned
+     if (gapCount > 0) {
+       console.log('Example gap control:', parsedResponse.categories.find(cat => cat.results?.some(r => r.status === 'gap'))?.results?.find(r => r.status === 'gap'));
+     }
+     if (partialCount > 0) {
+       console.log('Example partial control:', parsedResponse.categories.find(cat => cat.results?.some(r => r.status === 'partial'))?.results?.find(r => r.status === 'partial'));
+     }
+     if (coveredCount > 0) {
+       console.log('Example covered control:', parsedResponse.categories.find(cat => cat.results?.some(r => r.status === 'covered'))?.results?.find(r => r.status === 'covered'));
+     }
+     
+     const adjustedResults = adjustResultsForStrictness(parsedResponse, strictness);
+     
+     // Count final results after strictness adjustments
+     let finalGapCount = 0;
+     let finalCoveredCount = 0;
+     let finalPartialCount = 0;
+     
+     adjustedResults.categories.forEach(category => {
+       if (category.results) {
+         category.results.forEach(control => {
+           if (control.status === 'gap') finalGapCount++;
+           else if (control.status === 'covered') finalCoveredCount++;
+           else if (control.status === 'partial') finalPartialCount++;
+         });
+       }
+     });
+     
+     console.log('=== AFTER STRICTNESS ADJUSTMENTS ===');
+     console.log('Final Results - Gaps:', finalGapCount, 'Covered:', finalCoveredCount, 'Partial:', finalPartialCount);
+     console.log('Strictness adjustments applied successfully for level:', strictness);
+     console.log('Score calculation: Covered =', finalCoveredCount, 'Partial =', finalPartialCount, 'Total =', finalGapCount + finalCoveredCount + finalPartialCount);
+     console.log('Percentage calculation: ((Covered + (Partial * 0.5)) / Total) * 100');
+     const calculatedScore = ((finalCoveredCount + (finalPartialCount * 0.5)) / (finalGapCount + finalCoveredCount + finalPartialCount)) * 100;
+     console.log('Calculated score:', calculatedScore.toFixed(1) + '%');
     
     // Cache the final results (after strictness adjustments) for future use
     await cacheAnalysisResults(documentHash, framework, adjustedResults, strictness);
