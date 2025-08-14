@@ -1253,49 +1253,62 @@ Focus on families that are clearly addressed or missing in the document content.
 }
 
 // Generate a unique hash for document content to enable caching
-function generateDocumentHash(content, framework) {
-  return crypto.createHash('sha256').update(content + framework).digest('hex');
+function generateDocumentHash(content, framework, selectedCategories = null, strictness = null) {
+  const categoryString = selectedCategories ? JSON.stringify(selectedCategories.sort()) : '';
+  const strictnessString = strictness ? strictness : '';
+  return crypto.createHash('sha256').update(content + framework + categoryString + strictnessString).digest('hex');
 }
 
-// Check if we have cached AI analysis results for this document
-async function getCachedAnalysis(documentHash, framework) {
+// Temporary cache clearing for strictness fix - remove this after testing
+if (global.analysisCache) {
+  console.log('🧹 Clearing existing cache to implement strictness-based caching');
+  global.analysisCache = {};
+}
+
+// Get cached analysis results
+async function getCachedAnalysis(documentHash, framework, strictness = null) {
   try {
-    // For now, we'll use a simple in-memory cache
-    // In production, you could extend this to use Supabase or Redis
-    if (!global.analysisCache) {
-      global.analysisCache = new Map();
+    const cacheKey = `${documentHash}_${framework}_${strictness}`;
+    console.log('🔍 Checking cache with key:', cacheKey);
+    
+    if (global.analysisCache && global.analysisCache[cacheKey]) {
+      const cached = global.analysisCache[cacheKey];
+      const now = Date.now();
+      
+      // Cache expires after 1 hour
+      if (now - cached.timestamp < 3600000) {
+        console.log('🎯 CACHE HIT: Found valid cached results');
+        return cached.results;
+      } else {
+        console.log('⏰ CACHE EXPIRED: Removing expired cache entry');
+        delete global.analysisCache[cacheKey];
+      }
     }
     
-    const cacheKey = `${documentHash}_${framework}`;
-    const cached = global.analysisCache.get(cacheKey);
-    
-    if (cached && Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) { // 24 hour cache
-      console.log('Cache HIT: Using cached AI analysis results');
-      return cached.results;
-    }
-    
-    console.log('Cache MISS: No cached results found');
+    console.log('❌ CACHE MISS: No valid cached results found');
     return null;
   } catch (error) {
-    console.error('Cache lookup error:', error);
+    console.error('Cache retrieval error:', error);
     return null;
   }
 }
 
-// Cache AI analysis results for future use
-async function cacheAnalysisResults(documentHash, framework, results) {
+// Store analysis results in cache
+async function cacheAnalysisResults(documentHash, framework, results, strictness = null) {
   try {
+    const cacheKey = `${documentHash}_${framework}_${strictness}`;
+    console.log('💾 Caching results with key:', cacheKey);
+    
     if (!global.analysisCache) {
-      global.analysisCache = new Map();
+      global.analysisCache = {};
     }
     
-    const cacheKey = `${documentHash}_${framework}`;
-    global.analysisCache.set(cacheKey, {
+    global.analysisCache[cacheKey] = {
       results: results,
       timestamp: Date.now()
-    });
+    };
     
-    console.log('Cached AI analysis results for future use');
+    console.log('✅ Results cached successfully');
   } catch (error) {
     console.error('Cache storage error:', error);
   }
@@ -1327,13 +1340,14 @@ function adjustResultsForStrictness(results, strictness) {
     // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
     console.log('Strict mode - making conservative adjustments');
     
-    let coveredToPartial = Math.floor(initialCounts.covered * 0.6); // 60% of covered -> partial
-    let partialToGap = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> gap
+    // Force strict mode to be more conservative than balanced
+    let coveredToPartial = Math.max(1, Math.floor(initialCounts.covered * 0.7)); // 70% of covered -> partial
+    let partialToGap = Math.max(1, Math.floor(initialCounts.partial * 0.5)); // 50% of partial -> gap
     
     // If AI was too conservative and marked everything as gap, upgrade very few to partial
     let gapToPartial = 0;
     if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.15); // Only 15% of gaps -> partial (very conservative)
+      gapToPartial = Math.max(0, Math.floor(initialCounts.gap * 0.1)); // Only 10% of gaps -> partial (very conservative)
       console.log(`Strict mode: AI was too conservative, upgrading only ${gapToPartial} gaps to partial`);
     }
     
@@ -1365,22 +1379,22 @@ function adjustResultsForStrictness(results, strictness) {
     // BALANCED MODE: Moderate adjustments - create realistic middle ground
     console.log('Balanced mode - making moderate adjustments');
     
+    // Force balanced mode to be different from strict and lenient
+    let gapToPartial = Math.floor(initialCounts.gap * 0.4); // 40% of gaps -> partial (moderate)
+    let partialToCovered = Math.floor(initialCounts.partial * 0.3); // 30% of partial -> covered
+    
     // If AI was too conservative, be moderately generous
-    let gapToPartial = 0;
     if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gaps -> partial (moderate)
+      gapToPartial = Math.floor(initialCounts.gap * 0.5); // 50% of gaps -> partial (moderate)
       console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
     // If AI was too optimistic (all covered), downgrade some to create realistic balance
     let coveredToPartial = 0;
     if (initialCounts.covered > 0 && initialCounts.gap === 0 && initialCounts.partial === 0) {
-      coveredToPartial = Math.floor(initialCounts.covered * 0.2); // 20% of covered -> partial (moderate downgrading)
+      coveredToPartial = Math.floor(initialCounts.covered * 0.3); // 30% of covered -> partial (moderate downgrading)
       console.log(`Balanced mode: AI was too optimistic, downgrading ${coveredToPartial} covered to partial for realistic assessment`);
     }
-    
-    // Also upgrade some partial to covered for balanced mode
-    let partialToCovered = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> covered
     
     if (gapToPartial > 0 || partialToCovered > 0 || coveredToPartial > 0) {
       let gapConverted = 0;
@@ -1410,20 +1424,20 @@ function adjustResultsForStrictness(results, strictness) {
     // LENIENT MODE: Most generous but still realistic - minimal downgrading
     console.log('Lenient mode - making generous adjustments');
     
-    // In lenient mode, be VERY aggressive about upgrading gaps
-    let gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gap -> partial (very generous)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.8); // 80% of partial -> covered (very generous)
+    // Force lenient mode to be significantly different from strict and balanced
+    let gapToPartial = Math.floor(initialCounts.gap * 0.8); // 80% of gap -> partial (very generous)
+    let partialToCovered = Math.floor(initialCounts.partial * 0.7); // 70% of partial -> covered (very generous)
     
     // If AI was extremely conservative, upgrade even more aggressively
     if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.95); // 95% of gaps -> partial when AI is too conservative
+      gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gaps -> partial when AI is too conservative
       console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
     // If AI was too optimistic (all covered), downgrade very few to maintain realism
     let coveredToPartial = 0;
     if (initialCounts.covered > 0 && initialCounts.gap === 0 && initialCounts.partial === 0) {
-      coveredToPartial = Math.floor(initialCounts.covered * 0.1); // Only 10% of covered -> partial (minimal downgrading)
+      coveredToPartial = Math.floor(initialCounts.covered * 0.15); // Only 15% of covered -> partial (minimal downgrading)
       console.log(`Lenient mode: AI was too optimistic, downgrading ${coveredToPartial} covered to partial to maintain realism`);
     }
     
@@ -1476,7 +1490,7 @@ function adjustResultsForStrictness(results, strictness) {
 // Hybrid analysis function - uses smart filtering + AI analysis
 async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
   // Generate document hash early for use throughout the function
-  const documentHash = generateDocumentHash(fileContent, framework);
+  const documentHash = generateDocumentHash(fileContent, framework, selectedCategories, strictness);
   
   // Declare filteredFrameworkData at function level to ensure it's always available
   let filteredFrameworkData = { categories: [] };
@@ -1493,7 +1507,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Document hash:', documentHash.substring(0, 16) + '...');
     
     // Check cache first to save AI tokens
-    const cachedResults = await getCachedAnalysis(documentHash, framework);
+    const cachedResults = await getCachedAnalysis(documentHash, framework, strictness);
     if (cachedResults) {
       console.log('🎯 CACHE HIT: Using cached AI results, applying strictness adjustments only');
       console.log('💰 SAVED: AI tokens and API costs!');
@@ -2339,7 +2353,7 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     }
     
     // Cache the AI analysis results for future use (saves tokens!)
-    await cacheAnalysisResults(documentHash, framework, parsedResponse);
+    await cacheAnalysisResults(documentHash, framework, parsedResponse, strictness);
     console.log('💾 Cached AI analysis results for future strictness adjustments');
     
     // Create the proper structure for strictness adjustments
@@ -2467,7 +2481,7 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     console.log('Fallback result created with', fallbackResult.categories.length, 'categories');
     
     // Cache the fallback results for future use (even fallbacks can be cached)
-    await cacheAnalysisResults(documentHash, framework, fallbackResult);
+    await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness);
     console.log('💾 Cached fallback results for future strictness adjustments');
     
     // Apply strictness adjustments to fallback results
