@@ -2143,7 +2143,7 @@ global.analysisCache = {};
 // Get cached analysis results
 async function getCachedAnalysis(documentHash, framework, strictness = null) {
   try {
-    const cacheKey = `${documentHash}_${framework}_${strictness}`;
+    const cacheKey = `${documentHash}_${framework}_${strictness}_${cacheBuster}`;
     console.log('🔍 Checking cache with key:', cacheKey);
     
     if (global.analysisCache && global.analysisCache[cacheKey]) {
@@ -2171,7 +2171,7 @@ async function getCachedAnalysis(documentHash, framework, strictness = null) {
 // Store analysis results in cache
 async function cacheAnalysisResults(documentHash, framework, results, strictness = null) {
   try {
-    const cacheKey = `${documentHash}_${framework}_${strictness}`;
+    const cacheKey = `${documentHash}_${framework}_${strictness}_${cacheBuster}`;
     console.log('💾 Caching results with key:', cacheKey);
     
     if (!global.analysisCache) {
@@ -2448,9 +2448,17 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
       const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
       
-      // Cache the optimized results
-      await cacheAnalysisResults(documentHash, framework, optimizedFallback, strictness);
+      // Add a small delay to ensure fresh results and prevent caching
+      console.log('⏳ Adding delay to ensure fresh smart fallback results...');
+      await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
+      console.log('✅ Delay completed, returning fresh results');
       
+      // Cache the optimized results with a unique timestamp key to prevent conflicts
+      const timestamp = Date.now();
+      const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}_${timestamp}`;
+      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness);
+      
+      console.log(`✅ Smart fallback completed with timestamp: ${timestamp}`);
       return adjustedFallback;
     }
     
@@ -2491,6 +2499,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
       const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
       const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
+      
+      // Add a small delay to ensure fresh results and prevent caching
+      console.log('⏳ Adding delay to ensure fresh smart fallback results...');
+      await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
+      console.log('✅ Delay completed, returning fresh results');
       
       // Cache the optimized results with a unique timestamp key to prevent conflicts
       const timestamp = Date.now();
@@ -2736,7 +2749,19 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       categoriesCount: parsedResponse?.categories?.length || 0,
       firstControl: parsedResponse?.categories?.[0]?.results?.[0]?.id || 'none'
     });
-    return finalResults;
+    
+    // Return the adjusted results
+    console.log('✅ Returning adjusted results with strictness level:', strictness);
+    
+    // Add unique identifier to prevent caching
+    const finalResultsWithCacheBuster = {
+      ...adjustedResults,
+      _cacheBuster: cacheBuster,
+      _timestamp: Date.now(),
+      _fresh: true
+    };
+    
+    return finalResultsWithCacheBuster;
     
   } catch (error) {
     console.error('🚨 AI Analysis Error:', error);
@@ -2954,6 +2979,26 @@ function createOptimizedCSFFallback(selectedCategories) {
 }
 
 module.exports = async function handler(req, res) {
+  // Set aggressive cache control headers to prevent any caching
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+  
+  // Add cache-busting timestamp to prevent any caching
+  const cacheBuster = Date.now();
+  console.log(`🚀 Request started with cache buster: ${cacheBuster}`);
+  
+  // Force clear ALL cache immediately
+  if (global.analysisCache) {
+    console.log('🧹 FORCE CLEARING ALL CACHE IMMEDIATELY');
+    global.analysisCache = {};
+  }
+  
+  // Additional global cache clearing
+  global.analysisCache = {};
+  console.log('🧹 Global cache completely cleared');
+  
   // Add GET endpoint for testing NIST controls
   if (req.method === 'GET') {
     try {
