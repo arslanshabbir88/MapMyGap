@@ -52,6 +52,188 @@ const allFrameworks = {
             status: "gap",
             details: "Data flow mapping not documented",
             recommendation: "Document and map all data flows and communication channels"
+          },
+          {
+            id: "ID.AM-4",
+            control: "External information systems are catalogued",
+            status: "gap",
+            details: "External system inventory not maintained",
+            recommendation: "Catalog all external information systems and their access requirements"
+          },
+          {
+            id: "ID.AM-5",
+            control: "Resources (e.g., hardware, devices, data, time, personnel, and software) are prioritized based on their classification, criticality, and business value",
+            status: "gap",
+            details: "Resource prioritization not implemented",
+            recommendation: "Implement resource classification and prioritization system based on business value"
+          },
+          {
+            id: "ID.AM-6",
+            control: "Cybersecurity roles and responsibilities for the entire workforce and third-party stakeholders are established",
+            status: "gap",
+            details: "Cybersecurity roles not defined",
+            recommendation: "Define and communicate cybersecurity roles and responsibilities across the organization"
+          },
+          {
+            id: "ID.BE-1",
+            control: "The organization's role in the supply chain is identified and communicated",
+            status: "gap",
+            details: "Supply chain role not defined",
+            recommendation: "Identify and communicate the organization's role and responsibilities in the supply chain"
+          },
+          {
+            id: "ID.BE-2",
+            control: "The organization's place in critical infrastructure and its industry sector is identified and communicated",
+            status: "gap",
+            details: "Critical infrastructure role not identified",
+            recommendation: "Identify and communicate the organization's role in critical infrastructure and industry sector"
+          },
+          {
+            id: "ID.BE-3",
+            control: "Priorities for organizational mission, objectives, and activities are established and communicated",
+            status: "gap",
+            details: "Mission priorities not established",
+            recommendation: "Establish and communicate organizational mission priorities and objectives"
+          },
+          {
+            id: "ID.BE-4",
+            control: "Dependencies and critical functions for delivery of critical services are established",
+            status: "gap",
+            details: "Critical dependencies not identified",
+            recommendation: "Identify and document critical service dependencies and functions"
+          },
+          {
+            id: "ID.BE-5",
+            control: "Resilience requirements to support delivery of critical services are established",
+            status: "gap",
+            details: "Resilience requirements not defined",
+            recommendation: "Establish resilience requirements to support critical service delivery"
+          },
+          {
+            id: "ID.GV-1",
+            control: "Organizational security policies are established and communicated",
+            status: "gap",
+            details: "Security policies not established",
+            recommendation: "Develop and communicate comprehensive organizational security policies"
+          },
+          {
+            id: "ID.GV-2",
+            control: "Security roles & responsibilities are coordinated and aligned with internal roles and external partners",
+            status: "gap",
+            details: "Security roles not coordinated",
+            recommendation: "Coordinate security roles and responsibilities with internal and external stakeholders"
+          },
+          {
+            id: "ID.GV-3",
+            control: "Legal and regulatory requirements regarding cybersecurity, including privacy and civil liberties obligations, are understood and managed",
+            status: "gap",
+            details: "Legal requirements not managed",
+            recommendation: "Identify and manage all legal and regulatory cybersecurity requirements"
+          },
+          {
+            id: "ID.GV-4",
+            control: "Governance and risk management processes address cybersecurity risks",
+            status: "gap",
+            details: "Risk management processes not integrated",
+            recommendation: "Integrate cybersecurity risks into governance and risk management processes"
+          },
+          {
+            id: "ID.RA-1",
+            control: "Asset vulnerabilities are identified and documented",
+            status: "gap",
+            details: "Vulnerability assessment not performed",
+            recommendation: "Implement regular vulnerability assessment and documentation processes"
+          },
+          {
+            id: "ID.RA-2",
+            control: "Cyber threat intelligence is received and analyzed",
+            status: "gap",
+            details: "Threat intelligence not utilized",
+            recommendation: "Establish threat intelligence collection and analysis capabilities"
+          },
+          {
+            id: "ID.RA-3",
+            control: "Threats, both internal and external, are identified and documented",
+            status: "gap",
+            details: "Threat identification not performed",
+            recommendation: "Implement comprehensive threat identification and documentation processes"
+          },
+          {
+            id: "ID.RA-4",
+            control: "Potential business impacts and likelihoods are identified",
+            status: "gap",
+            details: "Business impact assessment not performed",
+            recommendation: "Conduct business impact assessments for identified cybersecurity risks"
+          },
+          {
+            id: "ID.RA-5",
+            control: "Threats, vulnerabilities, likelihoods, and impacts are used to determine risk",
+            status: "gap",
+            details: "Risk determination not performed",
+            recommendation: "Implement risk assessment methodology using threats, vulnerabilities, and impacts"
+          },
+          {
+            id: "ID.RA-6",
+            control: "Risk responses are identified and prioritized",
+            status: "gap",
+            details: "Risk responses not prioritized",
+            recommendation: "Identify and prioritize appropriate risk response strategies"
+          },
+          {
+            id: "ID.RM-1",
+            control: "Risk management processes are established, managed, and agreed to by organizational stakeholders",
+            status: "gap",
+            details: "Risk management processes not established",
+            recommendation: "Establish and manage comprehensive risk management processes with stakeholder agreement"
+          },
+          {
+            id: "ID.RM-2",
+            control: "Organizational risk tolerance is determined and clearly expressed",
+            status: "gap",
+            details: "Risk tolerance not defined",
+            recommendation: "Define and communicate organizational risk tolerance levels"
+          },
+          {
+            id: "ID.RM-3",
+            control: "The organization's determination of risk tolerance is informed by its role in critical infrastructure and sector specific risk analysis",
+            status: "gap",
+            details: "Risk tolerance not informed by sector analysis",
+            recommendation: "Align risk tolerance with critical infrastructure role and sector-specific requirements"
+          },
+          {
+            id: "ID.SC-1",
+            control: "Supply chain risk management processes are identified, established, and managed",
+            status: "gap",
+            details: "Supply chain risk management not implemented",
+            recommendation: "Implement comprehensive supply chain risk management processes"
+          },
+          {
+            id: "ID.SC-2",
+            control: "Suppliers and partners are routinely assessed using audits, test results, or other forms of evaluations",
+            status: "gap",
+            details: "Supplier assessment not performed",
+            recommendation: "Establish routine supplier and partner assessment processes"
+          },
+          {
+            id: "ID.SC-3",
+            control: "Contracts with suppliers and third-party partners are used to implement appropriate measures designed to meet the organization's cybersecurity requirements",
+            status: "gap",
+            details: "Contract requirements not implemented",
+            recommendation: "Include cybersecurity requirements in supplier and partner contracts"
+          },
+          {
+            id: "ID.SC-4",
+            control: "Suppliers and partners are routinely assessed using audits, test results, or other forms of evaluations",
+            status: "gap",
+            details: "Ongoing supplier assessment not performed",
+            recommendation: "Implement ongoing supplier and partner assessment and monitoring"
+          },
+          {
+            id: "ID.SC-5",
+            control: "Response and recovery planning and testing are conducted with suppliers and third-party providers",
+            status: "gap",
+            details: "Joint planning with suppliers not performed",
+            recommendation: "Conduct joint response and recovery planning with suppliers and third-party providers"
           }
         ]
       },
@@ -72,6 +254,265 @@ const allFrameworks = {
             status: "gap",
             details: "Physical access controls not implemented",
             recommendation: "Implement physical security controls and access management"
+          },
+          {
+            id: "PR.AC-3",
+            control: "Remote access is managed",
+            status: "gap",
+            details: "Remote access management not implemented",
+            recommendation: "Implement secure remote access management and monitoring"
+          },
+          {
+            id: "PR.AC-4",
+            control: "Access permissions are managed, incorporating the principles of least privilege and separation of duties",
+            status: "gap",
+            details: "Access permissions not managed",
+            recommendation: "Implement access permission management with least privilege and separation of duties"
+          },
+          {
+            id: "PR.AC-5",
+            control: "Network integrity is protected, incorporating network segregation where appropriate",
+            status: "gap",
+            details: "Network integrity protection not implemented",
+            recommendation: "Implement network integrity protection and appropriate network segregation"
+          },
+          {
+            id: "PR.AC-6",
+            control: "Identities are proofed and bound to credentials and asserted in interactions",
+            status: "gap",
+            details: "Identity proofing not implemented",
+            recommendation: "Implement identity proofing and credential binding processes"
+          },
+          {
+            id: "PR.AC-7",
+            control: "Users, devices, and other assets are authenticated commensurate with the risk of the transaction",
+            status: "gap",
+            details: "Risk-based authentication not implemented",
+            recommendation: "Implement risk-based authentication for users, devices, and assets"
+          },
+          {
+            id: "PR.AT-1",
+            control: "All users are informed and trained",
+            status: "gap",
+            details: "User training not provided",
+            recommendation: "Provide comprehensive cybersecurity training to all users"
+          },
+          {
+            id: "PR.AT-2",
+            control: "Privileged users understand their roles and responsibilities",
+            status: "gap",
+            details: "Privileged user training not provided",
+            recommendation: "Provide specialized training for privileged users on their roles and responsibilities"
+          },
+          {
+            id: "PR.AT-3",
+            control: "Third-party stakeholders understand their roles and responsibilities",
+            status: "gap",
+            details: "Third-party training not provided",
+            recommendation: "Provide training to third-party stakeholders on their cybersecurity roles and responsibilities"
+          },
+          {
+            id: "PR.AT-4",
+            control: "Senior executives understand their roles and responsibilities",
+            status: "gap",
+            details: "Executive training not provided",
+            recommendation: "Provide cybersecurity training to senior executives on their governance roles"
+          },
+          {
+            id: "PR.AT-5",
+            control: "Physical and security personnel understand their roles and responsibilities",
+            status: "gap",
+            details: "Security personnel training not provided",
+            recommendation: "Provide specialized training to physical and security personnel"
+          },
+          {
+            id: "PR.DS-1",
+            control: "Data-at-rest is protected",
+            status: "gap",
+            details: "Data-at-rest protection not implemented",
+            recommendation: "Implement encryption and access controls for data-at-rest"
+          },
+          {
+            id: "PR.DS-2",
+            control: "Data-in-transit is protected",
+            status: "gap",
+            details: "Data-in-transit protection not implemented",
+            recommendation: "Implement encryption and secure protocols for data-in-transit"
+          },
+          {
+            id: "PR.DS-3",
+            control: "Assets are formally managed throughout removal, transfers, and disposition",
+            status: "gap",
+            details: "Asset lifecycle management not implemented",
+            recommendation: "Implement formal asset management throughout the entire lifecycle"
+          },
+          {
+            id: "PR.DS-4",
+            control: "Adequate capacity to ensure availability is maintained",
+            status: "gap",
+            details: "Capacity planning not implemented",
+            recommendation: "Implement capacity planning to ensure adequate availability"
+          },
+          {
+            id: "PR.DS-5",
+            control: "Protections against data leaks are implemented",
+            status: "gap",
+            details: "Data leak protection not implemented",
+            recommendation: "Implement data loss prevention and data leak protection controls"
+          },
+          {
+            id: "PR.DS-6",
+            control: "Integrity checking mechanisms are used to verify software, firmware, and information integrity",
+            status: "gap",
+            details: "Integrity checking not implemented",
+            recommendation: "Implement integrity checking mechanisms for software, firmware, and information"
+          },
+          {
+            id: "PR.DS-7",
+            control: "The development and testing environment(s) are separate from the production environment",
+            status: "gap",
+            details: "Environment separation not implemented",
+            recommendation: "Separate development and testing environments from production"
+          },
+          {
+            id: "PR.DS-8",
+            control: "Integrity checking mechanisms are used to verify hardware integrity",
+            status: "gap",
+            details: "Hardware integrity checking not implemented",
+            recommendation: "Implement hardware integrity checking mechanisms"
+          },
+          {
+            id: "PR.IP-1",
+            control: "A baseline configuration of information technology/industrial control systems is created and maintained",
+            status: "gap",
+            details: "Baseline configuration not maintained",
+            recommendation: "Create and maintain baseline configurations for IT/ICS systems"
+          },
+          {
+            id: "PR.IP-2",
+            control: "A System Development Life Cycle to manage systems is implemented",
+            status: "gap",
+            details: "SDLC not implemented",
+            recommendation: "Implement a comprehensive System Development Life Cycle"
+          },
+          {
+            id: "PR.IP-3",
+            control: "Configuration change control processes are in place",
+            status: "gap",
+            details: "Change control not implemented",
+            recommendation: "Implement configuration change control processes"
+          },
+          {
+            id: "PR.IP-4",
+            control: "Backups of information are conducted, maintained, and tested",
+            status: "gap",
+            details: "Backup processes not implemented",
+            recommendation: "Implement comprehensive backup, maintenance, and testing procedures"
+          },
+          {
+            id: "PR.IP-5",
+            control: "Policy and regulations regarding the physical operating environment for organizational assets are met",
+            status: "gap",
+            details: "Physical environment requirements not met",
+            recommendation: "Ensure physical operating environment meets policy and regulatory requirements"
+          },
+          {
+            id: "PR.IP-6",
+            control: "Data is destroyed according to policy",
+            status: "gap",
+            details: "Data destruction policy not implemented",
+            recommendation: "Implement data destruction procedures according to policy"
+          },
+          {
+            id: "PR.IP-7",
+            control: "Protection processes are improved",
+            status: "gap",
+            details: "Process improvement not implemented",
+            recommendation: "Implement continuous improvement processes for protection activities"
+          },
+          {
+            id: "PR.IP-8",
+            control: "Effectiveness of protection technologies is shared with appropriate parties",
+            status: "gap",
+            details: "Technology effectiveness not shared",
+            recommendation: "Share protection technology effectiveness information with appropriate stakeholders"
+          },
+          {
+            id: "PR.IP-9",
+            control: "Response plans include Internal and External Communications",
+            status: "gap",
+            details: "Communication plans not included",
+            recommendation: "Include internal and external communication procedures in response plans"
+          },
+          {
+            id: "PR.IP-10",
+            control: "Response plans include Information Sharing",
+            status: "gap",
+            details: "Information sharing not included",
+            recommendation: "Include information sharing procedures in response plans"
+          },
+          {
+            id: "PR.IP-11",
+            control: "Response plans include Intelligence",
+            status: "gap",
+            details: "Intelligence integration not included",
+            recommendation: "Integrate threat intelligence into response plans"
+          },
+          {
+            id: "PR.IP-12",
+            control: "Response plans include Reputation Repair",
+            status: "gap",
+            details: "Reputation repair not included",
+            recommendation: "Include reputation repair procedures in response plans"
+          },
+          {
+            id: "PR.IP-13",
+            control: "Response plans include Legal",
+            status: "gap",
+            details: "Legal considerations not included",
+            recommendation: "Include legal considerations and procedures in response plans"
+          },
+          {
+            id: "PR.MA-1",
+            control: "Maintenance and repair of organizational assets are performed and logged in a timely manner",
+            status: "gap",
+            details: "Maintenance logging not implemented",
+            recommendation: "Implement timely maintenance and repair procedures with proper logging"
+          },
+          {
+            id: "PR.MA-2",
+            control: "Remote maintenance of organizational assets is approved, logged, and performed in a manner that prevents unauthorized access",
+            status: "gap",
+            details: "Remote maintenance controls not implemented",
+            recommendation: "Implement secure remote maintenance procedures with proper authorization and logging"
+          },
+          {
+            id: "PR.PT-1",
+            control: "Audit/log records are determined, documented, implemented, and reviewed in accordance with policy",
+            status: "gap",
+            details: "Audit logging not implemented",
+            recommendation: "Implement comprehensive audit logging in accordance with policy"
+          },
+          {
+            id: "PR.PT-2",
+            control: "Removable media is protected and its use restricted according to policy",
+            status: "gap",
+            details: "Removable media protection not implemented",
+            recommendation: "Implement removable media protection and usage restrictions"
+          },
+          {
+            id: "PR.PT-3",
+            control: "Access to systems and assets is controlled, incorporating the principle of least functionality",
+            status: "gap",
+            details: "System access control not implemented",
+            recommendation: "Implement system access controls with least functionality principle"
+          },
+          {
+            id: "PR.PT-4",
+            control: "Communications and control networks are protected",
+            status: "gap",
+            details: "Network protection not implemented",
+            recommendation: "Implement protection for communications and control networks"
           }
         ]
       },
@@ -99,6 +540,111 @@ const allFrameworks = {
             status: "gap",
             details: "Event correlation not implemented",
             recommendation: "Implement event correlation from multiple sources and sensors"
+          },
+          {
+            id: "DE.AE-4",
+            control: "Impact of events is determined",
+            status: "gap",
+            details: "Event impact assessment not performed",
+            recommendation: "Implement procedures to assess the impact of detected security events"
+          },
+          {
+            id: "DE.AE-5",
+            control: "Incident alert thresholds are established",
+            status: "gap",
+            details: "Alert thresholds not established",
+            recommendation: "Establish incident alert thresholds based on risk assessment"
+          },
+          {
+            id: "DE.CM-1",
+            control: "The network is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Network monitoring not implemented",
+            recommendation: "Implement comprehensive network monitoring for cybersecurity events"
+          },
+          {
+            id: "DE.CM-2",
+            control: "The physical environment is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Physical environment monitoring not implemented",
+            recommendation: "Implement physical environment monitoring for security events"
+          },
+          {
+            id: "DE.CM-3",
+            control: "Personnel activity is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Personnel monitoring not implemented",
+            recommendation: "Implement personnel activity monitoring for security events"
+          },
+          {
+            id: "DE.CM-4",
+            control: "Malicious code is detected",
+            status: "gap",
+            details: "Malicious code detection not implemented",
+            recommendation: "Implement malicious code detection and prevention systems"
+          },
+          {
+            id: "DE.CM-5",
+            control: "Unauthorized mobile code is detected",
+            status: "gap",
+            details: "Mobile code monitoring not implemented",
+            recommendation: "Implement monitoring for unauthorized mobile code execution"
+          },
+          {
+            id: "DE.CM-6",
+            control: "External service provider activity is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Service provider monitoring not implemented",
+            recommendation: "Implement monitoring of external service provider activities"
+          },
+          {
+            id: "DE.CM-7",
+            control: "Monitoring for unauthorized personnel, connections, devices, and software is performed",
+            status: "gap",
+            details: "Unauthorized activity monitoring not implemented",
+            recommendation: "Implement monitoring for unauthorized personnel, connections, devices, and software"
+          },
+          {
+            id: "DE.CM-8",
+            control: "Vulnerability scans are performed",
+            status: "gap",
+            details: "Vulnerability scanning not performed",
+            recommendation: "Implement regular vulnerability scanning procedures"
+          },
+          {
+            id: "DE.DP-1",
+            control: "Roles and responsibilities for detection are well defined to ensure accountability",
+            status: "gap",
+            details: "Detection roles not defined",
+            recommendation: "Define and communicate detection roles and responsibilities"
+          },
+          {
+            id: "DE.DP-2",
+            control: "Detection activities comply with all applicable requirements",
+            status: "gap",
+            details: "Detection compliance not ensured",
+            recommendation: "Ensure detection activities comply with all applicable requirements"
+          },
+          {
+            id: "DE.DP-3",
+            control: "Detection process is tested",
+            status: "gap",
+            details: "Detection process testing not performed",
+            recommendation: "Implement regular testing of detection processes"
+          },
+          {
+            id: "DE.DP-4",
+            control: "Event detection information is communicated to appropriate parties",
+            status: "gap",
+            details: "Event communication not implemented",
+            recommendation: "Implement procedures to communicate event detection information"
+          },
+          {
+            id: "DE.DP-5",
+            control: "Detection processes are continuously improved",
+            status: "gap",
+            details: "Detection process improvement not implemented",
+            recommendation: "Implement continuous improvement of detection processes"
           }
         ]
       },
@@ -114,6 +660,20 @@ const allFrameworks = {
             recommendation: "Establish formal incident response process and procedures"
           },
           {
+            id: "RS.RP-2",
+            control: "Response plan is executed during or after an incident",
+            status: "gap",
+            details: "Response plan execution not implemented",
+            recommendation: "Implement procedures to execute response plans during incidents"
+          },
+          {
+            id: "RS.RP-3",
+            control: "Newly identified vulnerabilities are mitigated or documented as accepted risks",
+            status: "gap",
+            details: "Vulnerability mitigation not implemented",
+            recommendation: "Implement procedures to mitigate or document accepted vulnerabilities"
+          },
+          {
             id: "RS.CO-1",
             control: "Personnel know their roles and order of operations when a response is needed",
             status: "gap",
@@ -121,11 +681,102 @@ const allFrameworks = {
             recommendation: "Define and communicate incident response roles and procedures"
           },
           {
+            id: "RS.CO-2",
+            control: "Events are reported consistent with established criteria",
+            status: "gap",
+            details: "Event reporting criteria not established",
+            recommendation: "Establish and communicate event reporting criteria and procedures"
+          },
+          {
+            id: "RS.CO-3",
+            control: "Information is shared consistent with response plans",
+            status: "gap",
+            details: "Information sharing not implemented",
+            recommendation: "Implement information sharing procedures consistent with response plans"
+          },
+          {
+            id: "RS.CO-4",
+            control: "Coordination with stakeholders occurs consistent with response plans",
+            status: "gap",
+            details: "Stakeholder coordination not implemented",
+            recommendation: "Implement stakeholder coordination procedures consistent with response plans"
+          },
+          {
+            id: "RS.CO-5",
+            control: "Voluntary information sharing occurs with external stakeholders to achieve broader cybersecurity situational awareness",
+            status: "gap",
+            details: "Voluntary information sharing not implemented",
+            recommendation: "Establish voluntary information sharing with external stakeholders"
+          },
+          {
+            id: "RS.AN-1",
+            control: "Notifications from detection systems are investigated",
+            status: "gap",
+            details: "Detection notifications not investigated",
+            recommendation: "Implement procedures to investigate detection system notifications"
+          },
+          {
+            id: "RS.AN-2",
+            control: "The impact of the incident is understood",
+            status: "gap",
+            details: "Incident impact assessment not performed",
+            recommendation: "Implement procedures to assess incident impact"
+          },
+          {
+            id: "RS.AN-3",
+            control: "Forensics are performed",
+            status: "gap",
+            details: "Forensic procedures not implemented",
+            recommendation: "Implement forensic procedures for incident investigation"
+          },
+          {
+            id: "RS.AN-4",
+            control: "Incidents are categorized consistent with response plans",
+            status: "gap",
+            details: "Incident categorization not implemented",
+            recommendation: "Implement incident categorization procedures consistent with response plans"
+          },
+          {
+            id: "RS.AN-5",
+            control: "Processes are established to receive, analyze and respond to vulnerabilities disclosed to the organization from internal and external sources",
+            status: "gap",
+            details: "Vulnerability disclosure processes not established",
+            recommendation: "Establish processes to receive, analyze and respond to vulnerability disclosures"
+          },
+          {
             id: "RS.MI-1",
             control: "Incidents are contained",
             status: "gap",
             details: "Incident containment procedures not implemented",
             recommendation: "Implement procedures to contain security incidents"
+          },
+          {
+            id: "RS.MI-2",
+            control: "Incidents are mitigated",
+            status: "gap",
+            details: "Incident mitigation procedures not implemented",
+            recommendation: "Implement procedures to mitigate security incidents"
+          },
+          {
+            id: "RS.MI-3",
+            control: "Newly identified vulnerabilities are mitigated or documented as accepted risks",
+            status: "gap",
+            details: "Vulnerability mitigation not implemented",
+            recommendation: "Implement procedures to mitigate or document accepted vulnerabilities"
+          },
+          {
+            id: "RS.IM-1",
+            control: "Response plans incorporate lessons learned",
+            status: "gap",
+            details: "Lessons learned not incorporated",
+            recommendation: "Establish process to incorporate lessons learned into response plans"
+          },
+          {
+            id: "RS.IM-2",
+            control: "Response strategies are updated",
+            status: "gap",
+            details: "Response strategies not updated",
+            recommendation: "Implement procedures to update response strategies based on lessons learned"
           }
         ]
       },
@@ -141,6 +792,20 @@ const allFrameworks = {
             recommendation: "Develop and implement business continuity and disaster recovery plans"
           },
           {
+            id: "RC.RP-2",
+            control: "Recovery plans are updated",
+            status: "gap",
+            details: "Recovery plan updates not implemented",
+            recommendation: "Implement procedures to update recovery plans based on lessons learned"
+          },
+          {
+            id: "RC.RP-3",
+            control: "Recovery strategies are updated",
+            status: "gap",
+            details: "Recovery strategies not updated",
+            recommendation: "Implement procedures to update recovery strategies based on lessons learned"
+          },
+          {
             id: "RC.IM-1",
             control: "Recovery plans incorporate lessons learned",
             status: "gap",
@@ -148,11 +813,32 @@ const allFrameworks = {
             recommendation: "Establish process to incorporate lessons learned into recovery plans"
           },
           {
+            id: "RC.IM-2",
+            control: "Recovery strategies are updated",
+            status: "gap",
+            details: "Recovery strategies not updated",
+            recommendation: "Implement procedures to update recovery strategies based on lessons learned"
+          },
+          {
             id: "RC.CO-1",
             control: "Public relations are managed",
             status: "gap",
             details: "Public relations procedures not established",
             recommendation: "Establish public relations procedures for incident communications"
+          },
+          {
+            id: "RC.CO-2",
+            control: "Reputation after an incident is repaired",
+            status: "gap",
+            details: "Reputation repair procedures not established",
+            recommendation: "Establish procedures to repair organizational reputation after incidents"
+          },
+          {
+            id: "RC.CO-3",
+            control: "Recovery activities are communicated to internal stakeholders and executive and management teams",
+            status: "gap",
+            details: "Recovery communication not implemented",
+            recommendation: "Implement procedures to communicate recovery activities to stakeholders"
           }
         ]
       },
@@ -162,7 +848,7 @@ const allFrameworks = {
         results: [
           {
             id: "GV.ID-1",
-            control: "Organizational security policy is established",
+            control: "Organizational security policy is established and communicated",
             status: "gap",
             details: "Security policy not established",
             recommendation: "Develop comprehensive organizational security policy"
@@ -175,11 +861,88 @@ const allFrameworks = {
             recommendation: "Define and coordinate security roles and responsibilities"
           },
           {
+            id: "GV.ID-3",
+            control: "Legal and regulatory requirements regarding cybersecurity, including privacy and civil liberties obligations, are understood and managed",
+            status: "gap",
+            details: "Legal requirements not managed",
+            recommendation: "Identify and manage all legal and regulatory cybersecurity requirements"
+          },
+          {
+            id: "GV.ID-4",
+            control: "Governance and risk management processes address cybersecurity risks",
+            status: "gap",
+            details: "Risk management processes not integrated",
+            recommendation: "Integrate cybersecurity risks into governance and risk management processes"
+          },
+          {
             id: "GV.PR-1",
             control: "Organizational security policies for information security are defined and managed",
             status: "gap",
             details: "Information security policies not defined",
             recommendation: "Define and manage information security policies"
+          },
+          {
+            id: "GV.PR-2",
+            control: "Security policies are established and managed",
+            status: "gap",
+            details: "Security policies not established",
+            recommendation: "Establish and manage comprehensive security policies"
+          },
+          {
+            id: "GV.PR-3",
+            control: "Security policies are communicated",
+            status: "gap",
+            details: "Security policy communication not implemented",
+            recommendation: "Implement procedures to communicate security policies to all stakeholders"
+          },
+          {
+            id: "GV.PR-4",
+            control: "Security policies are updated",
+            status: "gap",
+            details: "Security policy updates not implemented",
+            recommendation: "Implement procedures to update security policies based on changing requirements"
+          },
+          {
+            id: "GV.PR-5",
+            control: "Security policies are reviewed",
+            status: "gap",
+            details: "Security policy review not implemented",
+            recommendation: "Implement regular review of security policies for effectiveness"
+          },
+          {
+            id: "GV.PR-6",
+            control: "Security policies are approved",
+            status: "gap",
+            details: "Security policy approval not implemented",
+            recommendation: "Implement formal approval process for security policies"
+          },
+          {
+            id: "GV.PR-7",
+            control: "Security policies are disseminated",
+            status: "gap",
+            details: "Security policy dissemination not implemented",
+            recommendation: "Implement procedures to disseminate security policies to all stakeholders"
+          },
+          {
+            id: "GV.PR-8",
+            control: "Security policies are maintained",
+            status: "gap",
+            details: "Security policy maintenance not implemented",
+            recommendation: "Implement procedures to maintain and update security policies"
+          },
+          {
+            id: "GV.PR-9",
+            control: "Security policies are enforced",
+            status: "gap",
+            details: "Security policy enforcement not implemented",
+            recommendation: "Implement procedures to enforce security policies across the organization"
+          },
+          {
+            id: "GV.PR-10",
+            control: "Security policies are monitored",
+            status: "gap",
+            details: "Security policy monitoring not implemented",
+            recommendation: "Implement monitoring procedures to ensure security policy compliance"
           }
         ]
       }
