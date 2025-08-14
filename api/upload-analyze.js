@@ -2273,12 +2273,22 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     categoriesToAnalyze.forEach(category => {
       if (category.results) {
         category.results.forEach(control => {
-          // Check control family only if we have selectedCategories (NIST 800-53)
+          // Check control family/function only if we have selectedCategories
           if (selectedCategories && selectedCategories.length > 0) {
-            const controlFamily = control.id.split('-')[0];
-            if (!selectedCategories.includes(controlFamily)) {
-              unauthorizedControls.push(`${control.id} (${controlFamily})`);
-              console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
+            if (framework === 'NIST_CSF') {
+              // Extract CSF function from control ID (e.g., "ID.AM-1" -> "ID")
+              const csfFunction = control.id.split('.')[0];
+              if (!selectedCategories.includes(csfFunction)) {
+                unauthorizedControls.push(`${control.id} (${csfFunction})`);
+                console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${csfFunction}) - not in selected CSF functions: ${selectedCategories.join(', ')}`);
+              }
+            } else {
+              // For NIST 800-53, filter by control family
+              const controlFamily = control.id.split('-')[0];
+              if (!selectedCategories.includes(controlFamily)) {
+                unauthorizedControls.push(`${control.id} (${controlFamily})`);
+                console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
+              }
             }
           }
           
@@ -2370,12 +2380,22 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     let fallbackUnauthorizedControls = [];
     filteredFrameworkData.categories.forEach(category => {
       category.results.forEach(control => {
-        // For NIST CSF, we don't have selectedCategories filtering, so skip this check
+        // For NIST CSF, we filter by selected CSF functions (ID, PR, DE, RS, RC, GV)
         if (selectedCategories && selectedCategories.length > 0) {
-          const controlFamily = control.id.split('-')[0];
-          if (!selectedCategories.includes(controlFamily)) {
-            fallbackUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-            console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+          if (framework === 'NIST_CSF') {
+            // Extract CSF function from control ID (e.g., "ID.AM-1" -> "ID")
+            const csfFunction = control.id.split('.')[0];
+            if (!selectedCategories.includes(csfFunction)) {
+              fallbackUnauthorizedControls.push(`${control.id} (${csfFunction})`);
+              console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${csfFunction}) in category ${category.name}`);
+            }
+          } else {
+            // For NIST 800-53, filter by control family
+            const controlFamily = control.id.split('-')[0];
+            if (!selectedCategories.includes(controlFamily)) {
+              fallbackUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+              console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+            }
           }
         }
       });
@@ -2459,12 +2479,22 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     let finalUnauthorizedControls = [];
     adjustedFallback.categories.forEach(category => {
       category.results.forEach(control => {
-        // Only validate control families if we have selectedCategories (NIST 800-53)
+        // Only validate control families/functions if we have selectedCategories
         if (selectedCategories && selectedCategories.length > 0) {
-          const controlFamily = control.id.split('-')[0];
-          if (!selectedCategories.includes(controlFamily)) {
-            finalUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-            console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+          if (framework === 'NIST_CSF') {
+            // Extract CSF function from control ID (e.g., "ID.AM-1" -> "ID")
+            const csfFunction = control.id.split('.')[0];
+            if (!selectedCategories.includes(csfFunction)) {
+              finalUnauthorizedControls.push(`${control.id} (${csfFunction})`);
+              console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${csfFunction}) in category ${category.name}`);
+            }
+          } else {
+            // For NIST 800-53, filter by control family
+            const controlFamily = control.id.split('-')[0];
+            if (!selectedCategories.includes(controlFamily)) {
+              finalUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+              console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+            }
           }
         }
       });
