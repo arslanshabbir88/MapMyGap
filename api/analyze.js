@@ -478,7 +478,7 @@ function adjustResultsForStrictness(results, strictness) {
     console.log(`Strict mode: Final conversion counts - Covered->Partial: ${coveredConverted}, Partial->Gap: ${partialConverted}, Gap->Partial: ${gapConverted}`);
     
   } else if (strictness === 'balanced') {
-    // BALANCED MODE: Moderate adjustments - more generous than strict but not as generous as lenient
+    // BALANCED MODE: Moderate adjustments - create realistic middle ground
     console.log('Balanced mode - making moderate adjustments');
     console.log('Initial counts - Covered:', initialCounts.covered, 'Partial:', initialCounts.partial, 'Gap:', initialCounts.gap);
     
@@ -489,12 +489,20 @@ function adjustResultsForStrictness(results, strictness) {
       console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
+    // If AI was too optimistic (all covered), downgrade some to create realistic balance
+    let coveredToPartial = 0;
+    if (initialCounts.covered > 0 && initialCounts.gap === 0 && initialCounts.partial === 0) {
+      coveredToPartial = Math.floor(initialCounts.covered * 0.2); // 20% of covered -> partial (moderate downgrading)
+      console.log(`Balanced mode: AI was too optimistic, downgrading ${coveredToPartial} covered to partial for realistic assessment`);
+    }
+    
     // Also upgrade some partial to covered for balanced mode
     let partialToCovered = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> covered
     
-    if (gapToPartial > 0 || partialToCovered > 0) {
+    if (gapToPartial > 0 || partialToCovered > 0 || coveredToPartial > 0) {
       let gapConverted = 0;
       let partialConverted = 0;
+      let coveredConverted = 0;
       
       adjustedResults.categories.forEach(category => {
         category.results.forEach(result => {
@@ -508,17 +516,22 @@ function adjustResultsForStrictness(results, strictness) {
             result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
             partialConverted++;
             console.log(`Balanced mode: Converted ${result.id} from partial to covered (${partialConverted}/${partialToCovered})`);
+          } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
+            result.status = 'partial';
+            result.details = `Downgraded to partial due to balanced analysis requirements (AI was too optimistic). ${result.details}`;
+            coveredConverted++;
+            console.log(`Balanced mode: Converted ${result.id} from covered to partial (${coveredConverted}/${coveredToPartial})`);
           }
         });
       });
       
-      console.log(`Balanced mode: Final conversion counts - Gap->Partial: ${gapConverted}, Partial->Covered: ${partialConverted}`);
+      console.log(`Balanced mode: Final conversion counts - Gap->Partial: ${gapConverted}, Partial->Covered: ${partialConverted}, Covered->Partial: ${coveredConverted}`);
     } else {
       console.log('Balanced mode: No adjustments needed - AI results are already reasonable');
     }
     
   } else if (strictness === 'lenient') {
-    // LENIENT MODE: Most generous - systematically upgrade
+    // LENIENT MODE: Most generous but still realistic - minimal downgrading
     console.log('Lenient mode - making generous adjustments');
     console.log('Initial counts - Covered:', initialCounts.covered, 'Partial:', initialCounts.partial, 'Gap:', initialCounts.gap);
     
@@ -532,10 +545,18 @@ function adjustResultsForStrictness(results, strictness) {
       console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
-    console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered`);
+    // If AI was too optimistic (all covered), downgrade very few to maintain realism
+    let coveredToPartial = 0;
+    if (initialCounts.covered > 0 && initialCounts.gap === 0 && initialCounts.partial === 0) {
+      coveredToPartial = Math.floor(initialCounts.covered * 0.1); // Only 10% of covered -> partial (minimal downgrading)
+      console.log(`Lenient mode: AI was too optimistic, downgrading ${coveredToPartial} covered to partial to maintain realism`);
+    }
+    
+    console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered, ${coveredToPartial} covered to partial`);
     
     let gapConverted = 0;
     let partialConverted = 0;
+    let coveredConverted = 0;
     
     adjustedResults.categories.forEach(category => {
       category.results.forEach(result => {
@@ -549,11 +570,16 @@ function adjustResultsForStrictness(results, strictness) {
           result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
           partialConverted++;
           console.log(`Lenient mode: Converted ${result.id} from partial to covered (${partialConverted}/${partialToCovered})`);
+        } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
+          result.status = 'partial';
+          result.details = `Downgraded to partial due to lenient analysis requirements (AI was too optimistic). ${result.details}`;
+          coveredConverted++;
+          console.log(`Lenient mode: Converted ${result.id} from covered to partial (${coveredConverted}/${coveredToPartial})`);
         }
       });
     });
     
-    console.log(`Lenient mode: Final conversion counts - Gap->Partial: ${gapConverted}, Partial->Covered: ${partialConverted}`);
+    console.log(`Lenient mode: Final conversion counts - Gap->Partial: ${gapConverted}, Partial->Covered: ${partialConverted}, Covered->Partial: ${coveredConverted}`);
   }
   
   // Count final statuses
