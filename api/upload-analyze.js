@@ -2370,6 +2370,20 @@ function adjustResultsForStrictness(results, strictness) {
 
 // Hybrid analysis function - uses smart filtering + AI analysis
 async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
+  console.log('About to call analyzeWithAI with framework:', framework);
+  
+  // Clear NIST CSF cache to ensure fresh smart fallback results
+  if (framework === 'NIST_CSF' && global.analysisCache) {
+    console.log('🧹 Clearing NIST CSF cache to ensure fresh smart fallback results');
+    const cacheKeysToRemove = Object.keys(global.analysisCache).filter(key => 
+      key.includes('NIST_CSF')
+    );
+    cacheKeysToRemove.forEach(key => {
+      console.log(`🧹 Removing cached key: ${key}`);
+      delete global.analysisCache[key];
+    });
+  }
+  
   // Generate document hash early for use throughout the function
   const documentHash = generateDocumentHash(fileContent, framework, selectedCategories, strictness);
   
@@ -2441,13 +2455,25 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     if (framework === 'NIST_CSF') {
       console.log('⚡ NIST CSF DETECTED: Using smart fallback to prevent timeouts and provide realistic results');
       
+      // Clear any existing cached results for NIST CSF to ensure fresh smart fallback
+      if (global.analysisCache) {
+        const cacheKeysToRemove = Object.keys(global.analysisCache).filter(key => 
+          key.includes('NIST_CSF')
+        );
+        cacheKeysToRemove.forEach(key => {
+          console.log(`🧹 Clearing cached NIST CSF result: ${key}`);
+          delete global.analysisCache[key];
+        });
+      }
+      
       // Use all available CSF functions for comprehensive coverage
       const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
       const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
       const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
       
-      // Cache the optimized results
-      await cacheAnalysisResults(documentHash, framework, optimizedFallback, strictness);
+      // Cache the optimized results with a unique key
+      const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}`;
+      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness);
       
       return adjustedFallback;
     }
