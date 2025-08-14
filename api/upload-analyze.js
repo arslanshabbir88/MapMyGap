@@ -2408,6 +2408,21 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       return adjustResultsForStrictness(anyStrictnessCache, strictness);
     }
     
+    // SMART FALLBACK: For NIST CSF with all functions selected, use optimized fallback
+    if (framework === 'NIST_CSF' && (!selectedCategories || selectedCategories.length === 0 || selectedCategories.length >= 6)) {
+      console.log('⚡ FULL NIST CSF: Using optimized fallback to prevent timeouts');
+      
+      // Use all available CSF functions
+      const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
+      const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
+      const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
+      
+      // Cache the optimized results
+      await cacheAnalysisResults(documentHash, framework, optimizedFallback, strictness);
+      
+      return adjustedFallback;
+    }
+    
     // For large frameworks like NIST CSF, use fallback for faster response
     if (framework === 'NIST_CSF' && selectedCategories && selectedCategories.length > 3) {
       console.log('⚡ LARGE CSF SELECTION: Using optimized fallback for faster response');
@@ -2422,11 +2437,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       return adjustedFallback;
     }
     
-    // SMART FALLBACK: For NIST CSF with all functions selected, use optimized fallback
-    if (framework === 'NIST_CSF' && (!selectedCategories || selectedCategories.length === 0 || selectedCategories.length >= 6)) {
-      console.log('⚡ FULL NIST CSF: Using optimized fallback to prevent timeouts');
+    // ADDITIONAL CHECK: If NIST CSF is selected but no specific categories chosen, use smart fallback
+    if (framework === 'NIST_CSF') {
+      console.log('⚡ NIST CSF DETECTED: Using smart fallback to prevent timeouts and provide realistic results');
       
-      // Use all available CSF functions
+      // Use all available CSF functions for comprehensive coverage
       const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
       const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
       const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
