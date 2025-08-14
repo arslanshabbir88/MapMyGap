@@ -2638,15 +2638,23 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       categories: finalResults.categories?.length || 0,
       totalControls: finalResults.categories?.reduce((sum, cat) => sum + (cat.results?.length || 0), 0) || 0
     });
+    
+    // SUCCESS PATH: Return AI results immediately
+    console.log('🚀 SUCCESS: Returning AI analysis results');
+    console.log('📊 AI Results Summary:', {
+      hasResults: !!parsedResponse,
+      resultType: typeof parsedResponse,
+      categoriesCount: parsedResponse?.categories?.length || 0,
+      firstControl: parsedResponse?.categories?.[0]?.results?.[0]?.id || 'none'
+    });
     return finalResults;
     
   } catch (error) {
     console.error('🚨 AI Analysis Error:', error);
     console.error('Error stack:', error.stack);
-    console.log('Falling back to predefined control structure');
     
-    // Check if we actually have valid AI results that we can use
-    if (typeof parsedResponse !== 'undefined' && parsedResponse && parsedResponse.categories) {
+    // CRITICAL: Check if we have valid AI results before falling back
+    if (typeof parsedResponse !== 'undefined' && parsedResponse && parsedResponse.categories && parsedResponse.categories.length > 0) {
       console.log('⚠️ WARNING: We have valid AI results but still hit error. Using AI results instead of fallback.');
       console.log('AI results found:', parsedResponse.categories.length, 'categories');
       
@@ -2655,6 +2663,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       console.log('✅ Using AI results despite error, returning adjusted results');
       return finalResults;
     }
+    
+    // ONLY run fallback if we have NO valid AI results
+    console.log('🔄 NO VALID AI RESULTS: Falling back to predefined control structure');
     
     // Use the filtered framework data for fallback with intelligent defaults
     if (!filteredFrameworkData.categories || filteredFrameworkData.categories.length === 0) {
@@ -2739,6 +2750,15 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
      await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness);
      console.log('💾 Cached fallback results for future strictness adjustments');
      
+     // FINAL SAFEGUARD: Ensure we never overwrite successful AI results
+     if (typeof parsedResponse !== 'undefined' && parsedResponse && parsedResponse.categories && parsedResponse.categories.length > 0) {
+       console.log('🚨 CRITICAL: Fallback logic attempted to overwrite valid AI results! Using AI results instead.');
+       const finalResults = adjustResultsForStrictness(parsedResponse, strictness);
+       console.log('✅ SAFEGUARD: Returning AI results instead of fallback');
+       return finalResults;
+     }
+     
+     console.log('🔄 FALLBACK: Returning fallback results (no AI results available)');
      return adjustedFallback;
   }
 }
