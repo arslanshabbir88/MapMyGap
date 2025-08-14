@@ -2141,7 +2141,7 @@ console.log('🧹 Ensuring NIST CSF cache is completely cleared for fresh analys
 global.analysisCache = {};
 
 // Get cached analysis results
-async function getCachedAnalysis(documentHash, framework, strictness = null) {
+async function getCachedAnalysis(documentHash, framework, strictness = null, cacheBuster = null) {
   try {
     const cacheKey = `${documentHash}_${framework}_${strictness}_${cacheBuster}`;
     console.log('🔍 Checking cache with key:', cacheKey);
@@ -2169,7 +2169,7 @@ async function getCachedAnalysis(documentHash, framework, strictness = null) {
 }
 
 // Store analysis results in cache
-async function cacheAnalysisResults(documentHash, framework, results, strictness = null) {
+async function cacheAnalysisResults(documentHash, framework, results, strictness = null, cacheBuster = null) {
   try {
     const cacheKey = `${documentHash}_${framework}_${strictness}_${cacheBuster}`;
     console.log('💾 Caching results with key:', cacheKey);
@@ -2420,7 +2420,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Document hash:', documentHash.substring(0, 16) + '...');
     
     // Check cache first to save AI tokens
-    const cachedResults = await getCachedAnalysis(documentHash, framework, strictness);
+    const cachedResults = await getCachedAnalysis(documentHash, framework, strictness, cacheBuster);
     if (cachedResults) {
       console.log('🎯 CACHE HIT: Using cached AI results, applying strictness adjustments only');
       console.log('💰 SAVED: AI tokens and API costs!');
@@ -2430,9 +2430,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     }
     
     // Check cache for any strictness level to avoid AI calls
-    const anyStrictnessCache = await getCachedAnalysis(documentHash, framework, 'balanced') || 
-                               await getCachedAnalysis(documentHash, framework, 'strict') || 
-                               await getCachedAnalysis(documentHash, framework, 'lenient');
+        const anyStrictnessCache = await getCachedAnalysis(documentHash, framework, 'balanced', cacheBuster) ||
+      await getCachedAnalysis(documentHash, framework, 'strict', cacheBuster) ||
+      await getCachedAnalysis(documentHash, framework, 'lenient', cacheBuster);
     
     if (anyStrictnessCache) {
       console.log('🎯 CACHE HIT: Using cached results from different strictness, applying new strictness adjustments');
@@ -2456,7 +2456,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       // Cache the optimized results with a unique timestamp key to prevent conflicts
       const timestamp = Date.now();
       const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}_${timestamp}`;
-      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness);
+      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness, cacheBuster);
       
       console.log(`✅ Smart fallback completed with timestamp: ${timestamp}`);
       return adjustedFallback;
@@ -2471,7 +2471,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
       
       // Cache the optimized results
-      await cacheAnalysisResults(documentHash, framework, optimizedFallback, strictness);
+      await cacheAnalysisResults(documentHash, framework, optimizedFallback, strictness, cacheBuster);
       
       return adjustedFallback;
     }
@@ -2508,7 +2508,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       // Cache the optimized results with a unique timestamp key to prevent conflicts
       const timestamp = Date.now();
       const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}_${timestamp}`;
-      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness);
+      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness, cacheBuster);
       
       console.log(`✅ Smart fallback completed with timestamp: ${timestamp}`);
       return adjustedFallback;
@@ -2730,7 +2730,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     }
     
     // Cache the AI analysis results for future use
-    await cacheAnalysisResults(documentHash, framework, parsedResponse, strictness);
+          await cacheAnalysisResults(documentHash, framework, parsedResponse, strictness, cacheBuster);
     console.log('💾 Cached AI analysis results for future strictness adjustments');
     
     // Apply strictness adjustments and return
@@ -2861,7 +2861,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
      const adjustedFallback = adjustResultsForStrictness(fallbackResult, strictness);
      
      // Cache the fallback results for future use
-     await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness);
+           await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness, cacheBuster);
      console.log('💾 Cached fallback results for future strictness adjustments');
      
      // FINAL SAFEGUARD: Ensure we never overwrite successful AI results
