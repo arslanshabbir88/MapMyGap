@@ -2195,25 +2195,45 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     let partialCount = 0;
     let unauthorizedControls = [];
     
-    if (parsedResponse.categories) {
-      parsedResponse.categories.forEach(category => {
-        if (category.results) {
-          category.results.forEach(control => {
-            // Check control family
-            const controlFamily = control.id.split('-')[0];
-            if (!selectedCategories.includes(controlFamily)) {
-              unauthorizedControls.push(`${control.id} (${controlFamily})`);
-              console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
-            }
-            
-            // Count statuses
-            if (control.status === 'gap') gapCount++;
-            else if (control.status === 'covered') coveredCount++;
-            else if (control.status === 'partial') partialCount++;
-          });
-        }
-      });
+    // Handle both array format and single category format from AI
+    let categoriesToAnalyze = [];
+    if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
+      // Standard format: {"categories": [...]}
+      categoriesToAnalyze = parsedResponse.categories;
+      console.log('✅ AI returned standard categories array format');
+    } else if (parsedResponse.name && parsedResponse.results) {
+      // Single category format: {"name": "...", "results": [...]}
+      categoriesToAnalyze = [parsedResponse];
+      console.log('✅ AI returned single category format, converted to array');
+    } else {
+      console.error('🚨 AI returned invalid format - neither categories array nor single category');
+      console.error('Parsed Response:', parsedResponse);
+      throw new Error('AI analysis failed - returned invalid format. This may indicate the prompt was too complex or the AI misunderstood the request.');
     }
+    
+    // Validate that we have categories to analyze
+    if (categoriesToAnalyze.length === 0) {
+      console.error('🚨 No categories found after format conversion');
+      throw new Error('AI analysis failed - no categories found after format conversion.');
+    }
+    
+    categoriesToAnalyze.forEach(category => {
+      if (category.results) {
+        category.results.forEach(control => {
+          // Check control family
+          const controlFamily = control.id.split('-')[0];
+          if (!selectedCategories.includes(controlFamily)) {
+            unauthorizedControls.push(`${control.id} (${controlFamily})`);
+            console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
+          }
+          
+          // Count statuses
+          if (control.status === 'gap') gapCount++;
+          else if (control.status === 'covered') coveredCount++;
+          else if (control.status === 'partial') partialCount++;
+        });
+      }
+    });
     
     if (unauthorizedControls.length > 0) {
       console.error(`🚨 CRITICAL: AI returned ${unauthorizedControls.length} unauthorized controls:`, unauthorizedControls);
@@ -2257,7 +2277,9 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     await cacheAnalysisResults(documentHash, framework, parsedResponse);
     console.log('💾 Cached AI analysis results for future strictness adjustments');
     
-    return adjustResultsForStrictness(parsedResponse, strictness);
+    // Create the proper structure for strictness adjustments
+    const aiResultsForAdjustment = { categories: categoriesToAnalyze };
+    return adjustResultsForStrictness(aiResultsForAdjustment, strictness);
   } catch (error) {
     console.error('AI Analysis Error:', error);
     console.log('Falling back to predefined control structure');

@@ -815,61 +815,78 @@ Return only valid JSON, no additional text or formatting.`;
     const parsedResponse = JSON.parse(jsonMatch[0]);
     console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
     
-    // Validate that the AI actually returned categories and results
-    if (!parsedResponse.categories || parsedResponse.categories.length === 0) {
-      console.error('🚨 AI returned empty categories array - this indicates a prompt or parsing issue');
-      console.error('AI Response Text:', text);
-      console.error('Parsed Response:', parsedResponse);
-      throw new Error('AI analysis failed - returned empty categories. This may indicate the prompt was too complex or the AI misunderstood the request.');
-    }
-    
-    // Validate that the AI actually changed some statuses
-    let gapCount = 0;
-    let coveredCount = 0;
-    let partialCount = 0;
-    
-    parsedResponse.categories.forEach(category => {
-      if (category.results) {
-        category.results.forEach(control => {
-          if (control.status === 'gap') gapCount++;
-          else if (control.status === 'covered') coveredCount++;
-          else if (control.status === 'partial') partialCount++;
-        });
-      }
-    });
+         // Handle both array format and single category format from AI
+     let categoriesToAnalyze = [];
+     if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
+       // Standard format: {"categories": [...]}
+       categoriesToAnalyze = parsedResponse.categories;
+       console.log('✅ AI returned standard categories array format');
+     } else if (parsedResponse.name && parsedResponse.results) {
+       // Single category format: {"name": "...", "results": [...]}
+       categoriesToAnalyze = [parsedResponse];
+       console.log('✅ AI returned single category format, converted to array');
+     } else {
+       console.error('🚨 AI returned invalid format - neither categories array nor single category');
+       console.error('AI Response Text:', text);
+       console.error('Parsed Response:', parsedResponse);
+       throw new Error('AI analysis failed - returned invalid format. This may indicate the prompt was too complex or the AI misunderstood the request.');
+     }
+     
+     // Validate that we have categories to analyze
+     if (categoriesToAnalyze.length === 0) {
+       console.error('🚨 No categories found after format conversion');
+       throw new Error('AI analysis failed - no categories found after format conversion.');
+     }
+     
+     // Validate that the AI actually changed some statuses
+     let gapCount = 0;
+     let coveredCount = 0;
+     let partialCount = 0;
+     
+     categoriesToAnalyze.forEach(category => {
+       if (category.results) {
+         category.results.forEach(control => {
+           if (control.status === 'gap') gapCount++;
+           else if (control.status === 'covered') coveredCount++;
+           else if (control.status === 'partial') partialCount++;
+         });
+       }
+     });
     
     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
     
-    // Only use fallback if AI didn't provide any analysis at all
-    // Allow AI to return all gaps if that's what the analysis shows
-    const totalControls = filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
-    if (totalControls === 0) {
-      console.log('AI analysis failed - no controls to analyze. Using fallback.');
-      throw new Error('AI analysis failed - no controls available');
-    }
-    
-    // Log the analysis results for debugging
-    if (gapCount === totalControls) {
-      console.log('AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
-    }
-    
-         // Apply strictness adjustments to AI results
+         // Only use fallback if AI didn't provide any analysis at all
+     // Allow AI to return all gaps if that's what the analysis shows
+     const totalControls = filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
+     if (totalControls === 0) {
+       console.log('AI analysis failed - no controls to analyze. Using fallback.');
+       throw new Error('AI analysis failed - no controls available');
+     }
+     
+     // Log the analysis results for debugging
+     if (gapCount === totalControls) {
+       console.log('AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
+     }
+     
+     // Apply strictness adjustments to AI results
      console.log('=== BEFORE STRICTNESS ADJUSTMENTS ===');
      console.log('AI Results - Gaps:', gapCount, 'Covered:', coveredCount, 'Partial:', partialCount);
      console.log('Total controls analyzed:', gapCount + coveredCount + partialCount);
      
      // Show some examples of what the AI returned
      if (gapCount > 0) {
-       console.log('Example gap control:', parsedResponse.categories.find(cat => cat.results?.some(r => r.status === 'gap'))?.results?.find(r => r.status === 'gap'));
+       console.log('Example gap control:', categoriesToAnalyze.find(cat => cat.results?.some(r => r.status === 'gap'))?.results?.find(r => r.status === 'gap'));
      }
      if (partialCount > 0) {
-       console.log('Example partial control:', parsedResponse.categories.find(cat => cat.results?.some(r => r.status === 'partial'))?.results?.find(r => r.status === 'partial'));
+       console.log('Example partial control:', categoriesToAnalyze.find(cat => cat.results?.some(r => r.status === 'partial'))?.results?.find(r => r.status === 'partial'));
      }
      if (coveredCount > 0) {
-       console.log('Example covered control:', parsedResponse.categories.find(cat => cat.results?.some(r => r.status === 'covered'))?.results?.find(r => r.status === 'covered'));
+       console.log('Example covered control:', categoriesToAnalyze.find(cat => cat.results?.some(r => r.status === 'covered'))?.results?.find(r => r.status === 'covered'));
      }
      
-     const adjustedResults = adjustResultsForStrictness(parsedResponse, strictness);
+     // Create the proper structure for strictness adjustments
+     const aiResultsForAdjustment = { categories: categoriesToAnalyze };
+     const adjustedResults = adjustResultsForStrictness(aiResultsForAdjustment, strictness);
      
      // Count final results after strictness adjustments
      let finalGapCount = 0;
