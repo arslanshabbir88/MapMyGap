@@ -1479,24 +1479,35 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         console.log('=== CACHE HIT VALIDATION ===');
         let cacheUnauthorizedControls = [];
         
-        cachedResults.categories.forEach(category => {
-          category.results.forEach(control => {
-            const controlFamily = control.id.split('-')[0];
-            if (!selectedCategories.includes(controlFamily)) {
-              cacheUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-              console.log(`🚨 CACHE UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
-            }
-          });
-        });
-        
-        if (cacheUnauthorizedControls.length > 0) {
-          console.error(`🚨 CRITICAL: Cached results contain ${cacheUnauthorizedControls.length} unauthorized controls!`);
-          console.error('Invalid controls:', cacheUnauthorizedControls);
-          console.log('🚨 Rejecting cache hit and running fresh analysis to prevent unauthorized controls');
+        // SAFETY CHECK: Ensure cachedResults has the expected structure
+        if (!cachedResults || !cachedResults.categories || !Array.isArray(cachedResults.categories)) {
+          console.log('🚨 Cached results structure invalid, running fresh analysis');
+          console.log('Cached results:', cachedResults);
           // Don't return - continue with fresh analysis
         } else {
-          console.log('✅ Cache validation passed - all controls are authorized');
-          return adjustResultsForStrictness(cachedResults, strictness);
+          cachedResults.categories.forEach(category => {
+            if (category && category.results && Array.isArray(category.results)) {
+              category.results.forEach(control => {
+                if (control && control.id) {
+                  const controlFamily = control.id.split('-')[0];
+                  if (!selectedCategories.includes(controlFamily)) {
+                    cacheUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+                    console.log(`🚨 CACHE UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+                  }
+                }
+              });
+            }
+          });
+          
+          if (cacheUnauthorizedControls.length > 0) {
+            console.error(`🚨 CRITICAL: Cached results contain ${cacheUnauthorizedControls.length} unauthorized controls!`);
+            console.error('Invalid controls:', cacheUnauthorizedControls);
+            console.log('🚨 Rejecting cache hit and running fresh analysis to prevent unauthorized controls');
+            // Don't return - continue with fresh analysis
+          } else {
+            console.log('✅ Cache validation passed - all controls are authorized');
+            return adjustResultsForStrictness(cachedResults, strictness);
+          }
         }
       } else {
         // No category restrictions, safe to use cache
