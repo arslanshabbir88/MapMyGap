@@ -760,15 +760,38 @@ Look for evidence like: policies, procedures, "we implement", "our organization 
 
 Return only valid JSON, no additional text or formatting.`;
 
-    // Add timeout to prevent hanging - increased for Vercel deployment
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
-    });
-    
-    const aiPromise = model.generateContent(prompt);
-    const result = await Promise.race([aiPromise, timeoutPromise]);
-    const response = await result.response;
-    const text = response.text();
+         // Add timeout to prevent hanging - increased for Vercel deployment
+     const timeoutPromise = new Promise((_, reject) => {
+       setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
+     });
+     
+     console.log('🚀 Starting AI analysis with Google Gemini...');
+     console.log('Model being used: gemini-1.5-flash');
+     console.log('Prompt length:', prompt.length, 'characters');
+     
+     try {
+       const aiPromise = model.generateContent(prompt);
+       console.log('⏳ AI request sent, waiting for response...');
+       const result = await Promise.race([aiPromise, timeoutPromise]);
+       console.log('✅ AI response received successfully');
+       const response = await result.response;
+       const text = response.text();
+       console.log('📝 AI response text extracted, length:', text.length);
+     } catch (aiError) {
+       console.error('❌ AI analysis failed with error:', aiError.message);
+       console.error('Error type:', aiError.constructor.name);
+       console.error('Full error object:', aiError);
+       
+       if (aiError.message.includes('quota')) {
+         throw new Error('AI API quota exceeded - please try again later');
+       } else if (aiError.message.includes('timeout')) {
+         throw new Error('AI analysis timed out - please try again');
+       } else if (aiError.message.includes('API key') || aiError.message.includes('authentication')) {
+         throw new Error('AI API authentication failed - please check API key configuration');
+       } else {
+         throw new Error(`AI analysis failed: ${aiError.message}`);
+       }
+     }
     
     console.log('=== AI RESPONSE DEBUG ===');
     console.log('AI Response Text:', text);
@@ -880,9 +903,12 @@ Return only valid JSON, no additional text or formatting.`;
     });
     
     return adjustedResults;
-  } catch (error) {
-    console.error('AI Analysis Error:', error);
-    console.log('Falling back to predefined control structure');
+     } catch (error) {
+     console.error('AI Analysis Error:', error);
+     console.log('=== FALLBACK TRIGGERED ===');
+     console.log('Error message:', error.message);
+     console.log('Error stack:', error.stack);
+     console.log('Falling back to predefined control structure');
     
     // Fallback to predefined control structure with intelligent defaults
     const fallbackResult = {
