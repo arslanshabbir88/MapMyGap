@@ -458,17 +458,32 @@ function adjustResultsForStrictness(results, strictness) {
       category.results.forEach(result => {
         if (result.status === 'covered' && coveredConverted < coveredToPartial) {
           result.status = 'partial';
-          result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
+          // Only append the downgrade message if the original details don't contain the error message
+          if (!result.details.includes('AI analysis encountered an issue')) {
+            result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
+          } else {
+            result.details = `Downgraded to partial due to strict analysis requirements. This control requires manual review.`;
+          }
           coveredConverted++;
           console.log(`Strict mode: Converted ${result.id} from covered to partial (${coveredConverted}/${coveredToPartial})`);
         } else if (result.status === 'partial' && partialConverted < partialToGap) {
           result.status = 'gap';
-          result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
+          // Only append the downgrade message if the original details don't contain the error message
+          if (!result.details.includes('AI analysis encountered an issue')) {
+            result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
+          } else {
+            result.details = `Downgraded to gap due to strict analysis requirements. This control requires manual review.`;
+          }
           partialConverted++;
           console.log(`Strict mode: Converted ${result.id} from partial to gap (${partialConverted}/${partialToGap})`);
         } else if (result.status === 'gap' && gapConverted < gapToPartial) {
           result.status = 'partial';
-          result.details = `Upgraded to partial due to strict analysis requirements (AI was too conservative). ${result.details}`;
+          // Only append the upgrade message if the original details don't contain the error message
+          if (!result.details.includes('AI analysis encountered an issue')) {
+            result.details = `Upgraded to partial due to strict analysis requirements (AI was too conservative). ${result.details}`;
+          } else {
+            result.details = `Upgraded to partial due to strict analysis requirements. This control requires manual review.`;
+          }
            gapConverted++;
            console.log(`Strict mode: Converted ${result.id} from gap to partial (${gapConverted}/${gapToPartial})`);
         }
@@ -508,17 +523,32 @@ function adjustResultsForStrictness(results, strictness) {
         category.results.forEach(result => {
           if (result.status === 'gap' && gapConverted < gapToPartial) {
             result.status = 'partial';
-            result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
+            // Only append the upgrade message if the original details don't contain the error message
+            if (!result.details.includes('AI analysis encountered an issue')) {
+              result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
+            } else {
+              result.details = `Upgraded to partial due to balanced analysis requirements. This control requires manual review.`;
+            }
             gapConverted++;
             console.log(`Balanced mode: Converted ${result.id} from gap to partial (${gapConverted}/${gapToPartial})`);
           } else if (result.status === 'partial' && partialConverted < partialToCovered) {
             result.status = 'covered';
-            result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
+            // Only append the upgrade message if the original details don't contain the error message
+            if (!result.details.includes('AI analysis encountered an issue')) {
+              result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
+            } else {
+              result.details = `Upgraded to covered due to balanced analysis requirements. This control requires manual review.`;
+            }
             partialConverted++;
             console.log(`Balanced mode: Converted ${result.id} from partial to covered (${partialConverted}/${partialToCovered})`);
           } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
             result.status = 'partial';
-            result.details = `Downgraded to partial due to balanced analysis requirements (AI was too optimistic). ${result.details}`;
+            // Only append the downgrade message if the original details don't contain the error message
+            if (!result.details.includes('AI analysis encountered an issue')) {
+              result.details = `Downgraded to partial due to balanced analysis requirements (AI was too optimistic). ${result.details}`;
+            } else {
+              result.details = `Downgraded to partial due to balanced analysis requirements. This control requires manual review.`;
+            }
             coveredConverted++;
             console.log(`Balanced mode: Converted ${result.id} from covered to partial (${coveredConverted}/${coveredToPartial})`);
           }
@@ -562,17 +592,32 @@ function adjustResultsForStrictness(results, strictness) {
       category.results.forEach(result => {
         if (result.status === 'gap' && gapConverted < gapToPartial) {
           result.status = 'partial';
-          result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
+          // Only append the upgrade message if the original details don't contain the error message
+          if (!result.details.includes('AI analysis encountered an issue')) {
+            result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
+          } else {
+            result.details = `Upgraded to partial due to lenient analysis requirements. This control requires manual review.`;
+          }
           gapConverted++;
           console.log(`Lenient mode: Converted ${result.id} from gap to partial (${gapConverted}/${gapToPartial})`);
         } else if (result.status === 'partial' && partialConverted < partialToCovered) {
           result.status = 'covered';
-          result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
+          // Only append the upgrade message if the original details don't contain the error message
+          if (!result.details.includes('AI analysis encountered an issue')) {
+            result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
+          } else {
+            result.details = `Upgraded to covered due to lenient analysis requirements. This control requires manual review.`;
+          }
           partialConverted++;
           console.log(`Lenient mode: Converted ${result.id} from partial to covered (${partialConverted}/${partialToCovered})`);
         } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
           result.status = 'partial';
-          result.details = `Downgraded to partial due to lenient analysis requirements (AI was too optimistic). ${result.details}`;
+          // Only append the downgrade message if the original details don't contain the error message
+          if (!result.details.includes('AI analysis encountered an issue')) {
+            result.details = `Downgraded to partial due to lenient analysis requirements (AI was too optimistic). ${result.details}`;
+          } else {
+            result.details = `Downgraded to partial due to lenient analysis requirements. This control requires manual review.`;
+          }
           coveredConverted++;
           console.log(`Lenient mode: Converted ${result.id} from covered to partial (${coveredConverted}/${coveredToPartial})`);
         }
@@ -831,30 +876,55 @@ Return only valid JSON, no additional text or formatting.`;
     console.log('AI Response contains "Access Control":', text.includes('Access Control'));
     
     // Check if AI returned an error message
+    console.log('=== AI RESPONSE VALIDATION ===');
+    console.log('Raw AI response text:', text);
+    console.log('Looking for JSON pattern in response...');
     
     // Extract JSON from response
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      throw new Error('Invalid AI response format');
+      console.error('❌ No JSON pattern found in AI response');
+      console.error('Response text:', text);
+      throw new Error('Invalid AI response format - no JSON found');
     }
     
-    const parsedResponse = JSON.parse(jsonMatch[0]);
+    console.log('✅ JSON pattern found, attempting to parse...');
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(jsonMatch[0]);
+      console.log('✅ JSON parsed successfully');
+    } catch (parseError) {
+      console.error('❌ JSON parsing failed:', parseError.message);
+      console.error('JSON text to parse:', jsonMatch[0]);
+      throw new Error(`AI response JSON parsing failed: ${parseError.message}`);
+    }
+    
     console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
     
          // Handle both array format and single category format from AI
+     console.log('=== FORMAT VALIDATION ===');
+     console.log('Checking parsed response structure...');
+     console.log('Has categories property?', !!parsedResponse.categories);
+     console.log('Categories is array?', Array.isArray(parsedResponse.categories));
+     console.log('Has name property?', !!parsedResponse.name);
+     console.log('Has results property?', !!parsedResponse.results);
+     
      let categoriesToAnalyze = [];
      if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
        // Standard format: {"categories": [...]}
        categoriesToAnalyze = parsedResponse.categories;
        console.log('✅ AI returned standard categories array format');
+       console.log('Number of categories:', categoriesToAnalyze.length);
      } else if (parsedResponse.name && parsedResponse.results) {
        // Single category format: {"name": "...", "results": [...]}
        categoriesToAnalyze = [parsedResponse];
        console.log('✅ AI returned single category format, converted to array');
+       console.log('Number of categories:', categoriesToAnalyze.length);
      } else {
        console.error('🚨 AI returned invalid format - neither categories array nor single category');
        console.error('AI Response Text:', text);
        console.error('Parsed Response:', parsedResponse);
+       console.error('Available properties:', Object.keys(parsedResponse));
        throw new Error('AI analysis failed - returned invalid format. This may indicate the prompt was too complex or the AI misunderstood the request.');
      }
      
@@ -865,34 +935,58 @@ Return only valid JSON, no additional text or formatting.`;
      }
      
      // Validate that the AI actually changed some statuses
+     console.log('=== STATUS COUNTING ===');
+     console.log('Counting statuses in AI response...');
+     
      let gapCount = 0;
      let coveredCount = 0;
      let partialCount = 0;
      
      categoriesToAnalyze.forEach(category => {
+       console.log(`Processing category: ${category.name}`);
        if (category.results) {
+         console.log(`  Category has ${category.results.length} results`);
          category.results.forEach(control => {
+           console.log(`    Control ${control.id}: status = ${control.status}`);
            if (control.status === 'gap') gapCount++;
            else if (control.status === 'covered') coveredCount++;
            else if (control.status === 'partial') partialCount++;
+           else {
+             console.warn(`    ⚠️ Unknown status: ${control.status} for control ${control.id}`);
+           }
          });
+       } else {
+         console.warn(`  ⚠️ Category ${category.name} has no results property`);
        }
      });
     
     console.log(`AI Analysis Results - Gaps: ${gapCount}, Covered: ${coveredCount}, Partial: ${partialCount}`);
+    console.log('Total controls analyzed:', gapCount + coveredCount + partialCount);
     
          // Only use fallback if AI didn't provide any analysis at all
      // Allow AI to return all gaps if that's what the analysis shows
+     console.log('=== FALLBACK VALIDATION ===');
      const totalControls = filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
+     console.log('Total controls in framework:', totalControls);
+     console.log('Controls analyzed by AI:', gapCount + coveredCount + partialCount);
+     
      if (totalControls === 0) {
-       console.log('AI analysis failed - no controls to analyze. Using fallback.');
+       console.log('❌ AI analysis failed - no controls to analyze. Using fallback.');
        throw new Error('AI analysis failed - no controls available');
+     }
+     
+     // Check if AI analyzed all controls
+     if (gapCount + coveredCount + partialCount === 0) {
+       console.log('❌ AI analysis failed - no controls were analyzed. Using fallback.');
+       throw new Error('AI analysis failed - no controls were analyzed');
      }
      
      // Log the analysis results for debugging
      if (gapCount === totalControls) {
-       console.log('AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
+       console.log('✅ AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
      }
+     
+     console.log('✅ AI analysis validation passed - proceeding with strictness adjustments');
      
      // Apply strictness adjustments to AI results
      console.log('=== BEFORE STRICTNESS ADJUSTMENTS ===');
