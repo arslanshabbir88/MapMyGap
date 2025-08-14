@@ -2220,7 +2220,21 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     } catch (parseError) {
       console.error('Failed to parse AI JSON response:', parseError);
       console.error('Raw JSON text:', jsonMatch[0]);
-      throw new Error(`Failed to parse AI JSON response: ${parseError.message}`);
+      
+      // Try to fix common JSON issues for NIST CSF responses
+      try {
+        // Remove trailing commas and fix common formatting issues
+        let cleanedResponse = jsonMatch[0]
+          .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas
+          .replace(/}\s*,\s*$/g, '}') // Remove trailing comma after last object
+          .trim();
+        
+        parsedResponse = JSON.parse(cleanedResponse);
+        console.log('✅ AI response parsed after cleaning JSON formatting');
+      } catch (secondParseError) {
+        console.error('Failed to parse even after cleaning:', secondParseError);
+        throw new Error(`Failed to parse AI JSON response: ${parseError.message}`);
+      }
     }
     
     // CRITICAL: Validate that AI response doesn't contain unauthorized control families
@@ -2240,8 +2254,12 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
       // Single category format: {"name": "...", "results": [...]}
       categoriesToAnalyze = [parsedResponse];
       console.log('✅ AI returned single category format, converted to array');
+    } else if (Array.isArray(parsedResponse) && parsedResponse.length > 0 && parsedResponse[0].name && parsedResponse[0].results) {
+      // NIST CSF format: [{"name": "...", "results": [...]}, ...]
+      categoriesToAnalyze = parsedResponse;
+      console.log('✅ AI returned NIST CSF array format, converted to categories array');
     } else {
-      console.error('🚨 AI returned invalid format - neither categories array nor single category');
+      console.error('🚨 AI returned invalid format - neither categories array, single category, nor NIST CSF array');
       console.error('Parsed Response:', parsedResponse);
       throw new Error('AI analysis failed - returned invalid format. This may indicate the prompt was too complex or the AI misunderstood the request.');
     }
@@ -2255,11 +2273,13 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     categoriesToAnalyze.forEach(category => {
       if (category.results) {
         category.results.forEach(control => {
-          // Check control family
-          const controlFamily = control.id.split('-')[0];
-          if (!selectedCategories.includes(controlFamily)) {
-            unauthorizedControls.push(`${control.id} (${controlFamily})`);
-            console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
+          // Check control family only if we have selectedCategories (NIST 800-53)
+          if (selectedCategories && selectedCategories.length > 0) {
+            const controlFamily = control.id.split('-')[0];
+            if (!selectedCategories.includes(controlFamily)) {
+              unauthorizedControls.push(`${control.id} (${controlFamily})`);
+              console.log(`🚨 UNAUTHORIZED CONTROL: ${control.id} (${controlFamily}) - not in selected categories: ${selectedCategories.join(', ')}`);
+            }
           }
           
           // Count statuses
@@ -2350,10 +2370,13 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     let fallbackUnauthorizedControls = [];
     filteredFrameworkData.categories.forEach(category => {
       category.results.forEach(control => {
-        const controlFamily = control.id.split('-')[0];
-        if (!selectedCategories.includes(controlFamily)) {
-          fallbackUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-          console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+        // For NIST CSF, we don't have selectedCategories filtering, so skip this check
+        if (selectedCategories && selectedCategories.length > 0) {
+          const controlFamily = control.id.split('-')[0];
+          if (!selectedCategories.includes(controlFamily)) {
+            fallbackUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+            console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+          }
         }
       });
     });
@@ -2436,10 +2459,13 @@ IMPORTANT: Look for these patterns in ANY form - they don't have to be exact mat
     let finalUnauthorizedControls = [];
     adjustedFallback.categories.forEach(category => {
       category.results.forEach(control => {
-        const controlFamily = control.id.split('-')[0];
-        if (!selectedCategories.includes(controlFamily)) {
-          finalUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-          console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+        // Only validate control families if we have selectedCategories (NIST 800-53)
+        if (selectedCategories && selectedCategories.length > 0) {
+          const controlFamily = control.id.split('-')[0];
+          if (!selectedCategories.includes(controlFamily)) {
+            finalUnauthorizedControls.push(`${control.id} (${controlFamily})`);
+            console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
+          }
         }
       });
     });
