@@ -769,13 +769,15 @@ Return only valid JSON, no additional text or formatting.`;
      console.log('Model being used: gemini-1.5-flash');
      console.log('Prompt length:', prompt.length, 'characters');
      
+     let text; // Declare text variable outside try-catch block
+     
      try {
        const aiPromise = model.generateContent(prompt);
        console.log('⏳ AI request sent, waiting for response...');
        const result = await Promise.race([aiPromise, timeoutPromise]);
        console.log('✅ AI response received successfully');
        const response = await result.response;
-       const text = response.text();
+       text = response.text(); // Assign to the outer variable
        console.log('📝 AI response text extracted, length:', text.length);
      } catch (aiError) {
        console.error('❌ AI analysis failed with error:', aiError.message);
