@@ -2373,7 +2373,7 @@ function adjustResultsForStrictness(results, strictness) {
 }
 
 // Hybrid analysis function - uses smart filtering + AI analysis
-async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced', cacheBuster = null) {
   console.log('About to call analyzeWithAI with framework:', framework);
   
   // Clear NIST CSF cache to ensure fresh smart fallback results
@@ -3146,7 +3146,7 @@ module.exports = async function handler(req, res) {
     }
     
     const analysisStartTime = Date.now();
-    const analysisResult = await analyzeWithAI(extractedText, framework, selectedCategories, strictness);
+    const analysisResult = await analyzeWithAI(extractedText, framework, selectedCategories, strictness, cacheBuster);
     const analysisTime = Date.now() - analysisStartTime;
     
     console.log(`analyzeWithAI completed successfully in ${analysisTime}ms`);
