@@ -587,7 +587,21 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         firstCategory: cachedResults.categories?.[0]?.name || 'none',
         firstCategoryControls: cachedResults.categories?.[0]?.results?.length || 0
       });
-      return cachedResults;
+      
+      // TEMPORARY: Force cache miss for debugging to see if strictness adjustments work
+      console.log('🔍 DEBUG MODE: Forcing cache miss to test strictness adjustments');
+      console.log('This will help diagnose why all strictness levels give the same score');
+      
+      // Clear the cache for this specific document to force fresh analysis
+      if (global.analysisCache) {
+        const keysToRemove = Array.from(global.analysisCache.keys()).filter(key => key.includes(documentHash.substring(0, 16)));
+        keysToRemove.forEach(key => {
+          global.analysisCache.delete(key);
+          console.log('🧹 Removed cache key for debugging:', key);
+        });
+      }
+      
+      console.log('🔄 Proceeding with fresh AI analysis instead of using cache');
     }
     
     console.log('🔄 CACHE MISS: Running AI analysis (this will use tokens)');
@@ -797,7 +811,29 @@ Return only valid JSON, no additional text or formatting.`;
     }
     
     // Apply strictness adjustments to AI results
+    console.log('=== BEFORE STRICTNESS ADJUSTMENTS ===');
+    console.log('AI Results - Gaps:', gapCount, 'Covered:', coveredCount, 'Partial:', partialCount);
+    
     const adjustedResults = adjustResultsForStrictness(parsedResponse, strictness);
+    
+    // Count final results after strictness adjustments
+    let finalGapCount = 0;
+    let finalCoveredCount = 0;
+    let finalPartialCount = 0;
+    
+    adjustedResults.categories.forEach(category => {
+      if (category.results) {
+        category.results.forEach(control => {
+          if (control.status === 'gap') finalGapCount++;
+          else if (control.status === 'covered') finalCoveredCount++;
+          else if (control.status === 'partial') finalPartialCount++;
+        });
+      }
+    });
+    
+    console.log('=== AFTER STRICTNESS ADJUSTMENTS ===');
+    console.log('Final Results - Gaps:', finalGapCount, 'Covered:', finalCoveredCount, 'Partial:', finalPartialCount);
+    console.log('Strictness adjustments applied successfully for level:', strictness);
     
     // Cache the final results (after strictness adjustments) for future use
     await cacheAnalysisResults(documentHash, framework, adjustedResults, strictness);
@@ -869,8 +905,33 @@ Return only valid JSON, no additional text or formatting.`;
     console.log('💾 Cached fallback results for future strictness adjustments');
     
     // Apply strictness adjustments to fallback results
-    console.log('Applying strictness adjustments to fallback results for level:', strictness);
-    return adjustResultsForStrictness(fallbackResult, strictness);
+    console.log('=== FALLBACK STRICTNESS ADJUSTMENTS ===');
+    console.log('Fallback Results - Gaps:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'gap').length, 0));
+    console.log('Fallback Results - Partial:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'partial').length, 0));
+    console.log('Fallback Results - Covered:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'covered').length, 0));
+    
+    const adjustedFallbackResults = adjustResultsForStrictness(fallbackResult, strictness);
+    
+    // Count final fallback results after strictness adjustments
+    let finalFallbackGapCount = 0;
+    let finalFallbackCoveredCount = 0;
+    let finalFallbackPartialCount = 0;
+    
+    adjustedFallbackResults.categories.forEach(category => {
+      if (category.results) {
+        category.results.forEach(control => {
+          if (control.status === 'gap') finalFallbackGapCount++;
+          else if (control.status === 'covered') finalFallbackCoveredCount++;
+          else if (control.status === 'partial') finalFallbackPartialCount++;
+        });
+      }
+    });
+    
+    console.log('=== AFTER FALLBACK STRICTNESS ADJUSTMENTS ===');
+    console.log('Final Fallback Results - Gaps:', finalFallbackGapCount, 'Covered:', finalFallbackCoveredCount, 'Partial:', finalFallbackPartialCount);
+    console.log('Fallback strictness adjustments applied successfully for level:', strictness);
+    
+    return adjustedFallbackResults;
   }
 }
 
