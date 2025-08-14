@@ -396,8 +396,18 @@ async function cacheAnalysisResults(documentHash, framework, results, strictness
     });
     
     console.log('Cached AI analysis results for future use');
+    console.log('Current cache size:', global.analysisCache.size);
+    console.log('Cache keys:', Array.from(global.analysisCache.keys()));
   } catch (error) {
     console.error('Cache storage error:', error);
+  }
+}
+
+// Function to clear cache for debugging
+function clearAnalysisCache() {
+  if (global.analysisCache) {
+    global.analysisCache.clear();
+    console.log('🧹 Cache cleared for debugging');
   }
 }
 
@@ -571,6 +581,12 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     if (cachedResults) {
       console.log('🎯 CACHE HIT: Using cached results for this exact document and strictness level');
       console.log('💰 SAVED: AI tokens and API costs!');
+      console.log('Cache key used:', `${documentHash}_${framework}_${strictness}`);
+      console.log('Cached results structure:', {
+        categoriesCount: cachedResults.categories?.length || 0,
+        firstCategory: cachedResults.categories?.[0]?.name || 'none',
+        firstCategoryControls: cachedResults.categories?.[0]?.results?.length || 0
+      });
       return cachedResults;
     }
     
@@ -629,6 +645,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         console.error('This means the filtering logic is too strict or there\'s a pattern matching issue.');
         throw new Error('No categories match user selection. Please check your category selection.');
       }
+    } else {
+      // If no categories selected, use all framework categories
+      filteredFrameworkData = frameworkData;
+      console.log('No specific categories selected, using all framework categories');
     }
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -782,6 +802,12 @@ Return only valid JSON, no additional text or formatting.`;
     // Cache the final results (after strictness adjustments) for future use
     await cacheAnalysisResults(documentHash, framework, adjustedResults, strictness);
     console.log('💾 Cached final results (after strictness adjustments) for future use');
+    console.log('Cache key used for storage:', `${documentHash}_${framework}_${strictness}`);
+    console.log('Results being cached:', {
+      categoriesCount: adjustedResults.categories?.length || 0,
+      firstCategory: adjustedResults.categories?.[0]?.name || 'none',
+      firstCategoryControls: adjustedResults.categories?.[0]?.results?.length || 0
+    });
     
     return adjustedResults;
   } catch (error) {
@@ -851,6 +877,12 @@ Return only valid JSON, no additional text or formatting.`;
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  // Temporary debug endpoint to clear cache
+  if (req.body.clearCache === true) {
+    clearAnalysisCache();
+    return res.status(200).json({ message: 'Cache cleared successfully' });
   }
 
   try {
