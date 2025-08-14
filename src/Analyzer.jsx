@@ -516,6 +516,36 @@ function Analyzer({ onNavigateHome }) {
     }
   };
 
+  const deleteAllHistory = async () => {
+    if (!user) return;
+    
+    const historyCount = analysisHistory.length;
+    if (historyCount === 0) return;
+    
+    const confirmMessage = `Are you sure you want to delete ALL ${historyCount} analysis records?\n\nThis action cannot be undone and will permanently remove your entire analysis history.`;
+    
+    if (confirm(confirmMessage)) {
+      try {
+        // Delete all records for the user
+        const { error } = await supabase
+          .from('analysis_history')
+          .delete()
+          .eq('user_id', user.id);
+        
+        if (error) throw error;
+        
+        // Clear local state
+        setAnalysisHistory([]);
+        setShowHistory(false);
+        
+        console.log(`Successfully deleted ${historyCount} analysis records`);
+      } catch (err) {
+        console.error('Error deleting all history:', err);
+        alert('Failed to delete all history. Please try again.');
+      }
+    }
+  };
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -1305,25 +1335,33 @@ function Analyzer({ onNavigateHome }) {
               {/* Analysis History Panel */}
               {showHistory && user && (
                 <div className="mb-6 p-4 bg-slate-900/50 border border-slate-700 rounded-lg">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">Analysis History</h3>
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={loadAnalysisHistory}
-                        disabled={isLoadingHistory}
-                        className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Refresh history"
-                      >
-                        {isLoadingHistory ? '↻' : '↻'}
-                      </button>
-                      <button
-                        onClick={() => setShowHistory(false)}
-                        className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500"
-                      >
-                        ← Back to Analysis
-                      </button>
-                    </div>
-                  </div>
+                                     <div className="flex items-center justify-between mb-4">
+                     <h3 className="text-lg font-semibold text-white">Analysis History</h3>
+                     <div className="flex items-center space-x-2">
+                       <button
+                         onClick={loadAnalysisHistory}
+                         disabled={isLoadingHistory}
+                         className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                         title="Refresh history"
+                       >
+                         {isLoadingHistory ? '↻' : '↻'}
+                       </button>
+                       <button
+                         onClick={deleteAllHistory}
+                         disabled={analysisHistory.length === 0}
+                         className="text-red-400 hover:text-red-300 transition-colors px-3 py-1 rounded border border-red-500/30 hover:border-red-500/50 hover:bg-red-500/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                         title="Delete all analysis history"
+                       >
+                         🗑️ Delete All
+                       </button>
+                       <button
+                         onClick={() => setShowHistory(false)}
+                         className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500"
+                       >
+                         ← Back to Analysis
+                       </button>
+                     </div>
+                   </div>
                   {isLoadingHistory ? (
                     <div className="text-center py-4">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
