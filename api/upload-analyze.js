@@ -2414,169 +2414,218 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     // Continue with normal AI analysis for smaller selections
     console.log('🤖 PROCEEDING WITH AI ANALYSIS...');
     
-    // ... rest of the existing analysis logic
+    // Get predefined control structure for the framework
+    let frameworkData;
+    try {
+      console.log('Attempting to access allFrameworks[framework]...');
+      frameworkData = allFrameworks[framework];
+      console.log('Successfully accessed framework data:', frameworkData ? 'exists' : 'undefined');
+    } catch (error) {
+      console.error('Error accessing allFrameworks[framework]:', error);
+      throw new Error(`Failed to access framework data: ${error.message}`);
+    }
+    
+    if (!frameworkData) {
+      throw new Error(`Framework ${framework} not supported. Available frameworks: ${Object.keys(allFrameworks).join(', ')}`);
+    }
+    
+    console.log('Framework data found:', frameworkData.name);
+    console.log('Number of categories:', frameworkData.categories.length);
+    
+    // Apply category filtering if user selected specific categories
+    if (selectedCategories && selectedCategories.length > 0) {
+      console.log('User selected categories detected, applying filtering...');
+      console.log('Selected categories:', selectedCategories);
+      
+      if (framework === 'NIST_CSF') {
+        // Filter CSF functions
+        filteredFrameworkData = {
+          ...frameworkData,
+          categories: frameworkData.categories.filter(category => {
+            const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+            return selectedCategories.includes(categoryCode);
+          })
+        };
+      } else {
+        // Filter NIST 800-53 control families
+        filteredFrameworkData = {
+          ...frameworkData,
+          categories: frameworkData.categories.filter(category => {
+            const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+            return selectedCategories.includes(categoryCode);
+          })
+        };
+      }
+      
+      console.log(`Filtered to ${filteredFrameworkData.categories.length} categories`);
+    } else {
+      filteredFrameworkData = frameworkData;
+    }
+    
+    // Use the filtered framework data for analysis
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    
+    // Map framework IDs to display names
+    const frameworkNames = {
+      'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
+      'NIST_800_53': 'NIST SP 800-53',
+      'PCI_DSS': 'PCI DSS v4.0',
+      'ISO_27001': 'ISO/IEC 27001:2022',
+      'SOC_2': 'SOC 2 Type II'
+    };
+    
+    const frameworkName = frameworkNames[framework] || framework;
+    
+    // Create an optimized prompt for faster AI analysis
+    const prompt = `Analyze this document against ${frameworkName} framework. Use EXACT control structure below.
+ 
+ Document: ${fileContent.substring(0, 6000)}
+ 
+ Controls to analyze:
+ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
+ 
+ Analysis Strictness Level: ${strictness}
+ 
+ CRITICAL REQUIREMENTS:
+ 1. For each control, carefully analyze the document content and mark as:
+    - "covered": Clear evidence of implementation OR general policy statements OR clear organizational intent
+    - "partial": Some evidence but incomplete or not fully implemented
+    - "gap": No evidence found in the document (be conservative about marking as gap)
+ 
+ 2. ANALYSIS STRICTNESS LEVEL: ${strictness}
+    
+    STRICT MODE: Only mark as "covered" if there is EXPLICIT, DETAILED evidence
+    BALANCED MODE: Mark as "covered" if there is reasonable evidence, clear intent, OR general policy statements
+    LENIENT MODE: Mark as "covered" if there is ANY reasonable indication of coverage, intent, or planning - BE GENEROUS
+ 
+ 3. Return JSON with same structure, only changing status/details/recommendation fields
+ 4. Be thorough and analytical - this is for compliance assessment
+ 5. Return valid JSON only`;
+    
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000);
+    });
+    
+    const aiPromise = model.generateContent(prompt);
+    const result = await Promise.race([aiPromise, timeoutPromise]);
+    const response = await result.response;
+    const text = response.text();
+    
+    console.log('AI Response Text:', text);
+    console.log('AI Response Length:', text.length);
+    
+    // Extract JSON from response
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error('No JSON found in AI response:', text);
+      throw new Error('AI response does not contain valid JSON structure');
+    }
+    
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(jsonMatch[0]);
+      console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
+    } catch (parseError) {
+      console.error('Failed to parse AI JSON response:', parseError);
+      console.error('Raw JSON text:', jsonMatch[0]);
+      
+      // Try to fix common JSON issues
+      try {
+        let cleanedResponse = jsonMatch[0]
+          .replace(/,(\s*[}\]])/g, '$1')
+          .replace(/}\s*,\s*$/g, '}')
+          .trim();
+        
+        parsedResponse = JSON.parse(cleanedResponse);
+        console.log('✅ AI response parsed after cleaning JSON formatting');
+      } catch (secondParseError) {
+        console.error('Failed to parse even after cleaning:', secondParseError);
+        throw new Error(`Failed to parse AI JSON response: ${parseError.message}`);
+      }
+    }
+    
+    // Validate response structure
+    if (!parsedResponse.categories || !Array.isArray(parsedResponse.categories)) {
+      console.error('Invalid AI response structure:', parsedResponse);
+      throw new Error('AI response does not contain valid categories array');
+    }
+    
+    // Cache the AI analysis results for future use
+    await cacheAnalysisResults(documentHash, framework, parsedResponse, strictness);
+    console.log('💾 Cached AI analysis results for future strictness adjustments');
+    
+    // Apply strictness adjustments and return
+    return adjustResultsForStrictness(parsedResponse, strictness);
   } catch (error) {
     console.error('AI Analysis Error:', error);
     console.log('Falling back to predefined control structure');
     
-    // filteredFrameworkData is already defined at function level, but ensure it has valid content
+    // Use the filtered framework data for fallback
     if (!filteredFrameworkData.categories || filteredFrameworkData.categories.length === 0) {
-      console.error('filteredFrameworkData has no valid categories, creating minimal structure');
-      
-      // Create a minimal structure that matches the user's selected categories
-      const firstCategory = selectedCategories[0] || 'AC';
-      filteredFrameworkData = {
-        categories: [{
-          name: `${firstCategory} Controls`,
-          description: `Basic ${firstCategory} security controls`,
-          results: [{
-            id: `${firstCategory}-1`,
-            control: `Basic ${firstCategory} Security Control`,
-            status: "gap",
-            details: "AI analysis failed and no framework data available. Please review manually.",
-            recommendation: `Implement basic ${firstCategory} security controls based on your organization's needs.`
-          }]
-        }]
-      };
-      
-      console.log(`Created minimal fallback structure for category: ${firstCategory}`);
-    }
-    
-    // NUCLEAR FALLBACK: Ensure fallback also only contains authorized controls
-    console.log('=== NUCLEAR FALLBACK VALIDATION ===');
-    console.log('Creating fallback with filteredFrameworkData categories:', filteredFrameworkData.categories.map(c => c.name));
-    
-    // Double-check that fallback only contains authorized controls
-    let fallbackUnauthorizedControls = [];
-    filteredFrameworkData.categories.forEach(category => {
-      category.results.forEach(control => {
-        // For NIST CSF, we filter by selected CSF functions (ID, PR, DE, RS, RC, GV)
-        if (selectedCategories && selectedCategories.length > 0) {
-          if (framework === 'NIST_CSF') {
-            // Extract CSF function from control ID (e.g., "ID.AM-1" -> "ID")
-            const csfFunction = control.id.split('.')[0];
-            if (!selectedCategories.includes(csfFunction)) {
-              fallbackUnauthorizedControls.push(`${control.id} (${csfFunction})`);
-              console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${csfFunction}) in category ${category.name}`);
-            }
-          } else {
-            // For NIST 800-53, filter by control family
-            const controlFamily = control.id.split('-')[0];
-            if (!selectedCategories.includes(controlFamily)) {
-              fallbackUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-              console.log(`🚨 FALLBACK UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
-            }
-          }
-        }
-      });
-    });
-    
-    if (fallbackUnauthorizedControls.length > 0) {
-      console.error(`🚨 CRITICAL: Fallback contains ${fallbackUnauthorizedControls.length} unauthorized controls!`);
-      throw new Error(`Fallback logic failed - contains unauthorized controls: ${fallbackUnauthorizedControls.join(', ')}`);
-    }
-    
-    console.log('✅ Fallback validation passed - all controls are authorized');
-    
-    // Use the filtered framework data for fallback with intelligent defaults
-    const fallbackResult = {
-      categories: filteredFrameworkData.categories.map(category => ({
-        name: category.name,
-        description: category.description,
-        results: category.results.map((control, index) => {
-          // Intelligent fallback based on control type and common implementations
-          let status = "gap";
-          let details = "";
-          let recommendation = "";
-          
-          // Determine error type for better messaging
-          if (error.message.includes('timeout')) {
-            details = "AI analysis timed out. This control requires manual review. The system will retry on next analysis.";
-            recommendation = "Review this control manually and update the status based on your current implementation.";
-          } else if (error.message.includes('quota') || error.message.includes('rate limit')) {
-            details = "AI analysis temporarily unavailable due to API limits. Please try again later or review manually.";
-            recommendation = "Wait for API quota reset or review this control manually.";
-          } else {
-            details = "AI analysis encountered an issue. This control requires manual review.";
-            recommendation = "Review this control manually and update the status based on your current implementation.";
-          }
-          
-          // Mark some controls as "partial" based on common implementations to avoid 0% scores
-          const controlId = control.id.toUpperCase();
-          if (controlId.includes('AC-1') || controlId.includes('AC-2') || controlId.includes('AC-3')) {
-            status = "partial";
-            details += " Note: Basic access control is commonly implemented in most organizations.";
-          } else if (controlId.includes('AT-2') || controlId.includes('AT-1') || controlId.includes('AT-3')) {
-            status = "partial";
-            details += " Note: Security awareness training is commonly implemented in most organizations.";
-          } else if (controlId.includes('IR-1') || controlId.includes('IR-8') || controlId.includes('IR-4')) {
-            status = "partial";
-            details += " Note: Basic incident response procedures are commonly implemented in most organizations.";
-          } else if (controlId.includes('SC-7') || controlId.includes('SC-1') || controlId.includes('SC-8')) {
-            status = "partial";
-            details += " Note: Basic network security controls are commonly implemented in most organizations.";
-          } else if (controlId.includes('AU-2') || controlId.includes('AU-3')) {
-            status = "partial";
-            details += " Note: Basic audit logging is commonly implemented in most organizations.";
-          } else if (controlId.includes('IA-2') || controlId.includes('IA-3')) {
-            status = "partial";
-            details += " Note: Basic authentication mechanisms are commonly implemented in most organizations.";
-          }
-          
-          return {
-            id: control.id,
-            control: control.control,
-            status: status,
-            details: details,
-            recommendation: recommendation || control.recommendation
-          };
-        })
-      }))
-    };
-    
-    console.log('Fallback result created with', fallbackResult.categories.length, 'categories');
-    
-    // Cache the fallback results for future use (even fallbacks can be cached)
-    await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness);
-    console.log('💾 Cached fallback results for future strictness adjustments');
-    
-    // Apply strictness adjustments to fallback results
-    console.log('Applying strictness adjustments to fallback results for level:', strictness);
-    const adjustedFallback = adjustResultsForStrictness(fallbackResult, strictness);
-    
-    // FINAL NUCLEAR CHECK: Validate adjusted results before returning
-    console.log('=== FINAL NUCLEAR VALIDATION ===');
-    let finalUnauthorizedControls = [];
-    adjustedFallback.categories.forEach(category => {
-      category.results.forEach(control => {
-        // Only validate control families/functions if we have selectedCategories
-        if (selectedCategories && selectedCategories.length > 0) {
-          if (framework === 'NIST_CSF') {
-            // Extract CSF function from control ID (e.g., "ID.AM-1" -> "ID")
-            const csfFunction = control.id.split('.')[0];
-            if (!selectedCategories.includes(csfFunction)) {
-              finalUnauthorizedControls.push(`${control.id} (${csfFunction})`);
-              console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${csfFunction}) in category ${category.name}`);
-            }
-          } else {
-            // For NIST 800-53, filter by control family
-            const controlFamily = control.id.split('-')[0];
-            if (!selectedCategories.includes(controlFamily)) {
-              finalUnauthorizedControls.push(`${control.id} (${controlFamily})`);
-              console.log(`🚨 FINAL UNAUTHORIZED: ${control.id} (${controlFamily}) in category ${category.name}`);
-            }
-          }
-        }
-      });
-    });
-    
-    if (finalUnauthorizedControls.length > 0) {
-      console.error(`🚨 CRITICAL: Final results contain ${finalUnauthorizedControls.length} unauthorized controls!`);
-      throw new Error(`Final validation failed - results contain unauthorized controls: ${finalUnauthorizedControls.join(', ')}`);
-    }
-    
-    console.log('✅ FINAL VALIDATION PASSED - No unauthorized controls in results');
-    return adjustedFallback;
+       console.error('filteredFrameworkData has no valid categories, creating minimal structure');
+       
+       // Create a minimal structure that matches the user's selected categories
+       const firstCategory = selectedCategories?.[0] || 'AC';
+       filteredFrameworkData = {
+         categories: [{
+           name: `${firstCategory} Controls`,
+           description: `Basic ${firstCategory} security controls`,
+           results: [{
+             id: `${firstCategory}-1`,
+             control: `Basic ${firstCategory} Security Control`,
+             status: "gap",
+             details: "AI analysis failed and no framework data available. Please review manually.",
+             recommendation: `Implement basic ${firstCategory} security controls based on your organization's needs.`
+           }]
+         }]
+       };
+       
+       console.log(`Created minimal fallback structure for category: ${firstCategory}`);
+     }
+     
+     // Use the filtered framework data for fallback with intelligent defaults
+     const fallbackResult = {
+       categories: filteredFrameworkData.categories.map(category => ({
+         name: category.name,
+         description: category.description,
+         results: category.results.map((control, index) => {
+           // Intelligent fallback based on control type and common implementations
+           let status = "gap";
+           let details = "";
+           let recommendation = "";
+           
+           // Determine error type for better messaging
+           if (error.message.includes('timeout')) {
+             details = "AI analysis timed out. This control requires manual review. The system will retry on next analysis.";
+             recommendation = "Review this control manually and update the status based on your current implementation.";
+           } else if (error.message.includes('quota') || error.message.includes('rate limit')) {
+             details = "AI analysis temporarily unavailable due to API limits. Please try again later or review manually.";
+             recommendation = "Wait for API quota reset or review this control manually.";
+           } else {
+             details = "AI analysis encountered an issue. This control requires manual review.";
+             recommendation = control.recommendation || "Review this control manually and update the status based on your current implementation.";
+           }
+           
+           return {
+             id: control.id,
+             control: control.control,
+             status: status,
+             details: details,
+             recommendation: recommendation
+           };
+         })
+       }))
+     };
+     
+     console.log('Applying strictness adjustments to fallback results for level:', strictness);
+     const adjustedFallback = adjustResultsForStrictness(fallbackResult, strictness);
+     
+     // Cache the fallback results for future use
+     await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness);
+     console.log('💾 Cached fallback results for future strictness adjustments');
+     
+     return adjustedFallback;
   }
 }
 
