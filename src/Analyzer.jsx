@@ -893,16 +893,18 @@ function Analyzer({ onNavigateHome }) {
                   <select 
                     id="framework" 
                     value={selectedFramework}
-                    onChange={(e) => { 
-                      setSelectedFramework(e.target.value); 
-                      setAnalysisResults(null);
-                      // Reset categories when framework changes
-                      if (e.target.value === 'NIST_800_53') {
-                        setSelectedCategories(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core families
-                      } else {
-                        setSelectedCategories([]);
-                      }
-                    }}
+                                         onChange={(e) => { 
+                       setSelectedFramework(e.target.value); 
+                       setAnalysisResults(null);
+                       // Reset categories when framework changes
+                       if (e.target.value === 'NIST_800_53') {
+                         setSelectedCategories(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core families
+                       } else if (e.target.value === 'NIST_CSF') {
+                         setSelectedCategories(['ID', 'PR']); // Default to critical CSF functions
+                       } else {
+                         setSelectedCategories([]);
+                       }
+                     }}
                     className="w-full bg-slate-700 border border-slate-600 rounded-lg shadow-sm py-3 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none cursor-pointer hover:border-slate-500"
                   >
                     {frameworkOptions.map(opt => (
@@ -1047,6 +1049,46 @@ function Analyzer({ onNavigateHome }) {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+              
+              {/* CSF Function Selection for NIST CSF */}
+              {selectedFramework === 'NIST_CSF' && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <label className="block text-sm font-medium text-slate-300">
+                      CSF Functions to Analyze
+                    </label>
+                    <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
+                      {selectedCategories.length} selected
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].map(func => (
+                      <label key={func} className="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={selectedCategories.includes(func)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedCategories([...selectedCategories, func]);
+                            } else {
+                              setSelectedCategories(selectedCategories.filter(c => c !== func));
+                            }
+                          }}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                        />
+                        <span className="text-sm text-slate-200">{func}</span>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {selectedCategories.length === 0 && (
+                    <div className="mt-2 text-sm text-red-400">
+                      Please select at least one CSF function to analyze.
+                    </div>
+                  )}
                 </div>
               )}
               
@@ -1211,7 +1253,7 @@ function Analyzer({ onNavigateHome }) {
 
               <button
                 onClick={handleAnalyze}
-                disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0)}
+                                 disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0) || (selectedFramework === 'NIST_CSF' && selectedCategories.length === 0)}
                 className="w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 disabled:from-slate-600 disabled:to-slate-600 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isAnalyzing ? (
@@ -1232,16 +1274,27 @@ function Analyzer({ onNavigateHome }) {
                 )}
               </button>
               
-              {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
-                <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-                  <div className="flex items-center space-x-2 text-sm text-yellow-400">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <span>Please select at least one control family to analyze</span>
-                  </div>
-                </div>
-              )}
+                             {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
+                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                   <div className="flex items-center space-x-2 text-sm text-yellow-400">
+                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                     </svg>
+                     <span>Please select at least one control family to analyze</span>
+                   </div>
+                 </div>
+               )}
+               
+               {selectedFramework === 'NIST_CSF' && selectedCategories.length === 0 && (
+                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                   <div className="flex items-center space-x-2 text-sm text-yellow-400">
+                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                     </svg>
+                     <span>Please select at least one CSF function to analyze</span>
+                   </div>
+                 </div>
+               )}
             </div>
 
             {/* Right Analysis Results Panel - 60% width */}
