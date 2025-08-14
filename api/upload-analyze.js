@@ -2480,43 +2480,63 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     // Create an optimized prompt for faster AI analysis
     const prompt = `Analyze this document against ${frameworkName} framework. Use EXACT control structure below.
  
- Document: ${fileContent.substring(0, 6000)}
+ Document: ${fileContent.substring(0, 4000)} // Reduced from 6000 to 4000 chars for faster processing
  
  Controls to analyze:
  ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
  
  Analysis Strictness Level: ${strictness}
  
- CRITICAL REQUIREMENTS:
- 1. For each control, carefully analyze the document content and mark as:
-    - "covered": Clear evidence of implementation OR general policy statements OR clear organizational intent
-    - "partial": Some evidence but incomplete or not fully implemented
-    - "gap": No evidence found in the document (be conservative about marking as gap)
- 
- 2. ANALYSIS STRICTNESS LEVEL: ${strictness}
-    
-    STRICT MODE: Only mark as "covered" if there is EXPLICIT, DETAILED evidence
-    BALANCED MODE: Mark as "covered" if there is reasonable evidence, clear intent, OR general policy statements
-    LENIENT MODE: Mark as "covered" if there is ANY reasonable indication of coverage, intent, or planning - BE GENEROUS
- 
- 3. Return JSON with same structure, only changing status/details/recommendation fields
- 4. Be thorough and analytical - this is for compliance assessment
+ REQUIREMENTS:
+ 1. Mark each control as: "covered" (clear evidence), "partial" (some evidence), or "gap" (no evidence)
+ 2. Strictness: ${strictness}
+    - STRICT: Only "covered" with EXPLICIT evidence
+    - BALANCED: "covered" with reasonable evidence or intent
+    - LENIENT: "covered" with ANY reasonable indication
+ 3. Return JSON with same structure, only changing status/details/recommendation
+ 4. Be concise and analytical
  5. Return valid JSON only`;
     
     // Add timeout to prevent hanging
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000);
+      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 45000); // Increased from 25s to 45s
     });
     
     console.log('🚀 Starting AI analysis with timeout...');
     const aiPromise = model.generateContent(prompt);
     console.log('🤖 AI promise created, racing with timeout...');
     
-    const result = await Promise.race([aiPromise, timeoutPromise]);
-    console.log('✅ AI analysis completed successfully');
-    
-    const response = await result.response;
-    const text = response.text();
+    let result, response, text;
+    try {
+      result = await Promise.race([aiPromise, timeoutPromise]);
+      console.log('✅ AI analysis completed successfully');
+      
+      response = await result.response;
+      text = response.text();
+    } catch (timeoutError) {
+      console.log('⏰ First AI attempt timed out, trying with shorter prompt...');
+      
+      // Try with a much shorter, focused prompt
+      const shortPrompt = `Analyze this document against ${frameworkName} framework.
+ 
+ Document: ${fileContent.substring(0, 2000)}
+ 
+ Controls: ${filteredFrameworkData.categories.length} categories
+ 
+ Strictness: ${strictness}
+ 
+ Return JSON with same structure, mark controls as "covered", "partial", or "gap" based on evidence.`;
+      
+      try {
+        const shortResult = await model.generateContent(shortPrompt);
+        response = await shortResult.response;
+        text = response.text();
+        console.log('✅ Short prompt AI analysis completed successfully');
+      } catch (secondError) {
+        console.error('🚨 Both AI attempts failed:', secondError.message);
+        throw new Error('AI analysis failed after retry attempts');
+      }
+    }
     
     console.log('📝 AI Response received, length:', text.length);
     console.log('🔍 First 200 chars of AI response:', text.substring(0, 200));
