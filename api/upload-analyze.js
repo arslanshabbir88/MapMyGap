@@ -2130,11 +2130,15 @@ function generateDocumentHash(content, framework, selectedCategories = null, str
   return crypto.createHash('sha256').update(content + framework + categoryString + strictnessString).digest('hex');
 }
 
-// Temporary cache clearing for strictness fix - remove this after testing
+// Clear existing cache to implement strictness-based caching
 if (global.analysisCache) {
   console.log('🧹 Clearing existing cache to implement strictness-based caching');
   global.analysisCache = {};
 }
+
+// Additional NIST CSF cache clearing
+console.log('🧹 Ensuring NIST CSF cache is completely cleared for fresh analysis');
+global.analysisCache = {};
 
 // Get cached analysis results
 async function getCachedAnalysis(documentHash, framework, strictness = null) {
@@ -2375,13 +2379,26 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   // Clear NIST CSF cache to ensure fresh smart fallback results
   if (framework === 'NIST_CSF' && global.analysisCache) {
     console.log('🧹 Clearing NIST CSF cache to ensure fresh smart fallback results');
-    const cacheKeysToRemove = Object.keys(global.analysisCache).filter(key => 
-      key.includes('NIST_CSF')
-    );
-    cacheKeysToRemove.forEach(key => {
-      console.log(`🧹 Removing cached key: ${key}`);
-      delete global.analysisCache[key];
+    
+    // Clear ALL cache entries that might contain NIST CSF data
+    const allCacheKeys = Object.keys(global.analysisCache);
+    console.log(`📋 Found ${allCacheKeys.length} total cache entries`);
+    
+    allCacheKeys.forEach(key => {
+      if (key.includes('NIST_CSF') || key.includes('ee83a613be8ce192')) {
+        console.log(`🧹 Removing cached key: ${key}`);
+        delete global.analysisCache[key];
+      }
     });
+    
+    // Force clear the entire cache if it's still too large
+    const remainingKeys = Object.keys(global.analysisCache);
+    if (remainingKeys.length > 10) {
+      console.log('🧹 Cache still large, clearing all entries');
+      global.analysisCache = {};
+    }
+    
+    console.log(`📋 Cache cleared. Remaining entries: ${Object.keys(global.analysisCache).length}`);
   }
   
   // Generate document hash early for use throughout the function
@@ -2458,12 +2475,16 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       // Clear any existing cached results for NIST CSF to ensure fresh smart fallback
       if (global.analysisCache) {
         const cacheKeysToRemove = Object.keys(global.analysisCache).filter(key => 
-          key.includes('NIST_CSF')
+          key.includes('NIST_CSF') || key.includes('ee83a613be8ce192')
         );
         cacheKeysToRemove.forEach(key => {
           console.log(`🧹 Clearing cached NIST CSF result: ${key}`);
           delete global.analysisCache[key];
         });
+        
+        // Force clear entire cache to ensure fresh results
+        console.log('🧹 Force clearing entire cache for fresh NIST CSF results');
+        global.analysisCache = {};
       }
       
       // Use all available CSF functions for comprehensive coverage
@@ -2471,10 +2492,12 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
       const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
       
-      // Cache the optimized results with a unique key
-      const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}`;
+      // Cache the optimized results with a unique timestamp key to prevent conflicts
+      const timestamp = Date.now();
+      const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}_${timestamp}`;
       await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness);
       
+      console.log(`✅ Smart fallback completed with timestamp: ${timestamp}`);
       return adjustedFallback;
     }
     
