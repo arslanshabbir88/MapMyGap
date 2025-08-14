@@ -2187,12 +2187,22 @@ async function cacheAnalysisResults(documentHash, framework, results, strictness
 
 // Post-process AI results based on strictness level to ensure strictness affects scoring
 function adjustResultsForStrictness(results, strictness) {
-  console.log(`Post-processing results for strictness level: ${strictness}`);
-  console.log('Results structure:', {
-    categoriesCount: results.categories?.length || 0,
-    firstCategory: results.categories?.[0]?.name || 'none',
-    firstCategoryControls: results.categories?.[0]?.results?.length || 0
-  });
+  console.log('Applying strictness adjustments to results for level:', strictness);
+  
+  // Check if these are smart fallback results (they have specific details)
+  const isSmartFallback = results.categories && results.categories.some(cat => 
+    cat.results && cat.results.some(result => 
+      result.details && result.details.includes('Using optimized fallback')
+    )
+  );
+  
+  if (isSmartFallback) {
+    console.log('🔍 Smart fallback detected - preserving detailed results without strictness overwrites');
+    // For smart fallback, only make minimal adjustments to maintain the quality of the results
+    return results;
+  }
+  
+  console.log('Post-processing results for strictness level:', strictness);
   
   // Count initial statuses
   let initialCounts = { covered: 0, partial: 0, gap: 0 };
@@ -2798,40 +2808,69 @@ function createOptimizedCSFFallback(selectedCategories) {
     );
     
     if (frameworkCategory) {
-      // Create a simplified version with just the essential controls
-      const essentialControls = frameworkCategory.results.slice(0, 5); // Limit to 5 controls per category
+      // Use more controls - show up to 20 controls per category for comprehensive coverage
+      const essentialControls = frameworkCategory.results.slice(0, 20); // Increased to 20 for better coverage
       
       fallbackCategories.push({
         name: frameworkCategory.name,
         description: frameworkCategory.description,
         results: essentialControls.map((control, index) => {
-          // Provide more realistic and varied results
+          // Provide more realistic and varied results based on typical organizational maturity
           let status = "gap";
           let details = "Using optimized fallback analysis. This control requires manual review.";
           
-          // Mark some common controls as partial based on typical organizational implementations
+          // Mark controls as partial or covered based on typical organizational implementations
           const controlId = control.id.toUpperCase();
-          if (controlId.includes('ID.AM-1') || controlId.includes('ID.AM-2')) {
+          
+          // IDENTIFY (ID) - Asset Management and Governance
+          if (controlId.includes('ID.AM-1') || controlId.includes('ID.AM-2') || controlId.includes('ID.AM-3')) {
             status = "partial";
-            details = "Using optimized fallback. Basic asset inventory is commonly implemented in most organizations.";
-          } else if (controlId.includes('ID.GV-1') || controlId.includes('ID.GV-2')) {
+            details = "Using optimized fallback. Basic asset inventory and management are commonly implemented in most organizations.";
+          } else if (controlId.includes('ID.GV-1') || controlId.includes('ID.GV-2') || controlId.includes('ID.GV-3')) {
             status = "partial";
-            details = "Using optimized fallback. Basic security policies and roles are commonly established.";
-          } else if (controlId.includes('PR.AC-1') || controlId.includes('PR.AC-2')) {
+            details = "Using optimized fallback. Basic security policies, roles, and governance are commonly established.";
+          } else if (controlId.includes('ID.RA-1') || controlId.includes('ID.RA-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic access control mechanisms are commonly implemented.";
+            details = "Using optimized fallback. Basic vulnerability assessment and threat identification are commonly performed.";
+          }
+          
+          // PROTECT (PR) - Access Control and Training
+          else if (controlId.includes('PR.AC-1') || controlId.includes('PR.AC-2') || controlId.includes('PR.AC-3')) {
+            status = "partial";
+            details = "Using optimized fallback. Basic access control mechanisms and authentication are commonly implemented.";
           } else if (controlId.includes('PR.AT-1') || controlId.includes('PR.AT-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic security awareness training is commonly provided.";
-          } else if (controlId.includes('DE.CM-1') || controlId.includes('DE.CM-8')) {
+            details = "Using optimized fallback. Basic security awareness training is commonly provided to personnel.";
+          } else if (controlId.includes('PR.DS-1') || controlId.includes('PR.DS-2')) {
+            status = "partial";
+            details = "Using optimized fallback. Basic data protection measures are commonly implemented.";
+          }
+          
+          // DETECT (DE) - Monitoring and Detection
+          else if (controlId.includes('DE.CM-1') || controlId.includes('DE.CM-4') || controlId.includes('DE.CM-8')) {
             status = "partial";
             details = "Using optimized fallback. Basic network monitoring and vulnerability scanning are commonly implemented.";
-          } else if (controlId.includes('RS.RP-1') || controlId.includes('RS.IR-1')) {
+          } else if (controlId.includes('DE.AE-1') || controlId.includes('DE.AE-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic incident response procedures are commonly established.";
-          } else if (controlId.includes('RC.RP-1') || controlId.includes('RC.RP-2')) {
+            details = "Using optimized fallback. Basic security event monitoring and analysis are commonly established.";
+          }
+          
+          // RESPOND (RS) - Incident Response
+          else if (controlId.includes('RS.RP-1') || controlId.includes('RS.IR-1') || controlId.includes('RS.CO-1')) {
             status = "partial";
-            details = "Using optimized fallback. Basic business continuity planning is commonly implemented.";
+            details = "Using optimized fallback. Basic incident response procedures and communication are commonly established.";
+          }
+          
+          // RECOVER (RC) - Business Continuity
+          else if (controlId.includes('RC.RP-1') || controlId.includes('RC.RP-2')) {
+            status = "partial";
+            details = "Using optimized fallback. Basic business continuity and disaster recovery planning are commonly implemented.";
+          }
+          
+          // GOVERN (GV) - Policy and Oversight
+          else if (controlId.includes('GV.ID-1') || controlId.includes('GV.PR-1') || controlId.includes('GV.PR-2')) {
+            status = "partial";
+            details = "Using optimized fallback. Basic security policy framework and management oversight are commonly established.";
           }
           
           return {
@@ -2846,7 +2885,7 @@ function createOptimizedCSFFallback(selectedCategories) {
     }
   });
   
-  console.log(`Created optimized fallback with ${fallbackCategories.length} categories`);
+  console.log(`Created optimized fallback with ${fallbackCategories.length} categories, showing up to 20 controls per category for comprehensive coverage`);
   return { categories: fallbackCategories };
 }
 
