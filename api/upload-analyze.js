@@ -74,6 +74,114 @@ const allFrameworks = {
             recommendation: "Implement physical security controls and access management"
           }
         ]
+      },
+      {
+        name: "DETECT (DE)",
+        description: "Develop and implement appropriate activities to identify the occurrence of a cybersecurity event",
+        results: [
+          {
+            id: "DE.AE-1",
+            control: "Baseline network operations and expected data flows for normal operations are established and managed",
+            status: "gap",
+            details: "Network baseline not established",
+            recommendation: "Establish baseline for normal network operations and data flows"
+          },
+          {
+            id: "DE.AE-2",
+            control: "Detected events are analyzed to understand attack targets and methods",
+            status: "gap",
+            details: "Event analysis procedures not implemented",
+            recommendation: "Implement procedures to analyze detected security events"
+          },
+          {
+            id: "DE.AE-3",
+            control: "Event data are collected and correlated from multiple sources and sensors",
+            status: "gap",
+            details: "Event correlation not implemented",
+            recommendation: "Implement event correlation from multiple sources and sensors"
+          }
+        ]
+      },
+      {
+        name: "RESPOND (RS)",
+        description: "Develop and implement appropriate activities to take action regarding a detected cybersecurity incident",
+        results: [
+          {
+            id: "RS.RP-1",
+            control: "Response process is executed during or after an incident",
+            status: "gap",
+            details: "Incident response process not established",
+            recommendation: "Establish formal incident response process and procedures"
+          },
+          {
+            id: "RS.CO-1",
+            control: "Personnel know their roles and order of operations when a response is needed",
+            status: "gap",
+            details: "Response roles not defined",
+            recommendation: "Define and communicate incident response roles and procedures"
+          },
+          {
+            id: "RS.MI-1",
+            control: "Incidents are contained",
+            status: "gap",
+            details: "Incident containment procedures not implemented",
+            recommendation: "Implement procedures to contain security incidents"
+          }
+        ]
+      },
+      {
+        name: "RECOVER (RC)",
+        description: "Develop and implement appropriate activities to maintain plans for resilience and to restore any capabilities or services that were impaired due to a cybersecurity incident",
+        results: [
+          {
+            id: "RC.RP-1",
+            control: "Recovery plan is executed during or after an incident",
+            status: "gap",
+            details: "Recovery plan not established",
+            recommendation: "Develop and implement business continuity and disaster recovery plans"
+          },
+          {
+            id: "RC.IM-1",
+            control: "Recovery plans incorporate lessons learned",
+            status: "gap",
+            details: "Lessons learned not incorporated",
+            recommendation: "Establish process to incorporate lessons learned into recovery plans"
+          },
+          {
+            id: "RC.CO-1",
+            control: "Public relations are managed",
+            status: "gap",
+            details: "Public relations procedures not established",
+            recommendation: "Establish public relations procedures for incident communications"
+          }
+        ]
+      },
+      {
+        name: "GOVERN (GV)",
+        description: "Develop and implement appropriate activities to govern cybersecurity risk management strategy, expectations, and policy",
+        results: [
+          {
+            id: "GV.ID-1",
+            control: "Organizational security policy is established",
+            status: "gap",
+            details: "Security policy not established",
+            recommendation: "Develop comprehensive organizational security policy"
+          },
+          {
+            id: "GV.ID-2",
+            control: "Security roles & responsibilities are coordinated and aligned with internal roles and external partners",
+            status: "gap",
+            details: "Security roles not defined",
+            recommendation: "Define and coordinate security roles and responsibilities"
+          },
+          {
+            id: "GV.PR-1",
+            control: "Organizational security policies for information security are defined and managed",
+            status: "gap",
+            details: "Information security policies not defined",
+            recommendation: "Define and manage information security policies"
+          }
+        ]
       }
     ]
   },

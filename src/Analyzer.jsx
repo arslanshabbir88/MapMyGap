@@ -1060,7 +1060,7 @@ function Analyzer({ onNavigateHome }) {
                       CSF Functions to Analyze
                     </label>
                     <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
-                      {selectedCategories.length} selected
+                      {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length} selected
                     </span>
                   </div>
                   
@@ -1084,7 +1084,7 @@ function Analyzer({ onNavigateHome }) {
                     ))}
                   </div>
                   
-                  {selectedCategories.length === 0 && (
+                  {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length === 0 && (
                     <div className="mt-2 text-sm text-red-400">
                       Please select at least one CSF function to analyze.
                     </div>
