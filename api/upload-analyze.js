@@ -2904,7 +2904,7 @@ function createOptimizedCSFFallback(selectedCategories) {
         name: frameworkCategory.name,
         description: frameworkCategory.description,
         results: essentialControls.map((control, index) => {
-          // Provide more realistic and varied results based on typical organizational maturity
+          // Provide consistent, informative results based on typical organizational maturity
           let status = "gap";
           let details = "Using optimized fallback analysis. This control requires manual review.";
           
@@ -2914,52 +2914,52 @@ function createOptimizedCSFFallback(selectedCategories) {
           // IDENTIFY (ID) - Asset Management and Governance
           if (controlId.includes('ID.AM-1') || controlId.includes('ID.AM-2') || controlId.includes('ID.AM-3')) {
             status = "partial";
-            details = "Using optimized fallback. Basic asset inventory and management are commonly implemented in most organizations.";
+            details = "Using optimized fallback analysis. Basic asset inventory and management are commonly implemented in most organizations.";
           } else if (controlId.includes('ID.GV-1') || controlId.includes('ID.GV-2') || controlId.includes('ID.GV-3')) {
             status = "partial";
-            details = "Using optimized fallback. Basic security policies, roles, and governance are commonly established.";
+            details = "Using optimized fallback analysis. Basic security policies, roles, and governance are commonly established.";
           } else if (controlId.includes('ID.RA-1') || controlId.includes('ID.RA-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic vulnerability assessment and threat identification are commonly performed.";
+            details = "Using optimized fallback analysis. Basic vulnerability assessment and threat identification are commonly performed.";
           }
           
           // PROTECT (PR) - Access Control and Training
           else if (controlId.includes('PR.AC-1') || controlId.includes('PR.AC-2') || controlId.includes('PR.AC-3')) {
             status = "partial";
-            details = "Using optimized fallback. Basic access control mechanisms and authentication are commonly implemented.";
+            details = "Using optimized fallback analysis. Basic access control mechanisms and authentication are commonly implemented.";
           } else if (controlId.includes('PR.AT-1') || controlId.includes('PR.AT-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic security awareness training is commonly provided to personnel.";
+            details = "Using optimized fallback analysis. Basic security awareness training is commonly provided to personnel.";
           } else if (controlId.includes('PR.DS-1') || controlId.includes('PR.DS-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic data protection measures are commonly implemented.";
+            details = "Using optimized fallback analysis. Basic data protection measures are commonly implemented.";
           }
           
           // DETECT (DE) - Monitoring and Detection
           else if (controlId.includes('DE.CM-1') || controlId.includes('DE.CM-4') || controlId.includes('DE.CM-8')) {
             status = "partial";
-            details = "Using optimized fallback. Basic network monitoring and vulnerability scanning are commonly implemented.";
+            details = "Using optimized fallback analysis. Basic network monitoring and vulnerability scanning are commonly implemented.";
           } else if (controlId.includes('DE.AE-1') || controlId.includes('DE.AE-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic security event monitoring and analysis are commonly established.";
+            details = "Using optimized fallback analysis. Basic security event monitoring and analysis are commonly established.";
           }
           
           // RESPOND (RS) - Incident Response
           else if (controlId.includes('RS.RP-1') || controlId.includes('RS.IR-1') || controlId.includes('RS.CO-1')) {
             status = "partial";
-            details = "Using optimized fallback. Basic incident response procedures and communication are commonly established.";
+            details = "Using optimized fallback analysis. Basic incident response procedures and communication are commonly established.";
           }
           
           // RECOVER (RC) - Business Continuity
           else if (controlId.includes('RC.RP-1') || controlId.includes('RC.RP-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic business continuity and disaster recovery planning are commonly implemented.";
+            details = "Using optimized fallback analysis. Basic business continuity and disaster recovery planning are commonly implemented.";
           }
           
           // GOVERN (GV) - Policy and Oversight
           else if (controlId.includes('GV.ID-1') || controlId.includes('GV.PR-1') || controlId.includes('GV.PR-2')) {
             status = "partial";
-            details = "Using optimized fallback. Basic security policy framework and management oversight are commonly established.";
+            details = "Using optimized fallback analysis. Basic security policy framework and management oversight are commonly established.";
           }
           
           return {
