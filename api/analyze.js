@@ -732,18 +732,19 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       const documentSize = fileContent.length;
       const totalControls = frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
       
-      // Base calculation: 2 tokens per character for detailed analysis
-      let baseTokens = documentSize * 2;
+      // Base calculation: 3 tokens per character for detailed analysis (increased from 2)
+      let baseTokens = documentSize * 3;
       
       // Framework complexity multiplier: more controls = more detailed analysis needed
-      const complexityMultiplier = Math.min(totalControls / 20, 3); // Cap at 3x for very large frameworks
+      // Increased multiplier for better handling of large frameworks
+      const complexityMultiplier = Math.min(totalControls / 15, 5); // Cap at 5x (increased from 3x)
       
       // Calculate optimal limit with safety margin
-      let optimalTokens = Math.ceil(baseTokens * complexityMultiplier * 1.5); // 50% safety margin
+      let optimalTokens = Math.ceil(baseTokens * complexityMultiplier * 2); // 100% safety margin (increased from 50%)
       
-      // Set reasonable bounds
-      const minTokens = 16384; // 16K minimum
-      const maxTokens = 131072; // 128K maximum (Gemini Flash limit)
+      // Set reasonable bounds - increased maximum for large frameworks
+      const minTokens = 32768; // 32K minimum (increased from 16K)
+      const maxTokens = 262144; // 256K maximum (increased from 128K, still within Gemini Flash limits)
       
       optimalTokens = Math.max(minTokens, Math.min(optimalTokens, maxTokens));
       
@@ -801,6 +802,8 @@ Analysis Strictness Level: ${strictness}
 
 CRITICAL: You MUST produce DIFFERENT results for each strictness level. The same document should NEVER get identical scores across different strictness levels.
 
+MANDATORY: You MUST analyze ALL ${filteredFrameworkData.categories.length} categories completely. DO NOT truncate or skip any categories. Your response must include the complete analysis for every single category listed below.
+
 STRICTNESS REQUIREMENTS - ENFORCE THESE STRICTLY:
 
 ${strictness === 'strict' ? `
@@ -841,6 +844,8 @@ Analyze each control and mark as:
 - "gap": Not addressed
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
+
+CRITICAL: You have ${optimalTokenLimit} output tokens available. Use them to provide complete analysis for ALL categories. Do not truncate your response.
 
 Return only valid JSON using the exact control structure above.`;
 
