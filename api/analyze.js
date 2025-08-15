@@ -1838,15 +1838,8 @@ Return only valid JSON using the exact control structure above.`;
      const calculatedScore = ((finalCoveredCount + (finalPartialCount * 0.5)) / (finalGapCount + finalCoveredCount + finalPartialCount)) * 100;
      console.log('Calculated score:', calculatedScore.toFixed(1) + '%');
     
-    // Cache the final results (after strictness adjustments) for future use
-    await cacheAnalysisResults(documentHash, framework, adjustedResults, strictness);
-    console.log('💾 Cached final results (after strictness adjustments) for future use');
-    console.log('Cache key used for storage:', `${documentHash}_${framework}_${strictness}`);
-    console.log('Results being cached:', {
-      categoriesCount: adjustedResults.categories?.length || 0,
-      firstCategory: adjustedResults.categories?.[0]?.name || 'none',
-      firstCategoryControls: adjustedResults.categories?.[0]?.results?.length || 0
-    });
+    // SECURITY: No caching - results are discarded immediately after analysis
+    console.log('✅ Analysis completed - no data persistence (enterprise security)');
     
     return adjustedResults;
     
@@ -1907,9 +1900,8 @@ Return only valid JSON using the exact control structure above.`;
       }))
     };
     
-    // Cache the fallback results for future use (even fallbacks can be cached)
-    await cacheAnalysisResults(documentHash, framework, fallbackResult, strictness);
-    console.log('💾 Cached fallback results for future strictness adjustments');
+    // SECURITY: No caching - fallback results are discarded immediately
+    console.log('✅ Fallback analysis completed - no data persistence (enterprise security)');
     
     // Apply strictness adjustments to fallback results
     console.log('=== FALLBACK STRICTNESS ADJUSTMENTS ===');
