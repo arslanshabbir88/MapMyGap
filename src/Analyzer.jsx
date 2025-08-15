@@ -1370,55 +1370,142 @@ function Analyzer({ onNavigateHome }) {
                   <p className="text-xs text-slate-400 mb-3">
                     Control how strictly the AI analyzes your policy against compliance controls
                   </p>
+                  
+                  {/* Strictness Explanation Box */}
+                  <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-start space-x-2">
+                      <LightbulbIcon />
+                      <div className="text-xs text-blue-300">
+                        <p className="font-medium mb-1">💡 How Strictness Affects Scoring:</p>
+                        <p className="mb-1">• <strong>Strict:</strong> Requires explicit, undeniable evidence (10-30% typical coverage)</p>
+                        <p className="mb-1">• <strong>Balanced:</strong> Accepts reasonable evidence and reasonable inference (30-60% typical coverage)</p>
+                        <p className="mb-1">• <strong>Lenient:</strong> Accepts broad interpretation and implied practices (50-80% typical coverage)</p>
+                        <p className="text-blue-200 text-xs mt-2">
+                          <strong>Note:</strong> Scores may vary based on document content. Lenient mode won't inflate scores without reasonable evidence.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="flex items-center space-x-4">
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="strict"
-                      name="strictness"
-                      value="strict"
-                      checked={analysisStrictness === 'strict'}
-                      onChange={(e) => setAnalysisStrictness(e.target.value)}
-                      className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <label htmlFor="strict" className="text-sm text-slate-300">
-                      <span className="font-medium">Strict</span>
-                      <span className="text-xs text-slate-400 block">High precision, formal compliance</span>
-                    </label>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Strict Mode */}
+                  <div className="relative group">
+                    <div className="flex items-center space-x-2 p-3 bg-slate-700/50 rounded-lg border border-slate-600 hover:border-red-500/50 transition-colors">
+                      <input
+                        type="radio"
+                        id="strict"
+                        name="strictness"
+                        value="strict"
+                        checked={analysisStrictness === 'strict'}
+                        onChange={(e) => setAnalysisStrictness(e.target.value)}
+                        className="w-4 h-4 text-red-600 bg-slate-700 border-slate-600 focus:ring-red-500 focus:ring-2"
+                      />
+                      <label htmlFor="strict" className="text-sm text-slate-300 cursor-pointer flex-1">
+                        <span className="font-medium text-red-400">Strict</span>
+                        <span className="text-xs text-slate-400 block">High precision, formal compliance</span>
+                      </label>
+                    </div>
+                    
+                    {/* Tooltip for Strict */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-slate-200 text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-64">
+                      <div className="relative">
+                        <p className="font-medium text-red-400 mb-1">🔴 Strict Mode</p>
+                        <p className="mb-2">Only marks as "covered" with explicit, undeniable evidence:</p>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300">
+                          <li>"We implement [specific control]"</li>
+                          <li>"Established procedures for [control]"</li>
+                          <li>Concrete examples of implementation</li>
+                        </ul>
+                        <p className="mt-2 text-red-300">Expect 10-30% coverage maximum</p>
+                        <div className="absolute top-full left-1/2 transform -translate-x-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-800"></div>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="balanced"
-                      name="strictness"
-                      value="balanced"
-                      checked={analysisStrictness === 'balanced'}
-                      onChange={(e) => setAnalysisStrictness(e.target.value)}
-                      className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <label htmlFor="balanced" className="text-sm text-slate-300">
-                      <span className="font-medium">Balanced</span>
-                      <span className="text-xs text-slate-400 block">Standard analysis, most use cases</span>
-                    </label>
+                  {/* Balanced Mode */}
+                  <div className="relative group">
+                    <div className="flex items-center space-x-2 p-3 bg-slate-700/50 rounded-lg border border-slate-600 hover:border-yellow-500/50 transition-colors">
+                      <input
+                        type="radio"
+                        id="balanced"
+                        name="strictness"
+                        value="balanced"
+                        checked={analysisStrictness === 'balanced'}
+                        onChange={(e) => setAnalysisStrictness(e.target.value)}
+                        className="w-4 h-4 text-yellow-600 bg-slate-700 border-slate-600 focus:ring-yellow-500 focus:ring-2"
+                      />
+                      <label htmlFor="balanced" className="text-sm text-slate-300 cursor-pointer flex-1">
+                        <span className="font-medium text-yellow-400">Balanced</span>
+                        <span className="text-xs text-slate-400 block">Standard analysis, most use cases</span>
+                      </label>
+                    </div>
+                    
+                    {/* Tooltip for Balanced */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-slate-200 text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-64">
+                      <div className="relative">
+                        <p className="font-medium text-yellow-400 mb-1">🟡 Balanced Mode</p>
+                        <p className="mb-2">Accepts reasonable evidence and reasonable inference:</p>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300">
+                          <li>Policies that clearly relate to controls</li>
+                          <li>Procedures that address controls</li>
+                          <li>Industry standard practices mentioned</li>
+                        </ul>
+                        <p className="mt-2 text-yellow-300">Expect 30-60% coverage</p>
+                        <div className="absolute top-full left-1/2 transform -translate-x-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-800"></div>
+                      </div>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      id="lenient"
-                      name="strictness"
-                      value="lenient"
-                      checked={analysisStrictness === 'lenient'}
-                      onChange={(e) => setAnalysisStrictness(e.target.value)}
-                      className="w-4 h-4 text-blue-600 bg-slate-700 border-slate-600 focus:ring-blue-500 focus:ring-2"
-                    />
-                    <label htmlFor="lenient" className="text-sm text-slate-300">
-                      <span className="font-medium">Lenient</span>
-                      <span className="text-xs text-slate-400 block">Intent recognition, policy development</span>
-                    </label>
+                  {/* Lenient Mode */}
+                  <div className="relative group">
+                    <div className="flex items-center space-x-2 p-3 bg-slate-700/50 rounded-lg border border-slate-600 hover:border-green-500/50 transition-colors">
+                      <input
+                        type="radio"
+                        id="lenient"
+                        name="strictness"
+                        value="lenient"
+                        checked={analysisStrictness === 'lenient'}
+                        onChange={(e) => setAnalysisStrictness(e.target.value)}
+                        className="w-4 h-4 text-green-600 bg-slate-700 border-slate-600 focus:ring-green-500 focus:ring-2"
+                      />
+                      <label htmlFor="lenient" className="text-sm text-slate-300 cursor-pointer flex-1">
+                        <span className="font-medium text-green-400">Lenient</span>
+                        <span className="text-xs text-slate-400 block">Intent recognition, policy development</span>
+                      </label>
+                    </div>
+                    
+                    {/* Tooltip for Lenient */}
+                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-slate-200 text-xs rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10 w-64">
+                      <div className="relative">
+                        <p className="font-medium text-green-400 mb-1">🟢 Lenient Mode</p>
+                        <p className="mb-2">Accepts broad interpretation and implied practices:</p>
+                        <ul className="list-disc list-inside space-y-1 text-slate-300">
+                          <li>General mentions of security concepts</li>
+                          <li>High-level statements of intent</li>
+                          <li>Vague or indirect evidence</li>
+                        </ul>
+                        <p className="mt-2 text-green-300">Expect 50-80% coverage</p>
+                        <p className="mt-1 text-xs text-slate-400">⚠️ Still requires reasonable connection</p>
+                        <div className="absolute top-full left-1/2 transform -translate-x-1 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-slate-800"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Additional Info */}
+                <div className="mt-4 p-3 bg-slate-600/30 rounded-lg border border-slate-500/30">
+                  <div className="flex items-start space-x-2">
+                    <ExclamationTriangleIcon />
+                    <div className="text-xs text-slate-300">
+                      <p className="font-medium mb-1">📊 Score Expectations:</p>
+                      <p className="mb-1">• <strong>Same document:</strong> Strict ≤ Balanced ≤ Lenient (usually)</p>
+                      <p className="mb-1">• <strong>Different documents:</strong> Scores may vary based on content quality</p>
+                      <p className="mb-1">• <strong>AI honesty:</strong> Lenient won't inflate scores without evidence</p>
+                      <p className="text-slate-400 text-xs mt-2">
+                        <strong>Why might Lenient score lower?</strong> Document content may not support broad interpretation, or AI analysis varies between runs.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1773,7 +1860,59 @@ function Analyzer({ onNavigateHome }) {
                     </div>
                   </div>
 
+                  {/* Score Explanation Box */}
+                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-start space-x-3">
+                      <div className="flex-shrink-0 mt-1">
+                        <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
+                        <div className="text-xs text-blue-200 space-y-1">
+                          <p><strong>Current Strictness:</strong> {analysisStrictness.charAt(0).toUpperCase() + analysisStrictness.slice(1)} Mode</p>
+                          <p><strong>Score Formula:</strong> (Covered + Partial×0.5) ÷ Total Controls × 100</p>
+                          <p><strong>What This Means:</strong> Your {analysisResults.summary.score}% score reflects how well your document addresses the selected compliance controls at the {analysisStrictness} analysis level.</p>
+                          {analysisStrictness === 'strict' && (
+                            <p className="text-blue-100 bg-blue-500/20 p-2 rounded mt-2">
+                              🔴 <strong>Strict Mode:</strong> Only explicit, undeniable evidence counts as "covered". This is the most conservative assessment.
+                            </p>
+                          )}
+                          {analysisStrictness === 'balanced' && (
+                            <p className="text-yellow-100 bg-yellow-500/20 p-2 rounded mt-2">
+                              🟡 <strong>Balanced Mode:</strong> Reasonable evidence and inference are accepted. This provides a standard compliance assessment.
+                            </p>
+                          )}
+                          {analysisStrictness === 'lenient' && (
+                            <p className="text-green-100 bg-green-500/20 p-2 rounded mt-2">
+                              🟢 <strong>Lenient Mode:</strong> Broad interpretation and implied practices are accepted. This is the most generous assessment.
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="space-y-4">
+                    {/* Scoring Pattern Note */}
+                    <div className="p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
+                      <div className="flex items-start space-x-2">
+                        <svg className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                        <div className="text-xs text-amber-200">
+                          <p className="font-medium mb-1">💡 Score Expectations vs. Reality:</p>
+                          <p className="mb-1">• <strong>Expected:</strong> Strict ≤ Balanced ≤ Lenient (same document)</p>
+                          <p className="mb-1">• <strong>Reality:</strong> Scores may vary due to AI interpretation differences</p>
+                          <p className="mb-1">• <strong>Why Lenient might score lower:</strong> Document content may not support broad interpretation, or AI analysis varies between runs</p>
+                          <p className="text-amber-100 text-xs mt-2">
+                            <strong>This is normal and expected!</strong> The AI provides honest, evidence-based assessments rather than artificially inflating scores.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     {filteredResults.length > 0 ? (
                       filteredResults.map(category => (
                         <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
