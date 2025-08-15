@@ -887,7 +887,17 @@ Return only valid JSON using the exact control structure above.`;
      if (retryCount >= maxRetries && lastError) {
        console.error('❌ AI analysis failed after all retry attempts');
        console.error('Final error:', lastError.message);
-       throw new Error(`AI analysis failed after ${maxRetries} attempts: ${lastError.message}`);
+       
+       // Check if it's a Google server issue that we should communicate to the user
+       if (lastError.message.includes('overloaded') || lastError.message.includes('503') || lastError.message.includes('Service Unavailable')) {
+         console.log('🚨 Google Gemini servers are overloaded - returning user-friendly error');
+         throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
+       } else if (lastError.message.includes('timeout')) {
+         console.log('⏰ AI analysis timed out - returning user-friendly error');
+         throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
+       } else {
+         throw new Error(`AI analysis failed after ${maxRetries} attempts: ${lastError.message}`);
+       }
      }
     
     console.log('=== AI RESPONSE DEBUG ===');
@@ -1254,6 +1264,32 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Error in /analyze:', error);
+    
+    // Check if this is a Google server error that should be communicated to the user
+    if (error.message.includes('GOOGLE_SERVER_OVERLOAD')) {
+      console.log('🚨 Returning Google server overload error to frontend');
+      return res.status(503).json({ 
+        error: 'GOOGLE_SERVER_OVERLOAD',
+        message: 'Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.',
+        retryAfter: 300 // Suggest retry after 5 minutes
+      });
+    } else if (error.message.includes('GOOGLE_TIMEOUT')) {
+      console.log('⏰ Returning Google timeout error to frontend');
+      return res.status(408).json({ 
+        error: 'GOOGLE_TIMEOUT',
+        message: 'The AI analysis is taking longer than expected. Please try again in a few minutes.',
+        retryAfter: 180 // Suggest retry after 3 minutes
+      });
+    } else if (error.message.includes('quota') || error.message.includes('rate limit')) {
+      console.log('💳 Returning quota exceeded error to frontend');
+      return res.status(429).json({ 
+        error: 'QUOTA_EXCEEDED',
+        message: 'AI API quota exceeded. Please try again later or contact support.',
+        retryAfter: 3600 // Suggest retry after 1 hour
+      });
+    }
+    
+    // For other errors, return generic server error
     res.status(500).json({ error: `Server error: ${error.message}` });
   }
 };

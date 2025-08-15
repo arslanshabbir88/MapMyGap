@@ -222,30 +222,28 @@ function Analyzer({ onNavigateHome }) {
         
         clearTimeout(timeoutId);
         if (!resp.ok) {
-          const text = await resp.text();
+          const errorText = await resp.text();
+          
+          // Try to parse as JSON for better error handling
           try {
-            // Try to parse as JSON for better error handling
-            const errorData = JSON.parse(text);
-            if (errorData.error === 'API rate limit exceeded') {
-              setGenerationError(`Rate limit exceeded: ${errorData.details} ${errorData.suggestion}`);
-            } else if (errorData.error === 'AI generation timed out') {
-              setGenerationError(`AI generation timed out: ${errorData.details} ${errorData.suggestion}`);
-            } else if (errorData.error === 'Authentication failed') {
-              setGenerationError(`Authentication failed: ${errorData.details} ${errorData.suggestion}`);
-            } else if (errorData.error === 'Google AI service error') {
-              setGenerationError(`Google AI service error: ${errorData.details} ${errorData.suggestion}`);
-            } else if (errorData.error === 'Configuration error') {
-              setGenerationError(`Configuration error: ${errorData.details} ${errorData.suggestion}`);
-            } else if (errorData.error === 'Service temporarily unavailable') {
-              setGenerationError(`Service unavailable: ${errorData.details} ${errorData.suggestion}`);
+            const errorData = JSON.parse(errorText);
+            
+            // Handle specific Google server errors
+            if (errorData.error === 'GOOGLE_SERVER_OVERLOAD') {
+              throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
+            } else if (errorData.error === 'GOOGLE_TIMEOUT') {
+              throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
+            } else if (errorData.error === 'QUOTA_EXCEEDED') {
+              throw new Error('QUOTA_EXCEEDED: AI API quota exceeded. Please try again later or contact support.');
+            } else if (errorData.message) {
+              throw new Error(errorData.message);
             } else {
-              setGenerationError(`${errorData.error}: ${errorData.details || ''} ${errorData.suggestion || ''}`.trim());
+              throw new Error(errorText);
             }
-          } catch {
+          } catch (parseError) {
             // If not JSON, use the raw text
-            setGenerationError(text || 'Failed to generate text');
+            throw new Error(errorText);
           }
-          return;
         }
         const data = await resp.json();
         setGeneratedText(data.generatedText || '');
@@ -643,7 +641,27 @@ function Analyzer({ onNavigateHome }) {
         });
         if (!response.ok) {
           const errorText = await response.text();
-          throw new Error(errorText);
+          
+          // Try to parse as JSON for better error handling
+          try {
+            const errorData = JSON.parse(errorText);
+            
+            // Handle specific Google server errors
+            if (errorData.error === 'GOOGLE_SERVER_OVERLOAD') {
+              throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
+            } else if (errorData.error === 'GOOGLE_TIMEOUT') {
+              throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
+            } else if (errorData.error === 'QUOTA_EXCEEDED') {
+              throw new Error('QUOTA_EXCEEDED: AI API quota exceeded. Please try again later or contact support.');
+            } else if (errorData.message) {
+              throw new Error(errorData.message);
+            } else {
+              throw new Error(errorText);
+            }
+          } catch (parseError) {
+            // If not JSON, use the raw text
+            throw new Error(errorText);
+          }
         }
         result = await response.json();
       } else {
@@ -794,7 +812,21 @@ function Analyzer({ onNavigateHome }) {
       }
     } catch (e) {
       console.error(e);
-      setError(`An error occurred during analysis: ${e.message}`);
+      
+      // Check if this is a Google server error that should be handled specially
+      if (e.message && e.message.includes('GOOGLE_SERVER_OVERLOAD')) {
+        setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
+      } else if (e.message && e.message.includes('GOOGLE_TIMEOUT')) {
+        setError('⏰ The AI analysis is taking longer than expected. Please try again in a few minutes.');
+      } else if (e.message && e.message.includes('QUOTA_EXCEEDED')) {
+        setError('💳 AI API quota exceeded. Please try again later or contact support.');
+      } else if (e.message && e.message.includes('503') || e.message.includes('Service Unavailable')) {
+        setError('🚨 Google\'s AI service is temporarily unavailable. Please wait a few minutes and try again.');
+      } else if (e.message && e.message.includes('overloaded')) {
+        setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again.');
+      } else {
+        setError(`An error occurred during analysis: ${e.message}`);
+      }
     } finally {
       setIsAnalyzing(false);
     }
