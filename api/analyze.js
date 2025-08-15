@@ -1155,7 +1155,12 @@ Analysis Strictness Level: ${strictness}
 
 CRITICAL: You MUST produce DIFFERENT results for each strictness level. The same document should NEVER get identical scores across different strictness levels.
 
-MANDATORY: You MUST analyze ALL ${filteredFrameworkData.categories.length} categories completely. DO NOT truncate or skip any categories. Your response must include the complete analysis for every single category listed below.
+MANDATORY: You MUST analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. DO NOT analyze any other categories. DO NOT add categories that were not requested.
+
+SELECTED CATEGORIES TO ANALYZE (ONLY THESE):
+${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
+
+CRITICAL INSTRUCTION: You are ONLY allowed to analyze the categories listed above. If you return results for any other categories, you are FAILING the analysis.
 
 STRICTNESS REQUIREMENTS - ENFORCE THESE STRICTLY:
 
@@ -1201,7 +1206,7 @@ CRITICAL DIFFERENTIATION RULES:
 - LENIENT mode should find 50-80% coverage
 - If you give the same score for different strictness levels, you are FAILING the analysis
 
-EXACT CONTROL STRUCTURE TO USE:
+EXACT CONTROL STRUCTURE TO USE (ONLY THESE CONTROLS):
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
 Analyze each control and mark as:
@@ -1211,7 +1216,9 @@ Analyze each control and mark as:
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
-CRITICAL: You have ${optimalTokenLimit} output tokens available. Use them to provide complete analysis for ALL categories. Do not truncate your response.
+CRITICAL: You have ${optimalTokenLimit} output tokens available. Use them to provide complete analysis for ONLY the selected categories above. Do not truncate your response.
+
+FINAL WARNING: Return results for ONLY the categories listed above. Do not add, modify, or include any other categories in your response.
 
 Return only valid JSON using the exact control structure above.`;
 
