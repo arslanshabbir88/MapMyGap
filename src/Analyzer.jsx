@@ -1335,8 +1335,25 @@ function Analyzer({ onNavigateHome }) {
               </div>
 
               {uploadedFile && (
-                <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-blue-300">
-                  <strong>Selected file:</strong> {uploadedFile.name}
+                <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span className="text-sm text-blue-300">{uploadedFile.name}</span>
+                    <span className="text-xs text-blue-400">
+                      ({(uploadedFile.size / 1024 / 1024).toFixed(2)} MB)
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setUploadedFile(null)}
+                    className="text-blue-400 hover:text-red-400 transition-colors p-1"
+                    title="Remove file"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
               )}
                {error && (
@@ -1370,25 +1387,10 @@ function Analyzer({ onNavigateHome }) {
                   <p className="text-xs text-slate-400 mb-3">
                     Control how strictly the AI analyzes your policy against compliance controls
                   </p>
-                  
-                  {/* Strictness Explanation Box */}
-                  <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                    <div className="flex items-start space-x-2">
-                      <LightbulbIcon />
-                      <div className="text-xs text-blue-300">
-                        <p className="font-medium mb-1">💡 How Strictness Affects Scoring:</p>
-                        <p className="mb-1">• <strong>Strict:</strong> Requires explicit, undeniable evidence (10-30% typical coverage)</p>
-                        <p className="mb-1">• <strong>Balanced:</strong> Accepts reasonable evidence and reasonable inference (30-60% typical coverage)</p>
-                        <p className="mb-1">• <strong>Lenient:</strong> Accepts broad interpretation and implied practices (50-80% typical coverage)</p>
-                        <p className="text-blue-200 text-xs mt-2">
-                          <strong>Note:</strong> Scores may vary based on document content. Lenient mode won't inflate scores without reasonable evidence.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {/* Strictness Level Selection - Moved to top */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                   {/* Strict Mode */}
                   <div className="relative group">
                     <div className="flex items-center space-x-2 p-3 bg-slate-700/50 rounded-lg border border-slate-600 hover:border-red-500/50 transition-colors">
@@ -1493,17 +1495,17 @@ function Analyzer({ onNavigateHome }) {
                   </div>
                 </div>
                 
-                {/* Additional Info */}
-                <div className="mt-4 p-3 bg-slate-600/30 rounded-lg border border-slate-500/30">
+                {/* How Strictness Affects Scoring Box - Moved right under selection */}
+                <div className="mb-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                   <div className="flex items-start space-x-2">
-                    <ExclamationTriangleIcon />
-                    <div className="text-xs text-slate-300">
-                      <p className="font-medium mb-1">📊 Score Expectations:</p>
-                      <p className="mb-1">• <strong>Same document:</strong> Strict ≤ Balanced ≤ Lenient (usually)</p>
-                      <p className="mb-1">• <strong>Different documents:</strong> Scores may vary based on content quality</p>
-                      <p className="mb-1">• <strong>AI honesty:</strong> Lenient won't inflate scores without evidence</p>
-                      <p className="text-slate-400 text-xs mt-2">
-                        <strong>Why might Lenient score lower?</strong> Document content may not support broad interpretation, or AI analysis varies between runs.
+                    <LightbulbIcon className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                    <div className="text-xs text-blue-300">
+                      <p className="font-medium mb-1">💡 How Strictness Affects Scoring:</p>
+                      <p className="mb-1">• <strong>Strict:</strong> Requires explicit, undeniable evidence (10-30% typical coverage)</p>
+                      <p className="mb-1">• <strong>Balanced:</strong> Accepts reasonable evidence and reasonable inference (30-60% typical coverage)</p>
+                      <p className="mb-1">• <strong>Lenient:</strong> Accepts broad interpretation and implied practices (50-80% typical coverage)</p>
+                      <p className="text-blue-200 text-xs mt-2">
+                        <strong>Note:</strong> Scores may vary based on document content. Lenient mode won't inflate scores without reasonable evidence.
                       </p>
                     </div>
                   </div>
