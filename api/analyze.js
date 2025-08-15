@@ -369,6 +369,48 @@ const allFrameworks = {
             status: "gap",
             details: "Audit review and analysis not implemented",
             recommendation: "Implement regular audit review, analysis, and reporting procedures"
+          },
+          {
+            id: "AU-7",
+            control: "Audit Reduction and Report Generation",
+            status: "gap",
+            details: "Audit reduction and report generation not implemented",
+            recommendation: "Implement automated audit reduction and report generation capabilities"
+          },
+          {
+            id: "AU-8",
+            control: "Time Stamps",
+            status: "gap",
+            details: "Time stamps not synchronized",
+            recommendation: "Implement synchronized time stamps for audit records"
+          },
+          {
+            id: "AU-9",
+            control: "Protection of Audit Information",
+            status: "gap",
+            details: "Audit information protection not implemented",
+            recommendation: "Implement protection mechanisms for audit information"
+          },
+          {
+            id: "AU-10",
+            control: "Non-repudiation",
+            status: "gap",
+            details: "Non-repudiation controls not implemented",
+            recommendation: "Implement non-repudiation controls for audit records"
+          },
+          {
+            id: "AU-11",
+            control: "Audit Record Retention",
+            status: "gap",
+            details: "Audit record retention not defined",
+            recommendation: "Define and implement audit record retention policies"
+          },
+          {
+            id: "AU-12",
+            control: "Audit Generation",
+            status: "gap",
+            details: "Audit generation not implemented",
+            recommendation: "Implement comprehensive audit generation capabilities"
           }
         ]
       },
@@ -683,6 +725,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       console.log('=== CATEGORY FILTERING DEBUG ===');
       console.log('User selected categories detected, applying strict filtering for cost optimization...');
       console.log('Selected categories:', selectedCategories);
+      console.log('Selected categories type:', typeof selectedCategories);
+      console.log('Selected categories length:', selectedCategories.length);
+      console.log('Selected categories JSON:', JSON.stringify(selectedCategories));
       console.log('Analysis strictness level:', strictness);
       console.log('Available framework categories:', frameworkData.categories.map(c => c.name));
       
@@ -694,6 +739,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         console.log(`  Category name pattern match: ${category.name.match(/\(([A-Z]+)\)/)}`);
         console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
         console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
+        console.log(`  Category code type: ${typeof categoryCode}`);
+        console.log(`  Selected categories types: [${selectedCategories.map(c => typeof c).join(', ')}]`);
       });
       
       filteredFrameworkData = {
