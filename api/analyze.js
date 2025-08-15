@@ -989,63 +989,41 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Document content preview:', fileContent.substring(0, 200));
     console.log('Framework name:', frameworkName);
     console.log('Strictness level:', strictness);
-    console.log('Filtered framework data:', JSON.stringify(filteredFrameworkData, null, 2));
     console.log('Categories being sent to AI:', filteredFrameworkData.categories.map(c => c.name));
     console.log('Total controls being sent to AI:', filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0));
     
-    const prompt = `You are a cybersecurity compliance expert. Analyze the following document content against the ${frameworkName} framework.
+    // Create a more focused and effective prompt
+    const prompt = `Analyze this document against ${frameworkName} framework for compliance assessment.
 
 Document Content:
-${fileContent.substring(0, 15000)}
+${fileContent.substring(0, 8000)}
 
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
-IMPORTANT: You MUST use the EXACT control structure provided below. Do not create new controls or modify the control IDs, names, or descriptions.
+IMPORTANT: You MUST analyze the document content and provide meaningful statuses. Do not default to "gap" without evidence.
 
 EXACT CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
-Your task is to analyze the document content and determine the compliance status for each control in the structure above. For each control, analyze the document content and determine if the control is:
-- "covered": Fully addressed in the document
+Your task is to analyze the document content and determine the compliance status for each control. For each control, analyze the document content and determine if the control is:
+- "covered": Fully addressed in the document with clear evidence
 - "partial": Partially addressed but needs improvement  
 - "gap": Not addressed at all
 
-Return your analysis in this exact JSON format, using the EXACT control structure provided:
-{
-  "categories": [
-    {
-      "name": "EXACT_CATEGORY_NAME_FROM_STRUCTURE",
-      "description": "EXACT_CATEGORY_DESCRIPTION_FROM_STRUCTURE", 
-      "results": [
-        {
-          "id": "EXACT_CONTROL_ID_FROM_STRUCTURE",
-          "control": "EXACT_CONTROL_DESCRIPTION_FROM_STRUCTURE",
-          "status": "covered|partial|gap",
-          "details": "Brief explanation of why this status was assigned",
-          "recommendation": "Specific recommendation to achieve compliance"
-        }
-      ]
-    }
-  ]
-}
-
 CRITICAL REQUIREMENTS:
-- Use EXACTLY the control structure provided above
-- Do not change control IDs, names, or descriptions
-- Only modify the status, details, and recommendation fields
-- Base your analysis on actual content found in the document
-- Provide brief, actionable recommendations
+- Base your analysis on ACTUAL content found in the document
+- Look for specific evidence like: policies, procedures, "we implement", "our organization maintains", "access controls", "security policies", "monitoring", "audit", etc.
+- Do not mark everything as "gap" - look for partial implementations
+- Provide specific, actionable recommendations
+- Use the EXACT control structure provided above
 
 ANALYSIS STRICTNESS LEVEL: ${strictness}
+STRICT: Only "covered" with EXPLICIT, DETAILED evidence
+BALANCED: "covered" with reasonable evidence or clear intent
+LENIENT: "covered" with ANY reasonable indication of coverage
 
-STRICT MODE: Only mark as "covered" if there is EXPLICIT, DETAILED evidence
-BALANCED MODE: Mark as "covered" if there is reasonable evidence or clear intent
-LENIENT MODE: Mark as "covered" if there is ANY reasonable indication of coverage
-
-Look for evidence like: policies, procedures, "we implement", "our organization maintains", "access controls", "security policies", etc.
-
-Return only valid JSON, no additional text or formatting.`;
+Return your analysis in this exact JSON format, using the EXACT control structure provided. Return only valid JSON, no additional text.`;
 
          // Add timeout to prevent hanging - increased for Vercel deployment
      const timeoutPromise = new Promise((_, reject) => {
