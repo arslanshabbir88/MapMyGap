@@ -2222,24 +2222,24 @@ function adjustResultsForStrictness(results, strictness) {
   const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
   
   if (strictness === 'strict') {
-    console.log('🔧 Applying STRICT adjustments: Downgrading some controls to be more conservative');
+    console.log('🔧 Applying STRICT adjustments: Downgrading controls to be more conservative');
     
     // Calculate how many controls to downgrade based on strictness
     const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
-    const coveredToPartial = Math.floor(totalControls * 0.25); // Convert 25% of covered to partial
-    const partialToGap = Math.floor(totalControls * 0.15); // Convert 15% of partial to gap (reduced from 20%)
+    const coveredToPartial = Math.floor(totalControls * 0.35); // Convert 35% of covered to partial (increased from 25%)
+    const partialToGap = Math.floor(totalControls * 0.25); // Convert 25% of partial to gap (increased from 15%)
     
     let coveredConverted = 0;
     let partialConverted = 0;
     
     adjustedResults.categories.forEach(category => {
       category.results.forEach(result => {
-        // Only downgrade if the details actually support it
+        // More aggressive downgrades for strict mode
         if (result.status === 'covered' && coveredConverted < coveredToPartial) {
           // Check if details suggest this might be overestimated
           const details = result.details.toLowerCase();
           if (details.includes('basic') || details.includes('limited') || details.includes('incomplete') ||
-              details.includes('often') || details.includes('typically')) {
+              details.includes('often') || details.includes('typically') || details.includes('commonly')) {
             result.status = 'partial';
             result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
             coveredConverted++;
@@ -2253,7 +2253,8 @@ function adjustResultsForStrictness(results, strictness) {
               (details.includes('requires') && details.includes('planning')) ||
               details.includes('not implemented') ||
               details.includes('no') ||
-              details.includes('never')) {
+              details.includes('never') ||
+              details.includes('advanced security practice')) {
             result.status = 'gap';
             result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
             partialConverted++;
@@ -2266,9 +2267,9 @@ function adjustResultsForStrictness(results, strictness) {
     
     // Calculate how many controls to adjust based on balanced mode
     const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
-    const gapToPartial = Math.floor(totalControls * 0.15); // Convert 15% of gaps to partial
-    const partialToCovered = Math.floor(totalControls * 0.10); // Convert 10% of partial to covered
-    const coveredToPartial = Math.floor(totalControls * 0.15); // Convert 15% of covered to partial
+    const gapToPartial = Math.floor(totalControls * 0.20); // Convert 20% of gaps to partial (increased from 15%)
+    const partialToCovered = Math.floor(totalControls * 0.15); // Convert 15% of partial to covered (increased from 10%)
+    const coveredToPartial = Math.floor(totalControls * 0.20); // Convert 20% of covered to partial (increased from 15%)
     
     let gapConverted = 0;
     let partialConverted = 0;
@@ -2281,7 +2282,8 @@ function adjustResultsForStrictness(results, strictness) {
           // Check if details suggest this could be partial
           const details = result.details.toLowerCase();
           if (details.includes('basic') || details.includes('commonly') || details.includes('typically') || 
-              details.includes('often') || details.includes('limited') || details.includes('incomplete')) {
+              details.includes('often') || details.includes('limited') || details.includes('incomplete') ||
+              details.includes('organizational context')) {
             result.status = 'partial';
             result.details = `Upgraded to partial due to balanced analysis requirements. ${result.details}`;
             gapConverted++;
@@ -2290,7 +2292,7 @@ function adjustResultsForStrictness(results, strictness) {
           // Check if details suggest this could be covered
           const details = result.details.toLowerCase();
           if (details.includes('implemented') || details.includes('established') || details.includes('deployed') ||
-              details.includes('provided') || details.includes('performed')) {
+              details.includes('provided') || details.includes('performed') || details.includes('basic asset tracking')) {
             result.status = 'covered';
             result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
             partialConverted++;
@@ -2308,24 +2310,26 @@ function adjustResultsForStrictness(results, strictness) {
       });
     });
   } else if (strictness === 'lenient') {
-    console.log('🔧 Applying LENIENT adjustments: Upgrading some controls to be more optimistic');
+    console.log('🔧 Applying LENIENT adjustments: Upgrading controls to be more optimistic');
     
     // Calculate how many controls to upgrade based on strictness
     const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
-    const gapToPartial = Math.floor(totalControls * 0.2); // Convert 20% of gaps to partial
-    const partialToCovered = Math.floor(totalControls * 0.15); // Convert 15% of partial to covered
+    const gapToPartial = Math.floor(totalControls * 0.30); // Convert 30% of gaps to partial (increased from 20%)
+    const partialToCovered = Math.floor(totalControls * 0.25); // Convert 25% of partial to covered (increased from 15%)
     
     let gapConverted = 0;
     let partialConverted = 0;
     
     adjustedResults.categories.forEach(category => {
       category.results.forEach(result => {
-        // Only upgrade if the details actually support it
+        // More aggressive upgrades for lenient mode
         if (result.status === 'gap' && gapConverted < gapToPartial) {
           // Check if details suggest this could be partial
           const details = result.details.toLowerCase();
           if (details.includes('basic') || details.includes('commonly') || details.includes('typically') || 
-              details.includes('often') || details.includes('limited') || details.includes('incomplete')) {
+              details.includes('often') || details.includes('limited') || details.includes('incomplete') ||
+              details.includes('organizational context') || details.includes('advanced security practice') ||
+              details.includes('requires careful planning')) {
             result.status = 'partial';
             result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
             gapConverted++;
@@ -2334,7 +2338,8 @@ function adjustResultsForStrictness(results, strictness) {
           // Check if details suggest this could be covered
           const details = result.details.toLowerCase();
           if (details.includes('implemented') || details.includes('established') || details.includes('deployed') ||
-              details.includes('provided') || details.includes('performed')) {
+              details.includes('provided') || details.includes('performed') || details.includes('basic asset tracking') ||
+              details.includes('basic security policies') || details.includes('basic access control')) {
             result.status = 'covered';
             result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
             partialConverted++;
