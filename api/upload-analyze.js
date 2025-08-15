@@ -2227,7 +2227,7 @@ function adjustResultsForStrictness(results, strictness) {
     // Calculate how many controls to downgrade based on strictness
     const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
     const coveredToPartial = Math.floor(totalControls * 0.25); // Convert 25% of covered to partial
-    const partialToGap = Math.floor(totalControls * 0.2); // Convert 20% of partial to gap
+    const partialToGap = Math.floor(totalControls * 0.15); // Convert 15% of partial to gap (reduced from 20%)
     
     let coveredConverted = 0;
     let partialConverted = 0;
@@ -2246,9 +2246,14 @@ function adjustResultsForStrictness(results, strictness) {
           }
         } else if (result.status === 'partial' && partialConverted < partialToGap) {
           // Check if details suggest this might be a gap
+          // BUT be more careful - basic implementations should stay partial
           const details = result.details.toLowerCase();
-          if (details.includes('lack') || details.includes('missing') || details.includes('requires') ||
-              details.includes('planning') || details.includes('implementation')) {
+          if ((details.includes('lack') && !details.includes('basic')) || 
+              details.includes('missing') || 
+              (details.includes('requires') && details.includes('planning')) ||
+              details.includes('not implemented') ||
+              details.includes('no') ||
+              details.includes('never')) {
             result.status = 'gap';
             result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
             partialConverted++;
