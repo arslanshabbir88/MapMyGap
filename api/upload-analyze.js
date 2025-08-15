@@ -2261,6 +2261,52 @@ function adjustResultsForStrictness(results, strictness) {
         }
       });
     });
+  } else if (strictness === 'balanced') {
+    console.log('🔧 Applying BALANCED adjustments: Making moderate adjustments for realistic assessment');
+    
+    // Calculate how many controls to adjust based on balanced mode
+    const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
+    const gapToPartial = Math.floor(totalControls * 0.15); // Convert 15% of gaps to partial
+    const partialToCovered = Math.floor(totalControls * 0.10); // Convert 10% of partial to covered
+    const coveredToPartial = Math.floor(totalControls * 0.15); // Convert 15% of covered to partial
+    
+    let gapConverted = 0;
+    let partialConverted = 0;
+    let coveredConverted = 0;
+    
+    adjustedResults.categories.forEach(category => {
+      category.results.forEach(result => {
+        // Moderate upgrades for balanced mode
+        if (result.status === 'gap' && gapConverted < gapToPartial) {
+          // Check if details suggest this could be partial
+          const details = result.details.toLowerCase();
+          if (details.includes('basic') || details.includes('commonly') || details.includes('typically') || 
+              details.includes('often') || details.includes('limited') || details.includes('incomplete')) {
+            result.status = 'partial';
+            result.details = `Upgraded to partial due to balanced analysis requirements. ${result.details}`;
+            gapConverted++;
+          }
+        } else if (result.status === 'partial' && partialConverted < partialToCovered) {
+          // Check if details suggest this could be covered
+          const details = result.details.toLowerCase();
+          if (details.includes('implemented') || details.includes('established') || details.includes('deployed') ||
+              details.includes('provided') || details.includes('performed')) {
+            result.status = 'covered';
+            result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
+            partialConverted++;
+          }
+        } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
+          // Check if details suggest this might be overestimated
+          const details = result.details.toLowerCase();
+          if (details.includes('basic') || details.includes('limited') || details.includes('incomplete') ||
+              details.includes('often') || details.includes('typically')) {
+            result.status = 'partial';
+            result.details = `Downgraded to partial due to balanced analysis requirements. ${result.details}`;
+            coveredConverted++;
+          }
+        }
+      });
+    });
   } else if (strictness === 'lenient') {
     console.log('🔧 Applying LENIENT adjustments: Upgrading some controls to be more optimistic');
     
