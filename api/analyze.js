@@ -1076,6 +1076,8 @@ Return your analysis in this exact JSON format, using the EXACT control structur
     
     // Extract JSON from response - handle both markdown and regular formats
     let jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
+    let jsonContent = null;
+    
     if (jsonMatch) {
       // Markdown format: ```json ... ```
       console.log('✅ Found markdown-formatted JSON response');
@@ -1086,7 +1088,7 @@ Return your analysis in this exact JSON format, using the EXACT control structur
       
       // Validate that we got the full content
       if (extractedContent.trim().startsWith('[') && extractedContent.trim().endsWith(']')) {
-        jsonMatch = extractedContent;
+        jsonContent = extractedContent;
         console.log('✅ Full array content extracted successfully');
       } else {
         console.error('❌ Incomplete content extracted from markdown');
@@ -1106,19 +1108,25 @@ Return your analysis in this exact JSON format, using the EXACT control structur
           throw new Error('Invalid AI response format - no JSON found');
         }
         console.log('✅ Found array-formatted JSON response');
+        jsonContent = jsonMatch[0];
       } else {
         console.log('✅ Found regular JSON response');
+        jsonContent = jsonMatch[0];
       }
     }
     
     console.log('✅ JSON pattern found, attempting to parse...');
+    console.log('Content to parse length:', jsonContent.length);
+    console.log('Content to parse preview (first 100 chars):', jsonContent.substring(0, 100));
+    console.log('Content to parse preview (last 100 chars):', jsonContent.substring(jsonContent.length - 100));
+    
     let parsedResponse;
     try {
-      parsedResponse = JSON.parse(jsonMatch[0]);
+      parsedResponse = JSON.parse(jsonContent);
       console.log('✅ JSON parsed successfully');
     } catch (parseError) {
       console.error('❌ JSON parsing failed:', parseError.message);
-      console.error('JSON text to parse:', jsonMatch[0]);
+      console.error('JSON text to parse:', jsonContent);
       throw new Error(`AI response JSON parsing failed: ${parseError.message}`);
     }
     
