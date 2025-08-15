@@ -1074,12 +1074,27 @@ Return your analysis in this exact JSON format, using the EXACT control structur
     console.log('Raw AI response text:', text);
     console.log('Looking for JSON pattern in response...');
     
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error('❌ No JSON pattern found in AI response');
-      console.error('Response text:', text);
-      throw new Error('Invalid AI response format - no JSON found');
+    // Extract JSON from response - handle both markdown and regular formats
+    let jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/);
+    if (jsonMatch) {
+      // Markdown format: ```json ... ```
+      console.log('✅ Found markdown-formatted JSON response');
+      jsonMatch = jsonMatch[1]; // Extract the content between the code blocks
+    } else {
+      // Regular format: just {...}
+      jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) {
+        // Try to find array format: [...]
+        jsonMatch = text.match(/\[[\s\S]*\]/);
+        if (!jsonMatch) {
+          console.error('❌ No JSON pattern found in AI response');
+          console.error('Response text:', text);
+          throw new Error('Invalid AI response format - no JSON found');
+        }
+        console.log('✅ Found array-formatted JSON response');
+      } else {
+        console.log('✅ Found regular JSON response');
+      }
     }
     
     console.log('✅ JSON pattern found, attempting to parse...');
@@ -1109,13 +1124,18 @@ Return your analysis in this exact JSON format, using the EXACT control structur
        categoriesToAnalyze = parsedResponse.categories;
        console.log('✅ AI returned standard categories array format');
        console.log('Number of categories:', categoriesToAnalyze.length);
+     } else if (Array.isArray(parsedResponse)) {
+       // Direct array format: [{category1}, {category2}, ...]
+       categoriesToAnalyze = parsedResponse;
+       console.log('✅ AI returned direct array format, using as categories');
+       console.log('Number of categories:', categoriesToAnalyze.length);
      } else if (parsedResponse.name && parsedResponse.results) {
        // Single category format: {"name": "...", "results": [...]}
        categoriesToAnalyze = [parsedResponse];
        console.log('✅ AI returned single category format, converted to array');
        console.log('Number of categories:', categoriesToAnalyze.length);
      } else {
-       console.error('🚨 AI returned invalid format - neither categories array nor single category');
+       console.error('🚨 AI returned invalid format - neither categories array, direct array, nor single category');
        console.error('AI Response Text:', text);
        console.error('Parsed Response:', parsedResponse);
        console.error('Available properties:', Object.keys(parsedResponse));
