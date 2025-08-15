@@ -2520,6 +2520,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       }
       
       console.log(`Filtered to ${filteredFrameworkData.categories.length} categories`);
+      console.log('🔍 DEBUG: Filtered categories:', filteredFrameworkData.categories.map(cat => cat.name));
+      console.log('🔍 DEBUG: Total controls in filtered data:', filteredFrameworkData.categories.reduce((sum, cat) => sum + cat.results.length, 0));
     } else {
       filteredFrameworkData = frameworkData;
     }
@@ -2557,6 +2559,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
  3. Return JSON with same structure, only changing status/details/recommendation
  4. Be concise and analytical
  5. Return valid JSON only`;
+    
+    // DEBUG: Log prompt details
+    console.log('🔍 DEBUG: Prompt length:', prompt.length, 'characters');
+    console.log('🔍 DEBUG: Number of categories in prompt:', filteredFrameworkData.categories.length);
+    console.log('🔍 DEBUG: Total controls in prompt:', filteredFrameworkData.categories.reduce((sum, cat) => sum + cat.results.length, 0));
     
     // Add timeout to prevent hanging
     const timeoutPromise = new Promise((_, reject) => {
@@ -2688,8 +2695,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       throw new Error('AI response does not contain valid categories array');
     }
     
+    // DEBUG: Log what the AI actually returned
+    console.log('🔍 DEBUG: AI returned categories:', parsedResponse.categories.map(cat => cat.name));
+    console.log('🔍 DEBUG: AI returned total controls:', parsedResponse.categories.reduce((sum, cat) => sum + (cat.results.length), 0));
+    console.log('🔍 DEBUG: AI response structure validation passed');
+    
     // Cache the AI analysis results for future use
-          await cacheAnalysisResults(documentHash, framework, parsedResponse, strictness, cacheBuster);
+    await cacheAnalysisResults(documentHash, framework, parsedResponse, strictness, cacheBuster);
     console.log('💾 Cached AI analysis results for future strictness adjustments');
     
     // Apply strictness adjustments and return
