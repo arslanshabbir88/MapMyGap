@@ -2222,130 +2222,72 @@ function adjustResultsForStrictness(results, strictness) {
   const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
   
   if (strictness === 'strict') {
-    // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
-    console.log('Strict mode - making conservative adjustments');
+    console.log('🔧 Applying STRICT adjustments: Downgrading some controls to be more conservative');
     
-    // Force strict mode to be more conservative than balanced
-    let coveredToPartial = Math.max(1, Math.floor(initialCounts.covered * 0.7)); // 70% of covered -> partial
-    let partialToGap = Math.max(1, Math.floor(initialCounts.partial * 0.5)); // 50% of partial -> gap
-    
-    // If AI was too conservative and marked everything as gap, upgrade very few to partial
-    let gapToPartial = 0;
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.max(0, Math.floor(initialCounts.gap * 0.1)); // Only 10% of gaps -> partial (very conservative)
-      console.log(`Strict mode: AI was too conservative, upgrading only ${gapToPartial} gaps to partial`);
-    }
-    
-    console.log(`Strict mode: Converting ${coveredToPartial} covered to partial, ${partialToGap} partial to gap, ${gapToPartial} gaps to partial`);
+    // Calculate how many controls to downgrade based on strictness
+    const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
+    const coveredToPartial = Math.floor(totalControls * 0.25); // Convert 25% of covered to partial
+    const partialToGap = Math.floor(totalControls * 0.2); // Convert 20% of partial to gap
     
     let coveredConverted = 0;
     let partialConverted = 0;
-    let gapConverted = 0;
     
     adjustedResults.categories.forEach(category => {
       category.results.forEach(result => {
+        // Only downgrade if the details actually support it
         if (result.status === 'covered' && coveredConverted < coveredToPartial) {
-          result.status = 'partial';
-          result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
-          coveredConverted++;
+          // Check if details suggest this might be overestimated
+          const details = result.details.toLowerCase();
+          if (details.includes('basic') || details.includes('limited') || details.includes('incomplete') ||
+              details.includes('often') || details.includes('typically')) {
+            result.status = 'partial';
+            result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
+            coveredConverted++;
+          }
         } else if (result.status === 'partial' && partialConverted < partialToGap) {
-          result.status = 'gap';
-          result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
-          partialConverted++;
-        } else if (result.status === 'gap' && gapConverted < gapToPartial) {
-          result.status = 'partial';
-          result.details = `Upgraded to partial due to strict analysis requirements (AI was too conservative). ${result.details}`;
-          gapConverted++;
+          // Check if details suggest this might be a gap
+          const details = result.details.toLowerCase();
+          if (details.includes('lack') || details.includes('missing') || details.includes('requires') ||
+              details.includes('planning') || details.includes('implementation')) {
+            result.status = 'gap';
+            result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
+            partialConverted++;
+          }
         }
       });
     });
-    
-  } else if (strictness === 'balanced') {
-    // BALANCED MODE: Moderate adjustments - create realistic middle ground
-    console.log('Balanced mode - making moderate adjustments');
-    
-    // Force balanced mode to be different from strict and lenient
-    let gapToPartial = Math.floor(initialCounts.gap * 0.4); // 40% of gaps -> partial (moderate)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.3); // 30% of partial -> covered
-    
-    // If AI was too conservative, be moderately generous
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.5); // 50% of gaps -> partial (moderate)
-      console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
-    }
-    
-    // If AI was too optimistic (all covered), downgrade some to create realistic balance
-    let coveredToPartial = 0;
-    if (initialCounts.covered > 0 && initialCounts.gap === 0 && initialCounts.partial === 0) {
-      coveredToPartial = Math.floor(initialCounts.covered * 0.3); // 30% of covered -> partial (moderate downgrading)
-      console.log(`Balanced mode: AI was too optimistic, downgrading ${coveredToPartial} covered to partial for realistic assessment`);
-    }
-    
-    if (gapToPartial > 0 || partialToCovered > 0 || coveredToPartial > 0) {
-      let gapConverted = 0;
-      let partialConverted = 0;
-      let coveredConverted = 0;
-      
-      adjustedResults.categories.forEach(category => {
-        category.results.forEach(result => {
-          if (result.status === 'gap' && gapConverted < gapToPartial) {
-            result.status = 'partial';
-            result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
-            gapConverted++;
-          } else if (result.status === 'partial' && partialConverted < partialToCovered) {
-            result.status = 'covered';
-            result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
-            partialConverted++;
-          } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
-            result.status = 'partial';
-            result.details = `Downgraded to partial due to balanced analysis requirements (AI was too optimistic). ${result.details}`;
-            coveredConverted++;
-          }
-        });
-      });
-    }
-    
   } else if (strictness === 'lenient') {
-    // LENIENT MODE: Most generous but still realistic - minimal downgrading
-    console.log('Lenient mode - making generous adjustments');
+    console.log('🔧 Applying LENIENT adjustments: Upgrading some controls to be more optimistic');
     
-    // Force lenient mode to be significantly different from strict and balanced
-    let gapToPartial = Math.floor(initialCounts.gap * 0.8); // 80% of gap -> partial (very generous)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.7); // 70% of partial -> covered (very generous)
-    
-    // If AI was extremely conservative, upgrade even more aggressively
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gaps -> partial when AI is too conservative
-      console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
-    }
-    
-    // If AI was too optimistic (all covered), downgrade very few to maintain realism
-    let coveredToPartial = 0;
-    if (initialCounts.covered > 0 && initialCounts.gap === 0 && initialCounts.partial === 0) {
-      coveredToPartial = Math.floor(initialCounts.covered * 0.15); // Only 15% of covered -> partial (minimal downgrading)
-      console.log(`Lenient mode: AI was too optimistic, downgrading ${coveredToPartial} covered to partial to maintain realism`);
-    }
-    
-    console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered, ${coveredToPartial} covered to partial`);
+    // Calculate how many controls to upgrade based on strictness
+    const totalControls = adjustedResults.categories.reduce((sum, cat) => sum + cat.results.length, 0);
+    const gapToPartial = Math.floor(totalControls * 0.2); // Convert 20% of gaps to partial
+    const partialToCovered = Math.floor(totalControls * 0.15); // Convert 15% of partial to covered
     
     let gapConverted = 0;
     let partialConverted = 0;
-    let coveredConverted = 0;
     
     adjustedResults.categories.forEach(category => {
       category.results.forEach(result => {
+        // Only upgrade if the details actually support it
         if (result.status === 'gap' && gapConverted < gapToPartial) {
-          result.status = 'partial';
-          result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
-          gapConverted++;
+          // Check if details suggest this could be partial
+          const details = result.details.toLowerCase();
+          if (details.includes('basic') || details.includes('commonly') || details.includes('typically') || 
+              details.includes('often') || details.includes('limited') || details.includes('incomplete')) {
+            result.status = 'partial';
+            result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
+            gapConverted++;
+          }
         } else if (result.status === 'partial' && partialConverted < partialToCovered) {
-          result.status = 'covered';
-          result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
-          partialConverted++;
-        } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
-          result.status = 'partial';
-          result.details = `Downgraded to partial due to lenient analysis requirements (AI was too optimistic). ${result.details}`;
-          coveredConverted++;
+          // Check if details suggest this could be covered
+          const details = result.details.toLowerCase();
+          if (details.includes('implemented') || details.includes('established') || details.includes('deployed') ||
+              details.includes('provided') || details.includes('performed')) {
+            result.status = 'covered';
+            result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
+            partialConverted++;
+          }
         }
       });
     });
