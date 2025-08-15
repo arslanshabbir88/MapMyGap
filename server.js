@@ -38,50 +38,6 @@ function generateDocumentHash(content, framework) {
   return crypto.createHash('sha256').update(content + framework).digest('hex');
 }
 
-// Check if we have cached AI analysis results for this document
-async function getCachedAnalysis(documentHash, framework) {
-  try {
-    // For now, we'll use a simple in-memory cache
-    // In production, you could extend this to use Supabase or Redis
-    if (!global.analysisCache) {
-      global.analysisCache = new Map();
-    }
-    
-    const cacheKey = `${documentHash}_${framework}`;
-    const cached = global.analysisCache.get(cacheKey);
-    
-    if (cached && Date.now() - cached.timestamp < 24 * 60 * 60 * 1000) { // 24 hour cache
-      console.log('Cache HIT: Using cached AI analysis results');
-      return cached.results;
-    }
-    
-    console.log('Cache MISS: No cached results found');
-    return null;
-  } catch (error) {
-    console.error('Cache lookup error:', error);
-    return null;
-  }
-}
-
-// Cache AI analysis results for future use
-async function cacheAnalysisResults(documentHash, framework, results) {
-  try {
-    if (!global.analysisCache) {
-      global.analysisCache = new Map();
-    }
-    
-    const cacheKey = `${documentHash}_${framework}`;
-    global.analysisCache.set(cacheKey, {
-      results: results,
-      timestamp: Date.now()
-    });
-    
-    console.log('Cached AI analysis results for future use');
-  } catch (error) {
-    console.error('Cache storage error:', error);
-  }
-}
-
 // Post-process AI results based on strictness level to ensure strictness affects scoring
 function adjustResultsForStrictness(results, strictness) {
   console.log(`Post-processing results for strictness level: ${strictness}`);
@@ -233,16 +189,6 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Analyzing document with framework:', framework);
     console.log('Analysis Strictness Level:', strictness);
     console.log('Document hash:', documentHash.substring(0, 16) + '...');
-    
-    // Check cache first to save AI tokens
-    const cachedResults = await getCachedAnalysis(documentHash, framework);
-    if (cachedResults) {
-      console.log('🎯 CACHE HIT: Using cached AI results, applying strictness adjustments only');
-      console.log('💰 SAVED: AI tokens and API costs!');
-      return adjustResultsForStrictness(cachedResults, strictness);
-    }
-    
-    console.log('🔄 CACHE MISS: Running AI analysis (this will use tokens)');
     
     // Get framework data
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -442,10 +388,6 @@ Return only valid JSON, no additional text.`;
     
     let analysisResult = JSON.parse(jsonMatch[0]);
 
-    // Cache the AI analysis results for future use (saves tokens!)
-    await cacheAnalysisResults(documentHash, framework, analysisResult);
-    console.log('💾 Cached AI analysis results for future strictness adjustments');
-
     // Apply post-processing based on strictness
     analysisResult = adjustResultsForStrictness(analysisResult, strictness);
 
@@ -453,7 +395,7 @@ Return only valid JSON, no additional text.`;
   } catch (error) {
     console.error('AI Analysis Error:', error);
     
-    // Create fallback result and cache it
+    // Create fallback result
     const fallbackResult = {
       categories: [{
         name: "General Controls",
@@ -467,10 +409,6 @@ Return only valid JSON, no additional text.`;
         }]
       }]
     };
-    
-    // Cache the fallback results for future use (even fallbacks can be cached)
-    await cacheAnalysisResults(documentHash, framework, fallbackResult);
-    console.log('💾 Cached fallback results for future strictness adjustments');
     
     throw new Error(`AI analysis failed: ${error.message}`);
   }

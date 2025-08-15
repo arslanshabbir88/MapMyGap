@@ -9,6 +9,15 @@
  * For licensing inquiries, contact: legal@conformiq.com
  */
 
+/**
+ * COMPLIANCE ANALYSIS COMPONENT
+ * 
+ * SECURITY: Uses secure /api/analyze endpoint
+ * ✅ NO document content is stored or cached
+ * ✅ All analysis is performed fresh and discarded immediately
+ * ✅ Enterprise-grade data protection for sensitive internal standards
+ */
+
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import './App.css';
@@ -665,19 +674,17 @@ function Analyzer({ onNavigateHome }) {
         }
         result = await response.json();
       } else {
-        const form = new FormData();
-        form.append('file', uploadedFile);
-        form.append('framework', selectedFramework);
-        form.append('strictness', analysisStrictness);
-        
-        // Add selected control families for NIST 800-53
-        if (selectedFramework === 'NIST_800_53' && selectedCategories.length > 0) {
-          form.append('categories', JSON.stringify(selectedCategories));
-        }
+        // SECURITY: Send file content as JSON to secure /api/analyze endpoint
+        const requestBody = {
+          fileContent: fileContent,
+          framework: selectedFramework,
+          strictness: analysisStrictness,
+          selectedCategories: selectedCategories.length > 0 ? selectedCategories : null
+        };
 
         // Add cache-busting query parameter to prevent any caching
         const cacheBuster = Date.now();
-        const apiUrl = `/api/upload-analyze?cb=${cacheBuster}`;
+        const apiUrl = `/api/analyze?cb=${cacheBuster}`;
         console.log('🚀 Frontend cache buster:', cacheBuster, 'API URL:', apiUrl);
         
         // Clear browser cache for this request
@@ -685,7 +692,7 @@ function Analyzer({ onNavigateHome }) {
           try {
             caches.keys().then(names => {
               names.forEach(name => {
-                if (name.includes('upload-analyze') || name.includes('api')) {
+                if (name.includes('analyze') || name.includes('api')) {
                   caches.delete(name);
                   console.log('🧹 Cleared browser cache:', name);
                 }
@@ -696,14 +703,11 @@ function Analyzer({ onNavigateHome }) {
           }
         }
         
-        // Add unique timestamp to form data to prevent any caching
-        form.append('timestamp', cacheBuster.toString());
-        form.append('random', Math.random().toString());
-        
         const response = await fetch(apiUrl, { 
           method: 'POST', 
-          body: form,
+          body: JSON.stringify(requestBody),
           headers: {
+            'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
             'X-Cache-Buster': cacheBuster.toString(),
