@@ -1031,6 +1031,29 @@ function Analyzer({ onNavigateHome }) {
                     />
                   </div>
 
+                  {/* Select All / Deselect All Buttons */}
+                  <div className="mb-3 flex space-x-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const allCategories = [
+                          'AC', 'AU', 'IA', 'IR', 'SC', 'AT', 'CA', 'CM', 'CP', 'PE', 'PS', 'MP', 'SI', 'MA', 'RA', 'SA', 'SR'
+                        ];
+                        setSelectedCategories(allCategories);
+                      }}
+                      className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      Select All
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedCategories([])}
+                      className="px-3 py-2 text-xs font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500"
+                    >
+                      Deselect All
+                    </button>
+                  </div>
+
                   {/* Control Family Grid */}
                   <div className="max-h-64 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50 custom-scrollbar">
                     <div className="grid grid-cols-1 gap-2">
@@ -1126,6 +1149,30 @@ function Analyzer({ onNavigateHome }) {
                   </div>
                   
                   <div className="space-y-2">
+                    {/* Select All / Deselect All Buttons */}
+                    <div className="mb-3 flex space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
+                          setSelectedCategories(allCSFFunctions);
+                        }}
+                        className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        Select All
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const currentNonCSF = selectedCategories.filter(cat => !['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat));
+                          setSelectedCategories(currentNonCSF);
+                        }}
+                        className="px-3 py-2 text-xs font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500"
+                      >
+                        Deselect All
+                      </button>
+                    </div>
+                    
                     {['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].map(func => (
                       <label key={func} className="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                         <input
