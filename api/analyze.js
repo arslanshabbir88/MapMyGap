@@ -799,21 +799,38 @@ ${fileContent.substring(0, 8000)}
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
-STRICTNESS REQUIREMENTS:
+CRITICAL: You MUST produce DIFFERENT results for each strictness level. The same document should NEVER get identical scores across different strictness levels.
+
+STRICTNESS REQUIREMENTS - ENFORCE THESE STRICTLY:
 
 ${strictness === 'strict' ? `
-STRICT MODE:
-- Only mark as "covered" with EXPLICIT evidence
-- Look for: "we implement", "established procedures", "documented processes"
-- Be conservative - when in doubt, mark as "gap"` : strictness === 'balanced' ? `
-BALANCED MODE:
-- Mark as "covered" with reasonable evidence
-- Look for: policies mentioned, procedures described
-- Can infer from related controls` : `
-LENIENT MODE:
-- Mark as "covered" with ANY reasonable indication
-- Look for: basic policies, common practices, industry standards
-- Be generous in interpretation`}
+STRICT MODE - BE EXTREMELY CONSERVATIVE:
+- Only mark as "covered" if you find EXPLICIT, CLEAR evidence like:
+  * "we implement [specific control]"
+  * "established procedures for [control]"
+  * "documented process for [control]"
+  * "our policy states [control requirement]"
+- If evidence is vague, implied, or general, mark as "gap"
+- When in doubt, mark as "gap"
+- Be very strict - expect 10-30% coverage maximum` : strictness === 'balanced' ? `
+BALANCED MODE - MODERATE INTERPRETATION:
+- Mark as "covered" with reasonable evidence like:
+  * Policies mentioned that relate to the control
+  * Procedures described that address the control
+  * Can infer from related controls or general practices
+  * Industry standard practices mentioned
+- Be reasonable but not overly generous
+- Expect 30-60% coverage` : `
+LENIENT MODE - BE GENEROUS:
+- Mark as "covered" with ANY reasonable indication:
+  * Basic policies mentioned
+  * Common industry practices
+  * General security measures
+  * Can infer from organizational context
+- Be generous in interpretation
+- Expect 50-80% coverage`}
+
+MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
 
 EXACT CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
