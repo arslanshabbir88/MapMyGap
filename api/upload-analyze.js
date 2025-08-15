@@ -2241,7 +2241,7 @@ function adjustResultsForStrictness(results, strictness) {
           if (details.includes('basic') || details.includes('limited') || details.includes('incomplete') ||
               details.includes('often') || details.includes('typically') || details.includes('commonly')) {
             result.status = 'partial';
-            result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             coveredConverted++;
           }
         } else if (result.status === 'partial' && partialConverted < partialToGap) {
@@ -2256,7 +2256,7 @@ function adjustResultsForStrictness(results, strictness) {
               details.includes('never') ||
               details.includes('advanced security practice')) {
             result.status = 'gap';
-            result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             partialConverted++;
           }
         }
@@ -2285,7 +2285,7 @@ function adjustResultsForStrictness(results, strictness) {
               details.includes('often') || details.includes('limited') || details.includes('incomplete') ||
               details.includes('organizational context')) {
             result.status = 'partial';
-            result.details = `Upgraded to partial due to balanced analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             gapConverted++;
           }
         } else if (result.status === 'partial' && partialConverted < partialToCovered) {
@@ -2294,7 +2294,7 @@ function adjustResultsForStrictness(results, strictness) {
           if (details.includes('implemented') || details.includes('established') || details.includes('deployed') ||
               details.includes('provided') || details.includes('performed') || details.includes('basic asset tracking')) {
             result.status = 'covered';
-            result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             partialConverted++;
           }
         } else if (result.status === 'covered' && coveredConverted < coveredToPartial) {
@@ -2303,7 +2303,7 @@ function adjustResultsForStrictness(results, strictness) {
           if (details.includes('basic') || details.includes('limited') || details.includes('incomplete') ||
               details.includes('often') || details.includes('typically')) {
             result.status = 'partial';
-            result.details = `Downgraded to partial due to balanced analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             coveredConverted++;
           }
         }
@@ -2331,7 +2331,7 @@ function adjustResultsForStrictness(results, strictness) {
               details.includes('organizational context') || details.includes('advanced security practice') ||
               details.includes('requires careful planning')) {
             result.status = 'partial';
-            result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             gapConverted++;
           }
         } else if (result.status === 'partial' && partialConverted < partialToCovered) {
@@ -2341,7 +2341,7 @@ function adjustResultsForStrictness(results, strictness) {
               details.includes('provided') || details.includes('performed') || details.includes('basic asset tracking') ||
               details.includes('basic security policies') || details.includes('basic access control')) {
             result.status = 'covered';
-            result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
+            // Keep original details without technical upgrade message
             partialConverted++;
           }
         }
