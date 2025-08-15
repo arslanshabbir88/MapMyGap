@@ -1335,22 +1335,22 @@ function Analyzer({ onNavigateHome }) {
               </div>
 
               {uploadedFile && (
-                <div className="mt-3 p-2 bg-blue-500/10 border border-blue-500/20 rounded-lg flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="mt-1 p-1 bg-blue-500/10 border border-blue-500/20 rounded flex items-center justify-between">
+                  <div className="flex items-center space-x-1">
+                    <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span className="text-sm text-blue-300">{uploadedFile.name}</span>
-                    <span className="text-xs text-blue-400">
+                    <span className="text-xs text-blue-300">{uploadedFile.name}</span>
+                    <span className="text-xs text-blue-400 ml-1">
                       ({(uploadedFile.size / 1024 / 1024).toFixed(2)} MB)
                     </span>
                   </div>
                   <button
                     onClick={() => setUploadedFile(null)}
-                    className="text-blue-400 hover:text-red-400 transition-colors p-1"
+                    className="text-blue-400 hover:text-red-400 transition-colors p-0.5"
                     title="Remove file"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </button>
@@ -1507,6 +1507,15 @@ function Analyzer({ onNavigateHome }) {
                       <p className="text-blue-200 text-xs mt-2">
                         <strong>Note:</strong> Scores may vary based on document content. Lenient mode won't inflate scores without reasonable evidence.
                       </p>
+                      <div className="mt-3 p-2 bg-blue-500/20 rounded border border-blue-500/30">
+                        <p className="font-medium mb-1 text-blue-100">📊 Score Expectations vs. Reality:</p>
+                        <p className="mb-1">• <strong>Expected:</strong> Strict ≤ Balanced ≤ Lenient (same document)</p>
+                        <p className="mb-1">• <strong>Reality:</strong> Scores may vary due to AI interpretation differences</p>
+                        <p className="mb-1">• <strong>Why Lenient might score lower:</strong> Document content may not support broad interpretation, or AI analysis varies between runs</p>
+                        <p className="text-blue-100 text-xs mt-2">
+                          <strong>This is normal and expected!</strong> The AI provides honest, evidence-based assessments.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1874,7 +1883,6 @@ function Analyzer({ onNavigateHome }) {
                         <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
                         <div className="text-xs text-blue-200 space-y-1">
                           <p><strong>Current Strictness:</strong> {analysisStrictness.charAt(0).toUpperCase() + analysisStrictness.slice(1)} Mode</p>
-                          <p><strong>Score Formula:</strong> (Covered + Partial×0.5) ÷ Total Controls × 100</p>
                           <p><strong>What This Means:</strong> Your {analysisResults.summary.score}% score reflects how well your document addresses the selected compliance controls at the {analysisStrictness} analysis level.</p>
                           {analysisStrictness === 'strict' && (
                             <p className="text-blue-100 bg-blue-500/20 p-2 rounded mt-2">
@@ -1897,24 +1905,6 @@ function Analyzer({ onNavigateHome }) {
                   </div>
 
                   <div className="space-y-4">
-                    {/* Scoring Pattern Note */}
-                    <div className="p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
-                      <div className="flex items-start space-x-2">
-                        <svg className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                        </svg>
-                        <div className="text-xs text-amber-200">
-                          <p className="font-medium mb-1">💡 Score Expectations vs. Reality:</p>
-                          <p className="mb-1">• <strong>Expected:</strong> Strict ≤ Balanced ≤ Lenient (same document)</p>
-                          <p className="mb-1">• <strong>Reality:</strong> Scores may vary due to AI interpretation differences</p>
-                          <p className="mb-1">• <strong>Why Lenient might score lower:</strong> Document content may not support broad interpretation, or AI analysis varies between runs</p>
-                          <p className="text-amber-100 text-xs mt-2">
-                            <strong>This is normal and expected!</strong> The AI provides honest, evidence-based assessments rather than artificially inflating scores.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
                     {filteredResults.length > 0 ? (
                       filteredResults.map(category => (
                         <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
