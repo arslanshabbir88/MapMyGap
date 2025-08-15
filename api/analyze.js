@@ -970,7 +970,15 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       console.log('No specific categories selected, using all framework categories');
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        maxOutputTokens: 8192, // Increase output limit to prevent truncation
+        temperature: 0.1, // Low temperature for consistent analysis
+        topP: 0.8,
+        topK: 40
+      }
+    });
 
     // Map framework IDs to display names
     const frameworkNames = {
