@@ -799,7 +799,27 @@ ${fileContent.substring(0, 8000)}
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
-IMPORTANT: You MUST analyze the document content and provide meaningful statuses. Do not default to "gap" without evidence.
+CRITICAL STRICTNESS REQUIREMENTS - YOU MUST FOLLOW THESE EXACTLY:
+
+${strictness === 'strict' ? `
+STRICT MODE (Most Conservative):
+- Only mark as "covered" if there is EXPLICIT, DETAILED evidence in the document
+- Look for specific phrases like: "we implement", "our organization maintains", "established procedures", "documented processes"
+- If evidence is vague or implied, mark as "partial" or "gap"
+- Be very conservative - when in doubt, mark as "gap"
+- Expected result: Lower scores due to strict requirements` : strictness === 'balanced' ? `
+BALANCED MODE (Moderate):
+- Mark as "covered" if there is reasonable evidence or clear intent
+- Look for: policies mentioned, procedures described, controls implemented
+- Can infer coverage from related controls or organizational context
+- Balance between strict and lenient analysis
+- Expected result: Moderate scores reflecting realistic assessment` : `
+LENIENT MODE (Most Generous):
+- Mark as "covered" if there is ANY reasonable indication of coverage
+- Look for: basic policies, common practices, industry standards
+- Can infer coverage from organizational maturity and related controls
+- Be generous in interpretation while staying factual
+- Expected result: Higher scores due to lenient requirements`}
 
 EXACT CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
@@ -815,11 +835,7 @@ CRITICAL REQUIREMENTS:
 - Do not mark everything as "gap" - look for partial implementations
 - Provide specific, actionable recommendations
 - Use the EXACT control structure provided above
-
-ANALYSIS STRICTNESS LEVEL: ${strictness}
-STRICT: Only "covered" with EXPLICIT, DETAILED evidence
-BALANCED: "covered" with reasonable evidence or clear intent
-LENIENT: "covered" with ANY reasonable indication of coverage
+- MOST IMPORTANT: Apply the strictness level requirements above strictly - this will create different scores for each mode
 
 Return your analysis in this exact JSON format, using the EXACT control structure provided. Return only valid JSON, no additional text.`;
 
