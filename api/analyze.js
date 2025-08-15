@@ -973,7 +973,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       generationConfig: {
-        maxOutputTokens: 8192, // Increase output limit to prevent truncation
+        maxOutputTokens: 16384, // Increase to 16K tokens to prevent truncation
         temperature: 0.1, // Low temperature for consistent analysis
         topP: 0.8,
         topK: 40
