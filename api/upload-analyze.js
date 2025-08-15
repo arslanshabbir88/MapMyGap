@@ -2451,7 +2451,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     }
     
     // SMART FALLBACK: For NIST CSF with all functions selected, use optimized fallback
-    if (framework === 'NIST_CSF' && (!selectedCategories || selectedCategories.length === 0 || selectedCategories.length >= 6)) {
+    if (framework === 'NIST_CSF' && (!selectedCategories || selectedCategories.length === 0)) {
       console.log('⚡ FULL NIST CSF: Using optimized fallback to prevent timeouts');
       
       // Use all available CSF functions
@@ -2473,94 +2473,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       return adjustedFallback;
     }
     
-    // For large frameworks like NIST CSF, use fallback for faster response
-    if (framework === 'NIST_CSF' && selectedCategories && selectedCategories.length > 3) {
-      console.log('⚡ LARGE CSF SELECTION: Using optimized fallback for faster response');
-      
-      // Create optimized fallback with selected functions only
-      const optimizedFallback = createOptimizedCSFFallback(selectedCategories);
-      const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
-      
-      // Cache the optimized results
-      await cacheAnalysisResults(documentHash, framework, optimizedFallback, strictness, cacheBuster);
-      
-      return adjustedFallback;
-    }
-    
-    // ADDITIONAL CHECK: If NIST CSF is selected but no specific categories chosen, use smart fallback
-    if (framework === 'NIST_CSF') {
-      console.log('⚡ NIST CSF DETECTED: Using smart fallback to prevent timeouts and provide realistic results');
-      
-      // Clear any existing cached results for NIST CSF to ensure fresh smart fallback
-      if (global.analysisCache) {
-        const cacheKeysToRemove = Object.keys(global.analysisCache).filter(key => 
-          key.includes('NIST_CSF') || key.includes('ee83a613be8ce192')
-        );
-        cacheKeysToRemove.forEach(key => {
-          console.log(`🧹 Clearing cached NIST CSF result: ${key}`);
-          delete global.analysisCache[key];
-        });
-        
-        // Force clear entire cache to ensure fresh results
-        global.analysisCache = {};
-      }
-      
-      // Use all available CSF functions for comprehensive coverage
-      const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
-      const optimizedFallback = createOptimizedCSFFallback(allCSFFunctions);
-      const adjustedFallback = adjustResultsForStrictness(optimizedFallback, strictness);
-      
-      // Add a small delay to ensure fresh results and prevent caching
-      console.log('⏳ Adding delay to ensure fresh smart fallback results...');
-      await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
-      console.log('✅ Delay completed, returning fresh results');
-      
-      // Cache the optimized results with a unique timestamp key to prevent conflicts
-      const timestamp = Date.now();
-      const smartFallbackKey = `${documentHash}_NIST_CSF_SMART_FALLBACK_${strictness}_${timestamp}`;
-      await cacheAnalysisResults(smartFallbackKey, framework, optimizedFallback, strictness, cacheBuster);
-      
-      console.log(`✅ Smart fallback completed with timestamp: ${timestamp}`);
-      return adjustedFallback;
-    }
-    
-    // ADDITIONAL CHECK: If other frameworks are selected, use smart fallback for them too
-    if (framework !== 'NIST_CSF') {
-      console.log(`⚡ ${framework} DETECTED: Using smart fallback to prevent timeouts and provide realistic results`);
-      
-      // Clear any existing cached results for this framework to ensure fresh smart fallback
-      if (global.analysisCache) {
-        const cacheKeysToRemove = Object.keys(global.analysisCache).filter(key => 
-          key.includes(framework)
-        );
-        cacheKeysToRemove.forEach(key => {
-          console.log(`🧹 Clearing cached ${framework} result: ${key}`);
-          delete global.analysisCache[key];
-        });
-        
-        // Force clear entire cache to ensure fresh results
-        global.analysisCache = {};
-      }
-      
-      // Create smart fallback for other frameworks
-      const frameworkFallback = createFrameworkFallback(framework);
-      const adjustedFallback = adjustResultsForStrictness(frameworkFallback, strictness);
-      
-      // Add a small delay to ensure fresh results and prevent caching
-      console.log('⏳ Adding delay to ensure fresh smart fallback results...');
-      await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
-      console.log('✅ Delay completed, returning fresh results');
-      
-      // Cache the optimized results with a unique timestamp key to prevent conflicts
-      const timestamp = Date.now();
-      const smartFallbackKey = `${documentHash}_${framework}_SMART_FALLBACK_${strictness}_${timestamp}`;
-      await cacheAnalysisResults(smartFallbackKey, framework, frameworkFallback, strictness, cacheBuster);
-      
-      console.log(`✅ Smart fallback completed for ${framework} with timestamp: ${timestamp}`);
-      return adjustedFallback;
-    }
-    
-    // Continue with normal AI analysis for smaller selections or other frameworks
+    // Continue with normal AI analysis for user-selected categories
     console.log('🤖 PROCEEDING WITH AI ANALYSIS...');
     
     // Get predefined control structure for the framework
@@ -2943,13 +2856,13 @@ function createOptimizedCSFFallback(selectedCategories) {
     );
     
     if (frameworkCategory) {
-      // Use more controls - show up to 20 controls per category for comprehensive coverage
-      const essentialControls = frameworkCategory.results.slice(0, 20); // Increased to 20 for better coverage
+      // Use ALL controls from the selected category - don't artificially limit
+      const allControls = frameworkCategory.results; // Removed slice(0, 20) limit
       
       fallbackCategories.push({
         name: frameworkCategory.name,
         description: frameworkCategory.description,
-        results: essentialControls.map((control, index) => {
+        results: allControls.map((control, index) => {
           // Provide meaningful, actionable insights based on typical organizational maturity
           let status = "gap";
           let details = "This control represents an advanced security practice that requires careful planning and implementation.";
@@ -3039,7 +2952,7 @@ function createOptimizedCSFFallback(selectedCategories) {
     }
   });
   
-  console.log(`Created optimized fallback with ${fallbackCategories.length} categories, showing up to 20 controls per category for comprehensive coverage`);
+  console.log(`Created optimized fallback with ${fallbackCategories.length} categories, showing ALL controls per selected category for comprehensive coverage`);
   return { categories: fallbackCategories };
 }
 
@@ -3055,17 +2968,17 @@ function createFrameworkFallback(framework) {
   const fallbackCategories = [];
   const frameworkData = allFrameworks[framework];
   
-  // Get up to 5 categories for other frameworks
-  const categoriesToShow = frameworkData.categories.slice(0, 5);
+  // Get ALL categories for the framework - don't artificially limit
+  const allCategories = frameworkData.categories; // Removed slice(0, 5) limit
   
-  categoriesToShow.forEach(category => {
-    // Show up to 10 controls per category for other frameworks
-    const essentialControls = category.results.slice(0, 10);
+  allCategories.forEach(category => {
+    // Show ALL controls per category - don't artificially limit
+    const allControls = category.results; // Removed slice(0, 10) limit
     
     fallbackCategories.push({
       name: category.name,
       description: category.description,
-      results: essentialControls.map((control, index) => {
+      results: allControls.map((control, index) => {
         // Provide meaningful insights based on typical organizational maturity
         let status = "partial";
         let details = "This control represents a security practice that requires systematic implementation and ongoing management.";
@@ -3093,7 +3006,7 @@ function createFrameworkFallback(framework) {
     });
   });
   
-  console.log(`Created ${framework} fallback with ${fallbackCategories.length} categories, showing up to 10 controls per category`);
+  console.log(`Created ${framework} fallback with ${fallbackCategories.length} categories, showing ALL controls per category for comprehensive coverage`);
   return { categories: fallbackCategories };
 }
 
