@@ -56,6 +56,191 @@ const allFrameworks = {
             recommendation: "Implement physical access controls and monitoring systems"
           }
         ]
+      },
+      {
+        name: "DETECT (DE)",
+        description: "Develop and implement appropriate activities to identify the occurrence of a cybersecurity event",
+        results: [
+          {
+            id: "DE.CM-1",
+            control: "The network is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Network monitoring not implemented",
+            recommendation: "Implement comprehensive network monitoring and detection capabilities"
+          },
+          {
+            id: "DE.CM-2",
+            control: "The physical environment is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Physical environment monitoring not implemented",
+            recommendation: "Implement physical security monitoring and detection systems"
+          },
+          {
+            id: "DE.CM-3",
+            control: "Personnel activity is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "Personnel activity monitoring not implemented",
+            recommendation: "Implement user activity monitoring and behavioral analysis"
+          },
+          {
+            id: "DE.CM-4",
+            control: "Malicious code is detected and reported",
+            status: "gap",
+            details: "Malicious code detection not implemented",
+            recommendation: "Implement anti-malware and threat detection systems"
+          },
+          {
+            id: "DE.CM-5",
+            control: "Unauthorized mobile code is detected and reported",
+            status: "gap",
+            details: "Mobile code monitoring not implemented",
+            recommendation: "Implement mobile code detection and sandboxing"
+          },
+          {
+            id: "DE.CM-6",
+            control: "External service provider activity is monitored to detect potential cybersecurity events",
+            status: "gap",
+            details: "External provider monitoring not implemented",
+            recommendation: "Implement monitoring of external service provider activities"
+          },
+          {
+            id: "DE.CM-7",
+            control: "Monitoring for unauthorized personnel, connections, devices, and software is performed",
+            status: "gap",
+            details: "Unauthorized activity monitoring not implemented",
+            recommendation: "Implement comprehensive monitoring for unauthorized activities"
+          },
+          {
+            id: "DE.CM-8",
+            control: "Vulnerability scans are performed",
+            status: "gap",
+            details: "Vulnerability scanning not performed",
+            recommendation: "Implement regular vulnerability scanning and assessment"
+          }
+        ]
+      },
+      {
+        name: "RESPOND (RS)",
+        description: "Develop and implement appropriate activities to take action regarding a detected cybersecurity incident",
+        results: [
+          {
+            id: "RS.RP-1",
+            control: "Response plan is executed during or after incident",
+            status: "gap",
+            details: "Incident response plan not implemented",
+            recommendation: "Develop and implement comprehensive incident response plan"
+          },
+          {
+            id: "RS.CO-1",
+            control: "Personnel know their roles and order operations when a response is needed",
+            status: "gap",
+            details: "Response roles not defined",
+            recommendation: "Define and communicate incident response roles and responsibilities"
+          },
+          {
+            id: "RS.CO-2",
+            control: "Events are reported consistent with established criteria",
+            status: "gap",
+            details: "Event reporting criteria not established",
+            recommendation: "Establish clear criteria for cybersecurity event reporting"
+          },
+          {
+            id: "RS.CO-3",
+            control: "Information is shared consistent with response plans",
+            status: "gap",
+            details: "Information sharing procedures not established",
+            recommendation: "Establish procedures for sharing incident information"
+          },
+          {
+            id: "RS.CO-4",
+            control: "Coordination with stakeholders occurs consistent with response plans",
+            status: "gap",
+            details: "Stakeholder coordination not established",
+            recommendation: "Establish coordination procedures with key stakeholders"
+          },
+          {
+            id: "RS.CO-5",
+            control: "Voluntary information sharing occurs with external stakeholders to achieve broader cybersecurity situational awareness",
+            status: "gap",
+            details: "External information sharing not established",
+            recommendation: "Establish voluntary information sharing with external stakeholders"
+          }
+        ]
+      },
+      {
+        name: "RECOVER (RC)",
+        description: "Develop and implement appropriate activities to maintain plans for resilience and to restore any capabilities or services that were impaired due to a cybersecurity incident",
+        results: [
+          {
+            id: "RC.RP-1",
+            control: "Recovery plan is executed during or after incident",
+            status: "gap",
+            details: "Recovery plan not implemented",
+            recommendation: "Develop and implement comprehensive recovery plan"
+          },
+          {
+            id: "RC.IM-1",
+            control: "Recovery plans incorporate lessons learned",
+            status: "gap",
+            details: "Lessons learned not incorporated",
+            recommendation: "Incorporate lessons learned into recovery planning"
+          },
+          {
+            id: "RC.IM-2",
+            control: "Recovery strategies are updated",
+            status: "gap",
+            details: "Recovery strategies not updated",
+            recommendation: "Regularly update recovery strategies based on lessons learned"
+          }
+        ]
+      },
+      {
+        name: "GOVERN (GV)",
+        description: "Develop and implement appropriate activities to manage cybersecurity risk to the organization",
+        results: [
+          {
+            id: "GV.ID-1",
+            control: "Organizational security policies are established",
+            status: "gap",
+            details: "Security policies not established",
+            recommendation: "Develop and implement comprehensive security policies"
+          },
+          {
+            id: "GV.ID-2",
+            control: "Security roles and responsibilities are coordinated and aligned with internal roles and external partners",
+            status: "gap",
+            details: "Security roles not coordinated",
+            recommendation: "Coordinate security roles and responsibilities across organization"
+          },
+          {
+            id: "GV.ID-3",
+            control: "Legal and regulatory requirements regarding cybersecurity are understood and managed",
+            status: "gap",
+            details: "Legal requirements not managed",
+            recommendation: "Identify and manage legal and regulatory cybersecurity requirements"
+          },
+          {
+            id: "GV.PR-1",
+            control: "Security policies are established and managed",
+            status: "gap",
+            details: "Security policies not managed",
+            recommendation: "Establish and maintain security policy management process"
+          },
+          {
+            id: "GV.PR-2",
+            control: "Security roles and responsibilities are established and managed",
+            status: "gap",
+            details: "Security roles not managed",
+            recommendation: "Establish and manage security roles and responsibilities"
+          },
+          {
+            id: "GV.RM-1",
+            control: "Organizational cybersecurity risk is clearly understood and managed",
+            status: "gap",
+            details: "Risk management not implemented",
+            recommendation: "Implement comprehensive cybersecurity risk management"
+          }
+        ]
       }
     ]
   },
