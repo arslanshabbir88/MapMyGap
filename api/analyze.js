@@ -1236,12 +1236,13 @@ Return your analysis in this exact JSON format, using the EXACT control structur
     });
     
     return adjustedResults;
-     } catch (error) {
-     console.error('AI Analysis Error:', error);
-     console.log('=== FALLBACK TRIGGERED ===');
-     console.log('Error message:', error.message);
-     console.log('Error stack:', error.stack);
-     console.log('Falling back to predefined control structure');
+    
+  } catch (error) {
+    console.error('AI Analysis Error:', error);
+    console.log('=== FALLBACK TRIGGERED ===');
+    console.log('Error message:', error.message);
+    console.log('Error stack:', error.stack);
+    console.log('Falling back to predefined control structure');
     
     // Fallback to predefined control structure with intelligent defaults
     const fallbackResult = {
