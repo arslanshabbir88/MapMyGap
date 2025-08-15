@@ -1886,23 +1886,76 @@ function Analyzer({ onNavigateHome }) {
                       <div className="flex-1">
                         <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
                         <div className="text-xs text-blue-200 space-y-1">
-                          <p><strong>Current Strictness:</strong> {analysisStrictness.charAt(0).toUpperCase() + analysisStrictness.slice(1)} Mode</p>
-                          <p><strong>What This Means:</strong> Your {analysisResults.summary.score}% score reflects how well your document addresses the selected compliance controls at the {analysisStrictness} analysis level.</p>
+                          <p><strong>Analysis Mode:</strong> {analysisStrictness.charAt(0).toUpperCase() + analysisStrictness.slice(1)} Mode</p>
+                          <p><strong>Your Score:</strong> {analysisResults.summary.score}%</p>
+                          
                           {analysisStrictness === 'strict' && (
-                            <p className="text-blue-100 bg-blue-500/20 p-2 rounded mt-2">
-                              🔴 <strong>Strict Mode:</strong> Only explicit, undeniable evidence counts as "covered". This is the most conservative assessment.
-                            </p>
+                            <div className="text-blue-100 bg-blue-500/20 p-3 rounded mt-2 space-y-2">
+                              <p className="font-medium">🔴 <strong>Strict Mode Analysis</strong></p>
+                              <p>Your {analysisResults.summary.score}% score reflects a <strong>conservative assessment</strong> that only counts explicit, undeniable evidence as "covered".</p>
+                              {analysisResults.summary.score < 20 ? (
+                                <p className="text-blue-200">💡 <strong>Why so low?</strong> Strict mode requires concrete evidence like "we implement [specific control]" or "established procedures for [control]". General statements don't count.</p>
+                              ) : analysisResults.summary.score < 40 ? (
+                                <p className="text-blue-200">✅ <strong>Good coverage!</strong> Your document provides solid, explicit evidence for many controls in strict mode.</p>
+                              ) : (
+                                <p className="text-blue-200">🎯 <strong>Excellent coverage!</strong> Your document demonstrates comprehensive, explicit implementation of controls.</p>
+                              )}
+                            </div>
                           )}
+                          
                           {analysisStrictness === 'balanced' && (
-                            <p className="text-yellow-100 bg-yellow-500/20 p-2 rounded mt-2">
-                              🟡 <strong>Balanced Mode:</strong> Reasonable evidence and inference are accepted. This provides a standard compliance assessment.
-                            </p>
+                            <div className="text-yellow-100 bg-yellow-500/20 p-3 rounded mt-2 space-y-2">
+                              <p className="font-medium">🟡 <strong>Balanced Mode Analysis</strong></p>
+                              <p>Your {analysisResults.summary.score}% score reflects a <strong>standard assessment</strong> that accepts reasonable evidence and reasonable inferences.</p>
+                              {analysisResults.summary.score < 30 ? (
+                                <p className="text-yellow-200">💡 <strong>Room for improvement:</strong> Consider adding more specific policies, procedures, or implementation details to your document.</p>
+                              ) : analysisResults.summary.score < 60 ? (
+                                <p className="text-yellow-200">✅ <strong>Solid foundation!</strong> Your document covers many controls with good evidence and reasonable interpretation.</p>
+                              ) : (
+                                <p className="text-yellow-200">🎯 <strong>Strong compliance!</strong> Your document demonstrates comprehensive coverage with good evidence.</p>
+                              )}
+                            </div>
                           )}
+                          
                           {analysisStrictness === 'lenient' && (
-                            <p className="text-green-100 bg-green-500/20 p-2 rounded mt-2">
-                              🟢 <strong>Lenient Mode:</strong> Broad interpretation and implied practices are accepted. This is the most generous assessment.
-                            </p>
+                            <div className="text-green-100 bg-green-500/20 p-3 rounded mt-2 space-y-2">
+                              <p className="font-medium">🟢 <strong>Lenient Mode Analysis</strong></p>
+                              <p>Your {analysisResults.summary.score}% score reflects a <strong>generous assessment</strong> that accepts broad interpretations and implied practices.</p>
+                              {analysisResults.summary.score < 50 ? (
+                                <p className="text-green-200">💡 <strong>Consider adding details:</strong> Even in lenient mode, more specific evidence would strengthen your compliance position.</p>
+                              ) : analysisResults.summary.score < 80 ? (
+                                <p className="text-green-200">✅ <strong>Good coverage!</strong> Your document provides reasonable evidence for most controls with generous interpretation.</p>
+                              ) : (
+                                <p className="text-green-200">🎯 <strong>Excellent coverage!</strong> Your document demonstrates comprehensive compliance even with strict interpretation.</p>
+                              )}
+                            </div>
                           )}
+                          
+                          <div className="mt-3 p-2 bg-slate-700/30 rounded text-xs">
+                            <p><strong>💡 Pro Tip:</strong> {analysisStrictness === 'strict' ? 'Strict mode is best for internal audits and high-risk assessments.' : analysisStrictness === 'balanced' ? 'Balanced mode provides a realistic compliance assessment for most organizations.' : 'Lenient mode is useful for initial assessments and identifying major gaps.'}</p>
+                          </div>
+                          
+                          {/* Dynamic Score Interpretation */}
+                          <div className="mt-3 p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50">
+                            <p className="font-medium text-blue-200 mb-2">📈 Score Interpretation</p>
+                            {analysisResults.summary.score < 25 ? (
+                              <div className="text-red-200">
+                                <p><strong>🔴 Low Coverage ({analysisResults.summary.score}%):</strong> Your document needs significant improvements to meet compliance requirements. Focus on adding specific policies, procedures, and implementation details.</p>
+                              </div>
+                            ) : analysisResults.summary.score < 50 ? (
+                              <div className="text-yellow-200">
+                                <p><strong>🟡 Moderate Coverage ({analysisResults.summary.score}%):</strong> You have a foundation but need to expand coverage. Consider documenting more controls and adding implementation details.</p>
+                              </div>
+                            ) : analysisResults.summary.score < 75 ? (
+                              <div className="text-blue-200">
+                                <p><strong>🔵 Good Coverage ({analysisResults.summary.score}%):</strong> Strong compliance foundation. Minor improvements could push you into excellent territory.</p>
+                              </div>
+                            ) : (
+                              <div className="text-green-200">
+                                <p><strong>🟢 Excellent Coverage ({analysisResults.summary.score}%):</strong> Outstanding compliance position! Your document demonstrates comprehensive control implementation.</p>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
