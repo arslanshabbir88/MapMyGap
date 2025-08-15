@@ -1079,7 +1079,21 @@ Return your analysis in this exact JSON format, using the EXACT control structur
     if (jsonMatch) {
       // Markdown format: ```json ... ```
       console.log('✅ Found markdown-formatted JSON response');
-      jsonMatch = jsonMatch[1]; // Extract the content between the code blocks
+      const extractedContent = jsonMatch[1]; // Extract the content between the code blocks
+      console.log('Extracted content length:', extractedContent.length);
+      console.log('Extracted content preview (first 200 chars):', extractedContent.substring(0, 200));
+      console.log('Extracted content preview (last 200 chars):', extractedContent.substring(extractedContent.length - 200));
+      
+      // Validate that we got the full content
+      if (extractedContent.trim().startsWith('[') && extractedContent.trim().endsWith(']')) {
+        jsonMatch = extractedContent;
+        console.log('✅ Full array content extracted successfully');
+      } else {
+        console.error('❌ Incomplete content extracted from markdown');
+        console.error('Content starts with:', extractedContent.trim().substring(0, 10));
+        console.error('Content ends with:', extractedContent.trim().substring(extractedContent.length - 10));
+        throw new Error('Incomplete JSON content extracted from markdown response');
+      }
     } else {
       // Regular format: just {...}
       jsonMatch = text.match(/\{[\s\S]*\}/);
