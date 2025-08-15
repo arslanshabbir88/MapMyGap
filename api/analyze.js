@@ -815,7 +815,9 @@ STRICT MODE - BE EXTREMELY CONSERVATIVE:
   * "our policy states [control requirement]"
 - If evidence is vague, implied, or general, mark as "gap"
 - When in doubt, mark as "gap"
-- Be very strict - expect 10-30% coverage maximum` : strictness === 'balanced' ? `
+- Be very strict - expect 10-30% coverage maximum
+- Look for SPECIFIC implementation details, not general statements
+- Require concrete examples and specific procedures` : strictness === 'balanced' ? `
 BALANCED MODE - MODERATE INTERPRETATION:
 - Mark as "covered" with reasonable evidence like:
   * Policies mentioned that relate to the control
@@ -823,7 +825,9 @@ BALANCED MODE - MODERATE INTERPRETATION:
   * Can infer from related controls or general practices
   * Industry standard practices mentioned
 - Be reasonable but not overly generous
-- Expect 30-60% coverage` : `
+- Expect 30-60% coverage
+- Look for GOOD evidence but don't require perfect specificity
+- Accept reasonable inferences from described practices` : `
 LENIENT MODE - BE GENEROUS:
 - Mark as "covered" with ANY reasonable indication:
   * Basic policies mentioned
@@ -831,9 +835,18 @@ LENIENT MODE - BE GENEROUS:
   * General security measures
   * Can infer from organizational context
 - Be generous in interpretation
-- Expect 50-80% coverage`}
+- Expect 50-80% coverage
+- Look for ANY evidence that suggests the control is addressed, even indirectly
+- Accept broad interpretations and organizational context clues
+- Be willing to infer coverage from general security practices mentioned`}
 
 MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
+
+CRITICAL DIFFERENTIATION RULES:
+- STRICT mode should find 10-30% coverage
+- BALANCED mode should find 30-60% coverage  
+- LENIENT mode should find 50-80% coverage
+- If you give the same score for different strictness levels, you are FAILING the analysis
 
 EXACT CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
