@@ -438,6 +438,69 @@ const allFrameworks = {
             status: "gap",
             details: "Device identification and authentication not implemented",
             recommendation: "Implement device identification and authentication mechanisms"
+          },
+          {
+            id: "IA-4",
+            control: "Identifier Management",
+            status: "gap",
+            details: "Identifier management not implemented",
+            recommendation: "Implement comprehensive identifier management system"
+          },
+          {
+            id: "IA-5",
+            control: "Authenticator Management",
+            status: "gap",
+            details: "Authenticator management not implemented",
+            recommendation: "Implement secure authenticator management procedures"
+          },
+          {
+            id: "IA-6",
+            control: "Authenticator Feedback",
+            status: "gap",
+            details: "Authenticator feedback not implemented",
+            recommendation: "Implement secure feedback mechanisms for authenticators"
+          },
+          {
+            id: "IA-7",
+            control: "Cryptographic Module Authentication",
+            status: "gap",
+            details: "Cryptographic module authentication not implemented",
+            recommendation: "Implement authentication for cryptographic modules"
+          },
+          {
+            id: "IA-8",
+            control: "Identification and Authentication (Non-Organizational Users)",
+            status: "gap",
+            details: "Non-organizational user authentication not implemented",
+            recommendation: "Implement authentication for non-organizational users"
+          },
+          {
+            id: "IA-9",
+            control: "Service Identification and Authentication",
+            status: "gap",
+            details: "Service identification and authentication not implemented",
+            recommendation: "Implement identification and authentication for services"
+          },
+          {
+            id: "IA-10",
+            control: "Adaptive Authentication",
+            status: "gap",
+            details: "Adaptive authentication not implemented",
+            recommendation: "Implement adaptive authentication based on risk assessment"
+          },
+          {
+            id: "IA-11",
+            control: "Re-Authentication",
+            status: "gap",
+            details: "Re-authentication procedures not implemented",
+            recommendation: "Implement re-authentication procedures for session management"
+          },
+          {
+            id: "IA-12",
+            control: "Identity Proofing",
+            status: "gap",
+            details: "Identity proofing not implemented",
+            recommendation: "Implement identity proofing procedures for user registration"
           }
         ]
       },
@@ -472,6 +535,48 @@ const allFrameworks = {
             status: "gap",
             details: "Incident handling procedures not implemented",
             recommendation: "Implement incident handling procedures for security incidents"
+          },
+          {
+            id: "IR-5",
+            control: "Incident Monitoring",
+            status: "gap",
+            details: "Incident monitoring not implemented",
+            recommendation: "Implement monitoring capabilities for incident detection and response"
+          },
+          {
+            id: "IR-6",
+            control: "Incident Reporting",
+            status: "gap",
+            details: "Incident reporting procedures not implemented",
+            recommendation: "Implement incident reporting procedures and escalation protocols"
+          },
+          {
+            id: "IR-7",
+            control: "Incident Response Assistance",
+            status: "gap",
+            details: "Incident response assistance not available",
+            recommendation: "Establish incident response assistance capabilities and support"
+          },
+          {
+            id: "IR-8",
+            control: "Incident Response Plan",
+            status: "gap",
+            details: "Incident response plan not developed",
+            recommendation: "Develop comprehensive incident response plan with defined roles and procedures"
+          },
+          {
+            id: "IR-9",
+            control: "Information Spillage Response",
+            status: "gap",
+            details: "Information spillage response not implemented",
+            recommendation: "Implement procedures for responding to information spillage incidents"
+          },
+          {
+            id: "IR-10",
+            control: "Integrated Information Security Analysis Team",
+            status: "gap",
+            details: "Integrated security analysis team not established",
+            recommendation: "Establish integrated information security analysis team for incident response"
           }
         ]
       },
@@ -501,6 +606,27 @@ const allFrameworks = {
             recommendation: "Implement security function isolation to prevent unauthorized access to security functions"
           },
           {
+            id: "SC-4",
+            control: "Information in Shared Resources",
+            status: "gap",
+            details: "Information protection in shared resources not implemented",
+            recommendation: "Implement controls to protect information in shared system resources"
+          },
+          {
+            id: "SC-5",
+            control: "Denial of Service Protection",
+            status: "gap",
+            details: "Denial of service protection not implemented",
+            recommendation: "Implement denial of service protection mechanisms"
+          },
+          {
+            id: "SC-6",
+            control: "Resource Availability",
+            status: "gap",
+            details: "Resource availability controls not implemented",
+            recommendation: "Implement controls to ensure resource availability"
+          },
+          {
             id: "SC-7",
             control: "Boundary Protection",
             status: "gap",
@@ -513,6 +639,34 @@ const allFrameworks = {
             status: "gap",
             details: "Transmission confidentiality and integrity not implemented",
             recommendation: "Implement transmission confidentiality and integrity controls to protect information in transit"
+          },
+          {
+            id: "SC-9",
+            control: "Transmission Confidentiality",
+            status: "gap",
+            details: "Transmission confidentiality not implemented",
+            recommendation: "Implement transmission confidentiality controls"
+          },
+          {
+            id: "SC-10",
+            control: "Network Disconnect",
+            status: "gap",
+            details: "Network disconnect capability not implemented",
+            recommendation: "Implement network disconnect capability for security purposes"
+          },
+          {
+            id: "SC-11",
+            control: "Trusted Path",
+            status: "gap",
+            details: "Trusted path not implemented",
+            recommendation: "Implement trusted path for user authentication and system access"
+          },
+          {
+            id: "SC-12",
+            control: "Cryptographic Key Establishment and Management",
+            status: "gap",
+            details: "Cryptographic key management not implemented",
+            recommendation: "Implement cryptographic key establishment and management procedures"
           }
         ]
       }
@@ -532,6 +686,61 @@ const allFrameworks = {
             status: "gap",
             details: "User identification and authentication controls not implemented",
             recommendation: "Implement unique user ID assignment system with proper authentication mechanisms"
+          },
+          {
+            id: "PCI DSS 1.1.2",
+            control: "Firewall and router configuration standards are documented and in use",
+            status: "gap",
+            details: "Firewall and router configuration standards not documented",
+            recommendation: "Document and implement firewall and router configuration standards"
+          },
+          {
+            id: "PCI DSS 1.1.3",
+            control: "Current network diagram with all connections to cardholder data",
+            status: "gap",
+            details: "Network diagram not maintained",
+            recommendation: "Maintain current network diagram showing all connections to cardholder data"
+          },
+          {
+            id: "PCI DSS 1.1.4",
+            control: "Firewall rules are reviewed and updated every six months",
+            status: "gap",
+            details: "Firewall rules review process not implemented",
+            recommendation: "Implement quarterly review and update process for firewall rules"
+          },
+          {
+            id: "PCI DSS 1.1.5",
+            control: "Security policies and operational procedures are documented",
+            status: "gap",
+            details: "Security policies not documented",
+            recommendation: "Document security policies and operational procedures"
+          }
+        ]
+      },
+      {
+        name: "Protect Cardholder Data",
+        description: "Protect stored cardholder data and data in transit",
+        results: [
+          {
+            id: "PCI DSS 3.1.1",
+            control: "Keep cardholder data storage to a minimum",
+            status: "gap",
+            details: "Cardholder data storage minimization not implemented",
+            recommendation: "Implement data retention policies to minimize cardholder data storage"
+          },
+          {
+            id: "PCI DSS 3.1.2",
+            control: "Develop a data retention and disposal policy",
+            status: "gap",
+            details: "Data retention and disposal policy not developed",
+            recommendation: "Develop comprehensive data retention and disposal policy"
+          },
+          {
+            id: "PCI DSS 3.1.3",
+            control: "Render cardholder data unreadable anywhere it is stored",
+            status: "gap",
+            details: "Cardholder data encryption not implemented",
+            recommendation: "Implement strong encryption for all stored cardholder data"
           }
         ]
       }
@@ -551,6 +760,61 @@ const allFrameworks = {
             status: "gap",
             details: "Information security policies not established",
             recommendation: "Develop comprehensive information security policies aligned with business objectives"
+          },
+          {
+            id: "A.5.2",
+            control: "Information security roles and responsibilities",
+            status: "gap",
+            details: "Information security roles not defined",
+            recommendation: "Define and assign information security roles and responsibilities"
+          },
+          {
+            id: "A.5.3",
+            control: "Segregation of duties",
+            status: "gap",
+            details: "Segregation of duties not implemented",
+            recommendation: "Implement segregation of duties to prevent conflicts of interest"
+          },
+          {
+            id: "A.5.4",
+            control: "Management responsibilities",
+            status: "gap",
+            details: "Management responsibilities not defined",
+            recommendation: "Define and communicate management responsibilities for information security"
+          },
+          {
+            id: "A.5.5",
+            control: "Contact with authorities",
+            status: "gap",
+            details: "Contact procedures with authorities not established",
+            recommendation: "Establish procedures for contacting relevant authorities"
+          }
+        ]
+      },
+      {
+        name: "People Controls",
+        description: "Controls that address human resource security",
+        results: [
+          {
+            id: "A.6.1",
+            control: "Screening",
+            status: "gap",
+            details: "Personnel screening not implemented",
+            recommendation: "Implement personnel screening procedures for employment"
+          },
+          {
+            id: "A.6.2",
+            control: "Terms and conditions of employment",
+            status: "gap",
+            details: "Employment terms and conditions not defined",
+            recommendation: "Define information security terms and conditions in employment contracts"
+          },
+          {
+            id: "A.6.3",
+            control: "Information security awareness, education and training",
+            status: "gap",
+            details: "Security awareness training not implemented",
+            recommendation: "Implement comprehensive security awareness and training program"
           }
         ]
       }
@@ -570,6 +834,47 @@ const allFrameworks = {
             status: "gap",
             details: "Logical access security controls not implemented",
             recommendation: "Implement comprehensive logical access security controls including authentication, authorization, and monitoring"
+          },
+          {
+            id: "CC6.1.2",
+            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized users",
+            status: "gap",
+            details: "Logical access restrictions not implemented",
+            recommendation: "Implement logical access restrictions to ensure only authorized users can access systems"
+          },
+          {
+            id: "CC6.1.3",
+            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized applications",
+            status: "gap",
+            details: "Application access restrictions not implemented",
+            recommendation: "Implement application access controls to restrict access to authorized applications"
+          },
+          {
+            id: "CC6.1.4",
+            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized system software",
+            status: "gap",
+            details: "System software access restrictions not implemented",
+            recommendation: "Implement system software access controls to restrict administrative access"
+          }
+        ]
+      },
+      {
+        name: "Availability (CC7.1)",
+        description: "The entity maintains, monitors, and evaluates current processing capacity and use of system resources",
+        results: [
+          {
+            id: "CC7.1.1",
+            control: "The entity maintains, monitors, and evaluates current processing capacity and use of system resources",
+            status: "gap",
+            details: "Capacity monitoring not implemented",
+            recommendation: "Implement capacity monitoring and evaluation procedures for system resources"
+          },
+          {
+            id: "CC7.1.2",
+            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized system software",
+            status: "gap",
+            details: "System software access restrictions not implemented",
+            recommendation: "Implement system software access controls to restrict administrative access"
           }
         ]
       }
