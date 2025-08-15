@@ -167,7 +167,7 @@ function Analyzer({ onNavigateHome }) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
-  const [selectedCategories, setSelectedCategories] = useState(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core NIST families
+  const [selectedCategories, setSelectedCategories] = useState(['AC']); // Default to first NIST family
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -991,9 +991,9 @@ function Analyzer({ onNavigateHome }) {
                        setAnalysisResults(null);
                        // Reset categories when framework changes
                        if (e.target.value === 'NIST_800_53') {
-                         setSelectedCategories(['AC', 'AU', 'IA', 'IR', 'SC']); // Default to core families
+                         setSelectedCategories(['AC']); // Default to first critical family
                        } else if (e.target.value === 'NIST_CSF') {
-                         setSelectedCategories(['ID', 'PR']); // Default to critical CSF functions
+                         setSelectedCategories(['ID']); // Default to first CSF function
                        } else {
                          setSelectedCategories([]);
                        }
@@ -1022,11 +1022,20 @@ function Analyzer({ onNavigateHome }) {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
                     <label className="block text-sm font-medium text-slate-300">
-                      Control Families to Analyze
+                      Control Family to Analyze
                     </label>
                     <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
                       {selectedCategories.length} selected
                     </span>
+                  </div>
+                  
+                  <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-blue-300">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span>Single Selection Mode: Choose one control family for focused analysis</span>
+                    </div>
                   </div>
                   
                   <div className="mb-3 p-2 bg-slate-700/30 rounded-lg border border-slate-600">
@@ -1068,21 +1077,19 @@ function Analyzer({ onNavigateHome }) {
                     <button
                       type="button"
                       onClick={() => {
-                        const allCategories = [
-                          'AC', 'AU', 'IA', 'IR', 'SC', 'AT', 'CA', 'CM', 'CP', 'PE', 'PS', 'MP', 'SI', 'MA', 'RA', 'SA', 'SR'
-                        ];
-                        setSelectedCategories(allCategories);
+                        // Single selection - select the first critical control family
+                        setSelectedCategories(['AC']);
                       }}
                       className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                      Select All
+                      Select Critical
                     </button>
                     <button
                       type="button"
                       onClick={() => setSelectedCategories([])}
                       className="px-3 py-2 text-xs font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500"
                     >
-                      Deselect All
+                      Clear Selection
                     </button>
                   </div>
 
@@ -1110,14 +1117,13 @@ function Analyzer({ onNavigateHome }) {
                       ].map(family => (
                         <label key={family.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                           <input
-                            type="checkbox"
+                            type="radio"
+                            name="nist80053-family"
+                            value={family.code}
                             checked={selectedCategories.includes(family.code)}
                             onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedCategories([...selectedCategories, family.code]);
-                              } else {
-                                setSelectedCategories(selectedCategories.filter(c => c !== family.code));
-                              }
+                              // Single selection - replace the entire array with just this selection
+                              setSelectedCategories([e.target.value]);
                             }}
                             className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
                           />
@@ -1143,7 +1149,7 @@ function Analyzer({ onNavigateHome }) {
                   {/* Selection Summary */}
                   <div className="mt-3 p-3 bg-slate-700/30 rounded-lg border border-slate-600">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-slate-300">Selected families:</span>
+                      <span className="text-slate-300">Selected family:</span>
                       <span className="text-blue-400 font-medium">
                         {selectedCategories.length > 0 ? selectedCategories.join(', ') : 'None'}
                       </span>
@@ -1153,15 +1159,15 @@ function Analyzer({ onNavigateHome }) {
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
-                        Please select at least one control family to analyze.
+                        Please select one control family to analyze.
                       </div>
                     )}
-                    {selectedCategories.length > 8 && (
+                    {selectedCategories.length > 1 && (
                       <div className="mt-2 text-sm text-yellow-400 flex items-center">
                         <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                         </svg>
-                        Consider selecting fewer families for better performance.
+                        Only one control family can be selected at a time.
                       </div>
                     )}
                   </div>
@@ -1173,11 +1179,20 @@ function Analyzer({ onNavigateHome }) {
                 <div className="mb-6">
                   <div className="flex items-center justify-between mb-3">
                     <label className="block text-sm font-medium text-slate-300">
-                      CSF Functions to Analyze
+                      CSF Function to Analyze
                     </label>
                     <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
                       {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length} selected
                     </span>
+                  </div>
+                  
+                  <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-blue-300">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span>Single Selection Mode: Choose one CSF function for focused analysis</span>
+                    </div>
                   </div>
                   
                   <div className="space-y-2">
@@ -1186,12 +1201,12 @@ function Analyzer({ onNavigateHome }) {
                       <button
                         type="button"
                         onClick={() => {
-                          const allCSFFunctions = ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'];
-                          setSelectedCategories(allCSFFunctions);
+                          // Single selection - select the first CSF function
+                          setSelectedCategories(['ID']);
                         }}
                         className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        Select All
+                        Select Critical
                       </button>
                       <button
                         type="button"
@@ -1201,32 +1216,49 @@ function Analyzer({ onNavigateHome }) {
                         }}
                         className="px-3 py-2 text-xs font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500"
                       >
-                        Deselect All
+                        Clear Selection
                       </button>
                     </div>
                     
-                    {['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].map(func => (
-                      <label key={func} className="flex items-center space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                    {[
+                      { code: 'ID', name: 'IDENTIFY', description: 'Develop organizational understanding to manage cybersecurity risk to systems, people, assets, data, and capabilities' },
+                      { code: 'PR', name: 'PROTECT', description: 'Develop and implement appropriate safeguards to ensure delivery of critical infrastructure services' },
+                      { code: 'DE', name: 'DETECT', description: 'Develop and implement appropriate activities to identify the occurrence of a cybersecurity event' },
+                      { code: 'RS', name: 'RESPOND', description: 'Develop and implement appropriate activities to take action regarding a detected cybersecurity incident' },
+                      { code: 'RC', name: 'RECOVER', description: 'Develop and implement appropriate activities to maintain plans for resilience and to restore any capabilities or services that were impaired due to a cybersecurity incident' },
+                      { code: 'GV', name: 'GOVERN', description: 'Establish and monitor the organization\'s cybersecurity risk management strategy, expectations, and policy' }
+                    ].map(func => (
+                      <label key={func.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                         <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(func)}
+                          type="radio"
+                          name="nist-csf-function"
+                          value={func.code}
+                          checked={selectedCategories.includes(func.code)}
                           onChange={(e) => {
-                            if (e.target.checked) {
-                              setSelectedCategories([...selectedCategories, func]);
-                            } else {
-                              setSelectedCategories(selectedCategories.filter(c => c !== func));
-                            }
+                            // Single selection - replace the entire array with just this selection
+                            setSelectedCategories([e.target.value]);
                           }}
                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
                         />
-                        <span className="text-sm text-slate-200">{func}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium text-slate-200">{func.code}</span>
+                            <span className="text-xs text-slate-400">{func.name}</span>
+                          </div>
+                          <div className="text-slate-400 text-xs mt-1">{func.description}</div>
+                        </div>
                       </label>
                     ))}
                   </div>
                   
                   {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length === 0 && (
                     <div className="mt-2 text-sm text-red-400">
-                      Please select at least one CSF function to analyze.
+                      Please select one CSF function to analyze.
+                    </div>
+                  )}
+                  {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length > 1 && (
+                    <div className="mt-2 text-sm text-yellow-400">
+                      Only one CSF function can be selected at a time.
                     </div>
                   )}
                 </div>
