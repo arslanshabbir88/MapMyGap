@@ -186,6 +186,7 @@ function Analyzer({ onNavigateHome }) {
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [analysisStrictness, setAnalysisStrictness] = useState('balanced'); // 'strict', 'balanced', 'lenient'
+  const [lastAnalyzedStrictness, setLastAnalyzedStrictness] = useState(null);
 
   console.log('About to call useAuth...');
   const { user, supabase } = useAuth();
@@ -806,6 +807,7 @@ function Analyzer({ onNavigateHome }) {
           
           const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
           setAnalysisResults(results);
+          setLastAnalyzedStrictness(analysisStrictness);
           
           // Save to history for authenticated users
           if (user) {
@@ -1886,10 +1888,12 @@ function Analyzer({ onNavigateHome }) {
                       <div className="flex-1">
                         <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
                         <div className="text-xs text-blue-200 space-y-1">
-                          <p><strong>Analysis Mode:</strong> {analysisStrictness.charAt(0).toUpperCase() + analysisStrictness.slice(1)} Mode</p>
-                          <p><strong>Your Score:</strong> {analysisResults.summary.score}%</p>
-                          
-                          {analysisStrictness === 'strict' && (
+                          {lastAnalyzedStrictness ? (
+                            <>
+                              <p><strong>Analysis Mode:</strong> {lastAnalyzedStrictness.charAt(0).toUpperCase() + lastAnalyzedStrictness.slice(1)} Mode</p>
+                              <p><strong>Your Score:</strong> {analysisResults.summary.score}%</p>
+                              
+                              {lastAnalyzedStrictness === 'strict' && (
                             <div className="text-blue-100 bg-blue-500/20 p-3 rounded mt-2 space-y-2">
                               <p className="font-medium">🔴 <strong>Strict Mode Analysis</strong></p>
                               <p>Your {analysisResults.summary.score}% score reflects a <strong>conservative assessment</strong> that only counts explicit, undeniable evidence as "covered".</p>
@@ -1903,7 +1907,7 @@ function Analyzer({ onNavigateHome }) {
                             </div>
                           )}
                           
-                          {analysisStrictness === 'balanced' && (
+                              {lastAnalyzedStrictness === 'balanced' && (
                             <div className="text-yellow-100 bg-yellow-500/20 p-3 rounded mt-2 space-y-2">
                               <p className="font-medium">🟡 <strong>Balanced Mode Analysis</strong></p>
                               <p>Your {analysisResults.summary.score}% score reflects a <strong>standard assessment</strong> that accepts reasonable evidence and reasonable inferences.</p>
@@ -1917,7 +1921,7 @@ function Analyzer({ onNavigateHome }) {
                             </div>
                           )}
                           
-                          {analysisStrictness === 'lenient' && (
+                              {lastAnalyzedStrictness === 'lenient' && (
                             <div className="text-green-100 bg-green-500/20 p-3 rounded mt-2 space-y-2">
                               <p className="font-medium">🟢 <strong>Lenient Mode Analysis</strong></p>
                               <p>Your {analysisResults.summary.score}% score reflects a <strong>generous assessment</strong> that accepts broad interpretations and implied practices.</p>
@@ -1931,12 +1935,12 @@ function Analyzer({ onNavigateHome }) {
                             </div>
                           )}
                           
-                          <div className="mt-3 p-2 bg-slate-700/30 rounded text-xs">
-                            <p><strong>💡 Pro Tip:</strong> {analysisStrictness === 'strict' ? 'Strict mode is best for internal audits and high-risk assessments.' : analysisStrictness === 'balanced' ? 'Balanced mode provides a realistic compliance assessment for most organizations.' : 'Lenient mode is useful for initial assessments and identifying major gaps.'}</p>
-                          </div>
-                          
-                          {/* Dynamic Score Interpretation */}
-                          <div className="mt-3 p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50">
+                              <div className="mt-3 p-2 bg-slate-700/30 rounded text-xs">
+                                <p><strong>💡 Pro Tip:</strong> {lastAnalyzedStrictness === 'strict' ? 'Strict mode is best for internal audits and high-risk assessments.' : lastAnalyzedStrictness === 'balanced' ? 'Balanced mode provides a realistic compliance assessment for most organizations.' : 'Lenient mode is useful for initial assessments and identifying major gaps.'}</p>
+                              </div>
+                              
+                              {/* Dynamic Score Interpretation */}
+                              <div className="mt-3 p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50">
                             <p className="font-medium text-blue-200 mb-2">📈 Score Interpretation</p>
                             {analysisResults.summary.score < 25 ? (
                               <div className="text-red-200">
@@ -1954,8 +1958,14 @@ function Analyzer({ onNavigateHome }) {
                               <div className="text-green-200">
                                 <p><strong>🟢 Excellent Coverage ({analysisResults.summary.score}%):</strong> Outstanding compliance position! Your document demonstrates comprehensive control implementation.</p>
                               </div>
-                            )}
+                                                          )}
                           </div>
+                            </>
+                          ) : (
+                            <div className="text-center py-4 text-slate-400">
+                              <p>Run an analysis to see detailed score explanations.</p>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
