@@ -970,10 +970,43 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       console.log('No specific categories selected, using all framework categories');
     }
 
+    // Calculate optimal token limit based on document size and framework complexity
+    const calculateOptimalTokenLimit = (fileContent, frameworkData) => {
+      const documentSize = fileContent.length;
+      const totalControls = frameworkData.categories.reduce((total, cat) => total + cat.results.length, 0);
+      
+      // Base calculation: 2 tokens per character for detailed analysis
+      let baseTokens = documentSize * 2;
+      
+      // Framework complexity multiplier: more controls = more detailed analysis needed
+      const complexityMultiplier = Math.min(totalControls / 20, 3); // Cap at 3x for very large frameworks
+      
+      // Calculate optimal limit with safety margin
+      let optimalTokens = Math.ceil(baseTokens * complexityMultiplier * 1.5); // 50% safety margin
+      
+      // Set reasonable bounds
+      const minTokens = 16384; // 16K minimum
+      const maxTokens = 131072; // 128K maximum (Gemini Flash limit)
+      
+      optimalTokens = Math.max(minTokens, Math.min(optimalTokens, maxTokens));
+      
+      console.log('=== TOKEN LIMIT CALCULATION ===');
+      console.log('Document size:', documentSize, 'characters');
+      console.log('Total controls:', totalControls);
+      console.log('Complexity multiplier:', complexityMultiplier.toFixed(2));
+      console.log('Base tokens needed:', baseTokens);
+      console.log('Optimal token limit:', optimalTokens);
+      console.log('Token limit in MB:', (optimalTokens / 1000000).toFixed(3));
+      
+      return optimalTokens;
+    };
+
+    const optimalTokenLimit = calculateOptimalTokenLimit(fileContent, filteredFrameworkData);
+
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       generationConfig: {
-        maxOutputTokens: 16384, // Increase to 16K tokens to prevent truncation
+        maxOutputTokens: optimalTokenLimit, // Dynamic token limit based on document size
         temperature: 0.1, // Low temperature for consistent analysis
         topP: 0.8,
         topK: 40
