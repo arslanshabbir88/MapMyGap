@@ -838,28 +838,56 @@ Return only valid JSON using the exact control structure above.`;
      
      let text; // Declare text variable outside try-catch block
      
-     try {
-       const aiPromise = model.generateContent(prompt);
-       console.log('⏳ AI request sent, waiting for response...');
-       const result = await Promise.race([aiPromise, timeoutPromise]);
-       console.log('✅ AI response received successfully');
-       const response = await result.response;
-       text = response.text(); // Assign to the outer variable
-       console.log('📝 AI response text extracted, length:', text.length);
-     } catch (aiError) {
-       console.error('❌ AI analysis failed with error:', aiError.message);
-       console.error('Error type:', aiError.constructor.name);
-       console.error('Full error object:', aiError);
-       
-       if (aiError.message.includes('quota')) {
-         throw new Error('AI API quota exceeded - please try again later');
-       } else if (aiError.message.includes('timeout')) {
-         throw new Error('AI analysis timed out - please try again');
-       } else if (aiError.message.includes('API key') || aiError.message.includes('authentication')) {
-         throw new Error('AI API authentication failed - please check API key configuration');
-       } else {
-         throw new Error(`AI analysis failed: ${aiError.message}`);
+     // Implement retry logic for API overload
+     const maxRetries = 3;
+     let retryCount = 0;
+     let lastError = null;
+     
+     while (retryCount < maxRetries) {
+       try {
+         console.log(`🔄 AI analysis attempt ${retryCount + 1}/${maxRetries}...`);
+         const aiPromise = model.generateContent(prompt);
+         console.log('⏳ AI request sent, waiting for response...');
+         const result = await Promise.race([aiPromise, timeoutPromise]);
+         console.log('✅ AI response received successfully');
+         const response = await result.response;
+         text = response.text(); // Assign to the outer variable
+         console.log('📝 AI response text extracted, length:', text.length);
+         break; // Success - exit retry loop
+       } catch (aiError) {
+         lastError = aiError;
+         retryCount++;
+         
+         console.error(`❌ AI analysis attempt ${retryCount} failed:`, aiError.message);
+         
+         // Check if it's a retryable error
+         if (aiError.message.includes('overloaded') || aiError.message.includes('503') || aiError.message.includes('Service Unavailable')) {
+           if (retryCount < maxRetries) {
+             const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s
+             console.log(`🔄 API overload detected. Retrying in ${delay/1000} seconds... (attempt ${retryCount}/${maxRetries})`);
+             await new Promise(resolve => setTimeout(resolve, delay));
+             continue; // Try again
+           } else {
+             console.error('❌ Max retries reached for API overload. Using fallback.');
+           }
+         } else if (aiError.message.includes('quota')) {
+           throw new Error('AI API quota exceeded - please try again later');
+         } else if (aiError.message.includes('timeout')) {
+           throw new Error('AI analysis timed out - please try again');
+         } else if (aiError.message.includes('API key') || aiError.message.includes('authentication')) {
+           throw new Error('AI API authentication failed - please check API key configuration');
+         } else {
+           // Non-retryable error, break immediately
+           break;
+         }
        }
+     }
+     
+     // If we exhausted all retries or hit non-retryable error
+     if (retryCount >= maxRetries && lastError) {
+       console.error('❌ AI analysis failed after all retry attempts');
+       console.error('Final error:', lastError.message);
+       throw new Error(`AI analysis failed after ${maxRetries} attempts: ${lastError.message}`);
      }
     
     console.log('=== AI RESPONSE DEBUG ===');
