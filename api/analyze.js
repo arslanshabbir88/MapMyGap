@@ -755,6 +755,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       console.log('Base tokens needed:', baseTokens);
       console.log('Optimal token limit:', optimalTokens);
       console.log('Token limit in MB:', (optimalTokens / 1000000).toFixed(3));
+      console.log('Token limit in K:', (optimalTokens / 1000).toFixed(1));
       
       return optimalTokens;
     };
@@ -862,6 +863,14 @@ CRITICAL: You have ${optimalTokenLimit} output tokens available. Use them to pro
 
 Return only valid JSON using the exact control structure above.`;
 
+    console.log('=== PROMPT TOKEN ANALYSIS ===');
+    console.log('Prompt length:', prompt.length, 'characters');
+    console.log('Estimated prompt tokens (rough):', Math.ceil(prompt.length / 4));
+    console.log('Available output tokens:', optimalTokenLimit);
+    console.log('Total estimated tokens needed:', Math.ceil(prompt.length / 4) + optimalTokenLimit);
+    console.log('Gemini Flash model limit: 1M tokens total');
+    console.log('Token usage efficiency:', ((Math.ceil(prompt.length / 4) + optimalTokenLimit) / 1000000 * 100).toFixed(2) + '% of model limit');
+
          // Add timeout to prevent hanging - increased for Vercel deployment
      const timeoutPromise = new Promise((_, reject) => {
        setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
@@ -943,6 +952,26 @@ Return only valid JSON using the exact control structure above.`;
     console.log('AI Response contains "results":', text.includes('"results"'));
     console.log('AI Response contains "AC-1":', text.includes('AC-1'));
     console.log('AI Response contains "Access Control":', text.includes('Access Control'));
+    
+    // Add comprehensive token analysis
+    console.log('=== AI RESPONSE TOKEN ANALYSIS ===');
+    console.log('Response length:', text.length, 'characters');
+    console.log('Estimated response tokens (rough):', Math.ceil(text.length / 4));
+    console.log('Token limit used:', optimalTokenLimit);
+    console.log('Token usage percentage:', ((Math.ceil(text.length / 4) / optimalTokenLimit) * 100).toFixed(1) + '%');
+    console.log('Response truncated?', text.length < 1000 ? 'POSSIBLY - Very short response' : 'No - Adequate length');
+    
+    // Check for common truncation indicators
+    const truncationIndicators = [
+      text.endsWith('...'),
+      text.endsWith(']'),
+      text.endsWith('}'),
+      text.includes('truncated'),
+      text.includes('incomplete'),
+      text.length < 2000
+    ];
+    console.log('Truncation indicators found:', truncationIndicators.filter(Boolean).length);
+    console.log('Response appears complete:', !truncationIndicators.some(Boolean));
     
     // Check if AI returned an error message
     console.log('=== AI RESPONSE VALIDATION ===');
