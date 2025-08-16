@@ -1066,6 +1066,663 @@ const allFrameworks = {
             recommendation: "Implement cryptographic key establishment and management procedures"
           }
         ]
+      },
+      {
+        name: "Risk Assessment (RA)",
+        description: "Assess and manage risks to organizational operations, assets, and individuals",
+        results: [
+          {
+            id: "RA-1",
+            control: "Risk Assessment Policy and Procedures",
+            status: "gap",
+            details: "Risk assessment policy not established",
+            recommendation: "Develop and implement comprehensive risk assessment policy and procedures"
+          },
+          {
+            id: "RA-2",
+            control: "Security Categorization",
+            status: "gap",
+            details: "Security categorization not implemented",
+            recommendation: "Implement security categorization for information systems and data"
+          },
+          {
+            id: "RA-3",
+            control: "Risk Assessment",
+            status: "gap",
+            details: "Risk assessment not performed",
+            recommendation: "Conduct comprehensive risk assessments for information systems and data"
+          },
+          {
+            id: "RA-4",
+            control: "Risk Assessment Update",
+            status: "gap",
+            details: "Risk assessment update process not implemented",
+            recommendation: "Implement ongoing risk assessment update process"
+          },
+          {
+            id: "RA-5",
+            control: "Vulnerability Scanning",
+            status: "gap",
+            details: "Vulnerability scanning not implemented",
+            recommendation: "Implement regular vulnerability scanning and assessment"
+          },
+          {
+            id: "RA-6",
+            control: "Technical Surveillance Countermeasures Survey",
+            status: "gap",
+            details: "Technical surveillance countermeasures not assessed",
+            recommendation: "Conduct technical surveillance countermeasures surveys"
+          },
+          {
+            id: "RA-7",
+            control: "Risk Response",
+            status: "gap",
+            details: "Risk response procedures not implemented",
+            recommendation: "Implement risk response procedures and controls"
+          },
+          {
+            id: "RA-8",
+            control: "Risk Monitoring and Review",
+            status: "gap",
+            details: "Risk monitoring and review not implemented",
+            recommendation: "Implement ongoing risk monitoring and review processes"
+          }
+        ]
+      },
+      {
+        name: "Configuration Management (CM)",
+        description: "Establish and maintain baseline configurations and change control",
+        results: [
+          {
+            id: "CM-1",
+            control: "Configuration Management Policy and Procedures",
+            status: "gap",
+            details: "Configuration management policy not established",
+            recommendation: "Develop and implement comprehensive configuration management policy and procedures"
+          },
+          {
+            id: "CM-2",
+            control: "Baseline Configurations",
+            status: "gap",
+            details: "Baseline configurations not established",
+            recommendation: "Establish and maintain baseline configurations for all systems"
+          },
+          {
+            id: "CM-3",
+            control: "Configuration Change Control",
+            status: "gap",
+            details: "Configuration change control not implemented",
+            recommendation: "Implement formal configuration change control procedures"
+          },
+          {
+            id: "CM-4",
+            control: "Security Impact Analysis",
+            status: "gap",
+            details: "Security impact analysis not performed",
+            recommendation: "Perform security impact analysis for all configuration changes"
+          },
+          {
+            id: "CM-5",
+            control: "Access Restrictions for Change",
+            status: "gap",
+            details: "Access restrictions for changes not implemented",
+            recommendation: "Implement access restrictions for configuration changes"
+          },
+          {
+            id: "CM-6",
+            control: "Configuration Settings",
+            status: "gap",
+            details: "Configuration settings not managed",
+            recommendation: "Implement secure configuration settings management"
+          },
+          {
+            id: "CM-7",
+            control: "Least Functionality",
+            status: "gap",
+            details: "Least functionality principle not implemented",
+            recommendation: "Implement least functionality principle for systems"
+          },
+          {
+            id: "CM-8",
+            control: "Information System Component Inventory",
+            status: "gap",
+            details: "System component inventory not maintained",
+            recommendation: "Maintain comprehensive information system component inventory"
+          },
+          {
+            id: "CM-9",
+            control: "Configuration Management Plan",
+            status: "gap",
+            details: "Configuration management plan not developed",
+            recommendation: "Develop and maintain comprehensive configuration management plan"
+          },
+          {
+            id: "CM-10",
+            control: "Software Usage Restrictions",
+            status: "gap",
+            details: "Software usage restrictions not implemented",
+            recommendation: "Implement software usage restrictions and licensing controls"
+          },
+          {
+            id: "CM-11",
+            control: "User-Installed Software",
+            status: "gap",
+            details: "User-installed software controls not implemented",
+            recommendation: "Implement controls for user-installed software"
+          }
+        ]
+      },
+      {
+        name: "Contingency Planning (CP)",
+        description: "Establish and maintain contingency planning capabilities",
+        results: [
+          {
+            id: "CP-1",
+            control: "Contingency Planning Policy and Procedures",
+            status: "gap",
+            details: "Contingency planning policy not established",
+            recommendation: "Develop and implement comprehensive contingency planning policy and procedures"
+          },
+          {
+            id: "CP-2",
+            control: "Contingency Plan",
+            status: "gap",
+            details: "Contingency plan not developed",
+            recommendation: "Develop comprehensive contingency plan for business continuity"
+          },
+          {
+            id: "CP-3",
+            control: "Contingency Training",
+            status: "gap",
+            details: "Contingency training not implemented",
+            recommendation: "Implement regular contingency planning training for personnel"
+          },
+          {
+            id: "CP-4",
+            control: "Contingency Plan Testing",
+            status: "gap",
+            details: "Contingency plan testing not performed",
+            recommendation: "Conduct regular testing of contingency plans"
+          },
+          {
+            id: "CP-5",
+            control: "Contingency Plan Update",
+            status: "gap",
+            details: "Contingency plan update process not implemented",
+            recommendation: "Implement ongoing contingency plan update process"
+          },
+          {
+            id: "CP-6",
+            control: "Alternate Storage Site",
+            status: "gap",
+            details: "Alternate storage site not established",
+            recommendation: "Establish alternate storage site for critical data"
+          },
+          {
+            id: "CP-7",
+            control: "Alternate Processing Site",
+            status: "gap",
+            details: "Alternate processing site not established",
+            recommendation: "Establish alternate processing site for critical systems"
+          },
+          {
+            id: "CP-8",
+            control: "Telecommunications Services",
+            status: "gap",
+            details: "Telecommunications services not planned",
+            recommendation: "Plan for telecommunications services during contingencies"
+          },
+          {
+            id: "CP-9",
+            control: "Information System Backup",
+            status: "gap",
+            details: "System backup procedures not implemented",
+            recommendation: "Implement comprehensive information system backup procedures"
+          },
+          {
+            id: "CP-10",
+            control: "Information System Recovery and Reconstitution",
+            status: "gap",
+            details: "System recovery procedures not implemented",
+            recommendation: "Implement comprehensive system recovery and reconstitution procedures"
+          }
+        ]
+      },
+      {
+        name: "System and Information Integrity (SI)",
+        description: "Identify, report, and correct information system flaws",
+        results: [
+          {
+            id: "SI-1",
+            control: "System and Information Integrity Policy and Procedures",
+            status: "gap",
+            details: "System integrity policy not established",
+            recommendation: "Develop and implement comprehensive system and information integrity policy and procedures"
+          },
+          {
+            id: "SI-2",
+            control: "Flaw Remediation",
+            status: "gap",
+            details: "Flaw remediation process not implemented",
+            recommendation: "Implement comprehensive flaw remediation process"
+          },
+          {
+            id: "SI-3",
+            control: "Malicious Code Protection",
+            status: "gap",
+            details: "Malicious code protection not implemented",
+            recommendation: "Implement comprehensive malicious code protection mechanisms"
+          },
+          {
+            id: "SI-4",
+            control: "Information System Monitoring",
+            status: "gap",
+            details: "System monitoring not implemented",
+            recommendation: "Implement comprehensive information system monitoring"
+          },
+          {
+            id: "SI-5",
+            control: "Security Alerts and Advisories",
+            status: "gap",
+            details: "Security alerts and advisories not monitored",
+            recommendation: "Monitor and respond to security alerts and advisories"
+          },
+          {
+            id: "SI-6",
+            control: "Security Function Verification",
+            status: "gap",
+            details: "Security function verification not performed",
+            recommendation: "Implement security function verification procedures"
+          },
+          {
+            id: "SI-7",
+            control: "Software and Information Integrity",
+            status: "gap",
+            details: "Software and information integrity not maintained",
+            recommendation: "Implement software and information integrity controls"
+          },
+          {
+            id: "SI-8",
+            control: "Spam Protection",
+            status: "gap",
+            details: "Spam protection not implemented",
+            recommendation: "Implement spam protection mechanisms"
+          },
+          {
+            id: "SI-9",
+            control: "Information Input Validation",
+            status: "gap",
+            details: "Input validation not implemented",
+            recommendation: "Implement comprehensive input validation controls"
+          },
+          {
+            id: "SI-10",
+            control: "Information Input Accuracy and Completeness",
+            status: "gap",
+            details: "Input accuracy and completeness not verified",
+            recommendation: "Implement input accuracy and completeness verification"
+          },
+          {
+            id: "SI-11",
+            control: "Error Handling",
+            status: "gap",
+            details: "Error handling procedures not implemented",
+            recommendation: "Implement comprehensive error handling procedures"
+          },
+          {
+            id: "SI-12",
+            control: "Information Management and Retention",
+            status: "gap",
+            details: "Information management and retention not implemented",
+            recommendation: "Implement comprehensive information management and retention procedures"
+          },
+          {
+            id: "SI-13",
+            control: "Memory Protection",
+            status: "gap",
+            details: "Memory protection not implemented",
+            recommendation: "Implement memory protection mechanisms"
+          },
+          {
+            id: "SI-14",
+            control: "Non-Persistence",
+            status: "gap",
+            details: "Non-persistence controls not implemented",
+            recommendation: "Implement non-persistence controls for sensitive information"
+          },
+          {
+            id: "SI-15",
+            control: "Information Output Filtering",
+            status: "gap",
+            details: "Information output filtering not implemented",
+            recommendation: "Implement information output filtering controls"
+          },
+          {
+            id: "SI-16",
+            control: "Memory Location Randomization",
+            status: "gap",
+            details: "Memory location randomization not implemented",
+            recommendation: "Implement memory location randomization for security"
+          },
+          {
+            id: "SI-17",
+            control: "Fail-Safe Procedures",
+            status: "gap",
+            details: "Fail-safe procedures not implemented",
+            recommendation: "Implement fail-safe procedures for system failures"
+          }
+        ]
+      },
+      {
+        name: "Program Management (PM)",
+        description: "Manage information security program and resources",
+        results: [
+          {
+            id: "PM-1",
+            control: "Information Security Program Plan",
+            status: "gap",
+            details: "Information security program plan not developed",
+            recommendation: "Develop comprehensive information security program plan"
+          },
+          {
+            id: "PM-2",
+            control: "Senior Information Security Officer",
+            status: "gap",
+            details: "Senior information security officer not designated",
+            recommendation: "Designate senior information security officer with appropriate authority"
+          },
+          {
+            id: "PM-3",
+            control: "Information Security Resources",
+            status: "gap",
+            details: "Information security resources not allocated",
+            recommendation: "Allocate adequate resources for information security program"
+          },
+          {
+            id: "PM-4",
+            control: "Plan of Action and Milestones Process",
+            status: "gap",
+            details: "Plan of action and milestones process not implemented",
+            recommendation: "Implement plan of action and milestones process for security improvements"
+          },
+          {
+            id: "PM-5",
+            control: "Information System Inventory",
+            status: "gap",
+            details: "Information system inventory not maintained",
+            recommendation: "Maintain comprehensive information system inventory"
+          },
+          {
+            id: "PM-6",
+            control: "Information Security Measures of Performance",
+            status: "gap",
+            details: "Security performance measures not established",
+            recommendation: "Establish and monitor information security performance measures"
+          },
+          {
+            id: "PM-7",
+            control: "Enterprise Architecture",
+            status: "gap",
+            details: "Enterprise architecture not developed",
+            recommendation: "Develop enterprise architecture incorporating security requirements"
+          },
+          {
+            id: "PM-8",
+            control: "Critical Infrastructure Plan",
+            status: "gap",
+            details: "Critical infrastructure plan not developed",
+            recommendation: "Develop critical infrastructure protection plan"
+          },
+          {
+            id: "PM-9",
+            control: "Risk Management Strategy",
+            status: "gap",
+            details: "Risk management strategy not developed",
+            recommendation: "Develop comprehensive risk management strategy"
+          },
+          {
+            id: "PM-10",
+            control: "Security Authorization Process",
+            status: "gap",
+            details: "Security authorization process not implemented",
+            recommendation: "Implement formal security authorization process"
+          },
+          {
+            id: "PM-11",
+            control: "Mission and Business Process Definition",
+            status: "gap",
+            details: "Mission and business process definition not developed",
+            recommendation: "Develop mission and business process definitions incorporating security"
+          },
+          {
+            id: "PM-12",
+            control: "Insider Threat Program",
+            status: "gap",
+            details: "Insider threat program not implemented",
+            recommendation: "Implement comprehensive insider threat program"
+          },
+          {
+            id: "PM-13",
+            control: "Information Security Workforce",
+            status: "gap",
+            details: "Information security workforce not established",
+            recommendation: "Establish qualified information security workforce"
+          },
+          {
+            id: "PM-14",
+            control: "Testing, Training, and Monitoring",
+            status: "gap",
+            details: "Testing, training, and monitoring not implemented",
+            recommendation: "Implement comprehensive testing, training, and monitoring program"
+          },
+          {
+            id: "PM-15",
+            control: "Contacts with Security Groups and Associations",
+            status: "gap",
+            details: "Security group contacts not established",
+            recommendation: "Establish contacts with security groups and associations"
+          },
+          {
+            id: "PM-16",
+            control: "Threat Awareness Program",
+            status: "gap",
+            details: "Threat awareness program not implemented",
+            recommendation: "Implement comprehensive threat awareness program"
+          },
+          {
+            id: "PM-17",
+            control: "Protecting Controlled Unclassified Information",
+            status: "gap",
+            details: "Controlled unclassified information protection not implemented",
+            recommendation: "Implement protection for controlled unclassified information"
+          }
+        ]
+      },
+      {
+        name: "Supply Chain Risk Management (SR)",
+        description: "Manage risks associated with supply chain",
+        results: [
+          {
+            id: "SR-1",
+            control: "Supply Chain Risk Management Policy and Procedures",
+            status: "gap",
+            details: "Supply chain risk management policy not established",
+            recommendation: "Develop and implement comprehensive supply chain risk management policy and procedures"
+          },
+          {
+            id: "SR-2",
+            control: "Supply Chain Risk Management Plan",
+            status: "gap",
+            details: "Supply chain risk management plan not developed",
+            recommendation: "Develop comprehensive supply chain risk management plan"
+          },
+          {
+            id: "SR-3",
+            control: "Supply Chain Controls and Processes",
+            status: "gap",
+            details: "Supply chain controls and processes not implemented",
+            recommendation: "Implement comprehensive supply chain controls and processes"
+          },
+          {
+            id: "SR-4",
+            control: "Acquisition Strategies, Tools, and Methods",
+            status: "gap",
+            details: "Acquisition strategies not developed",
+            recommendation: "Develop acquisition strategies, tools, and methods incorporating security"
+          },
+          {
+            id: "SR-5",
+            control: "Acquisition Contract Requirements",
+            status: "gap",
+            details: "Acquisition contract requirements not defined",
+            recommendation: "Define security requirements in acquisition contracts"
+          },
+          {
+            id: "SR-6",
+            control: "Software Supply Chain and Software Integrity",
+            status: "gap",
+            details: "Software supply chain integrity not maintained",
+            recommendation: "Implement software supply chain and integrity controls"
+          },
+          {
+            id: "SR-7",
+            control: "Developer Security Testing and Evaluation",
+            status: "gap",
+            details: "Developer security testing not required",
+            recommendation: "Require developer security testing and evaluation"
+          },
+          {
+            id: "SR-8",
+            control: "Developer-Provided Training",
+            status: "gap",
+            details: "Developer training not provided",
+            recommendation: "Provide security training to developers"
+          },
+          {
+            id: "SR-9",
+            control: "Developer Configuration Management",
+            status: "gap",
+            details: "Developer configuration management not implemented",
+            recommendation: "Implement developer configuration management controls"
+          },
+          {
+            id: "SR-10",
+            control: "Developer Screening",
+            status: "gap",
+            details: "Developer screening not performed",
+            recommendation: "Implement developer screening procedures"
+          },
+          {
+            id: "SR-11",
+            control: "Developer Security Architecture and Design",
+            status: "gap",
+            details: "Developer security architecture not implemented",
+            recommendation: "Implement developer security architecture and design controls"
+          },
+          {
+            id: "SR-12",
+            control: "Developer Configuration Management",
+            status: "gap",
+            details: "Developer configuration management not implemented",
+            recommendation: "Implement developer configuration management controls"
+          }
+        ]
+      },
+      {
+        name: "Awareness and Training (AT)",
+        description: "Ensure personnel are aware of security risks and trained",
+        results: [
+          {
+            id: "AT-1",
+            control: "Awareness and Training Policy and Procedures",
+            status: "gap",
+            details: "Awareness and training policy not established",
+            recommendation: "Develop and implement comprehensive awareness and training policy and procedures"
+          },
+          {
+            id: "AT-2",
+            control: "Literacy Training and Awareness",
+            status: "gap",
+            details: "Literacy training not implemented",
+            recommendation: "Implement literacy training and awareness programs"
+          },
+          {
+            id: "AT-3",
+            control: "Role-Based Training",
+            status: "gap",
+            details: "Role-based training not implemented",
+            recommendation: "Implement role-based security training programs"
+          },
+          {
+            id: "AT-4",
+            control: "Training Records",
+            status: "gap",
+            details: "Training records not maintained",
+            recommendation: "Maintain comprehensive training records for all personnel"
+          }
+        ]
+      },
+      {
+        name: "Media Protection (MP)",
+        description: "Protect and control access to media",
+        results: [
+          {
+            id: "MP-1",
+            control: "Media Protection Policy and Procedures",
+            status: "gap",
+            details: "Media protection policy not established",
+            recommendation: "Develop and implement comprehensive media protection policy and procedures"
+          },
+          {
+            id: "MP-2",
+            control: "Media Access",
+            status: "gap",
+            details: "Media access controls not implemented",
+            recommendation: "Implement media access controls and restrictions"
+          },
+          {
+            id: "MP-3",
+            control: "Media Marking",
+            status: "gap",
+            details: "Media marking not implemented",
+            recommendation: "Implement media marking and labeling procedures"
+          },
+          {
+            id: "MP-4",
+            control: "Media Storage",
+            status: "gap",
+            details: "Media storage controls not implemented",
+            recommendation: "Implement secure media storage controls"
+          },
+          {
+            id: "MP-5",
+            control: "Media Transport",
+            status: "gap",
+            details: "Media transport controls not implemented",
+            recommendation: "Implement secure media transport controls"
+          },
+          {
+            id: "MP-6",
+            control: "Media Sanitization",
+            status: "gap",
+            details: "Media sanitization not implemented",
+            recommendation: "Implement comprehensive media sanitization procedures"
+          },
+          {
+            id: "MP-7",
+            control: "Media Use",
+            status: "gap",
+            details: "Media use controls not implemented",
+            recommendation: "Implement media use controls and restrictions"
+          },
+          {
+            id: "MP-8",
+            control: "Media Downgrading",
+            status: "gap",
+            details: "Media downgrading procedures not implemented",
+            recommendation: "Implement media downgrading procedures for classification changes"
+          }
+        ]
       }
     ]
   },
