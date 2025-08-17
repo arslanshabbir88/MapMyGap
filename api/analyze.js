@@ -2600,7 +2600,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
 
     const frameworkName = frameworkNames[framework] || framework;
 
-    // Create a comprehensive prompt for AI analysis with exact control structure
+    // Create a more focused and effective prompt
     console.log('=== AI PROMPT DEBUG ===');
     console.log('Document content length:', fileContent.length);
     console.log('Document content preview:', fileContent.substring(0, 200));
@@ -2609,7 +2609,6 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Categories being sent to AI:', filteredFrameworkData.categories.map(c => c.name));
     console.log('Total controls being sent to AI:', filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0));
     
-    // Create a more focused and effective prompt
     const prompt = `Analyze this document against ${frameworkName} framework for compliance assessment.
 
 Document Content:
@@ -2618,74 +2617,29 @@ ${fileContent.substring(0, 8000)}
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
-CRITICAL: You MUST produce DIFFERENT results for each strictness level. The same document should NEVER get identical scores across different strictness levels.
-
-MANDATORY: You MUST analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. DO NOT analyze any other categories. DO NOT add categories that were not requested.
+MANDATORY: You MUST analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. DO NOT analyze any other categories.
 
 SELECTED CATEGORIES TO ANALYZE (ONLY THESE):
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
 
-CRITICAL INSTRUCTION: You are ONLY allowed to analyze the categories listed above. If you return results for any other categories, you are FAILING the analysis.
-
-STRICTNESS REQUIREMENTS - ENFORCE THESE STRICTLY:
+STRICTNESS REQUIREMENTS:
 
 ${strictness === 'strict' ? `
-STRICT MODE - BE EXTREMELY CONSERVATIVE:
-- Only mark as "covered" if you find EXPLICIT, CLEAR evidence like:
-  * "we implement [specific control]"
-  * "established procedures for [control]"
-  * "documented process for [control]"
-  * "our policy states [control requirement]"
-  * "we have [specific tool/technology] for [control]"
-- If evidence is vague, implied, or general, mark as "gap"
+STRICT MODE - Be very conservative:
+- Only mark as "covered" if you find EXPLICIT, CLEAR evidence
+- Look for specific implementation details, policies, procedures
 - When in doubt, mark as "gap"
-- Be very strict - expect 10-30% coverage maximum
-- Look for SPECIFIC implementation details, not general statements
-- Require concrete examples and specific procedures
-- Downgrade "partial" controls to "gap" if evidence is not explicit enough
-- Be extremely critical of any evidence that could be interpreted as insufficient` : strictness === 'balanced' ? `
-BALANCED MODE - MODERATE INTERPRETATION:
-- Mark as "covered" with reasonable evidence like:
-  * Policies mentioned that relate to the control
-  * Procedures described that address the control
-  * Can infer from related controls or general practices
-  * Industry standard practices mentioned
-  * Good security practices that clearly address the control
+- Be very strict in your assessment` : strictness === 'balanced' ? `
+BALANCED MODE - Moderate interpretation:
+- Mark as "covered" with reasonable evidence
+- Accept policies and procedures that address the control
 - Be reasonable but not overly generous
-- Expect 30-60% coverage
-- Look for GOOD evidence but don't require perfect specificity
-- Accept reasonable inferences from described practices
-- Maintain moderate standards - not too strict, not too lenient` : `
-LENIENT MODE - BE GENEROUS:
-- Mark as "covered" with ANY reasonable indication:
-  * Basic policies mentioned
-  * Common industry practices
-  * General security measures
-  * Can infer from organizational context
-  * Any security-related activities that could address the control
-  * General security awareness or practices mentioned
+- Maintain balanced standards` : `
+LENIENT MODE - Be generous:
+- Mark as "covered" with ANY reasonable indication
+- Accept general security practices and policies
 - Be generous in interpretation
-- Expect 50-80% coverage
-- Look for ANY evidence that suggests the control is addressed, even indirectly
-- Accept broad interpretations and organizational context clues
-- Be willing to infer coverage from general security practices mentioned
-- Upgrade "partial" controls to "covered" if there's any reasonable basis
-- Look for positive interpretations of any security-related content`}
-
-MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
-
-CRITICAL DIFFERENTIATION RULES:
-- STRICT mode should find 10-30% coverage
-- BALANCED mode should find 30-60% coverage  
-- LENIENT mode should find 50-80% coverage
-- If you give the same score for different strictness levels, you are FAILING the analysis
-
-MANDATORY SCORE DIFFERENTIATION:
-- STRICT mode: Be extremely conservative, downgrade partial controls to gaps, require explicit evidence
-- BALANCED mode: Moderate interpretation, accept reasonable evidence, maintain balanced standards
-- LENIENT mode: Be generous, upgrade partial controls to covered when possible, accept broad interpretations
-
-CRITICAL: You MUST produce different scores. If you analyze the same document with different strictness levels and get the same score, you are not following instructions correctly.
+- Look for any evidence that suggests the control is addressed`}
 
 EXACT CONTROL STRUCTURE TO USE (ONLY THESE CONTROLS):
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
@@ -2696,10 +2650,6 @@ Analyze each control and mark as:
 - "gap": Not addressed
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
-
-CRITICAL: You have ${optimalTokenLimit} output tokens available. Use them to provide complete analysis for ONLY the selected categories above. Do not truncate your response.
-
-FINAL WARNING: Return results for ONLY the categories listed above. Do not add, modify, or include any other categories in your response.
 
 Return only valid JSON using the exact control structure above.`;
 
