@@ -1723,6 +1723,429 @@ const allFrameworks = {
             recommendation: "Implement media downgrading procedures for classification changes"
           }
         ]
+      },
+      {
+        name: "System & Services Acquisition (SA)",
+        description: "Acquire systems and services securely",
+        results: [
+          {
+            id: "SA-1",
+            control: "System and Services Acquisition Policy and Procedures",
+            status: "gap",
+            details: "System and services acquisition policy not established",
+            recommendation: "Develop and implement comprehensive system and services acquisition policy and procedures"
+          },
+          {
+            id: "SA-2",
+            control: "Allocation of Resources",
+            status: "gap",
+            details: "Resource allocation for security not planned",
+            recommendation: "Plan and allocate adequate resources for security in system and services acquisition"
+          },
+          {
+            id: "SA-3",
+            control: "System Development Life Cycle",
+            status: "gap",
+            details: "Secure system development life cycle not implemented",
+            recommendation: "Implement secure system development life cycle methodology"
+          },
+          {
+            id: "SA-4",
+            control: "Acquisition Process",
+            status: "gap",
+            details: "Secure acquisition process not implemented",
+            recommendation: "Implement secure acquisition process with security requirements"
+          },
+          {
+            id: "SA-5",
+            control: "Information System Documentation",
+            status: "gap",
+            details: "System documentation not maintained",
+            recommendation: "Maintain comprehensive information system documentation"
+          },
+          {
+            id: "SA-6",
+            control: "Software Usage Restrictions",
+            status: "gap",
+            details: "Software usage restrictions not implemented",
+            recommendation: "Implement software usage restrictions and licensing controls"
+          },
+          {
+            id: "SA-7",
+            control: "User-Installed Software",
+            status: "gap",
+            details: "User-installed software controls not implemented",
+            recommendation: "Implement controls for user-installed software"
+          },
+          {
+            id: "SA-8",
+            control: "Security Engineering Principles",
+            status: "gap",
+            details: "Security engineering principles not applied",
+            recommendation: "Apply security engineering principles in system design and development"
+          },
+          {
+            id: "SA-9",
+            control: "External Information System Services",
+            status: "gap",
+            details: "External service security requirements not defined",
+            recommendation: "Define security requirements for external information system services"
+          },
+          {
+            id: "SA-10",
+            control: "Developer Configuration Management",
+            status: "gap",
+            details: "Developer configuration management not implemented",
+            recommendation: "Implement developer configuration management controls"
+          },
+          {
+            id: "SA-11",
+            control: "Developer Security Testing and Evaluation",
+            status: "gap",
+            details: "Developer security testing not required",
+            recommendation: "Require developer security testing and evaluation"
+          },
+          {
+            id: "SA-12",
+            control: "Supply Chain Protection",
+            status: "gap",
+            details: "Supply chain protection not implemented",
+            recommendation: "Implement supply chain protection measures"
+          },
+          {
+            id: "SA-13",
+            control: "Trustworthiness",
+            status: "gap",
+            details: "System trustworthiness not assessed",
+            recommendation: "Assess and ensure system trustworthiness"
+          },
+          {
+            id: "SA-14",
+            control: "Criticality Analysis",
+            status: "gap",
+            details: "Criticality analysis not performed",
+            recommendation: "Perform criticality analysis for systems and services"
+          },
+          {
+            id: "SA-15",
+            control: "Development Process, Standards, and Tools",
+            status: "gap",
+            details: "Secure development process not established",
+            recommendation: "Establish secure development process, standards, and tools"
+          },
+          {
+            id: "SA-16",
+            control: "Developer-Provided Training",
+            status: "gap",
+            details: "Developer training not provided",
+            recommendation: "Provide security training to developers"
+          },
+          {
+            id: "SA-17",
+            control: "Developer Security Architecture and Design",
+            status: "gap",
+            details: "Developer security architecture not implemented",
+            recommendation: "Implement developer security architecture and design controls"
+          },
+          {
+            id: "SA-18",
+            control: "Tamper Resistance and Detection",
+            status: "gap",
+            details: "Tamper resistance and detection not implemented",
+            recommendation: "Implement tamper resistance and detection mechanisms"
+          },
+          {
+            id: "SA-19",
+            control: "Component Authenticity",
+            status: "gap",
+            details: "Component authenticity not verified",
+            recommendation: "Verify authenticity of system components"
+          },
+          {
+            id: "SA-20",
+            control: "Customized Development of Critical Components",
+            status: "gap",
+            details: "Customized development not implemented",
+            recommendation: "Implement customized development for critical components"
+          },
+          {
+            id: "SA-21",
+            control: "Developer Screening",
+            status: "gap",
+            details: "Developer screening not performed",
+            recommendation: "Implement developer screening procedures"
+          },
+          {
+            id: "SA-22",
+            control: "Unsupported System Components",
+            status: "gap",
+            details: "Unsupported component controls not implemented",
+            recommendation: "Implement controls for unsupported system components"
+          }
+        ]
+      },
+      {
+        name: "Assessment, Authorization, and Monitoring (CA)",
+        description: "Assess, authorize, and monitor information systems",
+        results: [
+          {
+            id: "CA-1",
+            control: "Assessment, Authorization, and Monitoring Policy and Procedures",
+            status: "gap",
+            details: "Assessment, authorization, and monitoring policy not established",
+            recommendation: "Develop and implement comprehensive assessment, authorization, and monitoring policy and procedures"
+          },
+          {
+            id: "CA-2",
+            control: "Security Assessments",
+            status: "gap",
+            details: "Security assessments not performed",
+            recommendation: "Perform regular security assessments of information systems"
+          },
+          {
+            id: "CA-3",
+            control: "System Interconnections",
+            status: "gap",
+            details: "System interconnection controls not implemented",
+            recommendation: "Implement controls for system interconnections"
+          },
+          {
+            id: "CA-4",
+            control: "Plan of Action and Milestones Process",
+            status: "gap",
+            details: "Plan of action and milestones process not implemented",
+            recommendation: "Implement plan of action and milestones process for security improvements"
+          },
+          {
+            id: "CA-5",
+            control: "Action Plan and Milestones Process",
+            status: "gap",
+            details: "Action plan and milestones process not implemented",
+            recommendation: "Implement action plan and milestones process for security improvements"
+          },
+          {
+            id: "CA-6",
+            control: "Security Authorization",
+            status: "gap",
+            details: "Security authorization process not implemented",
+            recommendation: "Implement formal security authorization process"
+          },
+          {
+            id: "CA-7",
+            control: "Continuous Monitoring",
+            status: "gap",
+            details: "Continuous monitoring not implemented",
+            recommendation: "Implement continuous monitoring of information systems"
+          },
+          {
+            id: "CA-8",
+            control: "Penetration Testing",
+            status: "gap",
+            details: "Penetration testing not performed",
+            recommendation: "Perform regular penetration testing of information systems"
+          },
+          {
+            id: "CA-9",
+            control: "Internal System Connections",
+            status: "gap",
+            details: "Internal system connection controls not implemented",
+            recommendation: "Implement controls for internal system connections"
+          }
+        ]
+      },
+      {
+        name: "Physical and Environmental Protection (PE)",
+        description: "Protect physical and environmental security",
+        results: [
+          {
+            id: "PE-1",
+            control: "Physical and Environmental Protection Policy and Procedures",
+            status: "gap",
+            details: "Physical and environmental protection policy not established",
+            recommendation: "Develop and implement comprehensive physical and environmental protection policy and procedures"
+          },
+          {
+            id: "PE-2",
+            control: "Physical Access Authorizations",
+            status: "gap",
+            details: "Physical access authorizations not implemented",
+            recommendation: "Implement physical access authorization controls"
+          },
+          {
+            id: "PE-3",
+            control: "Physical Access Control",
+            status: "gap",
+            details: "Physical access control not implemented",
+            recommendation: "Implement physical access control mechanisms"
+          },
+          {
+            id: "PE-4",
+            control: "Access Control for Transmission Medium",
+            status: "gap",
+            details: "Transmission medium access control not implemented",
+            recommendation: "Implement access control for transmission medium"
+          },
+          {
+            id: "PE-5",
+            control: "Access Control for Output Devices",
+            status: "gap",
+            details: "Output device access control not implemented",
+            recommendation: "Implement access control for output devices"
+          },
+          {
+            id: "PE-6",
+            control: "Monitoring Physical Access",
+            status: "gap",
+            details: "Physical access monitoring not implemented",
+            recommendation: "Implement physical access monitoring and logging"
+          },
+          {
+            id: "PE-7",
+            control: "Visitor Access Records",
+            status: "gap",
+            details: "Visitor access records not maintained",
+            recommendation: "Maintain visitor access records and logs"
+          },
+          {
+            id: "PE-8",
+            control: "Access Logs",
+            status: "gap",
+            details: "Physical access logs not maintained",
+            recommendation: "Maintain comprehensive physical access logs"
+          },
+          {
+            id: "PE-9",
+            control: "Power Equipment and Power Cabling",
+            status: "gap",
+            details: "Power equipment protection not implemented",
+            recommendation: "Implement protection for power equipment and power cabling"
+          },
+          {
+            id: "PE-10",
+            control: "Emergency Shutoff",
+            status: "gap",
+            details: "Emergency shutoff capability not implemented",
+            recommendation: "Implement emergency shutoff capability for power and HVAC systems"
+          },
+          {
+            id: "PE-11",
+            control: "Emergency Power",
+            status: "gap",
+            details: "Emergency power not available",
+            recommendation: "Provide emergency power for critical systems"
+          },
+          {
+            id: "PE-12",
+            control: "Emergency Lighting",
+            status: "gap",
+            details: "Emergency lighting not available",
+            recommendation: "Provide emergency lighting for critical areas"
+          },
+          {
+            id: "PE-13",
+            control: "Fire Protection",
+            status: "gap",
+            details: "Fire protection not implemented",
+            recommendation: "Implement comprehensive fire protection measures"
+          },
+          {
+            id: "PE-14",
+            control: "Temperature and Humidity Controls",
+            status: "gap",
+            details: "Temperature and humidity controls not implemented",
+            recommendation: "Implement temperature and humidity controls for critical systems"
+          },
+          {
+            id: "PE-15",
+            control: "Water Damage Protection",
+            status: "gap",
+            details: "Water damage protection not implemented",
+            recommendation: "Implement water damage protection measures"
+          },
+          {
+            id: "PE-16",
+            control: "Delivery and Removal",
+            status: "gap",
+            details: "Delivery and removal controls not implemented",
+            recommendation: "Implement controls for delivery and removal of equipment"
+          },
+          {
+            id: "PE-17",
+            control: "Alternate Work Site",
+            status: "gap",
+            details: "Alternate work site security not implemented",
+            recommendation: "Implement security controls for alternate work sites"
+          },
+          {
+            id: "PE-18",
+            control: "Location of Information System Components",
+            status: "gap",
+            details: "System component location security not implemented",
+            recommendation: "Implement security controls for information system component locations"
+          }
+        ]
+      },
+      {
+        name: "Personnel Security (PS)",
+        description: "Ensure personnel security and trustworthiness",
+        results: [
+          {
+            id: "PS-1",
+            control: "Personnel Security Policy and Procedures",
+            status: "gap",
+            details: "Personnel security policy not established",
+            recommendation: "Develop and implement comprehensive personnel security policy and procedures"
+          },
+          {
+            id: "PS-2",
+            control: "Position Risk Designation",
+            status: "gap",
+            details: "Position risk designation not implemented",
+            recommendation: "Implement position risk designation process"
+          },
+          {
+            id: "PS-3",
+            control: "Personnel Screening",
+            status: "gap",
+            details: "Personnel screening not performed",
+            recommendation: "Perform comprehensive personnel screening for all positions"
+          },
+          {
+            id: "PS-4",
+            control: "Personnel Termination",
+            status: "gap",
+            details: "Personnel termination procedures not implemented",
+            recommendation: "Implement comprehensive personnel termination procedures"
+          },
+          {
+            id: "PS-5",
+            control: "Personnel Transfer",
+            status: "gap",
+            details: "Personnel transfer procedures not implemented",
+            recommendation: "Implement personnel transfer procedures"
+          },
+          {
+            id: "PS-6",
+            control: "Access Agreements",
+            status: "gap",
+            details: "Access agreements not implemented",
+            recommendation: "Implement access agreements for all personnel"
+          },
+          {
+            id: "PS-7",
+            control: "Third-Party Personnel Security",
+            status: "gap",
+            details: "Third-party personnel security not implemented",
+            recommendation: "Implement security controls for third-party personnel"
+          },
+          {
+            id: "PS-8",
+            control: "Personnel Sanctions",
+            status: "gap",
+            details: "Personnel sanctions not implemented",
+            recommendation: "Implement personnel sanctions for security violations"
+          }
+        ]
       }
     ]
   },
