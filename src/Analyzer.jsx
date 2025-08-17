@@ -1193,35 +1193,35 @@ function Analyzer({ onNavigateHome }) {
 
               <div className="mb-6">
                 <label htmlFor="file-upload" className="block text-sm font-medium text-slate-300 mb-2">Upload Standards Document</label>
-                <div 
-                  className={`mt-2 flex justify-center rounded-lg border-2 border-dashed transition-all duration-300 ${
-                    uploadedFile 
-                      ? 'border-blue-500 bg-blue-500/5' 
-                      : 'border-slate-600 hover:border-blue-500 hover:bg-slate-700/20'
-                  } px-4 py-6`}
-                >
+                                 <div 
+                   className={`mt-2 flex justify-center rounded-lg border-2 border-dashed transition-all duration-300 ${
+                     uploadedFile 
+                       ? 'border-blue-500 bg-blue-500/5' 
+                       : 'border-slate-600 hover:border-blue-500 hover:bg-slate-700/20'
+                   } px-4 py-4`}
+                 >
                   <div className="text-center">
-                    {uploadedFile ? (
-                      <div className="flex flex-col items-center">
-                        <div className="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center mb-2">
-                          <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <p className="text-xs font-medium text-blue-300 mb-1">File Selected</p>
-                        <p className="text-xs text-slate-400 mb-2">{uploadedFile.name}</p>
-                        <button
-                          onClick={() => {
-                            setUploadedFile(null);
-                            setFileContent('');
-                            setError(null);
-                          }}
-                          className="text-xs text-red-400 hover:text-red-300 transition-colors"
-                        >
-                          Remove file
-                        </button>
-                      </div>
-                    ) : (
+                                         {uploadedFile ? (
+                       <div className="flex flex-col items-center">
+                         <div className="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center mb-1">
+                           <svg className="w-3 h-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                           </svg>
+                         </div>
+                         <p className="text-xs font-medium text-blue-300 mb-1">File Selected</p>
+                         <p className="text-xs text-slate-400 mb-1 truncate max-w-full">{uploadedFile.name}</p>
+                         <button
+                           onClick={() => {
+                             setUploadedFile(null);
+                             setFileContent('');
+                             setError(null);
+                           }}
+                           className="text-xs text-red-400 hover:text-red-300 transition-colors"
+                         >
+                           Remove file
+                         </button>
+                       </div>
+                     ) : (
                       <div className="flex flex-col items-center">
                         <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center mb-2">
                           <FileUploadIcon />
@@ -1260,28 +1260,7 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               </div>
 
-              {uploadedFile && (
-                <div className="mt-1 p-2 bg-blue-500/10 border border-blue-500/20 rounded flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span className="text-sm text-blue-300">{uploadedFile.name}</span>
-                    <span className="text-xs text-blue-400">
-                      ({(uploadedFile.size / 1024 / 1024).toFixed(2)} MB)
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setUploadedFile(null)}
-                    className="text-blue-400 hover:text-red-400 transition-colors p-1"
-                    title="Remove file"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              )}
+              
                {error && (
                 <div className="mb-4 p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
                   <div className="flex items-start space-x-3">
@@ -1476,29 +1455,29 @@ function Analyzer({ onNavigateHome }) {
                 </div>
                 {user && (
                   <div className="flex items-center space-x-2">
-                    <button
-                      onClick={() => {
-                        setShowHistory(!showHistory);
-                        if (!showHistory) loadAnalysisHistory(true);
-                      }}
-                      className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 sm:px-4 py-2 rounded-lg hover:bg-slate-700/50 border border-slate-600 hover:border-slate-500 text-sm"
-                    >
-                      <HistoryIcon />
-                      <span className="text-sm">History</span>
-                    </button>
-                    {analysisResults && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setAnalysisResults(null);
-                            setUploadedFile(null);
-                            setFileContent('');
-                            setError(null);
-                          }}
-                          className="text-slate-400 hover:text-white transition-colors px-3 py-2 rounded border border-slate-600 hover:border-slate-500 text-sm"
-                        >
-                          New Analysis
-                        </button>
+                                         <button
+                       onClick={() => {
+                         setShowHistory(!showHistory);
+                         if (!showHistory) loadAnalysisHistory(true);
+                       }}
+                       className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 py-2 rounded-lg hover:bg-slate-700/50 border border-slate-600 hover:border-slate-500 text-sm"
+                     >
+                       <HistoryIcon />
+                       <span className="text-sm">History</span>
+                     </button>
+                     {analysisResults && (
+                       <>
+                         <button
+                           onClick={() => {
+                             setAnalysisResults(null);
+                             setUploadedFile(null);
+                             setFileContent('');
+                             setError(null);
+                           }}
+                           className="text-slate-400 hover:text-white transition-colors px-3 py-2 rounded border border-slate-600 hover:border-slate-500 text-sm"
+                         >
+                           New Analysis
+                         </button>
                         <div className="flex space-x-2">
                           <button
                             onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
