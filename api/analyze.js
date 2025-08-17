@@ -2622,11 +2622,52 @@ IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected 
 SELECTED CATEGORIES TO ANALYZE:
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
 
-ANALYSIS INSTRUCTIONS:
+CRITICAL STRICTNESS DIFFERENTIATION - You MUST produce DIFFERENT results for each strictness level:
+
 ${strictness === 'strict' ? `
-For STRICT mode: Be very conservative. Only mark as "covered" if you find explicit, clear evidence of implementation. When in doubt, mark as "gap".` : strictness === 'balanced' ? `
-For BALANCED mode: Be reasonable. Mark as "covered" if you find good evidence of implementation, "partial" if somewhat addressed, "gap" if not addressed.` : `
-For LENIENT mode: Be generous. Mark as "covered" if you find any reasonable indication of implementation, "partial" if somewhat addressed, "gap" only if clearly not addressed.`}
+STRICT MODE - BE EXTREMELY CONSERVATIVE:
+- Only mark as "covered" if you find EXPLICIT, CLEAR evidence like:
+  * "we implement [specific control]"
+  * "established procedures for [control]"
+  * "documented process for [control]"
+  * "our policy states [control requirement]"
+  * "we have [specific tool/technology] for [control]"
+- If evidence is vague, implied, or general, mark as "gap"
+- When in doubt, mark as "gap"
+- Be very strict - expect 10-30% coverage maximum
+- Look for SPECIFIC implementation details, not general statements
+- Require concrete examples and specific procedures
+- Downgrade "partial" controls to "gap" if evidence is not explicit enough
+- Be extremely critical of any evidence that could be interpreted as insufficient` : strictness === 'balanced' ? `
+BALANCED MODE - MODERATE INTERPRETATION:
+- Mark as "covered" with reasonable evidence like:
+  * Policies mentioned that relate to the control
+  * Procedures described that address the control
+  * Can infer from related controls or general practices
+  * Industry standard practices mentioned
+  * Good security practices that clearly address the control
+- Be reasonable but not overly generous
+- Expect 30-60% coverage
+- Look for GOOD evidence but don't require perfect specificity
+- Accept reasonable inferences from described practices
+- Maintain moderate standards - not too strict, not too lenient` : `
+LENIENT MODE - BE GENEROUS:
+- Mark as "covered" with ANY reasonable indication:
+  * Basic policies mentioned
+  * Common industry practices
+  * General security measures
+  * Can infer from organizational context
+  * Any security-related activities that could address the control
+  * General security awareness or practices mentioned
+- Be generous in interpretation
+- Expect 50-80% coverage
+- Look for ANY evidence that suggests the control is addressed, even indirectly
+- Accept broad interpretations and organizational context clues
+- Be willing to infer coverage from general security practices mentioned
+- Upgrade "partial" controls to "covered" if there's any reasonable basis
+- Look for positive interpretations of any security-related content`}
+
+MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
 
 CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
