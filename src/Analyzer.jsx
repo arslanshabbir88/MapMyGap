@@ -21,7 +21,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import './App.css';
-import { Document } from 'docx';
+import mammoth from 'mammoth';
 
 // Environment validation - makes it harder for copycats
 const validateEnvironment = () => {
@@ -605,8 +605,8 @@ function Analyzer({ onNavigateHome }) {
         console.log('File type:', file.type);
         
         const arrayBuffer = await file.arrayBuffer();
-        const doc = new Document(arrayBuffer);
-        const text = doc.toString();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        const text = result.value;
         
         console.log('Extracted text length:', text.length);
         console.log('Text preview (first 500 chars):', text.substring(0, 500));
