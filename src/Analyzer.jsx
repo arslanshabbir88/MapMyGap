@@ -1040,7 +1040,7 @@ function Analyzer({ onNavigateHome }) {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                      <span>Single Selection Mode: Choose one control family for focused analysis</span>
+                      <span>Choose one control family for focused analysis</span>
                     </div>
                   </div>
                   
@@ -1060,47 +1060,26 @@ function Analyzer({ onNavigateHome }) {
                     />
                   </div>
 
-                  {/* Select All / Deselect All Buttons */}
-                  <div className="mb-3 flex space-x-2">
-                                          <button
-                        type="button"
-                        onClick={() => {
-                          // Single selection - select the first control family
-                          setSelectedCategories(['AC']);
-                        }}
-                        className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        Select First
-                      </button>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedCategories([])}
-                      className="px-3 py-2 text-xs font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500"
-                    >
-                      Clear Selection
-                    </button>
-                  </div>
-
                   {/* Control Family Grid */}
                   <div className="max-h-64 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50 custom-scrollbar">
                     <div className="grid grid-cols-1 gap-2">
                       {[
                         { code: 'AC', name: 'Access Control', description: 'Control access to information systems and resources' },
-                        { code: 'AU', name: 'Audit & Accountability', description: 'Create, protect, and retain audit records' },
-                        { code: 'IA', name: 'Identification & Authentication', description: 'Identify and authenticate users and devices' },
-                        { code: 'IR', name: 'Incident Response', description: 'Respond to and manage security incidents' },
-                        { code: 'SC', name: 'System & Communications Protection', description: 'Protect system boundaries and communications' },
                         { code: 'AT', name: 'Awareness & Training', description: 'Ensure personnel are aware of security responsibilities' },
+                        { code: 'AU', name: 'Audit & Accountability', description: 'Create, protect, and retain audit records' },
                         { code: 'CA', name: 'Assessment & Authorization', description: 'Assess and authorize systems' },
                         { code: 'CM', name: 'Configuration Management', description: 'Manage system configurations and changes' },
                         { code: 'CP', name: 'Contingency Planning', description: 'Plan for system recovery and continuity' },
+                        { code: 'IA', name: 'Identification & Authentication', description: 'Identify and authenticate users and devices' },
+                        { code: 'IR', name: 'Incident Response', description: 'Respond to and manage security incidents' },
+                        { code: 'MA', name: 'Maintenance', description: 'Perform system maintenance securely' },
+                        { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle' },
                         { code: 'PE', name: 'Physical & Environmental Protection', description: 'Protect physical assets and environment' },
                         { code: 'PS', name: 'Personnel Security', description: 'Ensure personnel are trustworthy and qualified' },
-                        { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle' },
-                        { code: 'SI', name: 'System & Information Integrity', description: 'Maintain system and information integrity' },
-                        { code: 'MA', name: 'Maintenance', description: 'Perform system maintenance securely' },
                         { code: 'RA', name: 'Risk Assessment', description: 'Assess and manage security risks' },
                         { code: 'SA', name: 'System & Services Acquisition', description: 'Acquire systems and services securely' },
+                        { code: 'SC', name: 'System & Communications Protection', description: 'Protect system boundaries and communications' },
+                        { code: 'SI', name: 'System & Information Integrity', description: 'Maintain system and information integrity' },
                         { code: 'SR', name: 'Supply Chain Risk Management', description: 'Manage supply chain risks' }
                       ].map(family => (
                         <label key={family.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
@@ -1171,42 +1150,18 @@ function Analyzer({ onNavigateHome }) {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                      <span>Single Selection Mode: Choose one CSF function for focused analysis</span>
+                      <span>Choose one CSF function for focused analysis</span>
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    {/* Select All / Deselect All Buttons */}
-                    <div className="mb-3 flex space-x-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          // Single selection - select the first CSF function
-                          setSelectedCategories(['ID']);
-                        }}
-                        className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        Select First
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const currentNonCSF = selectedCategories.filter(cat => !['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat));
-                          setSelectedCategories(currentNonCSF);
-                        }}
-                        className="px-3 py-2 text-xs font-medium text-white bg-slate-600 hover:bg-slate-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500"
-                      >
-                        Clear Selection
-                      </button>
-                    </div>
-                    
                     {[
+                      { code: 'DE', name: 'DETECT', description: 'Develop and implement appropriate activities to identify the occurrence of a cybersecurity event' },
+                      { code: 'GV', name: 'GOVERN', description: 'Establish and monitor the organization\'s cybersecurity risk management strategy, expectations, and policy' },
                       { code: 'ID', name: 'IDENTIFY', description: 'Develop organizational understanding to manage cybersecurity risk to systems, people, assets, data, and capabilities' },
                       { code: 'PR', name: 'PROTECT', description: 'Develop and implement appropriate safeguards to ensure delivery of critical infrastructure services' },
-                      { code: 'DE', name: 'DETECT', description: 'Develop and implement appropriate activities to identify the occurrence of a cybersecurity event' },
-                      { code: 'RS', name: 'RESPOND', description: 'Develop and implement appropriate activities to take action regarding a detected cybersecurity incident' },
                       { code: 'RC', name: 'RECOVER', description: 'Develop and implement appropriate activities to maintain plans for resilience and to restore any capabilities or services that were impaired due to a cybersecurity incident' },
-                      { code: 'GV', name: 'GOVERN', description: 'Establish and monitor the organization\'s cybersecurity risk management strategy, expectations, and policy' }
+                      { code: 'RS', name: 'RESPOND', description: 'Develop and implement appropriate activities to take action regarding a detected cybersecurity incident' }
                     ].map(func => (
                       <label key={func.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                         <input
