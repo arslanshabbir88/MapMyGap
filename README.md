@@ -67,6 +67,7 @@ npm install
      user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
      framework TEXT NOT NULL,
      filename TEXT NOT NULL,
+     strictness TEXT NOT NULL DEFAULT 'balanced',
      results JSONB NOT NULL,
      summary JSONB NOT NULL,
      created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -74,6 +75,9 @@ npm install
 
    -- Enable RLS (Row Level Security)
    ALTER TABLE analysis_history ENABLE ROW LEVEL SECURITY;
+
+   -- If you have an existing analysis_history table, add the strictness column:
+   -- ALTER TABLE analysis_history ADD COLUMN strictness TEXT NOT NULL DEFAULT 'balanced';
 
    -- Create policy for users to see only their own history
    CREATE POLICY "Users can view own analysis history" ON analysis_history

@@ -492,6 +492,7 @@ function Analyzer({ onNavigateHome }) {
         user_id: user.id,
         framework: selectedFramework,
         filename: displayName,
+        strictness: analysisStrictness, // Save the strictness level
         results: results.categories || results,
         summary: results.summary || {
           score: 0,
@@ -1606,6 +1607,10 @@ function Analyzer({ onNavigateHome }) {
                                   // Set the framework to match the historical analysis
                                   if (item.framework) {
                                     setSelectedFramework(item.framework);
+                                  }
+                                  // Set the strictness level to match the historical analysis
+                                  if (item.strictness) {
+                                    setLastAnalyzedStrictness(item.strictness);
                                   }
                                   // Hide the history panel to show the results
                                   setShowHistory(false);
