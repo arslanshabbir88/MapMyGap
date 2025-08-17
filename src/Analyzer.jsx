@@ -21,6 +21,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import './App.css';
+import { Document } from 'docx';
 
 // Environment validation - makes it harder for copycats
 const validateEnvironment = () => {
@@ -563,7 +564,7 @@ function Analyzer({ onNavigateHome }) {
     }
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -595,8 +596,32 @@ function Analyzer({ onNavigateHome }) {
         setError('Failed to read text file');
       };
       reader.readAsText(file);
+    } else if (getFileExt(file.name) === 'docx') {
+      // Handle .docx files
+      try {
+        console.log('=== DOCX FILE READING DEBUG ===');
+        console.log('File name:', file.name);
+        console.log('File size:', file.size);
+        console.log('File type:', file.type);
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const doc = new Document(arrayBuffer);
+        const text = doc.toString();
+        
+        console.log('Extracted text length:', text.length);
+        console.log('Text preview (first 500 chars):', text.substring(0, 500));
+        console.log('Text preview (last 500 chars):', text.substring(Math.max(0, text.length - 500)));
+        
+        setFileContent(text);
+      } catch (error) {
+        console.error('Error reading .docx file:', error);
+        setError('Failed to read .docx file. Please ensure it\'s a valid Word document.');
+        setFileContent('');
+      }
     } else {
-      // We'll extract text on the server for non-txt files
+      // For other file types (PDF, Excel), we'll need to implement similar logic
+      // For now, show an error
+      setError('File type not yet supported for text extraction. Please convert to .txt or .docx format.');
       setFileContent('');
     }
   };
@@ -624,9 +649,9 @@ function Analyzer({ onNavigateHome }) {
 
     try {
       let result;
-      if (isTextFile(uploadedFile) && fileContent) {
-        console.log('=== TEXT FILE ANALYSIS DEBUG ===');
-        console.log('File type: Text file');
+      if (fileContent && (isTextFile(uploadedFile) || getFileExt(uploadedFile.name) === 'docx')) {
+        console.log('=== FILE ANALYSIS DEBUG ===');
+        console.log('File type:', isTextFile(uploadedFile) ? 'Text file' : 'DOCX file');
         console.log('File content length:', fileContent.length);
         console.log('File content preview (first 500 chars):', fileContent.substring(0, 500));
         console.log('Selected framework:', selectedFramework);
@@ -643,18 +668,18 @@ function Analyzer({ onNavigateHome }) {
         };
         console.log('Request body being sent:', requestBody);
         
-        // Add cache-busting query parameter for text analysis too
-        const textCacheBuster = Date.now();
-        const textApiUrl = `/api/analyze?cb=${textCacheBuster}`;
-        console.log('🚀 Text analysis cache buster:', textCacheBuster, 'API URL:', textApiUrl);
+        // Add cache-busting query parameter for analysis
+        const cacheBuster = Date.now();
+        const apiUrl = `/api/analyze?cb=${cacheBuster}`;
+        console.log('🚀 Analysis cache buster:', cacheBuster, 'API URL:', apiUrl);
         
-        const response = await fetch(textApiUrl, {
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
-            'X-Cache-Buster': textCacheBuster.toString()
+            'X-Cache-Buster': cacheBuster.toString()
           },
           body: JSON.stringify(requestBody),
         });
