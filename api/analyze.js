@@ -2011,6 +2011,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
         console.log(`  Category code type: ${typeof categoryCode}`);
         console.log(`  Selected categories types: [${selectedCategories.map(c => typeof c).join(', ')}]`);
+        console.log(`  Regex test: /\(([A-Z]+)\)/ matches "${category.name}": ${/\(([A-Z]+)\)/.test(category.name)}`);
+        console.log(`  Full regex match: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
       });
       
       filteredFrameworkData = {
@@ -2019,6 +2021,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
           const shouldInclude = selectedCategories.includes(categoryCode);
           console.log(`Filtering: ${category.name} (${categoryCode}): ${shouldInclude ? 'INCLUDING' : 'EXCLUDING'}`);
+          console.log(`  Category name: "${category.name}"`);
+          console.log(`  Extracted code: "${categoryCode}"`);
+          console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
+          console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
+          console.log(`  Regex match result: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
           return shouldInclude;
         })
       };
