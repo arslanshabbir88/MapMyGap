@@ -3035,6 +3035,10 @@ module.exports = async function handler(req, res) {
     console.log('Strictness:', strictness);
     console.log('Selected categories:', selectedCategories);
     console.log('File content length:', fileContent?.length || 0);
+    console.log('Selected categories type:', typeof selectedCategories);
+    console.log('Selected categories is array:', Array.isArray(selectedCategories));
+    console.log('Selected categories length:', selectedCategories?.length || 0);
+    console.log('Selected categories JSON:', JSON.stringify(selectedCategories));
 
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing file content or framework.' });
