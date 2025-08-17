@@ -1,0 +1,5 @@
+[33m294f6cdb6900e4cc438d8752364551ccc94164e5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add frontend validation to ensure selectedCategories is properly formatted before sending to backend
+[33m8f5b7e5173563d79139108faa6d9a15fe63fc351[m Add comprehensive debugging to analyzeWithAI function to diagnose empty categories issue
+[33m64ef9c8c22b587d8cebe5eed0859633a4f5fd71e[m Remove filter area and redesign Compliance Summary section - Move action buttons to top next to History button - Remove duplicate View History button - Remove unused filter state variables and logic
+[33m584388acc6425274e28794139ffe53e26052d126[m Shorten file selection box and remove bottom text from strictness levels for uniform sizing
+[33me4e1383b2b7bc4e0eea8ea57e05b35a689a57b1b[m Remove '% typical coverage' text and reorganize 'Understanding Your Score' section for better clarity and organization

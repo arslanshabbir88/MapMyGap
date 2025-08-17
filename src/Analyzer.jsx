@@ -182,6 +182,9 @@ function Analyzer({ onNavigateHome }) {
   const [showHistory, setShowHistory] = useState(false);
   const [analysisHistory, setAnalysisHistory] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [historyPage, setHistoryPage] = useState(0);
+  const [hasMoreHistory, setHasMoreHistory] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const [analysisStrictness, setAnalysisStrictness] = useState('balanced'); // 'strict', 'balanced', 'lenient'
   const [lastAnalyzedStrictness, setLastAnalyzedStrictness] = useState(null);
@@ -370,17 +373,27 @@ function Analyzer({ onNavigateHome }) {
     return analysisResults.categories.reduce((total, cat) => total + cat.results.length, 0);
   }, [analysisResults]);
 
-  const loadAnalysisHistory = async () => {
+  const loadAnalysisHistory = async (reset = true) => {
     if (!user) return;
     
     try {
-      setIsLoadingHistory(true);
+      if (reset) {
+        setIsLoadingHistory(true);
+        setHistoryPage(0);
+        setHasMoreHistory(true);
+      } else {
+        setIsLoadingMore(true);
+      }
+      
+      const pageSize = 10;
+      const offset = reset ? 0 : historyPage * pageSize;
+      
       const { data, error } = await supabase
         .from('analysis_history')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(10);
+        .range(offset, offset + pageSize - 1);
 
       if (error) throw error;
       
@@ -439,11 +452,28 @@ function Analyzer({ onNavigateHome }) {
         return processedItem;
       });
       
-      setAnalysisHistory(processedData);
+      if (reset) {
+        setAnalysisHistory(processedData);
+      } else {
+        setAnalysisHistory(prev => [...prev, ...processedData]);
+      }
+      
+      // Check if we have more data to load
+      setHasMoreHistory(data && data.length === pageSize);
+      if (!reset) {
+        setHistoryPage(prev => prev + 1);
+      }
     } catch (err) {
       console.error('Error loading history:', err);
     } finally {
       setIsLoadingHistory(false);
+      setIsLoadingMore(false);
+    }
+  };
+
+  const loadMoreHistory = () => {
+    if (hasMoreHistory && !isLoadingMore) {
+      loadAnalysisHistory(false);
     }
   };
 
@@ -475,7 +505,7 @@ function Analyzer({ onNavigateHome }) {
       if (error) throw error;
       
       // Reload history to show the new entry
-      await loadAnalysisHistory();
+      await loadAnalysisHistory(true);
     } catch (err) {
       console.error('Error saving analysis:', err);
     }
@@ -1449,7 +1479,7 @@ function Analyzer({ onNavigateHome }) {
                     <button
                       onClick={() => {
                         setShowHistory(!showHistory);
-                        if (!showHistory) loadAnalysisHistory();
+                        if (!showHistory) loadAnalysisHistory(true);
                       }}
                       className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 sm:px-4 py-2 rounded-lg hover:bg-slate-700/50 border border-slate-600 hover:border-slate-500 text-sm"
                     >
@@ -1500,7 +1530,7 @@ function Analyzer({ onNavigateHome }) {
                      <h3 className="text-lg font-semibold text-white">Analysis History</h3>
                      <div className="flex items-center space-x-2">
                        <button
-                         onClick={loadAnalysisHistory}
+                         onClick={() => loadAnalysisHistory(true)}
                          disabled={isLoadingHistory}
                          className="text-slate-400 hover:text-white transition-colors px-3 py-1 rounded border border-slate-600 hover:border-slate-500 disabled:opacity-50 disabled:cursor-not-allowed"
                          title="Refresh history"
@@ -1599,6 +1629,31 @@ function Analyzer({ onNavigateHome }) {
                           </div>
                         </div>
                       ))}
+                      
+                      {/* Load More Button */}
+                      {hasMoreHistory && (
+                        <div className="text-center pt-4">
+                          <button
+                            onClick={loadMoreHistory}
+                            disabled={isLoadingMore}
+                            className="inline-flex items-center px-4 py-2 bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-200 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {isLoadingMore ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400 mr-2"></div>
+                                Loading...
+                              </>
+                            ) : (
+                              <>
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
+                                Load More ({analysisHistory.length} of many)
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="text-center py-8">
