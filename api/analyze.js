@@ -2556,45 +2556,43 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       
       // Framework complexity multiplier: more controls = more detailed analysis needed
       // Increased multiplier for better handling of large frameworks
-      const complexityMultiplier = Math.min(totalControls / 15, 5); // Cap at 5x (increased from 3x)
+      const complexityMultiplier = Math.min(1.5, 1 + (totalControls / 100));
       
-      // Calculate optimal limit with safety margin
-      let optimalTokens = Math.ceil(baseTokens * complexityMultiplier * 2); // 100% safety margin (increased from 50%)
+      // Calculate optimal output tokens with safety margin
+      let optimalTokens = Math.min(256000, Math.max(32000, baseTokens * complexityMultiplier));
       
-      // Set reasonable bounds - increased maximum for large frameworks
-      const minTokens = 32768; // 32K minimum (increased from 16K)
-      const maxTokens = 262144; // 256K maximum (increased from 128K, still within Gemini Flash limits)
-      
-      optimalTokens = Math.max(minTokens, Math.min(optimalTokens, maxTokens));
+      // Ensure we don't exceed model limits
+      const maxSafeTokens = 900000; // Leave 100K buffer for input
+      optimalTokens = Math.min(optimalTokens, maxSafeTokens);
       
       console.log('=== TOKEN LIMIT CALCULATION ===');
       console.log('Document size:', documentSize, 'characters');
       console.log('Total controls:', totalControls);
       console.log('Complexity multiplier:', complexityMultiplier.toFixed(2));
-      console.log('Base tokens needed:', baseTokens);
-      console.log('Optimal token limit:', optimalTokens);
-      console.log('Token limit in MB:', (optimalTokens / 1000000).toFixed(3));
-      console.log('Token limit in K:', (optimalTokens / 1000).toFixed(1));
+      console.log('Base tokens needed:', baseTokens.toLocaleString());
+      console.log('Optimal output tokens:', optimalTokens.toLocaleString());
+      console.log('Max safe tokens:', maxSafeTokens.toLocaleString());
       
-      return optimalTokens;
+      return Math.floor(optimalTokens);
     };
 
     const optimalTokenLimit = calculateOptimalTokenLimit(fileContent, filteredFrameworkData);
-
+    
+    // Initialize Google AI model with optimal token limit
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       generationConfig: {
-        maxOutputTokens: optimalTokenLimit, // Dynamic token limit based on document size
-        temperature: 0.1, // Low temperature for consistent analysis
+        maxOutputTokens: optimalTokenLimit,
+        temperature: 0.1, // Low temperature for consistent compliance analysis
         topP: 0.8,
         topK: 40
       }
     });
 
-    // Map framework IDs to display names
+    // Framework name mapping for better AI understanding
     const frameworkNames = {
-      'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
-      'NIST_800_53': 'NIST SP 800-53',
+      'NIST_CSF': 'NIST Cybersecurity Framework (CSF) v2.0',
+      'NIST_800_53': 'NIST SP 800-53 Rev. 5',
       'PCI_DSS': 'PCI DSS v4.0',
       'ISO_27001': 'ISO/IEC 27001:2022',
       'SOC_2': 'SOC 2 Type II'
@@ -2713,78 +2711,128 @@ Return only valid JSON using the exact control structure above.`;
     console.log('Gemini Flash model limit: 1M tokens total');
     console.log('Token usage efficiency:', ((Math.ceil(prompt.length / 4) + optimalTokenLimit) / 1000000 * 100).toFixed(2) + '% of model limit');
 
-         // Add timeout to prevent hanging - increased for Vercel deployment
-     const timeoutPromise = new Promise((_, reject) => {
-       setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
-     });
-     
-     console.log('🚀 Starting AI analysis with Google Gemini...');
-     console.log('Model being used: gemini-1.5-flash');
-     console.log('Prompt length:', prompt.length, 'characters');
-     
-     let text; // Declare text variable outside try-catch block
-     
-     // Implement retry logic for API overload
-     const maxRetries = 3;
-     let retryCount = 0;
-     let lastError = null;
-     
-     while (retryCount < maxRetries) {
-       try {
-         console.log(`🔄 AI analysis attempt ${retryCount + 1}/${maxRetries}...`);
-         const aiPromise = model.generateContent(prompt);
-         console.log('⏳ AI request sent, waiting for response...');
-         const result = await Promise.race([aiPromise, timeoutPromise]);
-         console.log('✅ AI response received successfully');
-         const response = await result.response;
-         text = response.text(); // Assign to the outer variable
-         console.log('📝 AI response text extracted, length:', text.length);
-         break; // Success - exit retry loop
-       } catch (aiError) {
-         lastError = aiError;
-         retryCount++;
-         
-         console.error(`❌ AI analysis attempt ${retryCount} failed:`, aiError.message);
-         
-         // Check if it's a retryable error
-         if (aiError.message.includes('overloaded') || aiError.message.includes('503') || aiError.message.includes('Service Unavailable')) {
-           if (retryCount < maxRetries) {
-             const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s
-             console.log(`🔄 API overload detected. Retrying in ${delay/1000} seconds... (attempt ${retryCount}/${maxRetries})`);
-             await new Promise(resolve => setTimeout(resolve, delay));
-             continue; // Try again
-           } else {
-             console.error('❌ Max retries reached for API overload. Using fallback.');
-           }
-         } else if (aiError.message.includes('quota')) {
-           throw new Error('AI API quota exceeded - please try again later');
-         } else if (aiError.message.includes('timeout')) {
-           throw new Error('AI analysis timed out - please try again');
-         } else if (aiError.message.includes('API key') || aiError.message.includes('authentication')) {
-           throw new Error('AI API authentication failed - please check API key configuration');
-         } else {
-           // Non-retryable error, break immediately
-           break;
-         }
-       }
-     }
-     
-     // If we exhausted all retries or hit non-retryable error
-     if (retryCount >= maxRetries && lastError) {
-       console.error('❌ AI analysis failed after all retry attempts');
-       console.error('Final error:', lastError.message);
-       
-       // Check if it's a Google server issue that we should communicate to the user
-       if (lastError.message.includes('overloaded') || lastError.message.includes('503') || lastError.message.includes('Service Unavailable')) {
-         console.log('🚨 Google Gemini servers are overloaded - returning user-friendly error');
-         throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
-       } else if (lastError.message.includes('timeout')) {
-         console.log('⏰ AI analysis timed out - returning user-friendly error');
-         throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
-       } else {
-         throw new Error(`AI analysis failed after ${maxRetries} attempts: ${lastError.message}`);
-       }
-     }
+    // Add timeout to prevent hanging - increased for Vercel deployment
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
+    });
+    
+    console.log('🚀 Starting AI analysis with Google Gemini...');
+    console.log('Model being used: gemini-1.5-flash');
+    console.log('Prompt length:', prompt.length, 'characters');
+    
+    let text; // Declare text variable outside try-catch block
+    
+    // Implement enhanced retry logic for API overload and cold start issues
+    const maxRetries = 5; // Increased from 3 to handle cold start issues
+    let retryCount = 0;
+    let lastError = null;
+    let lastResponse = null;
+    
+    while (retryCount < maxRetries) {
+      try {
+        console.log(`🔄 AI analysis attempt ${retryCount + 1}/${maxRetries}...`);
+        const aiPromise = model.generateContent(prompt);
+        console.log('⏳ AI request sent, waiting for response...');
+        const result = await Promise.race([aiPromise, timeoutPromise]);
+        console.log('✅ AI response received successfully');
+        const response = await result.response;
+        text = response.text(); // Assign to the outer variable
+        console.log('📝 AI response text extracted, length:', text.length);
+        
+        // Check if response contains generic error messages that indicate AI failure
+        const genericErrorIndicators = [
+          'AI analysis encountered an issue',
+          'This control requires manual review',
+          'AI analysis failed',
+          'Unable to analyze',
+          'Analysis error'
+        ];
+        
+        const hasGenericErrors = genericErrorIndicators.some(indicator => 
+          text.toLowerCase().includes(indicator.toLowerCase())
+        );
+        
+        if (hasGenericErrors) {
+          console.log('⚠️ AI returned generic error messages - this indicates a failed analysis');
+          console.log('Generic error indicators found:', genericErrorIndicators.filter(indicator => 
+            text.toLowerCase().includes(indicator.toLowerCase())
+          ));
+          
+          // Store this response for potential fallback
+          lastResponse = text;
+          
+          // If this is not the last attempt, retry
+          if (retryCount < maxRetries - 1) {
+            console.log('🔄 Retrying due to generic error messages...');
+            retryCount++;
+            
+            // Add exponential backoff with jitter for cold start issues
+            const baseDelay = Math.pow(2, retryCount) * 1000;
+            const jitter = Math.random() * 1000;
+            const delay = baseDelay + jitter;
+            
+            console.log(`⏳ Waiting ${(delay/1000).toFixed(1)} seconds before retry...`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue;
+          } else {
+            console.log('❌ Max retries reached with generic errors. Using fallback.');
+            throw new Error('AI returned generic error messages after all retry attempts');
+          }
+        }
+        
+        // If we get here, the AI response looks good
+        console.log('✅ AI response validated - no generic error messages detected');
+        break; // Success - exit retry loop
+        
+      } catch (aiError) {
+        lastError = aiError;
+        retryCount++;
+        
+        console.error(`❌ AI analysis attempt ${retryCount} failed:`, aiError.message);
+        
+        // Check if it's a retryable error
+        if (aiError.message.includes('overloaded') || aiError.message.includes('503') || aiError.message.includes('Service Unavailable') || 
+            aiError.message.includes('generic error messages') || aiError.message.includes('cold start')) {
+          if (retryCount < maxRetries) {
+            const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff: 2s, 4s, 8s, 16s, 32s
+            console.log(`🔄 Retryable error detected. Retrying in ${delay/1000} seconds... (attempt ${retryCount}/${maxRetries})`);
+            await new Promise(resolve => setTimeout(resolve, delay));
+            continue; // Try again
+          } else {
+            console.error('❌ Max retries reached for retryable errors. Using fallback.');
+          }
+        } else if (aiError.message.includes('quota')) {
+          throw new Error('AI API quota exceeded - please try again later');
+        } else if (aiError.message.includes('timeout')) {
+          throw new Error('AI analysis timed out - please try again');
+        } else if (aiError.message.includes('API key') || aiError.message.includes('authentication')) {
+          throw new Error('AI API authentication failed - please check API key configuration');
+        } else {
+          // Non-retryable error, break immediately
+          break;
+        }
+      }
+    }
+    
+    // If we exhausted all retries or hit non-retryable error
+    if (retryCount >= maxRetries && lastError) {
+      console.error('❌ AI analysis failed after all retry attempts');
+      console.error('Final error:', lastError.message);
+      
+      // Check if it's a Google server issue that we should communicate to the user
+      if (lastError.message.includes('overloaded') || lastError.message.includes('503') || lastError.message.includes('Service Unavailable')) {
+        console.log('🚨 Google Gemini servers are overloaded - returning user-friendly error');
+        throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
+      } else if (lastError.message.includes('timeout')) {
+        console.log('⏰ AI analysis timed out - returning user-friendly error');
+        throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
+      } else if (lastError.message.includes('generic error messages')) {
+        console.log('🤖 AI model returned generic errors - this indicates a cold start or processing issue');
+        throw new Error('AI_COLD_START: The AI model is experiencing processing issues. Please wait a moment and try again. This is a temporary issue that usually resolves on subsequent attempts.');
+      } else {
+        throw new Error(`AI analysis failed after ${maxRetries} attempts: ${lastError.message}`);
+      }
+    }
     
     console.log('=== AI RESPONSE DEBUG ===');
     console.log('AI Response Text:', text);
@@ -3170,6 +3218,13 @@ module.exports = async function handler(req, res) {
         error: 'GOOGLE_TIMEOUT',
         message: 'The AI analysis is taking longer than expected. Please try again in a few minutes.',
         retryAfter: 180 // Suggest retry after 3 minutes
+      });
+    } else if (error.message.includes('AI_COLD_START') || error.message.includes('generic error messages')) {
+      console.log('🤖 Returning AI cold start error to frontend');
+      return res.status(503).json({ 
+        error: 'AI_COLD_START',
+        message: 'The AI model is experiencing processing issues. Please wait a moment and try again. This is a temporary issue that usually resolves on subsequent attempts.',
+        retryAfter: 60 // Suggest retry after 1 minute
       });
     } else if (error.message.includes('quota') || error.message.includes('rate limit')) {
       console.log('💳 Returning quota exceeded error to frontend');

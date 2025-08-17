@@ -244,6 +244,8 @@ function Analyzer({ onNavigateHome }) {
               throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
             } else if (errorData.error === 'GOOGLE_TIMEOUT') {
               throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
+            } else if (errorData.error === 'AI_COLD_START') {
+              throw new Error('AI_COLD_START: The AI model is experiencing processing issues. Please wait a moment and try again. This is a temporary issue that usually resolves on subsequent attempts.');
             } else if (errorData.error === 'QUOTA_EXCEEDED') {
               throw new Error('QUOTA_EXCEEDED: AI API quota exceeded. Please try again later or contact support.');
             } else if (errorData.message) {
@@ -668,6 +670,8 @@ function Analyzer({ onNavigateHome }) {
               throw new Error('GOOGLE_SERVER_OVERLOAD: Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
             } else if (errorData.error === 'GOOGLE_TIMEOUT') {
               throw new Error('GOOGLE_TIMEOUT: The AI analysis is taking longer than expected. Please try again in a few minutes.');
+            } else if (errorData.error === 'AI_COLD_START') {
+              throw new Error('AI_COLD_START: The AI model is experiencing processing issues. Please wait a moment and try again. This is a temporary issue that usually resolves on subsequent attempts.');
             } else if (errorData.error === 'QUOTA_EXCEEDED') {
               throw new Error('QUOTA_EXCEEDED: AI API quota exceeded. Please try again later or contact support.');
             } else if (errorData.message) {
@@ -831,6 +835,8 @@ function Analyzer({ onNavigateHome }) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
       } else if (e.message && e.message.includes('GOOGLE_TIMEOUT')) {
         setError('⏰ The AI analysis is taking longer than expected. Please try again in a few minutes.');
+      } else if (e.message && e.message.includes('AI_COLD_START')) {
+        setError('🤖 The AI model is experiencing processing issues. Please wait a moment and try again. This is a temporary issue that usually resolves on subsequent attempts.');
       } else if (e.message && e.message.includes('QUOTA_EXCEEDED')) {
         setError('💳 AI API quota exceeded. Please try again later or contact support.');
       } else if (e.message && e.message.includes('503') || e.message.includes('Service Unavailable')) {
