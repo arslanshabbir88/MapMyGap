@@ -1045,17 +1045,7 @@ function Analyzer({ onNavigateHome }) {
                   
 
 
-                  {/* Search and Filter */}
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      placeholder="Search control families..."
-                      className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      onChange={(e) => {
-                        // Add search functionality here if needed
-                      }}
-                    />
-                  </div>
+
 
                   {/* Control Family Grid */}
                   <div className="max-h-64 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50 custom-scrollbar">
