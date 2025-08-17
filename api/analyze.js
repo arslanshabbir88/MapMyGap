@@ -638,6 +638,78 @@ const allFrameworks = {
             recommendation: "Coordinate recovery activities with all relevant parties"
           }
         ]
+      },
+      {
+        name: "GOVERN (GV)",
+        description: "Establish and monitor the organization's cybersecurity risk management strategy, expectations, and policy",
+        results: [
+          // Governance Strategy (GV.GS)
+          {
+            id: "GV.GS-1",
+            control: "Cybersecurity risk management strategy established and communicated",
+            status: "gap",
+            details: "Risk management strategy not established",
+            recommendation: "Develop and communicate comprehensive cybersecurity risk management strategy"
+          },
+          {
+            id: "GV.GS-2",
+            control: "Cybersecurity risk management strategy integrated with business strategy",
+            status: "gap",
+            details: "Risk management not integrated with business strategy",
+            recommendation: "Integrate cybersecurity risk management with overall business strategy"
+          },
+          {
+            id: "GV.GS-3",
+            control: "Cybersecurity risk management strategy reviewed and updated",
+            status: "gap",
+            details: "Strategy review process not implemented",
+            recommendation: "Implement regular review and update process for risk management strategy"
+          },
+          // Governance Policy (GV.GP)
+          {
+            id: "GV.GP-1",
+            control: "Cybersecurity policies established and maintained",
+            status: "gap",
+            details: "Cybersecurity policies not established",
+            recommendation: "Establish and maintain comprehensive cybersecurity policies"
+          },
+          {
+            id: "GV.GP-2",
+            control: "Cybersecurity policies communicated to stakeholders",
+            status: "gap",
+            details: "Policy communication not implemented",
+            recommendation: "Implement comprehensive policy communication to all stakeholders"
+          },
+          {
+            id: "GV.GP-3",
+            control: "Cybersecurity policies reviewed and updated",
+            status: "gap",
+            details: "Policy review process not implemented",
+            recommendation: "Implement regular review and update process for cybersecurity policies"
+          },
+          // Governance Monitoring (GV.GM)
+          {
+            id: "GV.GM-1",
+            control: "Cybersecurity risk management performance monitored",
+            status: "gap",
+            details: "Performance monitoring not implemented",
+            recommendation: "Implement monitoring of cybersecurity risk management performance"
+          },
+          {
+            id: "GV.GM-2",
+            control: "Cybersecurity risk management metrics established",
+            status: "gap",
+            details: "Risk management metrics not established",
+            recommendation: "Establish comprehensive metrics for cybersecurity risk management"
+          },
+          {
+            id: "GV.GM-3",
+            control: "Cybersecurity risk management reporting implemented",
+            status: "gap",
+            details: "Risk management reporting not implemented",
+            recommendation: "Implement regular reporting on cybersecurity risk management status"
+          }
+        ]
       }
     ]
   },
@@ -2566,32 +2638,41 @@ STRICT MODE - BE EXTREMELY CONSERVATIVE:
   * "established procedures for [control]"
   * "documented process for [control]"
   * "our policy states [control requirement]"
+  * "we have [specific tool/technology] for [control]"
 - If evidence is vague, implied, or general, mark as "gap"
 - When in doubt, mark as "gap"
 - Be very strict - expect 10-30% coverage maximum
 - Look for SPECIFIC implementation details, not general statements
-- Require concrete examples and specific procedures` : strictness === 'balanced' ? `
+- Require concrete examples and specific procedures
+- Downgrade "partial" controls to "gap" if evidence is not explicit enough
+- Be extremely critical of any evidence that could be interpreted as insufficient` : strictness === 'balanced' ? `
 BALANCED MODE - MODERATE INTERPRETATION:
 - Mark as "covered" with reasonable evidence like:
   * Policies mentioned that relate to the control
   * Procedures described that address the control
   * Can infer from related controls or general practices
   * Industry standard practices mentioned
+  * Good security practices that clearly address the control
 - Be reasonable but not overly generous
 - Expect 30-60% coverage
 - Look for GOOD evidence but don't require perfect specificity
-- Accept reasonable inferences from described practices` : `
+- Accept reasonable inferences from described practices
+- Maintain moderate standards - not too strict, not too lenient` : `
 LENIENT MODE - BE GENEROUS:
 - Mark as "covered" with ANY reasonable indication:
   * Basic policies mentioned
   * Common industry practices
   * General security measures
   * Can infer from organizational context
+  * Any security-related activities that could address the control
+  * General security awareness or practices mentioned
 - Be generous in interpretation
 - Expect 50-80% coverage
 - Look for ANY evidence that suggests the control is addressed, even indirectly
 - Accept broad interpretations and organizational context clues
-- Be willing to infer coverage from general security practices mentioned`}
+- Be willing to infer coverage from general security practices mentioned
+- Upgrade "partial" controls to "covered" if there's any reasonable basis
+- Look for positive interpretations of any security-related content`}
 
 MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
 
@@ -2600,6 +2681,13 @@ CRITICAL DIFFERENTIATION RULES:
 - BALANCED mode should find 30-60% coverage  
 - LENIENT mode should find 50-80% coverage
 - If you give the same score for different strictness levels, you are FAILING the analysis
+
+MANDATORY SCORE DIFFERENTIATION:
+- STRICT mode: Be extremely conservative, downgrade partial controls to gaps, require explicit evidence
+- BALANCED mode: Moderate interpretation, accept reasonable evidence, maintain balanced standards
+- LENIENT mode: Be generous, upgrade partial controls to covered when possible, accept broad interpretations
+
+CRITICAL: You MUST produce different scores. If you analyze the same document with different strictness levels and get the same score, you are not following instructions correctly.
 
 EXACT CONTROL STRUCTURE TO USE (ONLY THESE CONTROLS):
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
