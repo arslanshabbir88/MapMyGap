@@ -1026,13 +1026,10 @@ function Analyzer({ onNavigateHome }) {
               {/* Control Family Selection for NIST 800-53 */}
               {selectedFramework === 'NIST_800_53' && (
                 <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="mb-3">
                     <label className="block text-sm font-medium text-slate-300">
                       Control Family to Analyze
                     </label>
-                    <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
-                      {selectedCategories.length} selected
-                    </span>
                   </div>
                   
                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
@@ -1136,13 +1133,10 @@ function Analyzer({ onNavigateHome }) {
               {/* CSF Function Selection for NIST CSF */}
               {selectedFramework === 'NIST_CSF' && (
                 <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="mb-3">
                     <label className="block text-sm font-medium text-slate-300">
                       CSF Function to Analyze
                     </label>
-                    <span className="text-xs text-slate-400 bg-slate-700 px-2 py-1 rounded">
-                      {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length} selected
-                    </span>
                   </div>
                   
                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
