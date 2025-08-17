@@ -182,9 +182,7 @@ function Analyzer({ onNavigateHome }) {
   const [showHistory, setShowHistory] = useState(false);
   const [analysisHistory, setAnalysisHistory] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+
   const [analysisStrictness, setAnalysisStrictness] = useState('balanced'); // 'strict', 'balanced', 'lenient'
   const [lastAnalyzedStrictness, setLastAnalyzedStrictness] = useState(null);
 
@@ -365,28 +363,7 @@ function Analyzer({ onNavigateHome }) {
   const isSupportedFile = (file) => ['txt','docx','pdf','xlsx','xls'].includes(getFileExt(file?.name));
 
   // Filtering logic for analysis results
-  const filteredResults = useMemo(() => {
-    if (!analysisResults?.categories) return [];
-    
-    return analysisResults.categories
-      .filter(category => 
-        !categoryFilter || category.name === categoryFilter
-      )
-      .map(category => ({
-        ...category,
-        results: category.results.filter(result => {
-          const matchesSearch = !searchTerm || 
-            result.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            result.control.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (result.details && result.details.toLowerCase().includes(searchTerm.toLowerCase()));
-          
-          const matchesStatus = !statusFilter || result.status === statusFilter;
-          
-          return matchesSearch && matchesStatus;
-        })
-      }))
-      .filter(category => category.results.length > 0);
-  }, [analysisResults, searchTerm, statusFilter, categoryFilter]);
+  
 
   const totalControls = useMemo(() => {
     if (!analysisResults?.categories) return 0;
@@ -1468,85 +1445,53 @@ function Analyzer({ onNavigateHome }) {
                   <p className="text-xs sm:text-sm text-slate-400 mt-1">Review your compliance assessment and identify gaps</p>
                 </div>
                 {user && (
-                  <button
-                    onClick={() => {
-                      setShowHistory(!showHistory);
-                      if (!showHistory) loadAnalysisHistory();
-                    }}
-                    className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 sm:px-4 py-2 rounded-lg hover:bg-slate-700/50 border border-slate-600 hover:border-slate-500 text-sm"
-                  >
-                    <HistoryIcon />
-                    <span className="text-sm">History</span>
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => {
+                        setShowHistory(!showHistory);
+                        if (!showHistory) loadAnalysisHistory();
+                      }}
+                      className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors px-3 sm:px-4 py-2 rounded-lg hover:bg-slate-700/50 border border-slate-600 hover:border-slate-500 text-sm"
+                    >
+                      <HistoryIcon />
+                      <span className="text-sm">History</span>
+                    </button>
+                    {analysisResults && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setAnalysisResults(null);
+                            setUploadedFile(null);
+                            setFileContent('');
+                            setError(null);
+                          }}
+                          className="text-slate-400 hover:text-white transition-colors px-3 py-2 rounded border border-slate-600 hover:border-slate-500 text-sm"
+                        >
+                          New Analysis
+                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
+                            className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
+                          >
+                            <DownloadIcon />
+                            JSON
+                          </button>
+                          <button
+                            onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv')}
+                            className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
+                          >
+                            <DownloadIcon />
+                            CSV
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 )}
               </div>
 
-              {/* Search and Filter Controls */}
-              {analysisResults && (
-                <div className="mb-6 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
-                  <div className="flex flex-col lg:flex-row gap-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Search Controls</label>
-                      <input
-                        type="text"
-                        placeholder="Search by control ID, name, or description..."
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-                    </div>
-                    <div className="lg:w-48">
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Status</label>
-                      <select
-                        value={statusFilter}
-                        onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      >
-                        <option value="">All Statuses</option>
-                        <option value="covered">Covered</option>
-                        <option value="partial">Partial</option>
-                        <option value="gap">Gaps</option>
-                      </select>
-                    </div>
-                    <div className="lg:w-48">
-                      <label className="block text-sm font-medium text-slate-300 mb-2">Filter by Category</label>
-                      <select
-                        value={categoryFilter}
-                        onChange={(e) => setCategoryFilter(e.target.value)}
-                        className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                      >
-                        <option value="">All Categories</option>
-                        {analysisResults.categories.map(cat => (
-                          <option key={cat.name} value={cat.name}>{cat.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                    <div className="flex items-center space-x-4 text-sm text-slate-400">
-                      <span className="flex items-center space-x-2">
-                        <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                        <span>Showing {filteredResults.reduce((total, cat) => total + cat.results.length, 0)} of {totalControls} controls</span>
-                      </span>
-                      {(searchTerm || statusFilter || categoryFilter) && (
-                        <span className="text-blue-400">
-                          Filters active
-                        </span>
-                      )}
-                    </div>
-                    <button
-                      onClick={() => {
-                        setSearchTerm('');
-                        setStatusFilter('');
-                        setCategoryFilter('');
-                      }}
-                      className="text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 text-sm border border-blue-400/30 rounded-lg hover:bg-blue-400/10"
-                    >
-                      Clear All Filters
-                    </button>
-                  </div>
-                </div>
-              )}
+
 
               {/* Analysis History Panel */}
               {showHistory && user && (
@@ -1689,51 +1634,12 @@ function Analyzer({ onNavigateHome }) {
               )}
               {analysisResults && (
                 <div className="space-y-6 animate-fade-in" data-results-section>
-                  {/* Header with Actions */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Compliance Summary</h3>
-                      <p className="text-sm text-slate-400 mt-1">
-                        Framework: {selectedFramework} • {frameworkOptions.find(f => f.id === selectedFramework)?.name}
-                      </p>
-                    </div>
-                    <div className="flex items-center space-x-3">
-                      <button
-                        onClick={() => {
-                          setAnalysisResults(null);
-                          setUploadedFile(null);
-                          setFileContent('');
-                          setError(null);
-                        }}
-                        className="text-slate-400 hover:text-white transition-colors px-3 py-2 rounded border border-slate-600 hover:border-slate-500 text-sm"
-                      >
-                        New Analysis
-                      </button>
-                      {user && (
-                        <button
-                          onClick={() => setShowHistory(true)}
-                          className="text-blue-400 hover:text-blue-300 transition-colors px-3 py-2 rounded border border-blue-400/30 hover:bg-blue-400/10 text-sm"
-                        >
-                          View History
-                        </button>
-                      )}
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
-                          className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
-                        >
-                          <DownloadIcon />
-                          JSON
-                        </button>
-                        <button
-                          onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv')}
-                          className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
-                        >
-                          <DownloadIcon />
-                          CSV
-                        </button>
-                      </div>
-                    </div>
+                  {/* Header */}
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold text-white">Compliance Summary</h3>
+                    <p className="text-sm text-slate-400 mt-1">
+                      Framework: {selectedFramework} • {frameworkOptions.find(f => f.id === selectedFramework)?.name}
+                    </p>
                   </div>
 
                   {/* Summary Cards */}
@@ -1873,8 +1779,8 @@ function Analyzer({ onNavigateHome }) {
                   </div>
 
                   <div className="space-y-4">
-                    {filteredResults.length > 0 ? (
-                      filteredResults.map(category => (
+                    {analysisResults.categories && analysisResults.categories.length > 0 ? (
+                      analysisResults.categories.map(category => (
                         <div key={category.name} className="bg-slate-800/70 border border-slate-700 rounded-xl overflow-hidden transition-all duration-300 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10">
                           <div className="p-4 border-b border-slate-700 bg-gradient-to-r from-slate-800 to-slate-700">
                             <h4 className="font-semibold text-white text-lg mb-1">{category.name}</h4>
@@ -1924,18 +1830,8 @@ function Analyzer({ onNavigateHome }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                           </svg>
                         </div>
-                        <p className="font-medium text-lg mb-2">No controls match your current filters</p>
-                        <p className="text-sm">Try adjusting your search terms or filters to see more results</p>
-                        <button
-                          onClick={() => {
-                            setSearchTerm('');
-                            setStatusFilter('');
-                            setCategoryFilter('');
-                          }}
-                          className="mt-4 text-blue-400 hover:text-blue-300 transition-colors px-4 py-2 text-sm border border-blue-400/30 rounded-lg hover:bg-blue-400/10"
-                        >
-                          Clear All Filters
-                        </button>
+                        <p className="font-medium text-lg mb-2">No analysis results available</p>
+                        <p className="text-sm">Run an analysis to see your compliance assessment results</p>
                       </div>
                     )}
                   </div>
