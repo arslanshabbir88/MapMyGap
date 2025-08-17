@@ -997,7 +997,7 @@ function Analyzer({ onNavigateHome }) {
                        setAnalysisResults(null);
                        // Reset categories when framework changes
                        if (e.target.value === 'NIST_800_53') {
-                         setSelectedCategories(['AC']); // Default to first critical family
+                         setSelectedCategories(['AC']); // Default to first control family
                        } else if (e.target.value === 'NIST_CSF') {
                          setSelectedCategories(['ID']); // Default to first CSF function
                        } else {
@@ -1044,25 +1044,7 @@ function Analyzer({ onNavigateHome }) {
                     </div>
                   </div>
                   
-                  <div className="mb-3 p-2 bg-slate-700/30 rounded-lg border border-slate-600">
-                    <div className="flex items-center space-x-4 text-xs text-slate-400">
-                      <div className="flex items-center space-x-1">
-                        <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-                        <span>Critical</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-2 h-2 bg-yellow-500 rounded-full"></span>
-                        <span>Important</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <span className="w-2 h-2 bg-slate-500 rounded-full"></span>
-                        <span>Standard</span>
-                      </div>
-                    </div>
-                    <p className="text-xs text-slate-400 mt-2">
-                      Priority indicates the typical importance of controls in this family for most organizations
-                    </p>
-                  </div>
+
                   
 
 
@@ -1080,16 +1062,16 @@ function Analyzer({ onNavigateHome }) {
 
                   {/* Select All / Deselect All Buttons */}
                   <div className="mb-3 flex space-x-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        // Single selection - select the first critical control family
-                        setSelectedCategories(['AC']);
-                      }}
-                      className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                      Select Critical
-                    </button>
+                                          <button
+                        type="button"
+                        onClick={() => {
+                          // Single selection - select the first control family
+                          setSelectedCategories(['AC']);
+                        }}
+                        className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        Select First
+                      </button>
                     <button
                       type="button"
                       onClick={() => setSelectedCategories([])}
@@ -1103,23 +1085,23 @@ function Analyzer({ onNavigateHome }) {
                   <div className="max-h-64 overflow-y-auto border border-slate-600 rounded-lg p-3 bg-slate-700/50 custom-scrollbar">
                     <div className="grid grid-cols-1 gap-2">
                       {[
-                        { code: 'AC', name: 'Access Control', description: 'Control access to information systems and resources', priority: 'high' },
-                        { code: 'AU', name: 'Audit & Accountability', description: 'Create, protect, and retain audit records', priority: 'high' },
-                        { code: 'IA', name: 'Identification & Authentication', description: 'Identify and authenticate users and devices', priority: 'high' },
-                        { code: 'IR', name: 'Incident Response', description: 'Respond to and manage security incidents', priority: 'high' },
-                        { code: 'SC', name: 'System & Communications Protection', description: 'Protect system boundaries and communications', priority: 'high' },
-                        { code: 'AT', name: 'Awareness & Training', description: 'Ensure personnel are aware of security responsibilities', priority: 'medium' },
-                        { code: 'CA', name: 'Assessment & Authorization', description: 'Assess and authorize systems', priority: 'medium' },
-                        { code: 'CM', name: 'Configuration Management', description: 'Manage system configurations and changes', priority: 'medium' },
-                        { code: 'CP', name: 'Contingency Planning', description: 'Plan for system recovery and continuity', priority: 'medium' },
-                        { code: 'PE', name: 'Physical & Environmental Protection', description: 'Protect physical assets and environment', priority: 'medium' },
-                        { code: 'PS', name: 'Personnel Security', description: 'Ensure personnel are trustworthy and qualified', priority: 'medium' },
-                        { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle', priority: 'low' },
-                        { code: 'SI', name: 'System & Information Integrity', description: 'Maintain system and information integrity', priority: 'medium' },
-                        { code: 'MA', name: 'Maintenance', description: 'Perform system maintenance securely', priority: 'low' },
-                        { code: 'RA', name: 'Risk Assessment', description: 'Assess and manage security risks', priority: 'medium' },
-                        { code: 'SA', name: 'System & Services Acquisition', description: 'Acquire systems and services securely', priority: 'low' },
-                        { code: 'SR', name: 'Supply Chain Risk Management', description: 'Manage supply chain risks', priority: 'low' }
+                        { code: 'AC', name: 'Access Control', description: 'Control access to information systems and resources' },
+                        { code: 'AU', name: 'Audit & Accountability', description: 'Create, protect, and retain audit records' },
+                        { code: 'IA', name: 'Identification & Authentication', description: 'Identify and authenticate users and devices' },
+                        { code: 'IR', name: 'Incident Response', description: 'Respond to and manage security incidents' },
+                        { code: 'SC', name: 'System & Communications Protection', description: 'Protect system boundaries and communications' },
+                        { code: 'AT', name: 'Awareness & Training', description: 'Ensure personnel are aware of security responsibilities' },
+                        { code: 'CA', name: 'Assessment & Authorization', description: 'Assess and authorize systems' },
+                        { code: 'CM', name: 'Configuration Management', description: 'Manage system configurations and changes' },
+                        { code: 'CP', name: 'Contingency Planning', description: 'Plan for system recovery and continuity' },
+                        { code: 'PE', name: 'Physical & Environmental Protection', description: 'Protect physical assets and environment' },
+                        { code: 'PS', name: 'Personnel Security', description: 'Ensure personnel are trustworthy and qualified' },
+                        { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle' },
+                        { code: 'SI', name: 'System & Information Integrity', description: 'Maintain system and information integrity' },
+                        { code: 'MA', name: 'Maintenance', description: 'Perform system maintenance securely' },
+                        { code: 'RA', name: 'Risk Assessment', description: 'Assess and manage security risks' },
+                        { code: 'SA', name: 'System & Services Acquisition', description: 'Acquire systems and services securely' },
+                        { code: 'SR', name: 'Supply Chain Risk Management', description: 'Manage supply chain risks' }
                       ].map(family => (
                         <label key={family.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                           <input
@@ -1136,14 +1118,6 @@ function Analyzer({ onNavigateHome }) {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                               <span className="font-medium text-slate-200">{family.code}</span>
-                              <span className={`text-xs px-2 py-1 rounded-full ${
-                                family.priority === 'high' ? 'bg-red-500/20 text-red-300' :
-                                family.priority === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
-                                'bg-slate-500/20 text-slate-300'
-                              }`}>
-                                {family.priority === 'high' ? 'Critical' :
-                                 family.priority === 'medium' ? 'Important' : 'Standard'}
-                              </span>
                             </div>
                             <div className="text-slate-400 text-xs mt-1">{family.description}</div>
                           </div>
@@ -1212,7 +1186,7 @@ function Analyzer({ onNavigateHome }) {
                         }}
                         className="px-3 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
                       >
-                        Select Critical
+                        Select First
                       </button>
                       <button
                         type="button"
