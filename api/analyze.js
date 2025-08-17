@@ -2617,41 +2617,28 @@ ${fileContent.substring(0, 8000)}
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
-MANDATORY: You MUST analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. DO NOT analyze any other categories.
+IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. Do not analyze any other categories.
 
-SELECTED CATEGORIES TO ANALYZE (ONLY THESE):
+SELECTED CATEGORIES TO ANALYZE:
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
 
-STRICTNESS REQUIREMENTS:
-
+ANALYSIS INSTRUCTIONS:
 ${strictness === 'strict' ? `
-STRICT MODE - Be very conservative:
-- Only mark as "covered" if you find EXPLICIT, CLEAR evidence
-- Look for specific implementation details, policies, procedures
-- When in doubt, mark as "gap"
-- Be very strict in your assessment` : strictness === 'balanced' ? `
-BALANCED MODE - Moderate interpretation:
-- Mark as "covered" with reasonable evidence
-- Accept policies and procedures that address the control
-- Be reasonable but not overly generous
-- Maintain balanced standards` : `
-LENIENT MODE - Be generous:
-- Mark as "covered" with ANY reasonable indication
-- Accept general security practices and policies
-- Be generous in interpretation
-- Look for any evidence that suggests the control is addressed`}
+For STRICT mode: Be very conservative. Only mark as "covered" if you find explicit, clear evidence of implementation. When in doubt, mark as "gap".` : strictness === 'balanced' ? `
+For BALANCED mode: Be reasonable. Mark as "covered" if you find good evidence of implementation, "partial" if somewhat addressed, "gap" if not addressed.` : `
+For LENIENT mode: Be generous. Mark as "covered" if you find any reasonable indication of implementation, "partial" if somewhat addressed, "gap" only if clearly not addressed.`}
 
-EXACT CONTROL STRUCTURE TO USE (ONLY THESE CONTROLS):
+CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
-Analyze each control and mark as:
-- "covered": Fully addressed with evidence
-- "partial": Partially addressed  
-- "gap": Not addressed
+For each control, analyze the document content and mark as:
+- "covered": Control is fully addressed with clear evidence
+- "partial": Control is partially addressed  
+- "gap": Control is not addressed
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
-Return only valid JSON using the exact control structure above.`;
+Return valid JSON using the exact control structure above.`;
 
     console.log('=== PROMPT TOKEN ANALYSIS ===');
     console.log('Prompt length:', prompt.length, 'characters');
@@ -2792,6 +2779,15 @@ Return only valid JSON using the exact control structure above.`;
     console.log('AI Response contains "results":', text.includes('"results"'));
     console.log('AI Response contains "AC-1":', text.includes('AC-1'));
     console.log('AI Response contains "Access Control":', text.includes('Access Control'));
+    
+    // Add strictness-specific debugging
+    console.log('=== STRICTNESS ANALYSIS DEBUG ===');
+    console.log('Requested strictness:', strictness);
+    console.log('Response contains generic errors:', text.includes('AI analysis encountered an issue'));
+    console.log('Response contains "covered" status:', text.includes('"status": "covered"'));
+    console.log('Response contains "partial" status:', text.includes('"status": "partial"'));
+    console.log('Response contains "gap" status:', text.includes('"status": "gap"'));
+    console.log('Response contains manual review text:', text.includes('manual review'));
     
     // Add comprehensive token analysis
     console.log('=== AI RESPONSE TOKEN ANALYSIS ===');
