@@ -3210,13 +3210,13 @@ function adjustResultsForStrictness(results, strictness) {
     // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
     console.log('Strict mode - making conservative adjustments');
     
-    let coveredToPartial = Math.floor(initialCounts.covered * 0.7); // 70% of covered -> partial (more aggressive)
-    let partialToGap = Math.floor(initialCounts.partial * 0.6); // 60% of partial -> gap (more aggressive)
+    let coveredToPartial = Math.floor(initialCounts.covered * 0.8); // 80% of covered -> partial (more aggressive)
+    let partialToGap = Math.floor(initialCounts.partial * 0.7); // 70% of partial -> gap (more aggressive)
     
     // If AI was too conservative and marked everything as gap, upgrade very few to partial
     let gapToPartial = 0;
     if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.1); // Only 10% of gaps -> partial (very conservative)
+      gapToPartial = Math.floor(initialCounts.gap * 0.05); // Only 5% of gaps -> partial (very conservative)
       console.log(`Strict mode: AI was too conservative, upgrading only ${gapToPartial} gaps to partial`);
     }
     
@@ -3251,12 +3251,12 @@ function adjustResultsForStrictness(results, strictness) {
     // If AI was too conservative, be moderately generous
     let gapToPartial = 0;
     if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.5); // 50% of gaps -> partial (moderate)
+      gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gaps -> partial (more generous)
       console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
     // Also upgrade some partial to covered for balanced mode
-    let partialToCovered = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> covered
+    let partialToCovered = Math.floor(initialCounts.partial * 0.5); // 50% of partial -> covered (more generous)
     
     if (gapToPartial > 0 || partialToCovered > 0) {
       let gapConverted = 0;
@@ -3282,12 +3282,12 @@ function adjustResultsForStrictness(results, strictness) {
     console.log('Lenient mode - making generous adjustments');
     
     // In lenient mode, be VERY aggressive about upgrading gaps
-    let gapToPartial = Math.floor(initialCounts.gap * 0.8); // 80% of gap -> partial (very generous)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.7); // 70% of partial -> covered (very generous)
+    let gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gap -> partial (very generous)
+    let partialToCovered = Math.floor(initialCounts.partial * 0.8); // 80% of partial -> covered (very generous)
     
     // If AI was extremely conservative, upgrade even more aggressively
     if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gaps -> partial when AI is too conservative
+      gapToPartial = Math.floor(initialCounts.gap * 0.95); // 95% of gaps -> partial when AI is too conservative
       console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
