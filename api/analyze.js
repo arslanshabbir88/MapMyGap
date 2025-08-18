@@ -3027,10 +3027,13 @@ Return valid JSON using the exact control structure above.`;
     console.log('Gemini Flash model limit: 1M tokens total');
     console.log('Token usage efficiency:', ((Math.ceil(prompt.length / 4) + optimalTokenLimit) / 1000000 * 100).toFixed(2) + '% of model limit');
 
-    // Add timeout to prevent hanging - increased for Vercel deployment
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 25000); // 25 second timeout for Vercel
-    });
+            // Add timeout to prevent hanging - increased for Vercel deployment
+        // SOC 2 is a larger framework and needs more time for comprehensive analysis
+        const timeoutDuration = framework === 'SOC_2' ? 60000 : 25000; // 60s for SOC 2, 25s for others
+        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s for ${framework} framework`);
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), timeoutDuration);
+        });
     
     console.log('🚀 Starting AI analysis with Google Gemini...');
     console.log('Model being used: gemini-1.5-flash');
