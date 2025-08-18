@@ -1222,6 +1222,84 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
               
+              {/* SOC 2 Trust Service Criteria Selection */}
+              {selectedFramework === 'SOC_2' && (
+                <div className="mb-6">
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-slate-300">
+                      Trust Service Criteria to Analyze
+                    </label>
+                  </div>
+                  
+                  <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-blue-300">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span>Select one trust service criteria to analyze (prevents token limit issues)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {[
+                      { code: 'CC', name: 'Common Criteria', description: 'Control Environment, Communication, Risk Assessment, Monitoring, Control Activities' },
+                      { code: 'A', name: 'Availability', description: 'System operations, monitoring, disaster recovery, and business continuity' },
+                      { code: 'C', name: 'Confidentiality', description: 'Information classification, handling, and data protection controls' },
+                      { code: 'PI', name: 'Processing Integrity', description: 'System processing accuracy, completeness, and data quality controls' },
+                      { code: 'P', name: 'Privacy', description: 'Privacy by design, notice, consent, and data subject rights management' }
+                    ].map(criteria => (
+                      <label key={criteria.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                        <input
+                          type="radio"
+                          name="soc2-criteria"
+                          value={criteria.code}
+                          checked={selectedCategories.includes(criteria.code)}
+                          onChange={(e) => {
+                            // Single selection - replace the entire array with just this selection
+                            setSelectedCategories([e.target.value]);
+                          }}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium text-slate-200">{criteria.code}</span>
+                            <span className="text-slate-300">-</span>
+                            <span className="text-slate-300">{criteria.name}</span>
+                          </div>
+                          <div className="text-slate-400 text-xs mt-1">{criteria.description}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {/* Selection Summary */}
+                  <div className="mt-3 p-3 bg-slate-700/30 rounded-lg border border-slate-600">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-slate-300">Selected criteria:</span>
+                      <span className="text-blue-400 font-medium">
+                        {selectedCategories.length > 0 ? selectedCategories.join(', ') : 'None'}
+                      </span>
+                    </div>
+                    {selectedCategories.length === 0 && (
+                      <div className="mt-2 text-sm text-red-400 flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        Please select one trust service criteria to analyze.
+                      </div>
+                    )}
+                    {selectedCategories.length > 1 && (
+                      <div className="mt-2 text-sm text-yellow-400 flex items-center">
+                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                        </svg>
+                        Only one trust service criteria can be selected at a time.
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              
 
               <div className="mb-6">
                 <label htmlFor="file-upload" className="block text-sm font-medium text-slate-300 mb-2">Upload Standards Document</label>
@@ -1434,7 +1512,7 @@ function Analyzer({ onNavigateHome }) {
 
               <button
                 onClick={handleAnalyze}
-                                 disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0) || (selectedFramework === 'NIST_CSF' && selectedCategories.length === 0)}
+                                 disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0) || (selectedFramework === 'NIST_CSF' && selectedCategories.length === 0) || (selectedFramework === 'SOC_2' && selectedCategories.length === 0)}
                 className="w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 disabled:from-slate-600 disabled:to-slate-600 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isAnalyzing ? (
@@ -1473,6 +1551,17 @@ function Analyzer({ onNavigateHome }) {
                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                      </svg>
                      <span>Please select at least one CSF function to analyze</span>
+                   </div>
+                 </div>
+               )}
+               
+               {selectedFramework === 'SOC_2' && selectedCategories.length === 0 && (
+                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                   <div className="flex items-center space-x-2 text-sm text-yellow-400">
+                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                     </svg>
+                     <span>Please select at least one trust service criteria to analyze</span>
                    </div>
                  </div>
                )}

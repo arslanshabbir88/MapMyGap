@@ -3782,12 +3782,48 @@ Return valid JSON using the exact control structure above.`;
     
     let parsedResponse;
     try {
-      parsedResponse = JSON.parse(jsonContent);
-      console.log('✅ JSON parsed successfully');
+      // Clean the JSON content before parsing
+      let cleanedJsonContent = jsonContent;
+      
+      // Remove any trailing characters after the JSON
+      const jsonEndIndex = cleanedJsonContent.lastIndexOf('}');
+      if (jsonEndIndex !== -1 && jsonEndIndex < cleanedJsonContent.length - 1) {
+        cleanedJsonContent = cleanedJsonContent.substring(0, jsonEndIndex + 1);
+        console.log('🧹 Cleaned trailing characters after JSON');
+      }
+      
+      // Remove any leading characters before the JSON
+      const jsonStartIndex = cleanedJsonContent.indexOf('{');
+      if (jsonStartIndex > 0) {
+        cleanedJsonContent = cleanedJsonContent.substring(jsonStartIndex);
+        console.log('🧹 Cleaned leading characters before JSON');
+      }
+      
+      // Try to parse the cleaned JSON
+      parsedResponse = JSON.parse(cleanedJsonContent);
+      console.log('✅ JSON parsed successfully after cleaning');
     } catch (parseError) {
       console.error('❌ JSON parsing failed:', parseError.message);
-      console.error('JSON text to parse:', jsonContent);
-      throw new Error(`AI response JSON parsing failed: ${parseError.message}`);
+      console.error('Original JSON text length:', jsonContent.length);
+      console.error('Original JSON text preview (first 200 chars):', jsonContent.substring(0, 200));
+      console.error('Original JSON text preview (last 200 chars):', jsonContent.substring(Math.max(0, jsonContent.length - 200)));
+      
+      // Try to find and extract just the JSON part
+      try {
+        const jsonMatch = jsonContent.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const extractedJson = jsonMatch[0];
+          console.log('🔄 Attempting to extract JSON from response...');
+          console.log('Extracted JSON length:', extractedJson.length);
+          parsedResponse = JSON.parse(extractedJson);
+          console.log('✅ JSON extracted and parsed successfully');
+        } else {
+          throw new Error('No valid JSON found in response');
+        }
+      } catch (extractError) {
+        console.error('❌ JSON extraction also failed:', extractError.message);
+        throw new Error(`AI response JSON parsing failed: ${parseError.message}. Extraction attempt also failed: ${extractError.message}`);
+      }
     }
     
     console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
