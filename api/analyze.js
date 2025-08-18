@@ -2374,6 +2374,113 @@ const allFrameworks = {
     description: "Service Organization Control 2 Trust Service Criteria",
     categories: [
       {
+        name: "Control Environment (CC1)",
+        description: "The control environment sets the tone of an organization, influencing the control consciousness of its people",
+        results: [
+          {
+            id: "CC1.1",
+            control: "The entity demonstrates a commitment to integrity and ethical values",
+            status: "gap",
+            details: "Commitment to integrity and ethical values not demonstrated",
+            recommendation: "Establish and communicate clear commitment to integrity and ethical values"
+          },
+          {
+            id: "CC1.2",
+            control: "The entity demonstrates a commitment to competence",
+            status: "gap",
+            details: "Commitment to competence not demonstrated",
+            recommendation: "Establish policies and procedures to ensure personnel competence"
+          },
+          {
+            id: "CC1.3",
+            control: "The entity demonstrates a commitment to accountability",
+            status: "gap",
+            details: "Commitment to accountability not demonstrated",
+            recommendation: "Establish clear accountability structures and responsibilities"
+          }
+        ]
+      },
+      {
+        name: "Communication and Information (CC2)",
+        description: "The entity communicates information to support the functioning of internal control",
+        results: [
+          {
+            id: "CC2.1",
+            control: "The entity communicates information to support the functioning of internal control",
+            status: "gap",
+            details: "Information communication for internal control not established",
+            recommendation: "Establish effective communication channels for internal control information"
+          },
+          {
+            id: "CC2.2",
+            control: "The entity communicates information to support the functioning of internal control",
+            status: "gap",
+            details: "Information communication for internal control not established",
+            recommendation: "Establish effective communication channels for internal control information"
+          }
+        ]
+      },
+      {
+        name: "Risk Assessment (CC3)",
+        description: "The entity identifies and assesses risks that could affect the achievement of its objectives",
+        results: [
+          {
+            id: "CC3.1",
+            control: "The entity identifies and assesses risks that could affect the achievement of its objectives",
+            status: "gap",
+            details: "Risk assessment process not established",
+            recommendation: "Implement comprehensive risk assessment process"
+          },
+          {
+            id: "CC3.2",
+            control: "The entity identifies and assesses risks that could affect the achievement of its objectives",
+            status: "gap",
+            details: "Risk assessment process not established",
+            recommendation: "Implement comprehensive risk assessment process"
+          }
+        ]
+      },
+      {
+        name: "Monitoring Activities (CC4)",
+        description: "The entity evaluates the effectiveness of internal control over time",
+        results: [
+          {
+            id: "CC4.1",
+            control: "The entity evaluates the effectiveness of internal control over time",
+            status: "gap",
+            details: "Monitoring activities not established",
+            recommendation: "Implement ongoing monitoring and evaluation of internal controls"
+          },
+          {
+            id: "CC4.2",
+            control: "The entity evaluates the effectiveness of internal control over time",
+            status: "gap",
+            details: "Monitoring activities not established",
+            recommendation: "Implement ongoing monitoring and evaluation of internal controls"
+          }
+        ]
+      },
+      {
+        name: "Control Activities (CC5)",
+        description: "The entity implements control activities to mitigate risks to the achievement of its objectives",
+        results: [
+          {
+            id: "CC5.1",
+            control: "The entity implements control activities to mitigate risks to the achievement of its objectives",
+            status: "gap",
+            details: "Control activities not implemented",
+            recommendation: "Implement appropriate control activities to mitigate identified risks"
+          },
+          {
+            id: "CC5.2",
+            control: "The entity implements control activities to mitigate risks to the achievement of its objectives",
+            status: "gap",
+            details: "Control activities not implemented",
+            recommendation: "Implement appropriate control activities to mitigate identified risks"
+          }
+        ]
+      },
+      {
         name: "Security - Logical Access (CC6.1)",
         description: "Logical access security controls and authentication mechanisms",
         results: [
