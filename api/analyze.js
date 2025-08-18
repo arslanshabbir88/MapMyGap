@@ -3250,13 +3250,13 @@ function adjustResultsForStrictness(results, strictness) {
     
     // If AI was too conservative, be moderately generous
     let gapToPartial = 0;
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gaps -> partial (moderate)
+    if (initialCounts.gap > 0) {
+      gapToPartial = Math.floor(initialCounts.gap * 0.4); // 40% of gaps -> partial (moderate)
       console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
     // Also upgrade some partial to covered for balanced mode
-    let partialToCovered = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> covered
+    let partialToCovered = Math.floor(initialCounts.partial * 0.3); // 30% of partial -> covered
     
     if (gapToPartial > 0 || partialToCovered > 0) {
       let gapConverted = 0;
@@ -3282,12 +3282,12 @@ function adjustResultsForStrictness(results, strictness) {
     console.log('Lenient mode - making generous adjustments');
     
     // In lenient mode, be VERY aggressive about upgrading gaps
-    let gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gap -> partial (very generous)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.8); // 80% of partial -> covered (very generous)
+    let gapToPartial = Math.floor(initialCounts.gap * 0.8); // 80% of gap -> partial (very generous)
+    let partialToCovered = Math.floor(initialCounts.partial * 0.7); // 70% of partial -> covered (very generous)
     
     // If AI was extremely conservative, upgrade even more aggressively
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.95); // 95% of gaps -> partial when AI is too conservative
+    if (initialCounts.gap > 0) {
+      gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gaps -> partial when AI is too conservative
       console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
@@ -3302,10 +3302,10 @@ function adjustResultsForStrictness(results, strictness) {
           result.status = 'partial';
           result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
           gapConverted++;
-        } else if (result.status === 'partial' && partialToCovered > 0) {
+        } else if (result.status === 'partial' && partialConverted < partialToCovered) {
           result.status = 'covered';
           result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
-          partialToCovered--;
+          partialConverted++;
         }
       });
     });
@@ -3547,8 +3547,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     
     const prompt = `Analyze this document against ${frameworkName} framework for compliance assessment.
 
-Document Content:
-${fileContent.substring(0, 8000)}
+Document Content (First 4000 characters for focused analysis):
+${fileContent.substring(0, 4000)}
 
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
@@ -3615,6 +3615,8 @@ For each control, analyze the document content and mark as:
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
+IMPORTANT: Do NOT return generic error messages. If you cannot analyze a specific control, mark it as "gap" with a brief explanation of what evidence you looked for.
+
 Return valid JSON using the exact control structure above.`;
 
     console.log('=== PROMPT TOKEN ANALYSIS ===');
@@ -3678,9 +3680,9 @@ Return valid JSON using the exact control structure above.`;
           // Store this response for potential fallback
           lastResponse = text;
           
-          // If this is not the last attempt, retry
+          // If this is not the last attempt, retry with a simplified prompt
           if (retryCount < maxRetries - 1) {
-            console.log('🔄 Retrying due to generic error messages...');
+            console.log('🔄 Retrying due to generic error messages with simplified prompt...');
             retryCount++;
             
             // Add exponential backoff with jitter for cold start issues
@@ -3690,6 +3692,10 @@ Return valid JSON using the exact control structure above.`;
             
             console.log(`⏳ Waiting ${(delay/1000).toFixed(1)} seconds before retry...`);
             await new Promise(resolve => setTimeout(resolve, delay));
+            
+            // Try with a much simpler prompt for the retry
+            const simplifiedPrompt = `Analyze this document for ${frameworkName} compliance. Document: ${fileContent.substring(0, 2000)}. Return JSON with controls marked as "covered", "partial", or "gap" based on evidence found.`;
+            prompt = simplifiedPrompt;
             continue;
           } else {
             console.log('❌ Max retries reached with generic errors. Using fallback.');
