@@ -3210,13 +3210,13 @@ function adjustResultsForStrictness(results, strictness) {
     // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
     console.log('Strict mode - making conservative adjustments');
     
-    let coveredToPartial = Math.floor(initialCounts.covered * 0.6); // 60% of covered -> partial
-    let partialToGap = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> gap
+    let coveredToPartial = Math.floor(initialCounts.covered * 0.7); // 70% of covered -> partial (more aggressive)
+    let partialToGap = Math.floor(initialCounts.partial * 0.6); // 60% of partial -> gap (more aggressive)
     
     // If AI was too conservative and marked everything as gap, upgrade very few to partial
     let gapToPartial = 0;
-    if (initialCounts.gap > 0 && initialCounts.covered === 0 && initialCounts.partial === 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.15); // Only 15% of gaps -> partial (very conservative)
+    if (initialCounts.gap > 0) {
+      gapToPartial = Math.floor(initialCounts.gap * 0.1); // Only 10% of gaps -> partial (very conservative)
       console.log(`Strict mode: AI was too conservative, upgrading only ${gapToPartial} gaps to partial`);
     }
     
@@ -3251,12 +3251,12 @@ function adjustResultsForStrictness(results, strictness) {
     // If AI was too conservative, be moderately generous
     let gapToPartial = 0;
     if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.4); // 40% of gaps -> partial (moderate)
+      gapToPartial = Math.floor(initialCounts.gap * 0.5); // 50% of gaps -> partial (moderate)
       console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
     }
     
     // Also upgrade some partial to covered for balanced mode
-    let partialToCovered = Math.floor(initialCounts.partial * 0.3); // 30% of partial -> covered
+    let partialToCovered = Math.floor(initialCounts.partial * 0.4); // 40% of partial -> covered
     
     if (gapToPartial > 0 || partialToCovered > 0) {
       let gapConverted = 0;
