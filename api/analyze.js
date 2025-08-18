@@ -3680,9 +3680,9 @@ Return valid JSON using the exact control structure above.`;
           // Store this response for potential fallback
           lastResponse = text;
           
-          // If this is not the last attempt, retry with a simplified prompt
+          // If this is not the last attempt, retry with a much more focused prompt
           if (retryCount < maxRetries - 1) {
-            console.log('🔄 Retrying due to generic error messages with simplified prompt...');
+            console.log('🔄 Retrying due to generic error messages with focused prompt...');
             retryCount++;
             
             // Add exponential backoff with jitter for cold start issues
@@ -3693,9 +3693,29 @@ Return valid JSON using the exact control structure above.`;
             console.log(`⏳ Waiting ${(delay/1000).toFixed(1)} seconds before retry...`);
             await new Promise(resolve => setTimeout(resolve, delay));
             
-            // Try with a much simpler prompt for the retry
-            const simplifiedPrompt = `Analyze this document for ${frameworkName} compliance. Document: ${fileContent.substring(0, 2000)}. Return JSON with controls marked as "covered", "partial", or "gap" based on evidence found.`;
-            prompt = simplifiedPrompt;
+            // Try with a much more focused and simple prompt for the retry
+            const focusedPrompt = `Analyze this document for ${frameworkName} compliance. Focus on finding evidence for each control.
+
+Document: ${fileContent.substring(0, 1500)}
+
+Controls to analyze: ${filteredFrameworkData.categories.map(cat => cat.name).join(', ')}
+
+For each control, look for specific evidence like:
+- Policies mentioned
+- Procedures described  
+- Security measures implemented
+- Tools or technologies mentioned
+- Organizational practices
+
+Mark as:
+- "covered": Clear evidence found
+- "partial": Some evidence found
+- "gap": No evidence found
+
+Return valid JSON with the exact control structure provided. Do not include generic error messages.`;
+
+            prompt = focusedPrompt;
+            console.log('🔄 Using focused prompt for retry attempt');
             continue;
           } else {
             console.log('❌ Max retries reached with generic errors. Using fallback.');
@@ -3894,8 +3914,41 @@ Return valid JSON using the exact control structure above.`;
     
     console.log('Parsed AI Response:', JSON.stringify(parsedResponse, null, 2));
     
-         // Handle both array format and single category format from AI
-     console.log('=== FORMAT VALIDATION ===');
+    // Check if AI response contains meaningful analysis or just generic messages
+    let hasMeaningfulAnalysis = false;
+    let genericMessageCount = 0;
+    
+    if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
+      parsedResponse.categories.forEach(category => {
+        if (category.results && Array.isArray(category.results)) {
+          category.results.forEach(result => {
+            if (result.details && typeof result.details === 'string') {
+              if (result.details.includes('AI analysis encountered an issue') || 
+                  result.details.includes('This control requires manual review') ||
+                  result.details.includes('AI analysis failed')) {
+                genericMessageCount++;
+              } else if (result.details.length > 20 && 
+                         !result.details.includes('AI analysis encountered an issue')) {
+                hasMeaningfulAnalysis = true;
+              }
+            }
+          });
+        }
+      });
+    }
+    
+    console.log('=== AI RESPONSE QUALITY CHECK ===');
+    console.log('Has meaningful analysis:', hasMeaningfulAnalysis);
+    console.log('Generic message count:', genericMessageCount);
+    
+    // If too many generic messages, consider this a failed analysis
+    if (genericMessageCount > 0 && !hasMeaningfulAnalysis) {
+      console.log('⚠️ AI response contains only generic messages - analysis failed');
+      throw new Error('AI analysis failed - returned only generic error messages');
+    }
+    
+    // Handle both array format and single category format from AI
+    console.log('=== FORMAT VALIDATION ===');
      console.log('Checking parsed response structure...');
      console.log('Has categories property?', !!parsedResponse.categories);
      console.log('Categories is array?', Array.isArray(parsedResponse.categories));
