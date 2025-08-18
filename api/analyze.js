@@ -2397,6 +2397,20 @@ const allFrameworks = {
             status: "gap",
             details: "Commitment to accountability not demonstrated",
             recommendation: "Establish clear accountability structures and responsibilities"
+          },
+          {
+            id: "CC1.4",
+            control: "The entity demonstrates a commitment to security",
+            status: "gap",
+            details: "Commitment to security not demonstrated",
+            recommendation: "Establish and communicate clear commitment to information security"
+          },
+          {
+            id: "CC1.5",
+            control: "The entity demonstrates a commitment to continuous improvement",
+            status: "gap",
+            details: "Commitment to continuous improvement not demonstrated",
+            recommendation: "Establish processes for continuous improvement of controls and operations"
           }
         ]
       },
@@ -2413,6 +2427,20 @@ const allFrameworks = {
           },
           {
             id: "CC2.2",
+            control: "The entity communicates information to support the functioning of internal control",
+            status: "gap",
+            details: "Information communication for internal control not established",
+            recommendation: "Establish effective communication channels for internal control information"
+          },
+          {
+            id: "CC2.3",
+            control: "The entity communicates information to support the functioning of internal control",
+            status: "gap",
+            details: "Information communication for internal control not established",
+            recommendation: "Establish effective communication channels for internal control information"
+          },
+          {
+            id: "CC2.4",
             control: "The entity communicates information to support the functioning of internal control",
             status: "gap",
             details: "Information communication for internal control not established",
@@ -2437,6 +2465,20 @@ const allFrameworks = {
             status: "gap",
             details: "Risk assessment process not established",
             recommendation: "Implement comprehensive risk assessment process"
+          },
+          {
+            id: "CC3.3",
+            control: "The entity identifies and assesses risks that could affect the achievement of its objectives",
+            status: "gap",
+            details: "Risk assessment process not established",
+            recommendation: "Implement comprehensive risk assessment process"
+          },
+          {
+            id: "CC3.4",
+            control: "The entity identifies and assesses risks that could affect the achievement of its objectives",
+            status: "gap",
+            details: "Risk assessment process not established",
+            recommendation: "Implement comprehensive risk assessment process"
           }
         ]
       },
@@ -2457,6 +2499,20 @@ const allFrameworks = {
             status: "gap",
             details: "Monitoring activities not established",
             recommendation: "Implement ongoing monitoring and evaluation of internal controls"
+          },
+          {
+            id: "CC4.3",
+            control: "The entity evaluates the effectiveness of internal control over time",
+            status: "gap",
+            details: "Monitoring activities not established",
+            recommendation: "Implement ongoing monitoring and evaluation of internal controls"
+          },
+          {
+            id: "CC4.4",
+            control: "The entity evaluates the effectiveness of internal control over time",
+            status: "gap",
+            details: "Monitoring activities not established",
+            recommendation: "Implement ongoing monitoring and evaluation of internal controls"
           }
         ]
       },
@@ -2473,6 +2529,20 @@ const allFrameworks = {
           },
           {
             id: "CC5.2",
+            control: "The entity implements control activities to mitigate risks to the achievement of its objectives",
+            status: "gap",
+            details: "Control activities not implemented",
+            recommendation: "Implement appropriate control activities to mitigate identified risks"
+          },
+          {
+            id: "CC5.3",
+            control: "The entity implements control activities to mitigate risks to the achievement of its objectives",
+            status: "gap",
+            details: "Control activities not implemented",
+            recommendation: "Implement appropriate control activities to mitigate identified risks"
+          },
+          {
+            id: "CC5.4",
             control: "The entity implements control activities to mitigate risks to the achievement of its objectives",
             status: "gap",
             details: "Control activities not implemented",
@@ -2657,6 +2727,141 @@ const allFrameworks = {
         ]
       },
       {
+        name: "Security - Security Operations (CC6.7)",
+        description: "Security operations, monitoring, and incident response",
+        results: [
+          {
+            id: "CC6.7.1",
+            control: "The entity maintains a security operations center (SOC) or equivalent function",
+            status: "gap",
+            details: "Security operations center not established",
+            recommendation: "Establish a security operations center or equivalent function for continuous security monitoring"
+          },
+          {
+            id: "CC6.7.2",
+            control: "The entity implements 24/7 security monitoring and response capabilities",
+            status: "gap",
+            details: "24/7 security monitoring not implemented",
+            recommendation: "Implement round-the-clock security monitoring and response capabilities"
+          },
+          {
+            id: "CC6.7.3",
+            control: "The entity has defined security operational procedures and playbooks",
+            status: "gap",
+            details: "Security operational procedures not defined",
+            recommendation: "Develop comprehensive security operational procedures and incident response playbooks"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Architecture (CC6.8)",
+        description: "Security architecture design and implementation",
+        results: [
+          {
+            id: "CC6.8.1",
+            control: "The entity has a documented security architecture framework",
+            status: "gap",
+            details: "Security architecture framework not documented",
+            recommendation: "Develop and document a comprehensive security architecture framework"
+          },
+          {
+            id: "CC6.8.2",
+            control: "The entity implements defense-in-depth security principles",
+            status: "gap",
+            details: "Defense-in-depth not implemented",
+            recommendation: "Implement defense-in-depth security architecture with multiple layers of protection"
+          },
+          {
+            id: "CC6.8.3",
+            control: "The entity designs security controls based on threat modeling",
+            status: "gap",
+            details: "Threat modeling not performed",
+            recommendation: "Perform threat modeling to inform security architecture and control design"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Engineering (CC6.9)",
+        description: "Security engineering practices and secure development",
+        results: [
+          {
+            id: "CC6.9.1",
+            control: "The entity implements secure software development lifecycle (SDLC)",
+            status: "gap",
+            details: "Secure SDLC not implemented",
+            recommendation: "Implement secure software development lifecycle with security controls at each phase"
+          },
+          {
+            id: "CC6.9.2",
+            control: "The entity performs security code reviews and testing",
+            status: "gap",
+            details: "Security code reviews not performed",
+            recommendation: "Implement security code reviews and testing as part of development process"
+          },
+          {
+            id: "CC6.9.3",
+            control: "The entity implements secure coding standards and practices",
+            status: "gap",
+            details: "Secure coding standards not implemented",
+            recommendation: "Establish and enforce secure coding standards and best practices"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Risk Management (CC6.10)",
+        description: "Security risk assessment and management",
+        results: [
+          {
+            id: "CC6.10.1",
+            control: "The entity performs security risk assessments",
+            status: "gap",
+            details: "Security risk assessments not performed",
+            recommendation: "Implement regular security risk assessments to identify and evaluate security risks"
+          },
+          {
+            id: "CC6.10.2",
+            control: "The entity implements security risk mitigation strategies",
+            status: "gap",
+            details: "Security risk mitigation not implemented",
+            recommendation: "Develop and implement security risk mitigation strategies and controls"
+          },
+          {
+            id: "CC6.10.3",
+            control: "The entity monitors and reviews security risks on an ongoing basis",
+            status: "gap",
+            details: "Ongoing risk monitoring not implemented",
+            recommendation: "Establish ongoing monitoring and review processes for security risks"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Compliance (CC6.11)",
+        description: "Security compliance monitoring and reporting",
+        results: [
+          {
+            id: "CC6.11.1",
+            control: "The entity monitors compliance with security policies and standards",
+            status: "gap",
+            details: "Security compliance monitoring not implemented",
+            recommendation: "Implement monitoring and reporting for security policy and standard compliance"
+          },
+          {
+            id: "CC6.11.2",
+            control: "The entity performs security compliance audits and assessments",
+            status: "gap",
+            details: "Security compliance audits not performed",
+            recommendation: "Conduct regular security compliance audits and assessments"
+          },
+          {
+            id: "CC6.11.3",
+            control: "The entity reports security compliance status to management",
+            status: "gap",
+            details: "Security compliance reporting not implemented",
+            recommendation: "Establish regular reporting of security compliance status to management"
+          }
+        ]
+      },
+      {
         name: "Availability - System Operations (CC7.1)",
         description: "System operations, capacity management, and performance monitoring",
         results: [
@@ -2707,6 +2912,33 @@ const allFrameworks = {
             status: "gap",
             details: "Availability objectives not defined",
             recommendation: "Define and monitor availability objectives and service level agreements"
+          }
+        ]
+      },
+      {
+        name: "Availability - Disaster Recovery (CC7.3)",
+        description: "Disaster recovery planning and business continuity",
+        results: [
+          {
+            id: "CC7.3.1",
+            control: "The entity has a documented disaster recovery plan",
+            status: "gap",
+            details: "Disaster recovery plan not documented",
+            recommendation: "Develop and document comprehensive disaster recovery plan"
+          },
+          {
+            id: "CC7.3.2",
+            control: "The entity tests disaster recovery procedures regularly",
+            status: "gap",
+            details: "Disaster recovery testing not performed",
+            recommendation: "Implement regular testing of disaster recovery procedures"
+          },
+          {
+            id: "CC7.3.3",
+            control: "The entity has defined recovery time objectives (RTO) and recovery point objectives (RPO)",
+            status: "gap",
+            details: "Recovery objectives not defined",
+            recommendation: "Define and document recovery time and recovery point objectives"
           }
         ]
       },
@@ -2765,6 +2997,33 @@ const allFrameworks = {
         ]
       },
       {
+        name: "Processing Integrity - Data Quality (CC8.3)",
+        description: "Data quality controls and validation",
+        results: [
+          {
+            id: "CC8.3.1",
+            control: "The entity implements data quality controls",
+            status: "gap",
+            details: "Data quality controls not implemented",
+            recommendation: "Implement comprehensive data quality controls and validation"
+          },
+          {
+            id: "CC8.3.2",
+            control: "The entity validates data accuracy and completeness",
+            status: "gap",
+            details: "Data validation not performed",
+            recommendation: "Implement data validation procedures for accuracy and completeness"
+          },
+          {
+            id: "CC8.3.3",
+            control: "The entity has procedures for handling data quality issues",
+            status: "gap",
+            details: "Data quality issue procedures not established",
+            recommendation: "Establish procedures for identifying and resolving data quality issues"
+          }
+        ]
+      },
+      {
         name: "Confidentiality - Information Classification (CC9.1)",
         description: "Information classification and handling procedures",
         results: [
@@ -2819,6 +3078,33 @@ const allFrameworks = {
         ]
       },
       {
+        name: "Confidentiality - Data Protection (CC9.3)",
+        description: "Data protection and encryption controls",
+        results: [
+          {
+            id: "CC9.3.1",
+            control: "The entity implements encryption for sensitive data",
+            status: "gap",
+            details: "Data encryption not implemented",
+            recommendation: "Implement encryption for sensitive data at rest and in transit"
+          },
+          {
+            id: "CC9.3.2",
+            control: "The entity implements access controls for confidential information",
+            status: "gap",
+            details: "Access controls for confidential data not implemented",
+            recommendation: "Implement strict access controls for confidential information"
+          },
+          {
+            id: "CC9.3.3",
+            control: "The entity has procedures for handling confidential data breaches",
+            status: "gap",
+            details: "Data breach procedures not established",
+            recommendation: "Establish procedures for handling and reporting confidential data breaches"
+          }
+        ]
+      },
+      {
         name: "Privacy - Privacy by Design (CC10.1)",
         description: "Privacy controls and data protection by design",
         results: [
@@ -2869,6 +3155,33 @@ const allFrameworks = {
             status: "gap",
             details: "Data processing transparency not provided",
             recommendation: "Provide transparency about data processing activities and purposes"
+          }
+        ]
+      },
+      {
+        name: "Privacy - Data Subject Rights (CC10.3)",
+        description: "Data subject rights management and fulfillment",
+        results: [
+          {
+            id: "CC10.3.1",
+            control: "The entity has procedures for handling data subject rights requests",
+            status: "gap",
+            details: "Data subject rights procedures not established",
+            recommendation: "Establish procedures for handling data subject rights requests"
+          },
+          {
+            id: "CC10.3.2",
+            control: "The entity provides mechanisms for data subjects to exercise their rights",
+            status: "gap",
+            details: "Data subject rights mechanisms not provided",
+            recommendation: "Implement mechanisms for data subjects to exercise their rights"
+          },
+          {
+            id: "CC10.3.3",
+            control: "The entity maintains records of data subject rights requests",
+            status: "gap",
+            details: "Data subject rights records not maintained",
+            recommendation: "Maintain comprehensive records of data subject rights requests and responses"
           }
         ]
       }
