@@ -2374,42 +2374,184 @@ const allFrameworks = {
     description: "Service Organization Control 2 Trust Service Criteria",
     categories: [
       {
-        name: "Security (CC6.1)",
-        description: "The entity's security policies and procedures protect against unauthorized access",
+        name: "Security - Logical Access (CC6.1)",
+        description: "Logical access security controls and authentication mechanisms",
         results: [
           {
             id: "CC6.1.1",
-            control: "The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives",
+            control: "The entity implements logical access security software, infrastructure, and architectures over protected information assets",
             status: "gap",
             details: "Logical access security controls not implemented",
             recommendation: "Implement comprehensive logical access security controls including authentication, authorization, and monitoring"
           },
           {
             id: "CC6.1.2",
-            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized users",
+            control: "The entity implements logical access security measures to restrict access to authorized users",
             status: "gap",
-            details: "Logical access restrictions not implemented",
-            recommendation: "Implement logical access restrictions to ensure only authorized users can access systems"
+            details: "User access restrictions not implemented",
+            recommendation: "Implement user authentication and authorization controls"
           },
           {
             id: "CC6.1.3",
-            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized applications",
+            control: "The entity implements logical access security measures to restrict access to authorized applications",
             status: "gap",
-            details: "Application access restrictions not implemented",
-            recommendation: "Implement application access controls to restrict access to authorized applications"
+            details: "Application access controls not implemented",
+            recommendation: "Implement application-level access controls and segregation"
           },
           {
             id: "CC6.1.4",
-            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized system software",
+            control: "The entity implements logical access security measures to restrict access to authorized system software",
             status: "gap",
-            details: "System software access restrictions not implemented",
-            recommendation: "Implement system software access controls to restrict administrative access"
+            details: "System software access controls not implemented",
+            recommendation: "Implement administrative access controls and privilege management"
+          },
+          {
+            id: "CC6.1.5",
+            control: "The entity implements logical access security measures to restrict access to authorized data",
+            status: "gap",
+            details: "Data access controls not implemented",
+            recommendation: "Implement data classification and access controls based on sensitivity"
           }
         ]
       },
       {
-        name: "Availability (CC7.1)",
-        description: "The entity maintains, monitors, and evaluates current processing capacity and use of system resources",
+        name: "Security - Security Monitoring (CC6.2)",
+        description: "Security monitoring, logging, and incident detection",
+        results: [
+          {
+            id: "CC6.2.1",
+            control: "The entity implements security monitoring procedures to detect security events",
+            status: "gap",
+            details: "Security monitoring not implemented",
+            recommendation: "Implement comprehensive security monitoring and logging procedures"
+          },
+          {
+            id: "CC6.2.2",
+            control: "The entity monitors system resources and logs security events",
+            status: "gap",
+            details: "System monitoring and logging not implemented",
+            recommendation: "Implement system resource monitoring and security event logging"
+          },
+          {
+            id: "CC6.2.3",
+            control: "The entity implements intrusion detection and prevention systems",
+            status: "gap",
+            details: "Intrusion detection not implemented",
+            recommendation: "Deploy IDS/IPS systems to detect and prevent security threats"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Incident Management (CC6.3)",
+        description: "Security incident identification, response, and recovery",
+        results: [
+          {
+            id: "CC6.3.1",
+            control: "The entity has a formal security incident response plan",
+            status: "gap",
+            details: "Incident response plan not documented",
+            recommendation: "Develop and document formal security incident response procedures"
+          },
+          {
+            id: "CC6.3.2",
+            control: "The entity has designated personnel responsible for security incident response",
+            status: "gap",
+            details: "Incident response personnel not designated",
+            recommendation: "Assign and train personnel for security incident response"
+          },
+          {
+            id: "CC6.3.3",
+            control: "The entity has procedures for reporting security incidents",
+            status: "gap",
+            details: "Incident reporting procedures not established",
+            recommendation: "Establish clear procedures for reporting security incidents"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Configuration (CC6.4)",
+        description: "Security configuration management and hardening",
+        results: [
+          {
+            id: "CC6.4.1",
+            control: "The entity implements security configuration standards for systems",
+            status: "gap",
+            details: "Security configuration standards not implemented",
+            recommendation: "Develop and implement security configuration standards for all systems"
+          },
+          {
+            id: "CC6.4.2",
+            control: "The entity performs security configuration reviews and testing",
+            status: "gap",
+            details: "Configuration reviews not performed",
+            recommendation: "Implement regular security configuration reviews and testing"
+          },
+          {
+            id: "CC6.4.3",
+            control: "The entity implements change management procedures for security configurations",
+            status: "gap",
+            details: "Change management not implemented",
+            recommendation: "Implement formal change management for security configurations"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Testing (CC6.5)",
+        description: "Security testing, vulnerability assessment, and penetration testing",
+        results: [
+          {
+            id: "CC6.5.1",
+            control: "The entity performs regular security assessments and testing",
+            status: "gap",
+            details: "Security assessments not performed",
+            recommendation: "Implement regular security assessments and testing programs"
+          },
+          {
+            id: "CC6.5.2",
+            control: "The entity performs vulnerability assessments and remediation",
+            status: "gap",
+            details: "Vulnerability assessments not performed",
+            recommendation: "Implement vulnerability assessment and remediation procedures"
+          },
+          {
+            id: "CC6.5.3",
+            control: "The entity performs penetration testing to validate security controls",
+            status: "gap",
+            details: "Penetration testing not performed",
+            recommendation: "Implement regular penetration testing to validate security controls"
+          }
+        ]
+      },
+      {
+        name: "Security - Security Awareness (CC6.6)",
+        description: "Security awareness training and education programs",
+        results: [
+          {
+            id: "CC6.6.1",
+            control: "The entity provides security awareness training to personnel",
+            status: "gap",
+            details: "Security awareness training not provided",
+            recommendation: "Implement comprehensive security awareness training programs"
+          },
+          {
+            id: "CC6.6.2",
+            control: "The entity has security policies and procedures documented",
+            status: "gap",
+            details: "Security policies not documented",
+            recommendation: "Document and communicate security policies and procedures"
+          },
+          {
+            id: "CC6.6.3",
+            control: "The entity requires personnel to acknowledge security policies",
+            status: "gap",
+            details: "Policy acknowledgment not required",
+            recommendation: "Require personnel to acknowledge and comply with security policies"
+          }
+        ]
+      },
+      {
+        name: "Availability - System Operations (CC7.1)",
+        description: "System operations, capacity management, and performance monitoring",
         results: [
           {
             id: "CC7.1.1",
@@ -2420,10 +2562,206 @@ const allFrameworks = {
           },
           {
             id: "CC7.1.2",
-            control: "The entity implements logical access security measures to provide reasonable assurance that access is restricted to authorized system software",
+            control: "The entity plans for adequate capacity to meet performance objectives",
             status: "gap",
-            details: "System software access restrictions not implemented",
-            recommendation: "Implement system software access controls to restrict administrative access"
+            details: "Capacity planning not performed",
+            recommendation: "Implement capacity planning to ensure adequate system performance"
+          },
+          {
+            id: "CC7.1.3",
+            control: "The entity monitors system performance and implements performance tuning",
+            status: "gap",
+            details: "Performance monitoring not implemented",
+            recommendation: "Implement system performance monitoring and tuning procedures"
+          }
+        ]
+      },
+      {
+        name: "Availability - System Monitoring (CC7.2)",
+        description: "System monitoring, alerting, and availability management",
+        results: [
+          {
+            id: "CC7.2.1",
+            control: "The entity monitors system availability and performance",
+            status: "gap",
+            details: "System availability monitoring not implemented",
+            recommendation: "Implement comprehensive system availability and performance monitoring"
+          },
+          {
+            id: "CC7.2.2",
+            control: "The entity implements alerting and notification procedures",
+            status: "gap",
+            details: "Alerting procedures not implemented",
+            recommendation: "Implement alerting and notification procedures for system issues"
+          },
+          {
+            id: "CC7.2.3",
+            control: "The entity has defined availability objectives and metrics",
+            status: "gap",
+            details: "Availability objectives not defined",
+            recommendation: "Define and monitor availability objectives and service level agreements"
+          }
+        ]
+      },
+      {
+        name: "Processing Integrity - System Processing (CC8.1)",
+        description: "System processing accuracy, completeness, and validity",
+        results: [
+          {
+            id: "CC8.1.1",
+            control: "The entity implements controls to ensure processing accuracy",
+            status: "gap",
+            details: "Processing accuracy controls not implemented",
+            recommendation: "Implement controls to ensure accurate system processing"
+          },
+          {
+            id: "CC8.1.2",
+            control: "The entity implements controls to ensure processing completeness",
+            status: "gap",
+            details: "Processing completeness controls not implemented",
+            recommendation: "Implement controls to ensure complete system processing"
+          },
+          {
+            id: "CC8.1.3",
+            control: "The entity implements controls to ensure processing validity",
+            status: "gap",
+            details: "Processing validity controls not implemented",
+            recommendation: "Implement controls to ensure valid system processing"
+          }
+        ]
+      },
+      {
+        name: "Processing Integrity - System Monitoring (CC8.2)",
+        description: "System processing monitoring and quality assurance",
+        results: [
+          {
+            id: "CC8.2.1",
+            control: "The entity monitors system processing for errors and exceptions",
+            status: "gap",
+            details: "Processing monitoring not implemented",
+            recommendation: "Implement monitoring for processing errors and exceptions"
+          },
+          {
+            id: "CC8.2.2",
+            control: "The entity implements quality assurance procedures",
+            status: "gap",
+            details: "Quality assurance not implemented",
+            recommendation: "Implement quality assurance procedures for system processing"
+          },
+          {
+            id: "CC8.2.3",
+            control: "The entity has procedures for handling processing errors",
+            status: "gap",
+            details: "Error handling procedures not established",
+            recommendation: "Establish procedures for handling and resolving processing errors"
+          }
+        ]
+      },
+      {
+        name: "Confidentiality - Information Classification (CC9.1)",
+        description: "Information classification and handling procedures",
+        results: [
+          {
+            id: "CC9.1.1",
+            control: "The entity has a formal information classification scheme",
+            status: "gap",
+            details: "Information classification not implemented",
+            recommendation: "Implement formal information classification scheme and procedures"
+          },
+          {
+            id: "CC9.1.2",
+            control: "The entity classifies information based on sensitivity and business value",
+            status: "gap",
+            details: "Information sensitivity classification not performed",
+            recommendation: "Classify information based on sensitivity and business value"
+          },
+          {
+            id: "CC9.1.3",
+            control: "The entity has procedures for handling classified information",
+            status: "gap",
+            details: "Information handling procedures not established",
+            recommendation: "Establish procedures for handling classified information"
+          }
+        ]
+      },
+      {
+        name: "Confidentiality - Information Handling (CC9.2)",
+        description: "Information handling, storage, and transmission controls",
+        results: [
+          {
+            id: "CC9.2.1",
+            control: "The entity implements controls to protect confidential information",
+            status: "gap",
+            details: "Confidentiality controls not implemented",
+            recommendation: "Implement controls to protect confidential information"
+          },
+          {
+            id: "CC9.2.2",
+            control: "The entity implements encryption for sensitive data",
+            status: "gap",
+            details: "Data encryption not implemented",
+            recommendation: "Implement encryption for sensitive data at rest and in transit"
+          },
+          {
+            id: "CC9.2.3",
+            control: "The entity has procedures for secure information disposal",
+            status: "gap",
+            details: "Secure disposal procedures not established",
+            recommendation: "Establish procedures for secure information disposal"
+          }
+        ]
+      },
+      {
+        name: "Privacy - Privacy by Design (CC10.1)",
+        description: "Privacy controls and data protection by design",
+        results: [
+          {
+            id: "CC10.1.1",
+            control: "The entity implements privacy controls by design",
+            status: "gap",
+            details: "Privacy by design not implemented",
+            recommendation: "Implement privacy controls by design in all systems and processes"
+          },
+          {
+            id: "CC10.1.2",
+            control: "The entity has a privacy impact assessment process",
+            status: "gap",
+            details: "Privacy impact assessments not performed",
+            recommendation: "Implement privacy impact assessment process for new systems"
+          },
+          {
+            id: "CC10.1.3",
+            control: "The entity implements data minimization principles",
+            status: "gap",
+            details: "Data minimization not implemented",
+            recommendation: "Implement data minimization principles in data collection and processing"
+          }
+        ]
+      },
+      {
+        name: "Privacy - Privacy Notice (CC10.2)",
+        description: "Privacy notice, consent, and transparency",
+        results: [
+          {
+            id: "CC10.2.1",
+            control: "The entity provides clear privacy notices to data subjects",
+            status: "gap",
+            details: "Privacy notices not provided",
+            recommendation: "Provide clear and comprehensive privacy notices to data subjects"
+          },
+          {
+            id: "CC10.2.2",
+            control: "The entity obtains consent for data processing activities",
+            status: "gap",
+            details: "Data processing consent not obtained",
+            recommendation: "Implement procedures to obtain and manage data processing consent"
+          },
+          {
+            id: "CC10.2.3",
+            control: "The entity provides transparency about data processing activities",
+            status: "gap",
+            details: "Data processing transparency not provided",
+            recommendation: "Provide transparency about data processing activities and purposes"
           }
         ]
       }
