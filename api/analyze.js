@@ -3361,61 +3361,121 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('Framework data found:', frameworkData.name);
     console.log('Number of categories:', frameworkData.categories.length);
 
-    // Apply category filtering if user has selected specific categories
-    if (selectedCategories && selectedCategories.length > 0) {
-      console.log('=== CATEGORY FILTERING DEBUG ===');
-      console.log('User selected categories detected, applying strict filtering for cost optimization...');
-      console.log('Selected categories:', selectedCategories);
-      console.log('Selected categories type:', typeof selectedCategories);
-      console.log('Selected categories length:', selectedCategories.length);
-      console.log('Selected categories JSON:', JSON.stringify(selectedCategories));
-      console.log('Analysis strictness level:', strictness);
-      console.log('Available framework categories:', frameworkData.categories.map(c => c.name));
+          // Apply category filtering if user has selected specific categories
+      if (selectedCategories && selectedCategories.length > 0) {
+        console.log('=== CATEGORY FILTERING DEBUG ===');
+        console.log('User selected categories detected, applying strict filtering for cost optimization...');
+        console.log('Selected categories:', selectedCategories);
+        console.log('Selected categories type:', typeof selectedCategories);
+        console.log('Selected categories length:', selectedCategories.length);
+        console.log('Selected categories JSON:', JSON.stringify(selectedCategories));
+        console.log('Analysis strictness level:', strictness);
+        console.log('Available framework categories:', frameworkData.categories.map(c => c.name));
+        
+        // Special handling for SOC 2 framework
+        if (framework === 'SOC_2') {
+          console.log('=== SOC 2 SPECIAL FILTERING ===');
+          console.log('SOC 2 framework detected - applying special category mapping...');
+          
+          // Map frontend codes to backend category patterns
+          const soc2CategoryMapping = {
+            'CC': ['Control Environment', 'Communication and Information', 'Risk Assessment', 'Monitoring Activities', 'Control Activities'],
+            'A': ['Availability'],
+            'C': ['Confidentiality'],
+            'PI': ['Processing Integrity'],
+            'P': ['Privacy']
+          };
+          
+          console.log('SOC 2 category mapping:', soc2CategoryMapping);
+          
+          filteredFrameworkData = {
+            ...frameworkData,
+            categories: frameworkData.categories.filter(category => {
+              // Check if this category matches any of the selected criteria
+              const selectedCriteria = selectedCategories[0]; // SOC 2 only allows one selection
+              const mappedCategories = soc2CategoryMapping[selectedCriteria] || [];
+              
+              const shouldInclude = mappedCategories.some(mappedName => 
+                category.name.includes(mappedName)
+              );
+              
+              console.log(`SOC 2 Filtering: ${category.name} -> Selected: ${selectedCriteria} -> Mapped: [${mappedCategories.join(', ')}] -> Include: ${shouldInclude}`);
+              
+              return shouldInclude;
+            })
+          };
+          
+          console.log(`=== SOC 2 FILTERING RESULTS ===`);
+          console.log(`Original categories: ${frameworkData.categories.length}`);
+          console.log(`Filtered categories: ${filteredFrameworkData.categories.length}`);
+          console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name).join(', ')}`);
+          
+        } else {
+          // Standard filtering for other frameworks (NIST, PCI, ISO)
+          console.log('=== STANDARD FRAMEWORK FILTERING ===');
+          
+          // Debug each category to see what's happening
+          frameworkData.categories.forEach(category => {
+            const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+            const shouldInclude = selectedCategories.includes(categoryCode);
+            console.log(`Category: "${category.name}" -> Extracted code: "${categoryCode}" -> Should include: ${shouldInclude}`);
+            console.log(`  Category name pattern match: ${category.name.match(/\(([A-Z]+)\)/)}`);
+            console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
+            console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
+            console.log(`  Category code type: ${typeof categoryCode}`);
+            console.log(`  Selected categories types: [${selectedCategories.map(c => typeof c).join(', ')}]`);
+            console.log(`  Regex test: /\(([A-Z]+)\)/ matches "${category.name}": ${/\(([A-Z]+)\)/.test(category.name)}`);
+            console.log(`  Full regex match: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
+          });
+          
+          filteredFrameworkData = {
+            ...frameworkData,
+            categories: frameworkData.categories.filter(category => {
+              const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
+              const shouldInclude = selectedCategories.includes(categoryCode);
+              console.log(`Filtering: ${category.name} (${categoryCode}): ${shouldInclude ? 'INCLUDING' : 'EXCLUDING'}`);
+              console.log(`  Category name: "${category.name}"`);
+              console.log(`  Extracted code: "${categoryCode}"`);
+              console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
+              console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
+              console.log(`  Regex match result: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
+              return shouldInclude;
+            })
+          };
+        }
       
-      // Debug each category to see what's happening
-      frameworkData.categories.forEach(category => {
-        const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-        const shouldInclude = selectedCategories.includes(categoryCode);
-        console.log(`Category: "${category.name}" -> Extracted code: "${categoryCode}" -> Should include: ${shouldInclude}`);
-        console.log(`  Category name pattern match: ${category.name.match(/\(([A-Z]+)\)/)}`);
-        console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
-        console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
-        console.log(`  Category code type: ${typeof categoryCode}`);
-        console.log(`  Selected categories types: [${selectedCategories.map(c => typeof c).join(', ')}]`);
-        console.log(`  Regex test: /\(([A-Z]+)\)/ matches "${category.name}": ${/\(([A-Z]+)\)/.test(category.name)}`);
-        console.log(`  Full regex match: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
-      });
-      
-      filteredFrameworkData = {
-        ...frameworkData,
-        categories: frameworkData.categories.filter(category => {
-          const categoryCode = category.name.match(/\(([A-Z]+)\)/)?.[1];
-          const shouldInclude = selectedCategories.includes(categoryCode);
-          console.log(`Filtering: ${category.name} (${categoryCode}): ${shouldInclude ? 'INCLUDING' : 'EXCLUDING'}`);
-          console.log(`  Category name: "${category.name}"`);
-          console.log(`  Extracted code: "${categoryCode}"`);
-          console.log(`  Selected categories: [${selectedCategories.join(', ')}]`);
-          console.log(`  Includes check: ${selectedCategories.includes(categoryCode)}`);
-          console.log(`  Regex match result: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
-          return shouldInclude;
-        })
-      };
-      
-      console.log(`=== FILTERING RESULTS ===`);
-      console.log(`Original categories: ${frameworkData.categories.length}`);
-      console.log(`Filtered categories: ${filteredFrameworkData.categories.length}`);
-      console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name).join(', ')}`);
-      console.log(`Categories excluded: ${frameworkData.categories.filter(c => {
-        const code = c.name.match(/\(([A-Z]+)\)/)?.[1];
-        return !selectedCategories.includes(code);
-      }).map(c => c.name).join(', ')}`);
-      
-      // Validate user selection
-      if (filteredFrameworkData.categories.length === 0) {
-        console.error('🚨 CRITICAL: No categories match user selection!');
-        console.error('This means the filtering logic is too strict or there\'s a pattern matching issue.');
-        throw new Error('No categories match user selection. Please check your category selection.');
-      }
+              // Log filtering results for all frameworks
+        console.log(`=== FILTERING RESULTS ===`);
+        console.log(`Original categories: ${frameworkData.categories.length}`);
+        console.log(`Filtered categories: ${filteredFrameworkData.categories.length}`);
+        console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name).join(', ')}`);
+        
+        if (framework === 'SOC_2') {
+          // For SOC 2, show which criteria were mapped
+          const selectedCriteria = selectedCategories[0];
+          const soc2CategoryMapping = {
+            'CC': ['Control Environment', 'Communication and Information', 'Risk Assessment', 'Monitoring Activities', 'Control Activities'],
+            'A': ['Availability'],
+            'C': ['Confidentiality'],
+            'PI': ['Processing Integrity'],
+            'P': ['Privacy']
+          };
+          const mappedCategories = soc2CategoryMapping[selectedCriteria] || [];
+          console.log(`SOC 2 criteria "${selectedCriteria}" mapped to: [${mappedCategories.join(', ')}]`);
+        } else {
+          // For other frameworks, show excluded categories
+          console.log(`Categories excluded: ${frameworkData.categories.filter(c => {
+            const code = c.name.match(/\(([A-Z]+)\)/)?.[1];
+            return !selectedCategories.includes(code);
+          }).map(c => c.name).join(', ')}`);
+        }
+        
+        // Validate user selection
+        if (filteredFrameworkData.categories.length === 0) {
+          console.error('🚨 CRITICAL: No categories match user selection!');
+          console.error('This means the filtering logic is too strict or there\'s a pattern matching issue.');
+          throw new Error('No categories match user selection. Please check your category selection.');
+        }
     } else {
       // If no categories selected, use all framework categories
       filteredFrameworkData = frameworkData;
