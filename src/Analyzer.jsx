@@ -19,13 +19,13 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useAuth } from './AuthContext';
+import { useAuth } from './Homepage';
 import './App.css';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Configure PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+// Configure PDF.js worker to use local worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
 // Environment validation - makes it harder for copycats
 const validateEnvironment = () => {
