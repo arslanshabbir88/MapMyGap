@@ -29,6 +29,7 @@ const crypto = require('crypto');
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // Inline framework control structures to avoid import issues
+console.log('🔍 DEBUG: Loading allFrameworks object...');
 const allFrameworks = {
   NIST_CSF: {
     name: "NIST Cybersecurity Framework (CSF) v2.0",
@@ -2391,7 +2392,7 @@ const allFrameworks = {
       },
       {
         name: "Maintenance (MA)",
-        description: "Perform system maintenance securely and maintain system integrity", // Force redeploy
+        description: "Perform system maintenance securely and maintain system integrity - UPDATED VERSION",
         results: [
           {
             id: "MA-1",
@@ -4320,6 +4321,11 @@ Return valid JSON with the exact control structure provided. Do not include gene
     return adjustedFallbackResults;
   }
 }
+
+// Debug: Log all frameworks and their categories
+console.log('🔍 DEBUG: allFrameworks loaded successfully');
+console.log('🔍 DEBUG: Available frameworks:', Object.keys(allFrameworks));
+console.log('🔍 DEBUG: NIST_800_53 categories:', allFrameworks.NIST_800_53.categories.map(c => c.name));
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
