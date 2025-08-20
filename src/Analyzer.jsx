@@ -22,6 +22,10 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import './App.css';
 import mammoth from 'mammoth';
+import * as pdfjsLib from 'pdfjs-dist';
+
+// Configure PDF.js worker
+pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 // Environment validation - makes it harder for copycats
 const validateEnvironment = () => {
@@ -619,10 +623,39 @@ function Analyzer({ onNavigateHome }) {
         setError('Failed to read .docx file. Please ensure it\'s a valid Word document.');
         setFileContent('');
       }
+    } else if (getFileExt(file.name) === 'pdf') {
+      // Handle .pdf files
+      try {
+        console.log('=== PDF FILE READING DEBUG ===');
+        console.log('File name:', file.name);
+        console.log('File size:', file.size);
+        console.log('File type:', file.type);
+        
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        
+        let fullText = '';
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const textContent = await page.getTextContent();
+          const pageText = textContent.items.map(item => item.str).join(' ');
+          fullText += pageText + '\n';
+        }
+        
+        console.log('Extracted text length:', fullText.length);
+        console.log('Text preview (first 500 chars):', fullText.substring(0, 500));
+        console.log('Text preview (last 500 chars):', fullText.substring(Math.max(0, fullText.length - 500)));
+        
+        setFileContent(fullText);
+      } catch (error) {
+        console.error('Error reading .pdf file:', error);
+        setError('Failed to read .pdf file. Please ensure it\'s a valid PDF document.');
+        setFileContent('');
+      }
     } else {
-      // For other file types (PDF, Excel), we'll need to implement similar logic
+      // For other file types (Excel), we'll need to implement similar logic
       // For now, show an error
-      setError('File type not yet supported for text extraction. Please convert to .txt or .docx format.');
+      setError('File type not yet supported for text extraction. Please convert to .txt, .docx, or .pdf format.');
       setFileContent('');
     }
   };
@@ -650,9 +683,9 @@ function Analyzer({ onNavigateHome }) {
 
     try {
       let result;
-      if (fileContent && (isTextFile(uploadedFile) || getFileExt(uploadedFile.name) === 'docx')) {
+      if (fileContent && (isTextFile(uploadedFile) || getFileExt(uploadedFile.name) === 'docx' || getFileExt(uploadedFile.name) === 'pdf')) {
         console.log('=== FILE ANALYSIS DEBUG ===');
-        console.log('File type:', isTextFile(uploadedFile) ? 'Text file' : 'DOCX file');
+        console.log('File type:', isTextFile(uploadedFile) ? 'Text file' : getFileExt(uploadedFile.name) === 'docx' ? 'DOCX file' : 'PDF file');
         console.log('File content length:', fileContent.length);
         console.log('File content preview (first 500 chars):', fileContent.substring(0, 500));
         console.log('Selected framework:', selectedFramework);
