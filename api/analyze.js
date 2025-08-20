@@ -3476,6 +3476,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         } else {
           // Standard filtering for other frameworks (NIST, PCI, ISO)
           console.log('=== STANDARD FRAMEWORK FILTERING ===');
+          console.log('Framework being filtered:', framework);
+          console.log('All available categories:', frameworkData.categories.map(c => c.name));
+          console.log('User selected categories:', selectedCategories);
           
           // Debug each category to see what's happening
           frameworkData.categories.forEach(category => {
@@ -3489,6 +3492,18 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
             console.log(`  Selected categories types: [${selectedCategories.map(c => typeof c).join(', ')}]`);
             console.log(`  Regex test: /\(([A-Z]+)\)/ matches "${category.name}": ${/\(([A-Z]+)\)/.test(category.name)}`);
             console.log(`  Full regex match: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
+            
+            // Special debug for MA category
+            if (category.name.includes('Maintenance') || category.name.includes('MA')) {
+              console.log(`🔍 SPECIAL DEBUG FOR MA CATEGORY:`);
+              console.log(`  Category name: "${category.name}"`);
+              console.log(`  Regex match: ${JSON.stringify(category.name.match(/\(([A-Z]+)\)/))}`);
+              console.log(`  Extracted code: "${categoryCode}"`);
+              console.log(`  Selected categories includes MA: ${selectedCategories.includes('MA')}`);
+              console.log(`  Selected categories includes extracted code: ${selectedCategories.includes(categoryCode)}`);
+              console.log(`  String comparison: "${categoryCode}" === "MA": ${categoryCode === 'MA'}`);
+              console.log(`  Type comparison: typeof "${categoryCode}" === typeof "MA": ${typeof categoryCode === typeof 'MA'}`);
+            }
           });
           
           filteredFrameworkData = {
@@ -3505,6 +3520,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
               return shouldInclude;
             })
           };
+          
+          console.log('=== FILTERING COMPLETE ===');
+          console.log('Final filtered categories count:', filteredFrameworkData.categories.length);
+          console.log('Final filtered categories:', filteredFrameworkData.categories.map(c => c.name));
+          console.log('Final filtered categories JSON:', JSON.stringify(filteredFrameworkData.categories, null, 2));
         }
       
               // Log filtering results for all frameworks
