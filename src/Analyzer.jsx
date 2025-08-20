@@ -19,7 +19,7 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { useAuth } from './Homepage';
+import { useAuth } from './AuthContext';
 import './App.css';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
