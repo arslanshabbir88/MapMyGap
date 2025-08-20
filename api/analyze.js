@@ -2437,7 +2437,7 @@ const allFrameworks = {
             details: "Timely maintenance procedures not established",
             recommendation: "Establish procedures for timely maintenance and system updates"
           }
-                        ]
+        ]
       }
     ]
   },
