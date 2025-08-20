@@ -3423,6 +3423,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     
     console.log('Framework data found:', frameworkData.name);
     console.log('Number of categories:', frameworkData.categories.length);
+    console.log('All framework categories:', frameworkData.categories.map(c => c.name));
+    console.log('Framework data structure:', JSON.stringify(frameworkData, null, 2));
 
           // Apply category filtering if user has selected specific categories
       if (selectedCategories && selectedCategories.length > 0) {
@@ -3640,6 +3642,9 @@ IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected 
 
 SELECTED CATEGORIES TO ANALYZE:
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
+
+DEBUG INFO - Categories being sent to AI:
+${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
 CRITICAL STRICTNESS DIFFERENTIATION - You MUST produce DIFFERENT results for each strictness level:
 
