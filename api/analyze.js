@@ -3230,15 +3230,12 @@ function adjustResultsForStrictness(results, strictness) {
       category.results.forEach(result => {
         if (result.status === 'covered' && coveredConverted < coveredToPartial) {
           result.status = 'partial';
-          result.details = `Downgraded to partial due to strict analysis requirements. ${result.details}`;
           coveredConverted++;
         } else if (result.status === 'partial' && partialConverted < partialToGap) {
           result.status = 'gap';
-          result.details = `Downgraded to gap due to strict analysis requirements. ${result.details}`;
           partialConverted++;
         } else if (result.status === 'gap' && gapConverted < gapToPartial) {
           result.status = 'partial';
-          result.details = `Upgraded to partial due to strict analysis requirements (AI was too conservative). ${result.details}`;
           gapConverted++;
         }
       });
@@ -3266,11 +3263,9 @@ function adjustResultsForStrictness(results, strictness) {
         category.results.forEach(result => {
           if (result.status === 'gap' && gapConverted < gapToPartial) {
             result.status = 'partial';
-            result.details = `Upgraded to partial due to balanced analysis requirements (AI was too conservative). ${result.details}`;
             gapConverted++;
           } else if (result.status === 'partial' && partialConverted < partialToCovered) {
             result.status = 'covered';
-            result.details = `Upgraded to covered due to balanced analysis requirements. ${result.details}`;
             partialConverted++;
           }
         });
@@ -3300,11 +3295,9 @@ function adjustResultsForStrictness(results, strictness) {
       category.results.forEach(result => {
         if (result.status === 'gap' && gapConverted < gapToPartial) {
           result.status = 'partial';
-          result.details = `Upgraded to partial due to lenient analysis requirements. ${result.details}`;
           gapConverted++;
         } else if (result.status === 'partial' && partialConverted < partialToCovered) {
           result.status = 'covered';
-          result.details = `Upgraded to covered due to lenient analysis requirements. ${result.details}`;
           partialConverted++;
         }
       });
