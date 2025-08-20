@@ -3871,18 +3871,39 @@ Return valid JSON with the exact control structure provided. Do not include gene
       // Clean the JSON content before parsing
       let cleanedJsonContent = jsonContent;
       
-      // Remove any trailing characters after the JSON
-      const jsonEndIndex = cleanedJsonContent.lastIndexOf('}');
-      if (jsonEndIndex !== -1 && jsonEndIndex < cleanedJsonContent.length - 1) {
-        cleanedJsonContent = cleanedJsonContent.substring(0, jsonEndIndex + 1);
-        console.log('🧹 Cleaned trailing characters after JSON');
-      }
+      // Handle both array and object responses
+      let jsonStartIndex = -1;
+      let jsonEndIndex = -1;
       
-      // Remove any leading characters before the JSON
-      const jsonStartIndex = cleanedJsonContent.indexOf('{');
-      if (jsonStartIndex > 0) {
-        cleanedJsonContent = cleanedJsonContent.substring(jsonStartIndex);
-        console.log('🧹 Cleaned leading characters before JSON');
+      // Check if response starts with array or object
+      if (cleanedJsonContent.trim().startsWith('[')) {
+        // Array response - find the first [ and last ]
+        jsonStartIndex = cleanedJsonContent.indexOf('[');
+        jsonEndIndex = cleanedJsonContent.lastIndexOf(']');
+        if (jsonStartIndex !== -1 && jsonEndIndex !== -1 && jsonEndIndex > jsonStartIndex) {
+          cleanedJsonContent = cleanedJsonContent.substring(jsonStartIndex, jsonEndIndex + 1);
+          console.log('🧹 Cleaned array response - extracted from [ to ]');
+        }
+      } else if (cleanedJsonContent.trim().startsWith('{')) {
+        // Object response - find the first { and last }
+        jsonStartIndex = cleanedJsonContent.indexOf('{');
+        jsonEndIndex = cleanedJsonContent.lastIndexOf('}');
+        if (jsonStartIndex !== -1 && jsonEndIndex !== -1 && jsonEndIndex > jsonStartIndex) {
+          cleanedJsonContent = cleanedJsonContent.substring(jsonStartIndex, jsonEndIndex + 1);
+          console.log('🧹 Cleaned object response - extracted from { to }');
+        }
+      } else {
+        // Try to find JSON content anywhere in the response
+        const arrayMatch = cleanedJsonContent.match(/\[[\s\S]*\]/);
+        const objectMatch = cleanedJsonContent.match(/\{[\s\S]*\}/);
+        
+        if (arrayMatch && (!objectMatch || arrayMatch[0].length > objectMatch[0].length)) {
+          cleanedJsonContent = arrayMatch[0];
+          console.log('🧹 Found and extracted array JSON from response');
+        } else if (objectMatch) {
+          cleanedJsonContent = objectMatch[0];
+          console.log('🧹 Found and extracted object JSON from response');
+        }
       }
       
       // Try to parse the cleaned JSON
@@ -3896,15 +3917,26 @@ Return valid JSON with the exact control structure provided. Do not include gene
       
       // Try to find and extract just the JSON part
       try {
-        const jsonMatch = jsonContent.match(/\{[\s\S]*\}/);
+        // Try array format first (more common for our use case)
+        let jsonMatch = jsonContent.match(/\[[\s\S]*\]/);
         if (jsonMatch) {
           const extractedJson = jsonMatch[0];
-          console.log('🔄 Attempting to extract JSON from response...');
+          console.log('🔄 Attempting to extract array JSON from response...');
           console.log('Extracted JSON length:', extractedJson.length);
           parsedResponse = JSON.parse(extractedJson);
-          console.log('✅ JSON extracted and parsed successfully');
+          console.log('✅ Array JSON extracted and parsed successfully');
         } else {
-          throw new Error('No valid JSON found in response');
+          // Try object format as fallback
+          jsonMatch = jsonContent.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            const extractedJson = jsonMatch[0];
+            console.log('🔄 Attempting to extract object JSON from response...');
+            console.log('Extracted JSON length:', extractedJson.length);
+            parsedResponse = JSON.parse(extractedJson);
+            console.log('✅ Object JSON extracted and parsed successfully');
+          } else {
+            throw new Error('No valid JSON array or object found in response');
+          }
         }
       } catch (extractError) {
         console.error('❌ JSON extraction also failed:', extractError.message);
