@@ -232,6 +232,28 @@ const allFrameworks = {
         name: "PROTECT (PR)",
         description: "Develop and implement appropriate safeguards to ensure delivery of critical services",
         results: [
+          // Asset Management (PR.AA)
+          {
+            id: "PR.AA-1",
+            control: "Assets are identified and inventoried",
+            status: "gap",
+            details: "Asset inventory not implemented",
+            recommendation: "Implement comprehensive asset identification and inventory management system"
+          },
+          {
+            id: "PR.AA-2",
+            control: "Assets are classified based on criticality and sensitivity",
+            status: "gap",
+            details: "Asset classification not implemented",
+            recommendation: "Implement asset classification system based on business criticality and data sensitivity"
+          },
+          {
+            id: "PR.AA-3",
+            control: "Asset ownership and responsibilities are established",
+            status: "gap",
+            details: "Asset ownership not defined",
+            recommendation: "Establish clear asset ownership and responsibility assignments"
+          },
           // Identity Management, Authentication, and Access Control (PR.AC)
           {
             id: "PR.AC-1",
