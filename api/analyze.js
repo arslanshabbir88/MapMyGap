@@ -3646,6 +3646,18 @@ ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}
 DEBUG INFO - Categories being sent to AI:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
 
+${filteredFrameworkData.categories.length === 1 && filteredFrameworkData.categories[0].name.includes('Maintenance') ? `
+SPECIAL INSTRUCTION FOR MAINTENANCE CATEGORY:
+This is a maintenance-focused analysis. Look for evidence of:
+- System maintenance policies and procedures
+- Controlled maintenance processes
+- Maintenance tool management
+- Nonlocal maintenance controls
+- Maintenance personnel screening
+- Timely maintenance procedures
+
+Be specific about what you find in the document.` : ''}
+
 CRITICAL STRICTNESS DIFFERENTIATION - You MUST produce DIFFERENT results for each strictness level:
 
 ${strictness === 'strict' ? `
@@ -3714,6 +3726,17 @@ Return valid JSON using the exact control structure above.`;
     console.log('Total estimated tokens needed:', Math.ceil(prompt.length / 4) + optimalTokenLimit);
     console.log('Gemini Flash model limit: 1M tokens total');
     console.log('Token usage efficiency:', ((Math.ceil(prompt.length / 4) + optimalTokenLimit) / 1000000 * 100).toFixed(2) + '% of model limit');
+    
+    // Special debugging for MA category
+    if (filteredFrameworkData.categories.length === 1 && filteredFrameworkData.categories[0].name.includes('Maintenance')) {
+      console.log('🔍 MAINTENANCE CATEGORY DEBUG:');
+      console.log('Category being analyzed:', filteredFrameworkData.categories[0].name);
+      console.log('Category description:', filteredFrameworkData.categories[0].description);
+      console.log('Number of controls in category:', filteredFrameworkData.categories[0].results.length);
+      console.log('First control example:', filteredFrameworkData.categories[0].results[0]);
+      console.log('Prompt preview (first 500 chars):', prompt.substring(0, 500));
+      console.log('Prompt preview (last 500 chars):', prompt.substring(prompt.length - 500));
+    }
 
             // Add timeout to prevent hanging - increased for Vercel deployment
         // SOC 2 is a larger framework and needs more time for comprehensive analysis
