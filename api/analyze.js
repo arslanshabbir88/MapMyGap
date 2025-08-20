@@ -2388,6 +2388,54 @@ const allFrameworks = {
             recommendation: "Implement comprehensive security awareness and training program"
           }
         ]
+      },
+      {
+        name: "Maintenance (MA)",
+        description: "Perform system maintenance securely and maintain system integrity",
+        results: [
+          {
+            id: "MA-1",
+            control: "System Maintenance Policy and Procedures",
+            status: "gap",
+            details: "System maintenance policy not established",
+            recommendation: "Develop and implement comprehensive system maintenance policy and procedures"
+          },
+          {
+            id: "MA-2",
+            control: "Controlled Maintenance",
+            status: "gap",
+            details: "Controlled maintenance procedures not implemented",
+            recommendation: "Implement controlled maintenance procedures with proper authorization and oversight"
+          },
+          {
+            id: "MA-3",
+            control: "Maintenance Tools",
+            status: "gap",
+            details: "Maintenance tools not controlled",
+            recommendation: "Control and monitor maintenance tools to prevent unauthorized access"
+          },
+          {
+            id: "MA-4",
+            control: "Nonlocal Maintenance",
+            status: "gap",
+            details: "Nonlocal maintenance controls not implemented",
+            recommendation: "Implement secure nonlocal maintenance procedures with proper authentication"
+          },
+          {
+            id: "MA-5",
+            control: "Maintenance Personnel",
+            status: "gap",
+            details: "Maintenance personnel screening not implemented",
+            recommendation: "Screen and authorize maintenance personnel before granting access"
+          },
+          {
+            id: "MA-6",
+            control: "Timely Maintenance",
+            status: "gap",
+            details: "Timely maintenance procedures not established",
+            recommendation: "Establish procedures for timely maintenance and system updates"
+          }
+        ]
       }
     ]
   },
