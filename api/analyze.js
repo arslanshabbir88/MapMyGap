@@ -30,6 +30,7 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 // Inline framework control structures to avoid import issues
 console.log('🔍 DEBUG: Loading allFrameworks object...');
+console.log('🚨 FORCE REDEPLOY TEST - MA category should be present');
 const allFrameworks = {
   NIST_CSF: {
     name: "NIST Cybersecurity Framework (CSF) v2.0",
@@ -2392,7 +2393,7 @@ const allFrameworks = {
       },
       {
         name: "Maintenance (MA)",
-        description: "Perform system maintenance securely and maintain system integrity - UPDATED VERSION",
+        description: "Perform system maintenance securely and maintain system integrity - FORCE REDEPLOY TEST",
         results: [
           {
             id: "MA-1",
@@ -2436,7 +2437,7 @@ const allFrameworks = {
             details: "Timely maintenance procedures not established",
             recommendation: "Establish procedures for timely maintenance and system updates"
           }
-        ]
+                        ]
       }
     ]
   },
