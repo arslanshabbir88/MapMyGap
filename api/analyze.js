@@ -4900,6 +4900,9 @@ Return valid JSON with the exact control structure provided. Do not include gene
       if (extractedContent.trim().startsWith('[') && extractedContent.trim().endsWith(']')) {
         jsonContent = extractedContent;
         console.log('✅ Full array content extracted successfully');
+      } else if (extractedContent.trim().startsWith('{') && extractedContent.trim().endsWith('}')) {
+        jsonContent = extractedContent;
+        console.log('✅ Full object content extracted successfully');
       } else {
         console.error('❌ Incomplete content extracted from markdown');
         console.error('Content starts with:', extractedContent.trim().substring(0, 10));
