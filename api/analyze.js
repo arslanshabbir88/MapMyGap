@@ -2253,6 +2253,27 @@ const allFrameworks = {
             status: "gap",
             details: "Training records not maintained",
             recommendation: "Maintain comprehensive training records for all personnel"
+          },
+          {
+            id: "AT-5",
+            control: "Contact with Security Groups and Associations",
+            status: "gap",
+            details: "Security group contacts not established",
+            recommendation: "Establish contacts with security groups and associations for training resources"
+          },
+          {
+            id: "AT-6",
+            control: "Training Delivery",
+            status: "gap",
+            details: "Training delivery methods not optimized",
+            recommendation: "Implement effective training delivery methods including online and in-person options"
+          },
+          {
+            id: "AT-7",
+            control: "Training Effectiveness",
+            status: "gap",
+            details: "Training effectiveness not measured",
+            recommendation: "Implement training effectiveness measurement and evaluation processes"
           }
         ]
       },
@@ -2315,6 +2336,20 @@ const allFrameworks = {
             status: "gap",
             details: "Media downgrading procedures not implemented",
             recommendation: "Implement media downgrading procedures for classification changes"
+          },
+          {
+            id: "MP-9",
+            control: "Media Destruction",
+            status: "gap",
+            details: "Media destruction procedures not implemented",
+            recommendation: "Implement secure media destruction procedures for end-of-life media"
+          },
+          {
+            id: "MP-10",
+            control: "Media Accountability",
+            status: "gap",
+            details: "Media accountability not maintained",
+            recommendation: "Implement media accountability and tracking procedures"
           }
         ]
       },
@@ -2738,6 +2773,20 @@ const allFrameworks = {
             status: "gap",
             details: "Personnel sanctions not implemented",
             recommendation: "Implement personnel sanctions for security violations"
+          },
+          {
+            id: "PS-9",
+            control: "Position Risk Designation",
+            status: "gap",
+            details: "Position risk designation not implemented",
+            recommendation: "Implement position risk designation process for security clearances"
+          },
+          {
+            id: "PS-10",
+            control: "Personnel Monitoring",
+            status: "gap",
+            details: "Personnel monitoring not implemented",
+            recommendation: "Implement personnel monitoring for security compliance"
           }
         ]
       },
@@ -2786,6 +2835,20 @@ const allFrameworks = {
             status: "gap",
             details: "Timely maintenance procedures not established",
             recommendation: "Establish procedures for timely maintenance and system updates"
+          },
+          {
+            id: "MA-7",
+            control: "Maintenance Documentation",
+            status: "gap",
+            details: "Maintenance documentation not maintained",
+            recommendation: "Maintain comprehensive maintenance documentation and records"
+          },
+          {
+            id: "MA-8",
+            control: "Maintenance Scheduling",
+            status: "gap",
+            details: "Maintenance scheduling not implemented",
+            recommendation: "Implement maintenance scheduling and coordination procedures"
           }
         ]
       },
@@ -2834,6 +2897,20 @@ const allFrameworks = {
             status: "gap",
             details: "Security and privacy architecture not established",
             recommendation: "Establish comprehensive security and privacy architecture for information systems"
+          },
+          {
+            id: "PL-7",
+            control: "Security and Privacy Planning Integration",
+            status: "gap",
+            details: "Security planning not integrated with organizational planning",
+            recommendation: "Integrate security and privacy planning with organizational planning processes"
+          },
+          {
+            id: "PL-8",
+            control: "Security and Privacy Planning Reviews",
+            status: "gap",
+            details: "Security planning reviews not conducted",
+            recommendation: "Conduct regular reviews of security and privacy planning effectiveness"
           }
         ]
       },
@@ -2882,222 +2959,20 @@ const allFrameworks = {
             status: "gap",
             details: "PII processing monitoring not implemented",
             recommendation: "Implement monitoring and oversight of PII processing activities"
-          }
-        ]
-      },
-      {
-        name: "Program Management (PM)",
-        description: "Manage information security programs and activities",
-        results: [
-          {
-            id: "PM-1",
-            control: "Information Security Program Plan",
-            status: "gap",
-            details: "Information security program plan not developed",
-            recommendation: "Develop comprehensive information security program plan aligned with organizational objectives"
           },
           {
-            id: "PM-2",
-            control: "Senior Information Security Officer",
+            id: "PT-7",
+            control: "PII Processing Risk Assessment",
             status: "gap",
-            details: "Senior information security officer not designated",
-            recommendation: "Designate senior information security officer with appropriate authority and resources"
+            details: "PII processing risk assessment not performed",
+            recommendation: "Perform regular risk assessments for PII processing activities"
           },
           {
-            id: "PM-3",
-            control: "Information Security Resources",
+            id: "PT-8",
+            control: "PII Processing Incident Response",
             status: "gap",
-            details: "Information security resources not allocated",
-            recommendation: "Allocate adequate resources for information security program implementation"
-          },
-          {
-            id: "PM-4",
-            control: "Plan of Action and Milestones Process",
-            status: "gap",
-            details: "Plan of action and milestones process not implemented",
-            recommendation: "Implement plan of action and milestones process for tracking security improvements"
-          },
-          {
-            id: "PM-5",
-            control: "Information System Inventory",
-            status: "gap",
-            details: "Information system inventory not maintained",
-            recommendation: "Maintain comprehensive inventory of all information systems and their security status"
-          },
-          {
-            id: "PM-6",
-            control: "Information Security Measures of Performance",
-            status: "gap",
-            details: "Information security performance measures not established",
-            recommendation: "Establish and monitor information security performance measures and metrics"
-          },
-          {
-            id: "PM-7",
-            control: "Enterprise Architecture",
-            status: "gap",
-            details: "Enterprise architecture not developed",
-            recommendation: "Develop enterprise architecture that incorporates information security requirements"
-          },
-          {
-            id: "PM-8",
-            control: "Critical Infrastructure Plan",
-            status: "gap",
-            details: "Critical infrastructure plan not developed",
-            recommendation: "Develop plan for protecting critical infrastructure and key resources"
-          },
-          {
-            id: "PM-9",
-            control: "Risk Management Strategy",
-            status: "gap",
-            details: "Risk management strategy not developed",
-            recommendation: "Develop comprehensive risk management strategy for information security"
-          },
-          {
-            id: "PM-10",
-            control: "Security Authorization Process",
-            status: "gap",
-            details: "Security authorization process not implemented",
-            recommendation: "Implement security authorization process for information systems"
-          },
-          {
-            id: "PM-11",
-            control: "Mission and Business Process Definition",
-            status: "gap",
-            details: "Mission and business processes not defined",
-            recommendation: "Define mission and business processes to inform security requirements"
-          },
-          {
-            id: "PM-12",
-            control: "Insider Threat Program",
-            status: "gap",
-            details: "Insider threat program not implemented",
-            recommendation: "Implement insider threat program to detect and prevent insider threats"
-          },
-          {
-            id: "PM-13",
-            control: "Security and Privacy Workforce",
-            status: "gap",
-            details: "Security and privacy workforce not established",
-            recommendation: "Establish qualified security and privacy workforce with appropriate training"
-          },
-          {
-            id: "PM-14",
-            control: "Testing, Training, and Monitoring",
-            status: "gap",
-            details: "Testing, training, and monitoring not implemented",
-            recommendation: "Implement testing, training, and monitoring programs for security controls"
-          },
-          {
-            id: "PM-15",
-            control: "Contacts with Security Groups and Associations",
-            status: "gap",
-            details: "Security group contacts not established",
-            recommendation: "Establish contacts with security groups and associations for information sharing"
-          },
-          {
-            id: "PM-16",
-            control: "Threat Awareness Program",
-            status: "gap",
-            details: "Threat awareness program not implemented",
-            recommendation: "Implement threat awareness program to inform security decisions"
-          },
-          {
-            id: "PM-17",
-            control: "Protect Controlled Unclassified Information",
-            status: "gap",
-            details: "Controlled unclassified information protection not implemented",
-            recommendation: "Implement controls to protect controlled unclassified information"
-          },
-          {
-            id: "PM-18",
-            control: "Privacy Program Plan",
-            status: "gap",
-            details: "Privacy program plan not developed",
-            recommendation: "Develop comprehensive privacy program plan aligned with privacy requirements"
-          },
-          {
-            id: "PM-19",
-            control: "Privacy Program Leadership",
-            status: "gap",
-            details: "Privacy program leadership not designated",
-            recommendation: "Designate privacy program leadership with appropriate authority"
-          },
-          {
-            id: "PM-20",
-            control: "Privacy Program Resources",
-            status: "gap",
-            details: "Privacy program resources not allocated",
-            recommendation: "Allocate adequate resources for privacy program implementation"
-          },
-          {
-            id: "PM-21",
-            control: "Privacy Program Metrics",
-            status: "gap",
-            details: "Privacy program metrics not established",
-            recommendation: "Establish and monitor privacy program performance metrics"
-          },
-          {
-            id: "PM-22",
-            control: "Privacy Program Reporting",
-            status: "gap",
-            details: "Privacy program reporting not implemented",
-            recommendation: "Implement regular privacy program reporting to stakeholders"
-          },
-          {
-            id: "PM-23",
-            control: "Privacy Program Reviews",
-            status: "gap",
-            details: "Privacy program reviews not conducted",
-            recommendation: "Conduct regular reviews of privacy program effectiveness"
-          },
-          {
-            id: "PM-24",
-            control: "Privacy Program Updates",
-            status: "gap",
-            details: "Privacy program updates not implemented",
-            recommendation: "Implement regular updates to privacy program based on reviews and changes"
-          },
-          {
-            id: "PM-25",
-            control: "Privacy Program Training",
-            status: "gap",
-            details: "Privacy program training not provided",
-            recommendation: "Provide regular training on privacy requirements and procedures"
-          },
-          {
-            id: "PM-26",
-            control: "Privacy Program Communications",
-            status: "gap",
-            details: "Privacy program communications not established",
-            recommendation: "Establish effective communications about privacy program and requirements"
-          },
-          {
-            id: "PM-27",
-            control: "Privacy Program Compliance",
-            status: "gap",
-            details: "Privacy program compliance not monitored",
-            recommendation: "Monitor and ensure compliance with privacy requirements and regulations"
-          },
-          {
-            id: "PM-28",
-            control: "Privacy Program Risk Management",
-            status: "gap",
-            details: "Privacy program risk management not implemented",
-            recommendation: "Implement risk management processes for privacy program"
-          },
-          {
-            id: "PM-29",
-            control: "Privacy Program Incident Response",
-            status: "gap",
-            details: "Privacy program incident response not implemented",
-            recommendation: "Implement incident response procedures for privacy-related incidents"
-          },
-          {
-            id: "PM-30",
-            control: "Privacy Program Business Continuity",
-            status: "gap",
-            details: "Privacy program business continuity not addressed",
-            recommendation: "Address privacy requirements in business continuity planning"
+            details: "PII processing incident response not implemented",
+            recommendation: "Implement incident response procedures for PII processing incidents"
           }
         ]
       }
