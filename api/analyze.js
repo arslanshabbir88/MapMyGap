@@ -4521,26 +4521,53 @@ Look for specific terms like: "session timeout", "concurrent sessions", "session
 
 Be specific about what you find in the document.` : ''}
 
+${filteredFrameworkData.categories.some(cat => cat.name.includes('Session Management')) ? `
+SPECIAL SESSION MANAGEMENT GUIDANCE:
+For session-related controls, look for specific evidence of:
+- Session timeout policies ("60 seconds", "automatic logout", "session termination")
+- Concurrent session limits ("concurrent sessions", "session limits", "maximum sessions")
+- Session lock mechanisms ("session lock", "automatic locking", "inactivity timeout")
+- Session monitoring ("session logs", "audit trails", "session tracking")
+- Session security ("HTTPS", "secure tokens", "session hijacking protection")
+
+The document contains information about these session controls - look for the specific details.` : ''}
+
+${filteredFrameworkData.categories.some(cat => cat.name.includes('Access Control')) ? `
+SPECIAL ACCESS CONTROL GUIDANCE:
+For AC-1 (Access Control Policy and Procedures), recognize GOOD documentation when you see:
+- Clear policy statements about access control
+- Specific procedures for access management
+- Access levels or privileges defined
+- Review and audit processes
+- Account lifecycle management
+- Access request and approval workflows
+
+If the document has comprehensive policy + procedures + technical details, mark as "covered".
+If it has good policy + some procedures, mark as "partial".
+Only mark as "gap" if truly missing access control content.` : ''}
+
 CRITICAL STRICTNESS DIFFERENTIATION - You MUST produce DIFFERENT results for each strictness level:
 
 ${strictness === 'strict' ? `
-STRICT MODE - BE REALISTIC AND HELPFUL:
-- Mark as "covered" if you find COMPREHENSIVE evidence including:
+STRICT MODE - BE REALISTIC AND RECOGNIZE GOOD PROGRESS:
+- Mark as "covered" if you find GOOD documentation including:
   * Clear policy statements about the control
   * Specific procedures for implementation
-  * Technical mechanisms or tools mentioned
-  * Regular review/audit processes described
-- Mark as "partial" if you find GOOD progress like:
-  * Policy statements but missing procedures
-  * Procedures but missing policy content
+  * Access levels or technical requirements defined
+  * Review/audit processes described
+  * Account lifecycle management mentioned
+- Mark as "partial" if you find MODERATE progress like:
+  * Policy statements but missing some procedures
+  * Procedures but missing some policy content
   * Basic implementation details
   * Some but not all required elements
-- Mark as "gap" only if NO relevant evidence exists
-- Be strict but FAIR - recognize incremental progress
-- Expect 20-50% coverage for realistic organizations
-- Look for GOOD documentation that shows understanding
-- Give credit for procedural steps and policy statements
-- Help users understand what they need for "covered" status` : strictness === 'balanced' ? `
+- Mark as "gap" ONLY if NO relevant evidence exists
+- Be strict but REALISTIC - recognize when users have good documentation
+- Expect 30-70% coverage for organizations with good documentation
+- Look for COMPREHENSIVE documentation that shows understanding
+- Give credit for procedural steps, policy statements, and technical details
+- Help users understand what they need for "covered" status
+- RECOGNIZE when users have followed previous recommendations` : strictness === 'balanced' ? `
 BALANCED MODE - MODERATE INTERPRETATION:
 - Mark as "covered" with reasonable evidence like:
   * Policies mentioned that relate to the control
