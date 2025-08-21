@@ -4646,6 +4646,17 @@ When you write "adequately describes the implementation" in your details, you MU
 
 **DO NOT USE "covered" language in details if you plan to assign "partial" status.**
 
+**STEP-BY-STEP PROCESS FOR EACH CONTROL:**
+1. First, analyze the document content for evidence
+2. Second, determine if the evidence is sufficient for "covered" status
+3. Third, write your details using language that matches your intended status
+4. Fourth, assign the status that matches your analysis language
+
+**EXAMPLE:**
+- If you plan to assign "covered" status, use language like "This satisfies the criteria for 'covered' status"
+- If you plan to assign "partial" status, use language like "This partially addresses the control but lacks some elements"
+- If you plan to assign "gap" status, use language like "This control is not addressed in the document"
+
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
 ${filteredFrameworkData.categories.some(cat => cat.name.includes('Session Management')) ? `
