@@ -5262,6 +5262,27 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "In-person identity proofing not implemented",
           recommendation: "Implement in-person identity proofing with trained personnel and document verification"
+        },
+        {
+          id: "IAL-4",
+          control: "IAL4 - Enhanced identity proofing",
+          status: "gap",
+          details: "Enhanced identity proofing not implemented",
+          recommendation: "Implement enhanced identity proofing with biometric verification and enhanced document checks"
+        },
+        {
+          id: "IAL-5",
+          control: "IAL5 - Superior identity proofing",
+          status: "gap",
+          details: "Superior identity proofing not implemented",
+          recommendation: "Implement superior identity proofing with multiple verification methods and enhanced security"
+        },
+        {
+          id: "IAL-6",
+          control: "IAL6 - Maximum identity proofing",
+          status: "gap",
+          details: "Maximum identity proofing not implemented",
+          recommendation: "Implement maximum identity proofing with highest security standards and verification"
         }
       ]
     },
@@ -5289,6 +5310,13 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "Hardware-based authenticator not implemented",
           recommendation: "Implement hardware-based authenticator with cryptographic module"
+        },
+        {
+          id: "AAL-4",
+          control: "AAL4 - Enhanced multi-factor authentication",
+          status: "gap",
+          details: "Enhanced multi-factor authentication not implemented",
+          recommendation: "Implement enhanced multi-factor authentication with additional security controls"
         }
       ]
     },
@@ -5316,6 +5344,13 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "High federation not implemented",
           recommendation: "Implement high federation with maximum security and privacy controls"
+        },
+        {
+          id: "FAL-4",
+          control: "FAL4 - Maximum federation",
+          status: "gap",
+          details: "Maximum federation not implemented",
+          recommendation: "Implement maximum federation with highest security and privacy controls"
         }
       ]
     },
@@ -5357,6 +5392,20 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "Identity termination process not implemented",
           recommendation: "Implement secure identity termination and deactivation procedures"
+        },
+        {
+          id: "ILM-6",
+          control: "Identity recovery and restoration",
+          status: "gap",
+          details: "Identity recovery process not implemented",
+          recommendation: "Implement secure identity recovery and restoration procedures"
+        },
+        {
+          id: "ILM-7",
+          control: "Identity audit and compliance",
+          status: "gap",
+          details: "Identity audit and compliance not implemented",
+          recommendation: "Implement identity audit and compliance monitoring procedures"
         }
       ]
     },
@@ -5398,6 +5447,20 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "Authenticator compromise procedures not implemented",
           recommendation: "Implement authenticator compromise detection and recovery procedures"
+        },
+        {
+          id: "AM-6",
+          control: "Authenticator strength validation",
+          status: "gap",
+          details: "Authenticator strength validation not implemented",
+          recommendation: "Implement authenticator strength validation and testing procedures"
+        },
+        {
+          id: "AM-7",
+          control: "Authenticator backup and recovery",
+          status: "gap",
+          details: "Authenticator backup and recovery not implemented",
+          recommendation: "Implement authenticator backup and recovery procedures"
         }
       ]
     },
@@ -5432,6 +5495,20 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "Session hijacking protection not implemented",
           recommendation: "Implement session hijacking protection mechanisms"
+        },
+        {
+          id: "SM-5",
+          control: "Session encryption and integrity",
+          status: "gap",
+          details: "Session encryption and integrity not implemented",
+          recommendation: "Implement session encryption and integrity controls"
+        },
+        {
+          id: "SM-6",
+          control: "Session audit and monitoring",
+          status: "gap",
+          details: "Session audit and monitoring not implemented",
+          recommendation: "Implement comprehensive session audit and monitoring"
         }
       ]
     },
@@ -5466,6 +5543,163 @@ allFrameworks.NIST_800_63B = {
           status: "gap",
           details: "Incident response and recovery not implemented",
           recommendation: "Implement incident response and recovery procedures for identity systems"
+        },
+        {
+          id: "PSC-5",
+          control: "Privacy impact assessment",
+          status: "gap",
+          details: "Privacy impact assessment not implemented",
+          recommendation: "Implement privacy impact assessment for identity systems"
+        },
+        {
+          id: "PSC-6",
+          control: "Data retention and disposal",
+          status: "gap",
+          details: "Data retention and disposal not implemented",
+          recommendation: "Implement data retention and disposal policies for identity systems"
+        }
+      ]
+    },
+    {
+      name: "Identity Proofing (IP)",
+      description: "Methods and processes for identity verification",
+      results: [
+        {
+          id: "IP-1",
+          control: "Document verification and validation",
+          status: "gap",
+          details: "Document verification not implemented",
+          recommendation: "Implement document verification and validation procedures"
+        },
+        {
+          id: "IP-2",
+          control: "Biometric verification and validation",
+          status: "gap",
+          details: "Biometric verification not implemented",
+          recommendation: "Implement biometric verification and validation procedures"
+        },
+        {
+          id: "IP-3",
+          control: "Knowledge-based verification",
+          status: "gap",
+          details: "Knowledge-based verification not implemented",
+          recommendation: "Implement knowledge-based verification procedures"
+        },
+        {
+          id: "IP-4",
+          control: "In-person verification procedures",
+          status: "gap",
+          details: "In-person verification not implemented",
+          recommendation: "Implement in-person verification procedures and training"
+        },
+        {
+          id: "IP-5",
+          control: "Remote verification procedures",
+          status: "gap",
+          details: "Remote verification not implemented",
+          recommendation: "Implement secure remote verification procedures"
+        }
+      ]
+    },
+    {
+      name: "Registration (REG)",
+      description: "Identity registration and enrollment processes",
+      results: [
+        {
+          id: "REG-1",
+          control: "Registration process design",
+          status: "gap",
+          details: "Registration process not designed",
+          recommendation: "Design secure and user-friendly registration process"
+        },
+        {
+          id: "REG-2",
+          control: "Identity validation during registration",
+          status: "gap",
+          details: "Identity validation not implemented",
+          recommendation: "Implement identity validation during registration"
+        },
+        {
+          id: "REG-3",
+          control: "Registration security controls",
+          status: "gap",
+          details: "Registration security not implemented",
+          recommendation: "Implement security controls for registration process"
+        },
+        {
+          id: "REG-4",
+          control: "Registration monitoring and audit",
+          status: "gap",
+          details: "Registration monitoring not implemented",
+          recommendation: "Implement registration monitoring and audit procedures"
+        }
+      ]
+    },
+    {
+      name: "Authentication (AUTH)",
+      description: "Authentication mechanisms and processes",
+      results: [
+        {
+          id: "AUTH-1",
+          control: "Authentication method selection",
+          status: "gap",
+          details: "Authentication method selection not implemented",
+          recommendation: "Implement appropriate authentication method selection"
+        },
+        {
+          id: "AUTH-2",
+          control: "Authentication strength requirements",
+          status: "gap",
+          details: "Authentication strength requirements not defined",
+          recommendation: "Define and implement authentication strength requirements"
+        },
+        {
+          id: "AUTH-3",
+          control: "Authentication monitoring and logging",
+          status: "gap",
+          details: "Authentication monitoring not implemented",
+          recommendation: "Implement authentication monitoring and logging"
+        },
+        {
+          id: "AUTH-4",
+          control: "Authentication failure handling",
+          status: "gap",
+          details: "Authentication failure handling not implemented",
+          recommendation: "Implement authentication failure handling procedures"
+        }
+      ]
+    },
+    {
+      name: "Federation (FED)",
+      description: "Federated identity and trust relationships",
+      results: [
+        {
+          id: "FED-1",
+          control: "Federation trust establishment",
+          status: "gap",
+          details: "Federation trust not established",
+          recommendation: "Establish federation trust relationships and agreements"
+        },
+        {
+          id: "FED-2",
+          control: "Federation security controls",
+          status: "gap",
+          details: "Federation security not implemented",
+          recommendation: "Implement security controls for federation"
+        },
+        {
+          id: "FED-3",
+          control: "Federation monitoring and audit",
+          status: "gap",
+          details: "Federation monitoring not implemented",
+          recommendation: "Implement federation monitoring and audit procedures"
+        },
+        {
+          id: "FED-4",
+          control: "Federation incident response",
+          status: "gap",
+          details: "Federation incident response not implemented",
+          recommendation: "Implement incident response for federation issues"
         }
       ]
     }
