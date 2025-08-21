@@ -4557,72 +4557,22 @@ For session-related controls, look for specific evidence of:
 The document contains information about these session controls - look for the specific details.` : ''}
 
 ${filteredFrameworkData.categories.some(cat => cat.name.includes('Access Control')) ? `
-CRITICAL ACCESS CONTROL GUIDANCE - READ CAREFULLY:
+CRITICAL ACCESS CONTROL GUIDANCE:
 For AC-1 (Access Control Policy and Procedures), you MUST recognize GOOD documentation:
 
 IF the document contains:
-- Clear policy statements about access control
-- Specific procedures for access management
-- Access levels or privileges defined
-- Review and audit processes
-- Account lifecycle management
-- Access request and approval workflows
+- Policy statements about access control
+- Procedures for implementation
+- Access levels or technical requirements defined
+- Review/audit processes described
+- Account lifecycle management mentioned
+- Workflow processes documented
 
 THEN mark as "COVERED" - this is sufficient documentation for most organizations.
 
 ONLY mark as "gap" if truly missing access control content.
 DO NOT require enterprise-level technical details.
 RECOGNIZE that good policy + procedures IS sufficient for "covered" status.` : ''}
-
-${filteredFrameworkData.categories.some(cat => cat.name.includes('Authenticator Assurance Level')) ? `
-CRITICAL AAL GUIDANCE - READ CAREFULLY:
-For AAL-1 (Single-Factor Authentication), you MUST recognize GOOD documentation:
-
-IF the document contains ANY of these:
-- Explicit statement about implementing single-factor authentication
-- Clear policy about when single-factor authentication is used
-- Risk assessment or justification for single-factor authentication
-- Specific applications or systems where single-factor authentication is permitted
-- Password management policies and procedures
-- OR if the document clearly shows single-factor authentication is being used (e.g., mentions passwords, PINs, and shows they are implemented)
-
-THEN mark as "COVERED" - this is sufficient documentation for most organizations.
-
-**SPECIFIC AAL-1 RECOGNITION:**
-- If the document mentions "passwords", "PINs", "something you know" and shows they are implemented, this IS sufficient for "covered"
-- Do NOT require formal policy language if the implementation is clearly documented
-- Recognize that showing authentication factors and their implementation IS policy documentation
-
-**SPECIFIC AAL-3 RECOGNITION:**
-- If the document mentions hardware tokens (fobs, hardware authenticators) and shows they are implemented, this IS sufficient for "covered"
-- Do NOT require FIPS 140-2 validation or detailed cryptographic module specifications
-- Recognize that hardware token implementation + basic security features IS sufficient documentation
-
-**EVALUATION CONSISTENCY RULE:**
-- The SAME document content should produce the SAME results across multiple analyses
-- Adding documentation should IMPROVE scores, not hurt them
-- If a control was "covered" with basic documentation, it should remain "covered" with enhanced documentation
-
-For AAL-4 (Enhanced Multi-Factor Authentication), you MUST recognize GOOD documentation:
-
-IF the document contains:
-- Enhanced MFA requirements beyond basic MFA
-- Exception management and approval processes
-- Monitoring and auditing procedures
-- Risk-based authentication approaches
-- Biometric authentication methods
-- Hardware-based security measures
-- Continuous monitoring capabilities
-
-THEN mark as "COVERED" - this is sufficient documentation for most organizations.
-
-DO NOT require:
-- Enterprise-level technical implementation details
-- FIPS 140-2 validation requirements
-- Advanced biometric liveness detection
-- Continuous risk-based authentication systems
-
-RECOGNIZE that good policy + procedures + basic technical requirements IS sufficient for "covered" status.` : ''}
 
 IMPORTANT: Follow the evaluation guidance above. Be realistic about what organizations can document and achieve.
 
@@ -4633,48 +4583,6 @@ For each control, analyze the document content and mark as:
 - "covered": Control is fully addressed with clear evidence
 - "partial": Control is partially addressed  
 - "gap": Control is not addressed
-
-**FORCED CHOICE EVALUATION - READ CAREFULLY:**
-You have ONLY THREE CHOICES for each control. Choose ONE and stick to it:
-
-**CHOICE 1: "covered"**
-- Use ONLY if the document clearly shows the control is implemented
-- Use language like: "This control is implemented and documented"
-- Do NOT use "covered" language if you plan to assign "partial"
-
-**CHOICE 2: "partial"**  
-- Use ONLY if the document shows some implementation but lacks key elements
-- Use language like: "This control is partially implemented but lacks [specific missing elements]"
-- Do NOT use "covered" language if you plan to assign "partial"
-
-**CHOICE 3: "gap"**
-- Use ONLY if the document shows no implementation of the control
-- Use language like: "This control is not addressed in the document"
-
-**CRITICAL RULE: Your details language MUST match your status choice.**
-
-**MANDATORY STATUS ASSIGNMENT RULE:**
-If your analysis says "this satisfies the criteria for 'covered' status" or "adequately describes the implementation" or "sufficient to meet the criteria for 'covered' status", then you MUST mark the control as "covered", not "partial".
-
-Do NOT contradict your own analysis. If you say the documentation is sufficient, assign "covered" status.
-
-**CRITICAL INSTRUCTION - READ CAREFULLY:**
-When you write "This satisfies the criteria for 'covered' status" in your details, you MUST assign "covered" status.
-When you write "This is sufficient to meet the criteria for 'covered' status" in your details, you MUST assign "covered" status.
-When you write "adequately describes the implementation" in your details, you MUST assign "covered" status.
-
-**DO NOT USE "covered" language in details if you plan to assign "partial" status.**
-
-**STEP-BY-STEP PROCESS FOR EACH CONTROL:**
-1. First, analyze the document content for evidence
-2. Second, determine if the evidence is sufficient for "covered" status
-3. Third, write your details using language that matches your intended status
-4. Fourth, assign the status that matches your analysis language
-
-**EXAMPLE:**
-- If you plan to assign "covered" status, use language like "This satisfies the criteria for 'covered' status"
-- If you plan to assign "partial" status, use language like "This partially addresses the control but lacks some elements"
-- If you plan to assign "gap" status, use language like "This control is not addressed in the document"
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
