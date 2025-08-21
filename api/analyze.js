@@ -4593,6 +4593,16 @@ THEN mark as "COVERED" - this is sufficient documentation for most organizations
 - Do NOT require formal policy language if the implementation is clearly documented
 - Recognize that showing authentication factors and their implementation IS policy documentation
 
+**SPECIFIC AAL-3 RECOGNITION:**
+- If the document mentions hardware tokens (fobs, hardware authenticators) and shows they are implemented, this IS sufficient for "covered"
+- Do NOT require FIPS 140-2 validation or detailed cryptographic module specifications
+- Recognize that hardware token implementation + basic security features IS sufficient documentation
+
+**EVALUATION CONSISTENCY RULE:**
+- The SAME document content should produce the SAME results across multiple analyses
+- Adding documentation should IMPROVE scores, not hurt them
+- If a control was "covered" with basic documentation, it should remain "covered" with enhanced documentation
+
 For AAL-4 (Enhanced Multi-Factor Authentication), you MUST recognize GOOD documentation:
 
 IF the document contains:
