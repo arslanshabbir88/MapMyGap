@@ -612,7 +612,7 @@ function Analyzer({ onNavigateHome }) {
         user_id: user.id,
         framework: selectedFramework,
         filename: displayName,
-        analysisMode: 'comprehensive', // Save the analysis mode
+        strictness: 'comprehensive', // Keep using 'strictness' for database compatibility
         results: results.categories || results,
         summary: results.summary || {
           score: 0,
@@ -2013,65 +2013,29 @@ function Analyzer({ onNavigateHome }) {
                       <div className="flex-1">
                         <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
                         <div className="text-xs text-blue-200 space-y-3">
-                          {lastAnalyzedStrictness ? (
+                          {lastAnalyzedMode ? (
                             <>
                               {/* Analysis Summary */}
                               <div className="flex items-center justify-between p-2 bg-slate-700/30 rounded">
-                                <span><strong>Analysis Mode:</strong> {lastAnalyzedStrictness.charAt(0).toUpperCase() + lastAnalyzedStrictness.slice(1)} Mode</span>
+                                <span><strong>Analysis Mode:</strong> Comprehensive Mode</span>
                                 <span className="text-lg font-bold text-blue-300">{analysisResults.summary.score}%</span>
                               </div>
                               
-                              {/* Mode-Specific Analysis */}
-                              {lastAnalyzedStrictness === 'strict' && (
-                                <div className="text-blue-100 bg-red-500/10 p-3 rounded border border-red-500/20">
-                                  <div className="flex items-center space-x-2 mb-2">
-                                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                    <span className="font-medium">Strict Mode Analysis</span>
-                                  </div>
-                                  <p className="mb-2">Conservative assessment requiring explicit, undeniable evidence.</p>
-                                  {analysisResults.summary.score < 20 ? (
-                                    <p className="text-red-200 text-xs">💡 <strong>Why so low?</strong> Requires concrete evidence like "we implement [specific control]"</p>
-                                  ) : analysisResults.summary.score < 40 ? (
-                                    <p className="text-green-200 text-xs">✅ <strong>Good coverage!</strong> Solid, explicit evidence for many controls</p>
-                                  ) : (
-                                    <p className="text-green-200 text-xs">🎯 <strong>Excellent coverage!</strong> Comprehensive, explicit implementation</p>
-                                  )}
+                              {/* Comprehensive Analysis Mode */}
+                              <div className="text-blue-100 bg-blue-500/10 p-3 rounded border border-blue-500/20">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                                  <span className="font-medium">Comprehensive Analysis Mode</span>
                                 </div>
-                              )}
-                              
-                              {lastAnalyzedStrictness === 'balanced' && (
-                                <div className="text-yellow-100 bg-yellow-500/10 p-3 rounded border border-yellow-500/20">
-                                  <div className="flex items-center space-x-2 mb-2">
-                                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                    <span className="font-medium">Balanced Mode Analysis</span>
-                                  </div>
-                                  <p className="mb-2">Standard assessment accepting reasonable evidence and inferences.</p>
-                                  {analysisResults.summary.score < 30 ? (
-                                    <p className="text-yellow-200 text-xs">💡 <strong>Room for improvement:</strong> Add more specific policies and procedures</p>
-                                  ) : analysisResults.summary.score < 60 ? (
-                                    <p className="text-green-200 text-xs">✅ <strong>Solid foundation!</strong> Good evidence and reasonable interpretation</p>
-                                  ) : (
-                                    <p className="text-green-200 text-xs">🎯 <strong>Strong compliance!</strong> Comprehensive coverage with good evidence</p>
-                                  )}
-                                </div>
-                              )}
-                              
-                              {lastAnalyzedStrictness === 'lenient' && (
-                                <div className="text-green-100 bg-green-500/10 p-3 rounded border border-green-500/20">
-                                  <div className="flex items-center space-x-2 mb-2">
-                                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                                    <span className="font-medium">Lenient Mode Analysis</span>
-                                  </div>
-                                  <p className="mb-2">Generous assessment accepting broad interpretations and implied practices.</p>
-                                  {analysisResults.summary.score < 50 ? (
-                                    <p className="text-yellow-200 text-xs">💡 <strong>Consider adding details:</strong> More specific evidence would strengthen compliance</p>
-                                  ) : analysisResults.summary.score < 80 ? (
-                                    <p className="text-green-200 text-xs">✅ <strong>Good coverage!</strong> Reasonable evidence with generous interpretation</p>
-                                  ) : (
-                                    <p className="text-green-200 text-xs">🎯 <strong>Excellent coverage!</strong> Comprehensive compliance even with strict interpretation</p>
-                                  )}
-                                </div>
-                              )}
+                                <p className="mb-2">Thorough assessment with actionable recommendations for achieving compliance.</p>
+                                {analysisResults.summary.score < 30 ? (
+                                  <p className="text-red-200 text-xs">💡 <strong>Focus on foundation:</strong> Start with basic policies and procedures</p>
+                                ) : analysisResults.summary.score < 60 ? (
+                                  <p className="text-yellow-200 text-xs">✅ <strong>Good foundation:</strong> Build on existing controls with detailed procedures</p>
+                                ) : (
+                                  <p className="text-green-200 text-xs">🎯 <strong>Strong compliance:</strong> Optimize and enhance existing controls</p>
+                                )}
+                              </div>
                               
                               {/* Score Interpretation */}
                               <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50">
