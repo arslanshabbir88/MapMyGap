@@ -4355,6 +4355,42 @@ Analysis Strictness Level: ${strictness}
 UNIVERSAL SECURITY RECOGNITION APPROACH:
 The AI should recognize security implementation by looking for REAL security features, not framework jargon. Organizations write about what they DO, not what frameworks they follow.
 
+FRAMEWORK-SPECIFIC ANALYSIS GUIDANCE:
+
+NIST SP 800-63B Categories:
+- IAL (Identity Assurance Level): How identity is ESTABLISHED and VERIFIED during account creation/onboarding
+- AAL (Authenticator Assurance Level): How identity is AUTHENTICATED during login/access
+- FAL (Federation Assurance Level): How identities are SHARED across systems
+- ILM (Identity Lifecycle Management): How accounts are MANAGED throughout their lifecycle
+- AM (Authenticator Management): How authentication FACTORS are managed
+- SM (Session Management): How active SESSIONS are managed
+- PSC (Privacy & Security Controls): How PRIVACY and SECURITY are maintained
+- IP (Identity Proofing): How identity VERIFICATION is performed
+- REG (Registration): How users are ENROLLED in the system
+- AUTH (Authentication): How users are VERIFIED during access
+- FED (Federation): How identities are SHARED across domains
+
+NIST 800-53 Control Families:
+- AC (Access Control): How ACCESS is granted and managed
+- AU (Audit): How ACTIVITIES are logged and monitored
+- IA (Identification & Authentication): How users are IDENTIFIED and AUTHENTICATED
+- SC (System & Communications Protection): How SYSTEMS and COMMUNICATIONS are protected
+- SA (System & Services Acquisition): How SYSTEMS and SERVICES are acquired
+- AT (Awareness & Training): How users are TRAINED and AWARE
+- MP (Media Protection): How MEDIA is protected
+- PS (Personnel Security): How PERSONNEL security is managed
+- MA (Maintenance): How SYSTEMS are maintained
+- PL (Planning): How SECURITY is planned
+- PT (PII Processing): How PERSONAL DATA is handled
+- PM (Program Management): How the SECURITY PROGRAM is managed
+
+NIST CSF Functions:
+- ID (Identify): How RISKS and ASSETS are identified
+- PR (Protect): How PROTECTIVE measures are implemented
+- DE (Detect): How THREATS are detected
+- RS (Respond): How INCIDENTS are responded to
+- RC (Recover): How SYSTEMS are recovered
+
 WHAT TO LOOK FOR (Universal across all frameworks):
 - **Policy statements**: What the organization requires
 - **Procedures**: How they implement security
