@@ -4414,10 +4414,22 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
       console.log('Prompt preview (last 500 chars):', prompt.substring(prompt.length - 500));
     }
 
-            // Add timeout to prevent hanging - increased for Vercel deployment
-        // SOC 2 is a larger framework and needs more time for comprehensive analysis
-        const timeoutDuration = framework === 'SOC_2' ? 60000 : 25000; // 60s for SOC 2, 25s for others
-        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s for ${framework} framework`);
+            // Add timeout to prevent hanging - dynamic timeout based on framework size
+        // Calculate timeout based on number of controls and framework complexity
+        let timeoutDuration;
+        const controlCount = filteredFrameworkData.categories.reduce((sum, cat) => sum + (cat.results?.length || 0), 0);
+        
+        if (framework === 'SOC_2') {
+          timeoutDuration = 60000; // 60s for SOC 2 (large framework)
+        } else if (controlCount <= 20) {
+          timeoutDuration = 25000; // 25s for small frameworks (≤20 controls)
+        } else if (controlCount <= 40) {
+          timeoutDuration = 35000; // 35s for medium frameworks (21-40 controls)
+        } else {
+          timeoutDuration = 40000; // 40s for large frameworks (41+ controls)
+        }
+        
+        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s for ${framework} framework (${controlCount} controls)`);
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), timeoutDuration);
         });
