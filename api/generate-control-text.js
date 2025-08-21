@@ -43,7 +43,7 @@ try {
         startsWithAIza: apiKey ? apiKey.startsWith('AIza') : false
       });
 
-      const prompt = `You are a cybersecurity compliance expert. Your task is to generate policy text for a specific control that matches the style and tone of an existing document.
+      const prompt = `You are a cybersecurity compliance expert. Your task is to generate COMPLETE control text for a specific control that will achieve "covered" status.
 
 Original Document Content:
 ${originalDocument.substring(0, 4000)}
@@ -53,14 +53,21 @@ ${targetControl}
 
 Framework: ${framework}
 
-Instructions:
-1. Analyze the original document's writing style, tone, and format
-2. Generate policy text for the target control that matches that style and tone
-3. The text should be specific, actionable, and professional
-4. Use similar language patterns, terminology, and structure as the original document
-5. Make it sound like it was written by the same author/organization
+CRITICAL REQUIREMENT - COMPLETE GUIDANCE:
+You must provide COMPREHENSIVE control text that includes ALL elements needed for "covered" status. Do not give incomplete recommendations that will leave users frustrated.
 
-Return only the generated policy text, no additional formatting or explanations.`;
+For example, if a control needs BOTH policy statements AND procedures, include BOTH in your generated text. Don't just provide procedures if policy content is also required.
+
+Your generated text should be COMPLETE and ACTIONABLE, allowing users to achieve "covered" status in one attempt.
+
+Instructions:
+1. Analyze what the control actually requires for "covered" status
+2. Generate COMPLETE control text that includes ALL required elements
+3. Match the original document's writing style, tone, and format
+4. Make it specific, actionable, and professional
+5. Ensure it addresses the complete control requirement, not just part of it
+
+Return only the generated control text, no additional formatting or explanations.`;
 
       console.log('Sending prompt to Gemini API...');
       console.log('Prompt length:', prompt.length);

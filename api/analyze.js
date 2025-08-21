@@ -4524,20 +4524,23 @@ Be specific about what you find in the document.` : ''}
 CRITICAL STRICTNESS DIFFERENTIATION - You MUST produce DIFFERENT results for each strictness level:
 
 ${strictness === 'strict' ? `
-STRICT MODE - BE EXTREMELY CONSERVATIVE:
-- Only mark as "covered" if you find EXPLICIT, CLEAR evidence like:
-  * "we implement [specific control]"
-  * "established procedures for [control]"
-  * "documented process for [control]"
-  * "our policy states [control requirement]"
-  * "we have [specific tool/technology] for [control]"
-- If evidence is vague, implied, or general, mark as "gap"
-- When in doubt, mark as "gap"
-- Be very strict - expect 10-30% coverage maximum
-- Look for SPECIFIC implementation details, not general statements
-- Require concrete examples and specific procedures
-- Downgrade "partial" controls to "gap" if evidence is not explicit enough
-- Be extremely critical of any evidence that could be interpreted as insufficient` : strictness === 'balanced' ? `
+STRICT MODE - BE REALISTIC AND HELPFUL:
+- Mark as "covered" if you find COMPREHENSIVE evidence including:
+  * Clear policy statements about the control
+  * Specific procedures for implementation
+  * Technical mechanisms or tools mentioned
+  * Regular review/audit processes described
+- Mark as "partial" if you find GOOD progress like:
+  * Policy statements but missing procedures
+  * Procedures but missing policy content
+  * Basic implementation details
+  * Some but not all required elements
+- Mark as "gap" only if NO relevant evidence exists
+- Be strict but FAIR - recognize incremental progress
+- Expect 20-50% coverage for realistic organizations
+- Look for GOOD documentation that shows understanding
+- Give credit for procedural steps and policy statements
+- Help users understand what they need for "covered" status` : strictness === 'balanced' ? `
 BALANCED MODE - MODERATE INTERPRETATION:
 - Mark as "covered" with reasonable evidence like:
   * Policies mentioned that relate to the control
@@ -4590,6 +4593,13 @@ For session-related controls, look for specific evidence of:
 The document contains information about these session controls - look for the specific details.` : ''}
 
 IMPORTANT: Do NOT return generic error messages. If you cannot analyze a specific control, mark it as "gap" with a brief explanation of what evidence you looked for.
+
+COMPLETE GUIDANCE REQUIREMENT:
+When marking a control as "gap" or "partial", provide COMPLETE guidance about what the user needs to achieve "covered" status. Do not give incomplete recommendations that will leave users frustrated.
+
+For example, if a control needs both policy statements AND procedures, say so upfront. Don't recommend adding procedures only to then say they also need policy content.
+
+Your recommendations should be COMPREHENSIVE and ACTIONABLE, allowing users to achieve "covered" status in one attempt.
 
 Return valid JSON using the exact control structure above.`;
 
