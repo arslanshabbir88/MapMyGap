@@ -208,12 +208,12 @@ function Analyzer({ onNavigateHome }) {
     const [copySuccess, setCopySuccess] = useState(false);
 
     const getStatusChipClass = (status) => {
-      switch (status) {
-        case 'covered': return 'bg-green-500/10 text-green-400 border-green-500/20';
-        case 'partial': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
-        case 'gap': return 'bg-red-500/10 text-red-400 border-red-500/20';
-        default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
-      }
+        switch (status) {
+          case 'covered': return 'bg-green-500/10 text-green-400 border-green-500/20';
+          case 'partial': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
+          case 'gap': return 'bg-red-500/10 text-red-400 border-red-500/20';
+          default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
+        }
     };
 
     const handleGenerateText = async () => {
@@ -296,15 +296,15 @@ function Analyzer({ onNavigateHome }) {
     };
 
     return (
-      <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
-        <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 animate-scale-in">
-          <div className="p-6 border-b border-slate-700 flex justify-between items-start">
-            <div>
-              <h3 className="text-lg font-bold text-white">{result.id}: {result.control}</h3>
-              <span className={`mt-2 inline-block capitalize text-xs font-medium px-2 py-1 rounded-full border ${getStatusChipClass(result.status)}`}>
-                {result.status}
-              </span>
-            </div>
+        <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4 transition-opacity duration-300">
+            <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl transform transition-all duration-300 scale-95 animate-scale-in">
+                <div className="p-6 border-b border-slate-700 flex justify-between items-start">
+                    <div>
+                        <h3 className="text-lg font-bold text-white">{result.id}: {result.control}</h3>
+                        <span className={`mt-2 inline-block capitalize text-xs font-medium px-2 py-1 rounded-full border ${getStatusChipClass(result.status)}`}>
+                            {result.status}
+                        </span>
+                    </div>
             <div className="flex items-center space-x-2">
               <button 
                 onClick={handleCopyControl}
@@ -313,29 +313,29 @@ function Analyzer({ onNavigateHome }) {
               >
                 <ClipboardIcon />
               </button>
-              <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
-                <Icon path="M6 18L18 6M6 6l12 12" />
-              </button>
+                    <button onClick={onClose} className="text-slate-500 hover:text-white transition-colors">
+                        <Icon path="M6 18L18 6M6 6l12 12" />
+                    </button>
             </div>
-          </div>
-          <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
-            <div>
-              <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><XCircleIcon /><span className="ml-2">Gap Analysis</span></h4>
-              <p className="text-slate-400 text-sm leading-6">{result.details}</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><LightbulbIcon /><span className="ml-2">Recommendation</span></h4>
-              <p className="text-slate-400 text-sm leading-6">{result.recommendation}</p>
-            </div>
-            {(result.status === 'gap' || result.status === 'partial') && (
-              <div>
-                <button 
-                  onClick={handleGenerateText}
-                  disabled={isGenerating}
-                  className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
-                >
-                  <SparklesIcon />
-                  {isGenerating ? 'Generating...' : 'Generate Control Text'}
+                </div>
+                <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto">
+                    <div>
+                        <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><XCircleIcon /><span className="ml-2">Gap Analysis</span></h4>
+                        <p className="text-slate-400 text-sm leading-6">{result.details}</p>
+                    </div>
+                    <div>
+                        <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><LightbulbIcon /><span className="ml-2">Recommendation</span></h4>
+                        <p className="text-slate-400 text-sm leading-6">{result.recommendation}</p>
+                    </div>
+                    {(result.status === 'gap' || result.status === 'partial') && (
+                        <div>
+                            <button 
+                                onClick={handleGenerateText}
+                                disabled={isGenerating}
+                                className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
+                            >
+                                <SparklesIcon />
+                                {isGenerating ? 'Generating...' : 'Generate Control Text'}
                 </button>
                 {generationError && (
                   <p className="mt-3 text-sm text-red-400">{generationError}</p>
@@ -350,23 +350,23 @@ function Analyzer({ onNavigateHome }) {
                       >
                         <ClipboardIcon />
                         {copySuccess ? 'Copied!' : 'Copy'}
-                      </button>
+                            </button>
                     </div>
                     <pre className="whitespace-pre-wrap text-slate-300 text-sm leading-6">{generatedText}</pre>
                   </div>
                 )}
-              </div>
-            )}
-          </div>
-          <div className="px-6 py-4 bg-slate-800/50 rounded-b-2xl text-right">
-            <button onClick={onClose} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors">
-              Close
-            </button>
-          </div>
+                        </div>
+                    )}
+                </div>
+                 <div className="px-6 py-4 bg-slate-800/50 rounded-b-2xl text-right">
+                    <button onClick={onClose} className="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors">
+                        Close
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     );
-  };
+};
 
   const getFileExt = (name) => (name?.split('.').pop() || '').toLowerCase();
   const isTextFile = (file) => file?.type === 'text/plain' || getFileExt(file?.name) === 'txt';
@@ -585,8 +585,8 @@ function Analyzer({ onNavigateHome }) {
     setError(null);
 
     if (isTextFile(file)) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
         console.log('=== TEXT FILE READING DEBUG ===');
         console.log('File name:', file.name);
         console.log('File size:', file.size);
@@ -594,13 +594,13 @@ function Analyzer({ onNavigateHome }) {
         console.log('Content length:', e.target.result.length);
         console.log('Content preview (first 500 chars):', e.target.result.substring(0, 500));
         console.log('Content preview (last 500 chars):', e.target.result.substring(Math.max(0, e.target.result.length - 500)));
-        setFileContent(e.target.result);
-      };
+      setFileContent(e.target.result);
+    };
       reader.onerror = (e) => {
         console.error('FileReader error:', e);
         setError('Failed to read text file');
       };
-      reader.readAsText(file);
+    reader.readAsText(file);
     } else if (getFileExt(file.name) === 'docx') {
       // Handle .docx files
       try {
@@ -708,7 +708,7 @@ function Analyzer({ onNavigateHome }) {
         console.log('🚀 Analysis cache buster:', cacheBuster, 'API URL:', apiUrl);
         
         const response = await fetch(apiUrl, {
-          method: 'POST',
+        method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
@@ -717,8 +717,8 @@ function Analyzer({ onNavigateHome }) {
           },
           body: JSON.stringify(requestBody),
         });
-        if (!response.ok) {
-          const errorText = await response.text();
+      if (!response.ok) {
+        const errorText = await response.text();
           
           // Try to parse as JSON for better error handling
           try {
@@ -769,7 +769,7 @@ function Analyzer({ onNavigateHome }) {
                 }
               });
             });
-          } catch (e) {
+        } catch (e) {
             console.log('Browser cache clearing failed:', e);
           }
         }
@@ -794,7 +794,7 @@ function Analyzer({ onNavigateHome }) {
           setFileContent(result.extractedText);
         }
       }
-
+        
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
           console.log('Raw AI response:', rawJson);
@@ -903,7 +903,7 @@ function Analyzer({ onNavigateHome }) {
       } else if (e.message && e.message.includes('overloaded')) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again.');
       } else {
-        setError(`An error occurred during analysis: ${e.message}`);
+      setError(`An error occurred during analysis: ${e.message}`);
       }
     } finally {
       setIsAnalyzing(false);
@@ -913,6 +913,7 @@ function Analyzer({ onNavigateHome }) {
   const frameworkOptions = [
     { id: 'NIST_CSF', name: 'NIST Cybersecurity Framework (CSF) v2.0', enabled: true },
     { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5', enabled: true },
+    { id: 'NIST_800_63B', name: 'NIST SP 800-63B Digital Identity Guidelines', enabled: true },
     { id: 'PCI_DSS', name: 'PCI DSS v4.0', enabled: true },
     { id: 'ISO_27001', name: 'ISO/IEC 27001:2022', enabled: true },
     { id: 'SOC_2', name: 'SOC 2 Type II', enabled: true },
@@ -1015,10 +1016,10 @@ function Analyzer({ onNavigateHome }) {
                   </div>
                 </div>
               )}
-              <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
-                <ArrowLeftIcon />
-                Back to Home
-              </button>
+            <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+              <ArrowLeftIcon />
+              Back to Home
+            </button>
             </div>
           </div>
         </header>
@@ -1061,9 +1062,9 @@ function Analyzer({ onNavigateHome }) {
               <div className="mb-6">
                 <label htmlFor="framework" className="block text-sm font-medium text-slate-300 mb-3">Select Framework</label>
                 <div className="relative">
-                  <select 
-                    id="framework" 
-                    value={selectedFramework}
+                <select 
+                  id="framework" 
+                  value={selectedFramework}
                                          onChange={(e) => { 
                        setSelectedFramework(e.target.value); 
                        setAnalysisResults(null);
@@ -1083,7 +1084,7 @@ function Analyzer({ onNavigateHome }) {
                         {opt.name}{!opt.enabled ? ' (Demo disabled)' : ''}
                       </option>
                     ))}
-                  </select>
+                </select>
                   <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                     <svg className="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -1189,6 +1190,70 @@ function Analyzer({ onNavigateHome }) {
                       </div>
                     )}
                   </div>
+                </div>
+              )}
+              
+              {/* Category Selection for NIST SP 800-63B */}
+              {selectedFramework === 'NIST_800_63B' && (
+                <div className="mb-6">
+                  <div className="mb-3">
+                    <label className="block text-sm font-medium text-slate-300">
+                      NIST 800-63B Category to Analyze
+                    </label>
+                  </div>
+                  
+                  <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                    <div className="flex items-center space-x-2 text-sm text-blue-300">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span>Select a category to analyze</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {[
+                      { code: 'IAL', name: 'Identity Assurance Level', description: 'How identity is established and verified' },
+                      { code: 'AAL', name: 'Authenticator Assurance Level', description: 'How authentication is performed and verified' },
+                      { code: 'FAL', name: 'Federation Assurance Level', description: 'How federated identity and single sign-on work' },
+                      { code: 'ILM', name: 'Identity Lifecycle Management', description: 'Managing identity throughout its lifecycle' },
+                      { code: 'AM', name: 'Authenticator Management', description: 'Managing authenticators and their lifecycle' },
+                      { code: 'SM', name: 'Session Management', description: 'Managing user sessions and access' },
+                      { code: 'PSC', name: 'Privacy and Security Controls', description: 'Protecting privacy and ensuring security' }
+                    ].map(category => (
+                      <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                        <input
+                          type="radio"
+                          name="nist80063b-category"
+                          value={category.code}
+                          checked={selectedCategories.includes(category.code)}
+                          onChange={(e) => {
+                            // Single selection - replace the entire array with just this selection
+                            setSelectedCategories([e.target.value]);
+                          }}
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <span className="font-medium text-slate-200">{category.code}</span>
+                            <span className="text-xs text-slate-400">{category.name}</span>
+                          </div>
+                          <div className="text-slate-400 text-xs mt-1">{category.description}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC'].includes(cat)).length === 0 && (
+                    <div className="mt-2 text-sm text-red-400">
+                      Please select one category to analyze.
+                    </div>
+                  )}
+                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC'].includes(cat)).length > 1 && (
+                    <div className="mt-2 text-sm text-yellow-400">
+                      Only one category can be selected at a time.
+                    </div>
+                  )}
                 </div>
               )}
               
@@ -1367,11 +1432,11 @@ function Analyzer({ onNavigateHome }) {
                      ) : (
                       <div className="flex flex-col items-center">
                         <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center mb-2">
-                          <FileUploadIcon />
+                    <FileUploadIcon />
                         </div>
                         <div className="flex text-sm leading-6 text-slate-400 mb-2">
                           <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-semibold text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 focus-within:ring-offset-slate-900 hover:text-blue-300 transition-colors">
-                            <span>Upload a file</span>
+                        <span>Upload a file</span>
                             <input 
                               id="file-upload" 
                               name="file-upload" 
@@ -1388,20 +1453,20 @@ function Analyzer({ onNavigateHome }) {
                                 }
                               }}
                             />
-                          </label>
-                          <p className="pl-1">or drag and drop</p>
-                        </div>
+                      </label>
+                      <p className="pl-1">or drag and drop</p>
+                    </div>
                         <p className="text-xs leading-5 text-slate-500">
                           Supported: TXT, DOCX, PDF, XLSX, XLS
                         </p>
                         <p className="text-xs text-slate-500 mt-1">
                           Max size: 10MB
                         </p>
-                      </div>
-                    )}
                   </div>
+                    )}
                 </div>
               </div>
+                </div>
 
               
                {error && (
@@ -1545,7 +1610,7 @@ function Analyzer({ onNavigateHome }) {
 
               <button
                 onClick={handleAnalyze}
-                                 disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0) || (selectedFramework === 'NIST_CSF' && selectedCategories.length === 0) || (selectedFramework === 'SOC_2' && selectedCategories.length === 0)}
+                                 disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0) || (selectedFramework === 'NIST_CSF' && selectedCategories.length === 0) || (selectedFramework === 'SOC_2' && selectedCategories.length === 0) || (selectedFramework === 'NIST_800_63B' && selectedCategories.length === 0)}
                 className="w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 disabled:from-slate-600 disabled:to-slate-600 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {isAnalyzing ? (
@@ -1573,7 +1638,7 @@ function Analyzer({ onNavigateHome }) {
                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                      </svg>
                      <span>Please select at least one control family to analyze</span>
-                   </div>
+            </div>
                  </div>
                )}
                
@@ -1595,6 +1660,17 @@ function Analyzer({ onNavigateHome }) {
                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                      </svg>
                      <span>Please select at least one trust service criteria to analyze</span>
+                   </div>
+                 </div>
+               )}
+               
+               {selectedFramework === 'NIST_800_63B' && selectedCategories.length === 0 && (
+                 <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+                   <div className="flex items-center space-x-2 text-sm text-yellow-400">
+                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                       <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                     </svg>
+                     <span>Please select at least one category to analyze</span>
                    </div>
                  </div>
                )}
@@ -1967,7 +2043,7 @@ function Analyzer({ onNavigateHome }) {
                           )}
                         </div>
                       </div>
-                    </div>
+                      </div>
                   </div>
 
                   <div className="space-y-4">
@@ -1992,16 +2068,16 @@ function Analyzer({ onNavigateHome }) {
                               </span>
                             </div>
                           </div>
-                          <ul className="divide-y divide-slate-700">
-                            {category.results.map(result => (
+                        <ul className="divide-y divide-slate-700">
+                          {category.results.map(result => (
                               <li key={result.id} onClick={() => setModalData(result)} className="p-4 flex items-center justify-between hover:bg-slate-700/50 cursor-pointer transition-all duration-200 group">
                                 <div className="flex items-start flex-1 min-w-0">
-                                    {renderStatusIcon(result.status)}
+                                  {renderStatusIcon(result.status)}
                                     <div className="ml-3 flex-1 min-w-0">
                                         <p className="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">{result.id}</p>
                                         <p className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors mt-1 leading-relaxed">{result.control}</p>
-                                    </div>
-                                </div>
+                                  </div>
+                              </div>
                                 <div className="flex items-center space-x-3 ml-4">
                                   <span className={`capitalize text-xs font-medium px-3 py-1.5 rounded-full border transition-all duration-200 ${getStatusChipClass(result.status)}`}>
                                     {result.status}
@@ -2010,10 +2086,10 @@ function Analyzer({ onNavigateHome }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                   </svg>
                                 </div>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                       ))
                     ) : (
                       <div className="text-center py-12 text-slate-400">
