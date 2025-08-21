@@ -4073,141 +4073,7 @@ const allFrameworks = {
   }
 };
 
-// Post-process AI results based on strictness level to ensure strictness affects scoring
-function adjustResultsForStrictness(results, strictness) {
-  console.log(`Post-processing results for strictness level: ${strictness}`);
-  
-  // Count initial statuses
-  let initialCounts = { covered: 0, partial: 0, gap: 0 };
-  results.categories.forEach(category => {
-    category.results.forEach(result => {
-      if (result.status === 'covered') initialCounts.covered++;
-      else if (result.status === 'partial') initialCounts.partial++;
-      else if (result.status === 'gap') initialCounts.gap++;
-    });
-  });
-  console.log('Initial status counts:', initialCounts);
-  
-  const adjustedResults = JSON.parse(JSON.stringify(results)); // Deep copy
-  
-  if (strictness === 'strict') {
-    // STRICT MODE: Most conservative - systematically downgrade and limit upgrades
-    console.log('Strict mode - making conservative adjustments');
-    
-    let coveredToPartial = Math.floor(initialCounts.covered * 0.8); // 80% of covered -> partial (more aggressive)
-    let partialToGap = Math.floor(initialCounts.partial * 0.7); // 70% of partial -> gap (more aggressive)
-    
-    // If AI was too conservative and marked everything as gap, upgrade very few to partial
-    let gapToPartial = 0;
-    if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.05); // Only 5% of gaps -> partial (very conservative)
-      console.log(`Strict mode: AI was too conservative, upgrading only ${gapToPartial} gaps to partial`);
-    }
-    
-    console.log(`Strict mode: Converting ${coveredToPartial} covered to partial, ${partialToGap} partial to gap, ${gapToPartial} gaps to partial`);
-    
-    let coveredConverted = 0;
-    let partialConverted = 0;
-    let gapConverted = 0;
-    
-    adjustedResults.categories.forEach(category => {
-      category.results.forEach(result => {
-        if (result.status === 'covered' && coveredConverted < coveredToPartial) {
-          result.status = 'partial';
-          coveredConverted++;
-        } else if (result.status === 'partial' && partialConverted < partialToGap) {
-          result.status = 'gap';
-          partialConverted++;
-        } else if (result.status === 'gap' && gapConverted < gapToPartial) {
-          result.status = 'partial';
-          gapConverted++;
-        }
-      });
-    });
-    
-  } else if (strictness === 'balanced') {
-    // BALANCED MODE: Moderate adjustments - more generous than strict but not as generous as lenient
-    console.log('Balanced mode - making moderate adjustments');
-    
-    // If AI was too conservative, be moderately generous
-    let gapToPartial = 0;
-    if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.6); // 60% of gaps -> partial (more generous)
-      console.log(`Balanced mode: AI was too conservative, upgrading ${gapToPartial} gaps to partial`);
-    }
-    
-    // Also upgrade some partial to covered for balanced mode
-    let partialToCovered = Math.floor(initialCounts.partial * 0.5); // 50% of partial -> covered (more generous)
-    
-    if (gapToPartial > 0 || partialToCovered > 0) {
-      let gapConverted = 0;
-      let partialConverted = 0;
-      
-      adjustedResults.categories.forEach(category => {
-        category.results.forEach(result => {
-          if (result.status === 'gap' && gapConverted < gapToPartial) {
-            result.status = 'partial';
-            gapConverted++;
-          } else if (result.status === 'partial' && partialConverted < partialToCovered) {
-            result.status = 'covered';
-            partialConverted++;
-          }
-        });
-      });
-    }
-    
-  } else if (strictness === 'lenient') {
-    // LENIENT MODE: Most generous - systematically upgrade
-    console.log('Lenient mode - making generous adjustments');
-    
-    // In lenient mode, be VERY aggressive about upgrading gaps
-    let gapToPartial = Math.floor(initialCounts.gap * 0.9); // 90% of gap -> partial (very generous)
-    let partialToCovered = Math.floor(initialCounts.partial * 0.8); // 80% of partial -> covered (very generous)
-    
-    // If AI was extremely conservative, upgrade even more aggressively
-    if (initialCounts.gap > 0) {
-      gapToPartial = Math.floor(initialCounts.gap * 0.95); // 95% of gaps -> partial when AI is too conservative
-      console.log(`Lenient mode: AI was extremely conservative, upgrading ${gapToPartial} gaps to partial`);
-    }
-    
-    console.log(`Lenient mode: Converting ${gapToPartial} gap to partial, ${partialToCovered} partial to covered`);
-    
-    let gapConverted = 0;
-    let partialConverted = 0;
-    
-    adjustedResults.categories.forEach(category => {
-      category.results.forEach(result => {
-        if (result.status === 'gap' && gapConverted < gapToPartial) {
-          result.status = 'partial';
-          gapConverted++;
-        } else if (result.status === 'partial' && partialConverted < partialToCovered) {
-          result.status = 'covered';
-          partialConverted++;
-        }
-      });
-    });
-  }
-  
-  // Count final statuses
-  let finalCounts = { covered: 0, partial: 0, gap: 0 };
-  adjustedResults.categories.forEach(category => {
-    category.results.forEach(result => {
-      if (result.status === 'covered') finalCounts.covered++;
-      else if (result.status === 'partial') finalCounts.partial++;
-      else if (result.status === 'gap') finalCounts.gap++;
-    });
-  });
-  
-  console.log(`Post-processing completed for ${strictness} mode.`);
-  console.log('Final status counts:', finalCounts);
-  console.log('Status changes:', {
-    covered: finalCounts.covered - initialCounts.covered,
-    partial: finalCounts.partial - initialCounts.partial,
-    gap: finalCounts.gap - initialCounts.gap
-  });
-  
-  return adjustedResults;
-}
+// AI results are now used directly without artificial strictness adjustments
 
 // Hybrid analysis function - uses predefined controls + AI analysis
 async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
@@ -5122,7 +4988,8 @@ Return valid JSON with the exact control structure provided. Do not include gene
      
      // Create the proper structure for strictness adjustments
      const aiResultsForAdjustment = { categories: categoriesToAnalyze };
-     const adjustedResults = adjustResultsForStrictness(aiResultsForAdjustment, strictness);
+     // Use AI results directly without artificial strictness adjustments
+    const adjustedResults = aiResultsForAdjustment;
      
      // Count final results after strictness adjustments
      let finalGapCount = 0;
@@ -5269,7 +5136,8 @@ Return valid JSON with the exact control structure provided. Do not include gene
     console.log('Fallback Results - Partial:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'partial').length, 0));
     console.log('Fallback Results - Covered:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'covered').length, 0));
     
-    const adjustedFallbackResults = adjustResultsForStrictness(fallbackResult, strictness);
+    // Use fallback results directly without artificial strictness adjustments
+    const adjustedFallbackResults = fallbackResult;
     
     // Count final fallback results after strictness adjustments
     let finalFallbackGapCount = 0;
