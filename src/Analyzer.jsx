@@ -1136,6 +1136,7 @@ function Analyzer({ onNavigateHome }) {
                         { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle' },
                         { code: 'PE', name: 'Physical & Environmental Protection', description: 'Protect physical assets and environment' },
                         { code: 'PL', name: 'Planning', description: 'Develop and maintain security and privacy plans' },
+                        { code: 'PM', name: 'Program Management', description: 'Manage information security programs and activities' },
                         { code: 'PS', name: 'Personnel Security', description: 'Ensure personnel are trustworthy and qualified' },
                         { code: 'PT', name: 'PII Processing & Transparency', description: 'Process PII and provide transparency' },
                         { code: 'RA', name: 'Risk Assessment', description: 'Assess and manage security risks' },

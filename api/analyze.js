@@ -815,6 +815,111 @@ const allFrameworks = {
             status: "gap",
             details: "Concurrent session control not implemented",
             recommendation: "Implement controls to limit concurrent user sessions"
+          },
+          {
+            id: "AC-11",
+            control: "Session Lock",
+            status: "gap",
+            details: "Session lock not implemented",
+            recommendation: "Implement automatic session lock after periods of inactivity"
+          },
+          {
+            id: "AC-12",
+            control: "Session Termination",
+            status: "gap",
+            details: "Session termination not implemented",
+            recommendation: "Implement automatic session termination after specified periods"
+          },
+          {
+            id: "AC-13",
+            control: "Supervision and Review - Access Control",
+            status: "gap",
+            details: "Access control supervision and review not implemented",
+            recommendation: "Implement supervision and review of access control activities"
+          },
+          {
+            id: "AC-14",
+            control: "Permitted Actions without Identification or Authentication",
+            status: "gap",
+            details: "Permitted actions without authentication not defined",
+            recommendation: "Define actions that can be performed without identification or authentication"
+          },
+          {
+            id: "AC-15",
+            control: "Automated Marking",
+            status: "gap",
+            details: "Automated marking not implemented",
+            recommendation: "Implement automated marking of output with appropriate security attributes"
+          },
+          {
+            id: "AC-16",
+            control: "Security Attributes",
+            status: "gap",
+            details: "Security attributes not implemented",
+            recommendation: "Implement security attributes for information and system resources"
+          },
+          {
+            id: "AC-17",
+            control: "Remote Access",
+            status: "gap",
+            details: "Remote access controls not implemented",
+            recommendation: "Implement secure remote access controls and monitoring"
+          },
+          {
+            id: "AC-18",
+            control: "Wireless Access",
+            status: "gap",
+            details: "Wireless access controls not implemented",
+            recommendation: "Implement secure wireless access controls and monitoring"
+          },
+          {
+            id: "AC-19",
+            control: "Access Control for Mobile Devices",
+            status: "gap",
+            details: "Mobile device access controls not implemented",
+            recommendation: "Implement access controls for mobile devices"
+          },
+          {
+            id: "AC-20",
+            control: "Use of External Information Systems",
+            status: "gap",
+            details: "External system access controls not implemented",
+            recommendation: "Implement controls for use of external information systems"
+          },
+          {
+            id: "AC-21",
+            control: "Information Sharing",
+            status: "gap",
+            details: "Information sharing controls not implemented",
+            recommendation: "Implement controls for secure information sharing"
+          },
+          {
+            id: "AC-22",
+            control: "Publicly Accessible Content",
+            status: "gap",
+            details: "Publicly accessible content controls not implemented",
+            recommendation: "Implement controls for publicly accessible content"
+          },
+          {
+            id: "AC-23",
+            control: "Data Mining Protection",
+            status: "gap",
+            details: "Data mining protection not implemented",
+            recommendation: "Implement controls to protect against data mining"
+          },
+          {
+            id: "AC-24",
+            control: "Access Control Decisions",
+            status: "gap",
+            details: "Access control decision processes not implemented",
+            recommendation: "Implement processes for making access control decisions"
+          },
+          {
+            id: "AC-25",
+            control: "Reference Monitor",
+            status: "gap",
+            details: "Reference monitor not implemented",
+            recommendation: "Implement reference monitor for access control enforcement"
           }
         ]
       },
@@ -905,6 +1010,76 @@ const allFrameworks = {
             status: "gap",
             details: "Audit generation not implemented",
             recommendation: "Implement comprehensive audit generation capabilities"
+          },
+          {
+            id: "AU-13",
+            control: "Monitoring for Information Disclosure",
+            status: "gap",
+            details: "Information disclosure monitoring not implemented",
+            recommendation: "Implement monitoring for unauthorized information disclosure"
+          },
+          {
+            id: "AU-14",
+            control: "Session Audit",
+            status: "gap",
+            details: "Session audit not implemented",
+            recommendation: "Implement session audit capabilities for user sessions"
+          },
+          {
+            id: "AU-15",
+            control: "Alternate Audit Capability",
+            status: "gap",
+            details: "Alternate audit capability not implemented",
+            recommendation: "Implement alternate audit capability for system failures"
+          },
+          {
+            id: "AU-16",
+            control: "Cross-organizational Auditing",
+            status: "gap",
+            details: "Cross-organizational auditing not implemented",
+            recommendation: "Implement cross-organizational auditing capabilities"
+          },
+          {
+            id: "AU-17",
+            control: "Alternate Storage Site",
+            status: "gap",
+            details: "Alternate audit storage site not implemented",
+            recommendation: "Implement alternate storage site for audit records"
+          },
+          {
+            id: "AU-18",
+            control: "Tamper-resistant Audit Trail",
+            status: "gap",
+            details: "Tamper-resistant audit trail not implemented",
+            recommendation: "Implement tamper-resistant audit trail mechanisms"
+          },
+          {
+            id: "AU-19",
+            control: "Non-repudiation of Transmitted Messages",
+            status: "gap",
+            details: "Message non-repudiation not implemented",
+            recommendation: "Implement non-repudiation for transmitted messages"
+          },
+          {
+            id: "AU-20",
+            control: "Threat Monitoring",
+            status: "gap",
+            details: "Threat monitoring not implemented",
+            recommendation: "Implement threat monitoring and analysis capabilities"
+          },
+          {
+            id: "AU-21",
+            control: "Validated Input",
+            status: "gap",
+            details: "Input validation not implemented",
+            recommendation: "Implement input validation for audit data"
+          },
+          {
+            id: "AU-22",
+            control: "Verifiable Event Ordering",
+            status: "gap",
+            details: "Event ordering verification not implemented",
+            recommendation: "Implement verifiable event ordering for audit records"
           }
         ]
       },
@@ -995,6 +1170,62 @@ const allFrameworks = {
             status: "gap",
             details: "Identity proofing not implemented",
             recommendation: "Implement identity proofing procedures for user registration"
+          },
+          {
+            id: "IA-13",
+            control: "Identity and Authentication for Services",
+            status: "gap",
+            details: "Service identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all services"
+          },
+          {
+            id: "IA-14",
+            control: "Identity and Authentication for Devices",
+            status: "gap",
+            details: "Device identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all devices"
+          },
+          {
+            id: "IA-15",
+            control: "Identity and Authentication for Users",
+            status: "gap",
+            details: "User identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all users"
+          },
+          {
+            id: "IA-16",
+            control: "Identity and Authentication for Processes",
+            status: "gap",
+            details: "Process identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all processes"
+          },
+          {
+            id: "IA-17",
+            control: "Identity and Authentication for Applications",
+            status: "gap",
+            details: "Application identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all applications"
+          },
+          {
+            id: "IA-18",
+            control: "Identity and Authentication for Networks",
+            status: "gap",
+            details: "Network identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all networks"
+          },
+          {
+            id: "IA-19",
+            control: "Identity and Authentication for Data",
+            status: "gap",
+            details: "Data identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all data"
+          },
+          {
+            id: "IA-20",
+            control: "Identity and Authentication for Systems",
+            status: "gap",
+            details: "System identity and authentication not implemented",
+            recommendation: "Implement identity and authentication for all systems"
           }
         ]
       },
@@ -1161,6 +1392,272 @@ const allFrameworks = {
             status: "gap",
             details: "Cryptographic key management not implemented",
             recommendation: "Implement cryptographic key establishment and management procedures"
+          },
+          {
+            id: "SC-13",
+            control: "Cryptographic Protection",
+            status: "gap",
+            details: "Cryptographic protection not implemented",
+            recommendation: "Implement cryptographic protection for information in accordance with requirements"
+          },
+          {
+            id: "SC-14",
+            control: "Public Access Protections",
+            status: "gap",
+            details: "Public access protections not implemented",
+            recommendation: "Implement protections for publicly accessible information"
+          },
+          {
+            id: "SC-15",
+            control: "Collaborative Computing Devices",
+            status: "gap",
+            details: "Collaborative computing device controls not implemented",
+            recommendation: "Implement controls for collaborative computing devices"
+          },
+          {
+            id: "SC-16",
+            control: "Transmission of Security Attributes",
+            status: "gap",
+            details: "Security attribute transmission not implemented",
+            recommendation: "Implement transmission of security attributes with information"
+          },
+          {
+            id: "SC-17",
+            control: "Public Key Infrastructure Certificates",
+            status: "gap",
+            details: "PKI certificate management not implemented",
+            recommendation: "Implement public key infrastructure certificate management"
+          },
+          {
+            id: "SC-18",
+            control: "Mobile Code",
+            status: "gap",
+            details: "Mobile code controls not implemented",
+            recommendation: "Implement controls for mobile code execution"
+          },
+          {
+            id: "SC-19",
+            control: "Voice Over Internet Protocol",
+            status: "gap",
+            details: "VoIP security controls not implemented",
+            recommendation: "Implement security controls for Voice over Internet Protocol"
+          },
+          {
+            id: "SC-20",
+            control: "Secure Name / Address Resolution Service (Authoritative Source)",
+            status: "gap",
+            details: "Secure name/address resolution not implemented",
+            recommendation: "Implement secure name and address resolution services"
+          },
+          {
+            id: "SC-21",
+            control: "Secure Name / Address Resolution Service (Recursive or Caching Resolver)",
+            status: "gap",
+            details: "Secure recursive/caching resolution not implemented",
+            recommendation: "Implement secure recursive and caching name resolution"
+          },
+          {
+            id: "SC-22",
+            control: "Architecture and Provisioning for Name / Address Resolution Service",
+            status: "gap",
+            details: "Name/address resolution architecture not implemented",
+            recommendation: "Implement secure architecture for name and address resolution"
+          },
+          {
+            id: "SC-23",
+            control: "Session Authenticity",
+            status: "gap",
+            details: "Session authenticity not implemented",
+            recommendation: "Implement session authenticity mechanisms"
+          },
+          {
+            id: "SC-24",
+            control: "Fail in Known State",
+            status: "gap",
+            details: "Fail in known state not implemented",
+            recommendation: "Implement controls to ensure systems fail in known secure states"
+          },
+          {
+            id: "SC-25",
+            control: "Thin Nodes",
+            status: "gap",
+            details: "Thin node controls not implemented",
+            recommendation: "Implement controls for thin node devices"
+          },
+          {
+            id: "SC-26",
+            control: "Honeypots",
+            status: "gap",
+            details: "Honeypot controls not implemented",
+            recommendation: "Implement honeypot controls for threat detection"
+          },
+          {
+            id: "SC-27",
+            control: "Platform-Independent Applications",
+            status: "gap",
+            details: "Platform-independent application controls not implemented",
+            recommendation: "Implement controls for platform-independent applications"
+          },
+          {
+            id: "SC-28",
+            control: "Protection of Information at Rest",
+            status: "gap",
+            details: "Information at rest protection not implemented",
+            recommendation: "Implement protection mechanisms for information at rest"
+          },
+          {
+            id: "SC-29",
+            control: "Heterogeneity",
+            status: "gap",
+            details: "Heterogeneity controls not implemented",
+            recommendation: "Implement controls to ensure system heterogeneity"
+          },
+          {
+            id: "SC-30",
+            control: "Virtualization Techniques",
+            status: "gap",
+            details: "Virtualization security controls not implemented",
+            recommendation: "Implement security controls for virtualization techniques"
+          },
+          {
+            id: "SC-31",
+            control: "Covert Channel Analysis",
+            status: "gap",
+            details: "Covert channel analysis not implemented",
+            recommendation: "Implement covert channel analysis for system security"
+          },
+          {
+            id: "SC-32",
+            control: "Information System Partitioning",
+            status: "gap",
+            details: "System partitioning not implemented",
+            recommendation: "Implement information system partitioning for security"
+          },
+          {
+            id: "SC-33",
+            control: "Transmission Preparation Integrity",
+            status: "gap",
+            details: "Transmission preparation integrity not implemented",
+            recommendation: "Implement integrity controls for transmission preparation"
+          },
+          {
+            id: "SC-34",
+            control: "Modifiable Components",
+            status: "gap",
+            details: "Modifiable component controls not implemented",
+            recommendation: "Implement controls for modifiable system components"
+          },
+          {
+            id: "SC-35",
+            control: "Hardware-based Protection",
+            status: "gap",
+            details: "Hardware-based protection not implemented",
+            recommendation: "Implement hardware-based protection mechanisms"
+          },
+          {
+            id: "SC-36",
+            control: "Distributed Processing and Storage",
+            status: "gap",
+            details: "Distributed processing security not implemented",
+            recommendation: "Implement security controls for distributed processing and storage"
+          },
+          {
+            id: "SC-37",
+            control: "Out-of-band Channels",
+            status: "gap",
+            details: "Out-of-band channel controls not implemented",
+            recommendation: "Implement controls for out-of-band communication channels"
+          },
+          {
+            id: "SC-38",
+            control: "Operations Security",
+            status: "gap",
+            details: "Operations security not implemented",
+            recommendation: "Implement operations security controls"
+          },
+          {
+            id: "SC-39",
+            control: "Process Isolation",
+            status: "gap",
+            details: "Process isolation not implemented",
+            recommendation: "Implement process isolation controls"
+          },
+          {
+            id: "SC-40",
+            control: "Wireless Link Protection",
+            status: "gap",
+            details: "Wireless link protection not implemented",
+            recommendation: "Implement protection for wireless communication links"
+          },
+          {
+            id: "SC-41",
+            control: "Port and I/O Device Access",
+            status: "gap",
+            details: "Port and I/O device access controls not implemented",
+            recommendation: "Implement controls for port and I/O device access"
+          },
+          {
+            id: "SC-42",
+            control: "Sensor Capabilities and Data",
+            status: "gap",
+            details: "Sensor capabilities and data controls not implemented",
+            recommendation: "Implement controls for sensor capabilities and data"
+          },
+          {
+            id: "SC-43",
+            control: "Usage Restrictions",
+            status: "gap",
+            details: "Usage restrictions not implemented",
+            recommendation: "Implement usage restrictions for system components"
+          },
+          {
+            id: "SC-44",
+            control: "Detonation Chambers",
+            status: "gap",
+            details: "Detonation chamber controls not implemented",
+            recommendation: "Implement controls for detonation chambers"
+          },
+          {
+            id: "SC-45",
+            control: "System Hardening",
+            status: "gap",
+            details: "System hardening not implemented",
+            recommendation: "Implement system hardening controls"
+          },
+          {
+            id: "SC-46",
+            control: "Cross Domain Policy Enforcement",
+            status: "gap",
+            details: "Cross domain policy enforcement not implemented",
+            recommendation: "Implement cross domain policy enforcement controls"
+          },
+          {
+            id: "SC-47",
+            control: "Alternate Communications Paths",
+            status: "gap",
+            details: "Alternate communications paths not implemented",
+            recommendation: "Implement alternate communications paths for security"
+          },
+          {
+            id: "SC-48",
+            control: "Application Partitioning",
+            status: "gap",
+            details: "Application partitioning not implemented",
+            recommendation: "Implement application partitioning for security"
+          },
+          {
+            id: "SC-49",
+            control: "Threat Monitoring",
+            status: "gap",
+            details: "Threat monitoring not implemented",
+            recommendation: "Implement threat monitoring capabilities"
+          },
+          {
+            id: "SC-50",
+            control: "Software and Firmware Integrity",
+            status: "gap",
+            details: "Software and firmware integrity not implemented",
+            recommendation: "Implement software and firmware integrity controls"
           }
         ]
       },
@@ -2385,6 +2882,222 @@ const allFrameworks = {
             status: "gap",
             details: "PII processing monitoring not implemented",
             recommendation: "Implement monitoring and oversight of PII processing activities"
+          }
+        ]
+      },
+      {
+        name: "Program Management (PM)",
+        description: "Manage information security programs and activities",
+        results: [
+          {
+            id: "PM-1",
+            control: "Information Security Program Plan",
+            status: "gap",
+            details: "Information security program plan not developed",
+            recommendation: "Develop comprehensive information security program plan aligned with organizational objectives"
+          },
+          {
+            id: "PM-2",
+            control: "Senior Information Security Officer",
+            status: "gap",
+            details: "Senior information security officer not designated",
+            recommendation: "Designate senior information security officer with appropriate authority and resources"
+          },
+          {
+            id: "PM-3",
+            control: "Information Security Resources",
+            status: "gap",
+            details: "Information security resources not allocated",
+            recommendation: "Allocate adequate resources for information security program implementation"
+          },
+          {
+            id: "PM-4",
+            control: "Plan of Action and Milestones Process",
+            status: "gap",
+            details: "Plan of action and milestones process not implemented",
+            recommendation: "Implement plan of action and milestones process for tracking security improvements"
+          },
+          {
+            id: "PM-5",
+            control: "Information System Inventory",
+            status: "gap",
+            details: "Information system inventory not maintained",
+            recommendation: "Maintain comprehensive inventory of all information systems and their security status"
+          },
+          {
+            id: "PM-6",
+            control: "Information Security Measures of Performance",
+            status: "gap",
+            details: "Information security performance measures not established",
+            recommendation: "Establish and monitor information security performance measures and metrics"
+          },
+          {
+            id: "PM-7",
+            control: "Enterprise Architecture",
+            status: "gap",
+            details: "Enterprise architecture not developed",
+            recommendation: "Develop enterprise architecture that incorporates information security requirements"
+          },
+          {
+            id: "PM-8",
+            control: "Critical Infrastructure Plan",
+            status: "gap",
+            details: "Critical infrastructure plan not developed",
+            recommendation: "Develop plan for protecting critical infrastructure and key resources"
+          },
+          {
+            id: "PM-9",
+            control: "Risk Management Strategy",
+            status: "gap",
+            details: "Risk management strategy not developed",
+            recommendation: "Develop comprehensive risk management strategy for information security"
+          },
+          {
+            id: "PM-10",
+            control: "Security Authorization Process",
+            status: "gap",
+            details: "Security authorization process not implemented",
+            recommendation: "Implement security authorization process for information systems"
+          },
+          {
+            id: "PM-11",
+            control: "Mission and Business Process Definition",
+            status: "gap",
+            details: "Mission and business processes not defined",
+            recommendation: "Define mission and business processes to inform security requirements"
+          },
+          {
+            id: "PM-12",
+            control: "Insider Threat Program",
+            status: "gap",
+            details: "Insider threat program not implemented",
+            recommendation: "Implement insider threat program to detect and prevent insider threats"
+          },
+          {
+            id: "PM-13",
+            control: "Security and Privacy Workforce",
+            status: "gap",
+            details: "Security and privacy workforce not established",
+            recommendation: "Establish qualified security and privacy workforce with appropriate training"
+          },
+          {
+            id: "PM-14",
+            control: "Testing, Training, and Monitoring",
+            status: "gap",
+            details: "Testing, training, and monitoring not implemented",
+            recommendation: "Implement testing, training, and monitoring programs for security controls"
+          },
+          {
+            id: "PM-15",
+            control: "Contacts with Security Groups and Associations",
+            status: "gap",
+            details: "Security group contacts not established",
+            recommendation: "Establish contacts with security groups and associations for information sharing"
+          },
+          {
+            id: "PM-16",
+            control: "Threat Awareness Program",
+            status: "gap",
+            details: "Threat awareness program not implemented",
+            recommendation: "Implement threat awareness program to inform security decisions"
+          },
+          {
+            id: "PM-17",
+            control: "Protect Controlled Unclassified Information",
+            status: "gap",
+            details: "Controlled unclassified information protection not implemented",
+            recommendation: "Implement controls to protect controlled unclassified information"
+          },
+          {
+            id: "PM-18",
+            control: "Privacy Program Plan",
+            status: "gap",
+            details: "Privacy program plan not developed",
+            recommendation: "Develop comprehensive privacy program plan aligned with privacy requirements"
+          },
+          {
+            id: "PM-19",
+            control: "Privacy Program Leadership",
+            status: "gap",
+            details: "Privacy program leadership not designated",
+            recommendation: "Designate privacy program leadership with appropriate authority"
+          },
+          {
+            id: "PM-20",
+            control: "Privacy Program Resources",
+            status: "gap",
+            details: "Privacy program resources not allocated",
+            recommendation: "Allocate adequate resources for privacy program implementation"
+          },
+          {
+            id: "PM-21",
+            control: "Privacy Program Metrics",
+            status: "gap",
+            details: "Privacy program metrics not established",
+            recommendation: "Establish and monitor privacy program performance metrics"
+          },
+          {
+            id: "PM-22",
+            control: "Privacy Program Reporting",
+            status: "gap",
+            details: "Privacy program reporting not implemented",
+            recommendation: "Implement regular privacy program reporting to stakeholders"
+          },
+          {
+            id: "PM-23",
+            control: "Privacy Program Reviews",
+            status: "gap",
+            details: "Privacy program reviews not conducted",
+            recommendation: "Conduct regular reviews of privacy program effectiveness"
+          },
+          {
+            id: "PM-24",
+            control: "Privacy Program Updates",
+            status: "gap",
+            details: "Privacy program updates not implemented",
+            recommendation: "Implement regular updates to privacy program based on reviews and changes"
+          },
+          {
+            id: "PM-25",
+            control: "Privacy Program Training",
+            status: "gap",
+            details: "Privacy program training not provided",
+            recommendation: "Provide regular training on privacy requirements and procedures"
+          },
+          {
+            id: "PM-26",
+            control: "Privacy Program Communications",
+            status: "gap",
+            details: "Privacy program communications not established",
+            recommendation: "Establish effective communications about privacy program and requirements"
+          },
+          {
+            id: "PM-27",
+            control: "Privacy Program Compliance",
+            status: "gap",
+            details: "Privacy program compliance not monitored",
+            recommendation: "Monitor and ensure compliance with privacy requirements and regulations"
+          },
+          {
+            id: "PM-28",
+            control: "Privacy Program Risk Management",
+            status: "gap",
+            details: "Privacy program risk management not implemented",
+            recommendation: "Implement risk management processes for privacy program"
+          },
+          {
+            id: "PM-29",
+            control: "Privacy Program Incident Response",
+            status: "gap",
+            details: "Privacy program incident response not implemented",
+            recommendation: "Implement incident response procedures for privacy-related incidents"
+          },
+          {
+            id: "PM-30",
+            control: "Privacy Program Business Continuity",
+            status: "gap",
+            details: "Privacy program business continuity not addressed",
+            recommendation: "Address privacy requirements in business continuity planning"
           }
         ]
       }
