@@ -4399,6 +4399,126 @@ NIST CSF Functions:
 - RS (Respond): How INCIDENTS are responded to
 - RC (Recover): How SYSTEMS are recovered
 
+CATEGORY ANALYSIS MODES:
+
+Each framework category has a specific analysis mode. The AI MUST use the correct mode for each category.
+
+NIST SP 800-63B Analysis Modes:
+- IAL (Identity Assurance Level): IDENTITY ESTABLISHMENT MODE
+  * Look for: Account creation, user enrollment, identity verification, onboarding processes
+  * Ignore: Authentication, login procedures, MFA, access control
+- AAL (Authenticator Assurance Level): AUTHENTICATION MODE
+  * Look for: Login procedures, MFA implementation, password policies, access verification
+  * Ignore: Account creation, user enrollment, identity proofing
+- FAL (Federation Assurance Level): FEDERATION MODE
+  * Look for: Cross-system identity linking, federation protocols, identity sharing
+  * Ignore: Local authentication, local account creation
+- ILM (Identity Lifecycle Management): LIFECYCLE MODE
+  * Look for: Account management, user lifecycle, account updates, deprovisioning
+  * Ignore: Initial identity establishment, authentication processes
+- AM (Authenticator Management): AUTHENTICATOR MODE
+  * Look for: Factor management, token management, authenticator lifecycle
+  * Ignore: Identity establishment, user enrollment
+- SM (Session Management): SESSION MODE
+  * Look for: Active session management, session timeouts, concurrent sessions
+  * Ignore: Identity establishment, authentication setup
+- PSC (Privacy & Security Controls): PRIVACY/SECURITY MODE
+  * Look for: Data protection, privacy controls, security measures
+  * Ignore: Identity establishment, authentication processes
+- IP (Identity Proofing): PROOFING MODE
+  * Look for: Identity verification processes, proofing methods, verification workflows
+  * Ignore: Authentication, access control
+- REG (Registration): REGISTRATION MODE
+  * Look for: User enrollment workflows, registration processes, account setup
+  * Ignore: Authentication, access control
+- AUTH (Authentication): AUTHENTICATION MODE
+  * Look for: Login verification, authentication methods, access verification
+  * Ignore: Identity establishment, user enrollment
+- FED (Federation): FEDERATION MODE
+  * Look for: Cross-system identity sharing, federation protocols
+  * Ignore: Local processes, local identity management
+
+NIST 800-53 Analysis Modes:
+- AC (Access Control): ACCESS MODE
+  * Look for: Permission management, access grants, role-based access
+  * Ignore: Identity establishment, user enrollment
+- AT (Awareness & Training): TRAINING MODE
+  * Look for: Security awareness, training programs, personnel education
+  * Ignore: Technical implementation, control deployment
+- AU (Audit & Accountability): AUDIT MODE
+  * Look for: Logging, monitoring, audit trails, accountability
+  * Ignore: Control implementation, policy creation
+- CA (Assessment & Authorization): ASSESSMENT MODE
+  * Look for: System evaluation, authorization processes, compliance assessment
+  * Ignore: Control implementation, operational procedures
+- CM (Configuration Management): CONFIGURATION MODE
+  * Look for: System settings, configuration control, change management
+  * Ignore: Identity management, user processes
+- CP (Contingency Planning): PLANNING MODE
+  * Look for: Disaster recovery planning, continuity planning, incident planning
+  * Ignore: Implementation, operational procedures
+- IA (Identification & Authentication): IDENTITY MODE
+  * Look for: User identification, authentication methods, identity verification
+  * Ignore: Identity establishment, user enrollment
+- IR (Incident Response): RESPONSE MODE
+  * Look for: Incident handling, response procedures, incident management
+  * Ignore: Prevention, control implementation
+- MA (Maintenance): MAINTENANCE MODE
+  * Look for: System upkeep, maintenance procedures, system maintenance
+  * Ignore: Identity management, user processes
+- MP (Media Protection): MEDIA MODE
+  * Look for: Storage protection, media handling, data storage security
+  * Ignore: Identity management, user processes
+- PE (Physical & Environmental): PHYSICAL MODE
+  * Look for: Environmental security, physical protection, facility security
+  * Ignore: Identity management, user processes
+- PL (Planning): PLANNING MODE
+  * Look for: Security planning, strategic planning, security strategy
+  * Ignore: Implementation, operational procedures
+- PM (Program Management): MANAGEMENT MODE
+  * Look for: Program oversight, management oversight, strategic management
+  * Ignore: Implementation, operational procedures
+- PS (Personnel Security): PERSONNEL MODE
+  * Look for: Staff security, personnel screening, employee security
+  * Ignore: Technical controls, system security
+- PT (PII Processing & Transparency): DATA MODE
+  * Look for: Personal data handling, privacy controls, data transparency
+  * Ignore: Identity management, user processes
+- RA (Risk Assessment): RISK MODE
+  * Look for: Risk evaluation, threat assessment, vulnerability assessment
+  * Ignore: Control implementation, operational procedures
+- SA (System & Services Acquisition): ACQUISITION MODE
+  * Look for: Procurement, vendor selection, system acquisition
+  * Ignore: Implementation, operational procedures
+- SC (System & Communications Protection): SYSTEM MODE
+  * Look for: Technical protection, system security, communication security
+  * Ignore: Identity management, user processes
+- SI (System & Information Integrity): INTEGRITY MODE
+  * Look for: System integrity, data integrity, integrity monitoring
+  * Ignore: Identity management, user processes
+- SR (Supply Chain Risk Management): SUPPLY CHAIN MODE
+  * Look for: Vendor risk, supplier security, third-party risk
+  * Ignore: Internal controls, operational procedures
+
+NIST CSF Analysis Modes:
+- ID (Identify): IDENTIFICATION MODE
+  * Look for: Risk identification, asset identification, threat identification
+  * Ignore: Control implementation, operational procedures
+- PR (Protect): PROTECTION MODE
+  * Look for: Control implementation, protective measures, security controls
+  * Ignore: Assessment, monitoring, response
+- DE (Detect): DETECTION MODE
+  * Look for: Threat detection, monitoring, detection capabilities
+  * Ignore: Prevention, control implementation
+- RS (Respond): RESPONSE MODE
+  * Look for: Incident response, response procedures, response capabilities
+  * Ignore: Prevention, control implementation
+- RC (Recover): RECOVERY MODE
+  * Look for: Recovery processes, restoration, business continuity
+  * Ignore: Prevention, control implementation
+
+CRITICAL RULE: Use the correct analysis mode for each category. Do NOT mix modes or look for the wrong type of content.
+
 WHAT TO LOOK FOR (Universal across all frameworks):
 - **Policy statements**: What the organization requires
 - **Procedures**: How they implement security
