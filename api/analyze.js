@@ -4533,8 +4533,10 @@ For session-related controls, look for specific evidence of:
 The document contains information about these session controls - look for the specific details.` : ''}
 
 ${filteredFrameworkData.categories.some(cat => cat.name.includes('Access Control')) ? `
-SPECIAL ACCESS CONTROL GUIDANCE:
-For AC-1 (Access Control Policy and Procedures), recognize GOOD documentation when you see:
+CRITICAL ACCESS CONTROL GUIDANCE - READ CAREFULLY:
+For AC-1 (Access Control Policy and Procedures), you MUST recognize GOOD documentation:
+
+IF the document contains:
 - Clear policy statements about access control
 - Specific procedures for access management
 - Access levels or privileges defined
@@ -4542,59 +4544,11 @@ For AC-1 (Access Control Policy and Procedures), recognize GOOD documentation wh
 - Account lifecycle management
 - Access request and approval workflows
 
-If the document has comprehensive policy + procedures + technical details, mark as "covered".
-If it has good policy + some procedures, mark as "partial".
-Only mark as "gap" if truly missing access control content.` : ''}
+THEN mark as "COVERED" - this is sufficient documentation for most organizations.
 
-CRITICAL STRICTNESS DIFFERENTIATION - You MUST produce DIFFERENT results for each strictness level:
-
-${strictness === 'strict' ? `
-STRICT MODE - BE REALISTIC AND RECOGNIZE GOOD PROGRESS:
-- Mark as "covered" if you find GOOD documentation including:
-  * Clear policy statements about the control
-  * Specific procedures for implementation
-  * Access levels or technical requirements defined
-  * Review/audit processes described
-  * Account lifecycle management mentioned
-- Mark as "partial" if you find MODERATE progress like:
-  * Policy statements but missing some procedures
-  * Procedures but missing some policy content
-  * Basic implementation details
-  * Some but not all required elements
-- Mark as "gap" ONLY if NO relevant evidence exists
-- Be strict but REALISTIC - recognize when users have good documentation
-- Expect 30-70% coverage for organizations with good documentation
-- Look for COMPREHENSIVE documentation that shows understanding
-- Give credit for procedural steps, policy statements, and technical details
-- Help users understand what they need for "covered" status
-- RECOGNIZE when users have followed previous recommendations` : strictness === 'balanced' ? `
-BALANCED MODE - MODERATE INTERPRETATION:
-- Mark as "covered" with reasonable evidence like:
-  * Policies mentioned that relate to the control
-  * Procedures described that address the control
-  * Can infer from related controls or general practices
-  * Industry standard practices mentioned
-  * Good security practices that clearly address the control
-- Be reasonable but not overly generous
-- Expect 30-60% coverage
-- Look for GOOD evidence but don't require perfect specificity
-- Accept reasonable inferences from described practices
-- Maintain moderate standards - not too strict, not too lenient` : `
-LENIENT MODE - BE GENEROUS:
-- Mark as "covered" with ANY reasonable indication:
-  * Basic policies mentioned
-  * Common industry practices
-  * General security measures
-  * Can infer from organizational context
-  * Any security-related activities that could address the control
-  * General security awareness or practices mentioned
-- Be generous in interpretation
-- Expect 50-80% coverage
-- Look for ANY evidence that suggests the control is addressed, even indirectly
-- Accept broad interpretations and organizational context clues
-- Be willing to infer coverage from general security practices mentioned
-- Upgrade "partial" controls to "covered" if there's any reasonable basis
-- Look for positive interpretations of any security-related content`}
+ONLY mark as "gap" if truly missing access control content.
+DO NOT require enterprise-level technical details.
+RECOGNIZE that good policy + procedures IS sufficient for "covered" status.` : ''}
 
 MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
 
