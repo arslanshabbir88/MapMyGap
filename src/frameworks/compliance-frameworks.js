@@ -896,70 +896,232 @@ export const nist80063b = {
     {
       name: "Identity Assurance Level (IAL)",
       description: "How identity is established and verified",
-      controls: [
-        { id: "IAL-1", name: "IAL1 - Self-asserted identity" },
-        { id: "IAL-2", name: "IAL2 - Remote or in-person identity proofing" },
-        { id: "IAL-3", name: "IAL3 - In-person identity proofing" }
+      results: [
+        {
+          id: "IAL-1",
+          control: "IAL1 - Self-asserted identity",
+          status: "gap",
+          details: "Self-asserted identity verification not implemented",
+          recommendation: "Implement self-asserted identity verification process for low-risk applications"
+        },
+        {
+          id: "IAL-2",
+          control: "IAL2 - Remote or in-person identity proofing",
+          status: "gap",
+          details: "Remote or in-person identity proofing not implemented",
+          recommendation: "Implement remote or in-person identity proofing with appropriate verification methods"
+        },
+        {
+          id: "IAL-3",
+          control: "IAL3 - In-person identity proofing",
+          status: "gap",
+          details: "In-person identity proofing not implemented",
+          recommendation: "Implement in-person identity proofing with trained personnel and verification processes"
+        }
       ]
     },
     {
       name: "Authenticator Assurance Level (AAL)",
       description: "How authentication is performed and verified",
-      controls: [
-        { id: "AAL-1", name: "AAL1 - Single-factor authentication" },
-        { id: "AAL-2", name: "AAL2 - Multi-factor authentication" },
-        { id: "AAL-3", name: "AAL3 - Hardware-based authenticator" }
+      results: [
+        {
+          id: "AAL-1",
+          control: "AAL1 - Single-factor authentication",
+          status: "gap",
+          details: "Single-factor authentication only implemented",
+          recommendation: "Implement multi-factor authentication for enhanced security"
+        },
+        {
+          id: "AAL-2",
+          control: "AAL2 - Multi-factor authentication",
+          status: "gap",
+          details: "Multi-factor authentication not implemented",
+          recommendation: "Implement multi-factor authentication using two or more authentication factors"
+        },
+        {
+          id: "AAL-3",
+          control: "AAL3 - Hardware-based authenticator",
+          status: "gap",
+          details: "Hardware-based authenticators not implemented",
+          recommendation: "Implement hardware-based authenticators for high-security applications"
+        }
       ]
     },
     {
       name: "Federation Assurance Level (FAL)",
       description: "How federated identity and single sign-on work",
-      controls: [
-        { id: "FAL-1", name: "FAL1 - Basic federation" },
-        { id: "FAL-2", name: "FAL2 - Advanced federation" },
-        { id: "FAL-3", name: "FAL3 - High federation" }
+      results: [
+        {
+          id: "FAL-1",
+          control: "FAL1 - Basic federation",
+          status: "gap",
+          details: "Basic federation not implemented",
+          recommendation: "Implement basic federation with identity providers and service providers"
+        },
+        {
+          id: "FAL-2",
+          control: "FAL2 - Advanced federation",
+          status: "gap",
+          details: "Advanced federation not implemented",
+          recommendation: "Implement advanced federation with enhanced security and privacy controls"
+        },
+        {
+          id: "FAL-3",
+          control: "FAL3 - High federation",
+          status: "gap",
+          details: "High federation not implemented",
+          recommendation: "Implement high federation with cryptographic protections and advanced controls"
+        }
       ]
     },
     {
       name: "Identity Lifecycle Management",
       description: "Managing identity throughout its lifecycle",
-      controls: [
-        { id: "ILM-1", name: "Identity establishment and enrollment" },
-        { id: "ILM-2", name: "Identity proofing and verification" },
-        { id: "ILM-3", name: "Identity binding and authentication" },
-        { id: "ILM-4", name: "Identity lifecycle maintenance" },
-        { id: "ILM-5", name: "Identity termination and deactivation" }
+      results: [
+        {
+          id: "ILM-1",
+          control: "Identity establishment and enrollment",
+          status: "gap",
+          details: "Identity establishment process not implemented",
+          recommendation: "Implement comprehensive identity establishment and enrollment procedures"
+        },
+        {
+          id: "ILM-2",
+          control: "Identity proofing and verification",
+          status: "gap",
+          details: "Identity proofing and verification not implemented",
+          recommendation: "Implement identity proofing and verification processes"
+        },
+        {
+          id: "ILM-3",
+          control: "Identity binding and authentication",
+          status: "gap",
+          details: "Identity binding and authentication not implemented",
+          recommendation: "Implement secure identity binding and authentication mechanisms"
+        },
+        {
+          id: "ILM-4",
+          control: "Identity lifecycle maintenance",
+          status: "gap",
+          details: "Identity lifecycle maintenance not implemented",
+          recommendation: "Implement identity lifecycle maintenance procedures"
+        },
+        {
+          id: "ILM-5",
+          control: "Identity termination and deactivation",
+          status: "gap",
+          details: "Identity termination procedures not implemented",
+          recommendation: "Implement secure identity termination and deactivation procedures"
+        }
       ]
     },
     {
       name: "Authenticator Management",
       description: "Managing authenticators and their lifecycle",
-      controls: [
-        { id: "AM-1", name: "Authenticator types and selection" },
-        { id: "AM-2", name: "Authenticator strength and requirements" },
-        { id: "AM-3", name: "Authenticator issuance and provisioning" },
-        { id: "AM-4", name: "Authenticator lifecycle management" },
-        { id: "AM-5", name: "Authenticator compromise and recovery" }
+      results: [
+        {
+          id: "AM-1",
+          control: "Authenticator types and selection",
+          status: "gap",
+          details: "Authenticator types and selection not implemented",
+          recommendation: "Implement authenticator type selection based on security requirements"
+        },
+        {
+          id: "AM-2",
+          control: "Authenticator strength and requirements",
+          status: "gap",
+          details: "Authenticator strength requirements not defined",
+          recommendation: "Define authenticator strength requirements and validation processes"
+        },
+        {
+          id: "AM-3",
+          control: "Authenticator issuance and provisioning",
+          status: "gap",
+          details: "Authenticator issuance process not implemented",
+          recommendation: "Implement secure authenticator issuance and provisioning procedures"
+        },
+        {
+          id: "AM-4",
+          control: "Authenticator lifecycle management",
+          status: "gap",
+          details: "Authenticator lifecycle management not implemented",
+          recommendation: "Implement comprehensive authenticator lifecycle management"
+        },
+        {
+          id: "AM-5",
+          control: "Authenticator compromise and recovery",
+          status: "gap",
+          details: "Authenticator compromise response not implemented",
+          recommendation: "Implement authenticator compromise detection and recovery procedures"
+        }
       ]
     },
     {
       name: "Session Management",
       description: "Managing user sessions and access",
-      controls: [
-        { id: "SM-1", name: "Session establishment and management" },
-        { id: "SM-2", name: "Session timeout and termination" },
-        { id: "SM-3", name: "Session monitoring and logging" },
-        { id: "SM-4", name: "Session hijacking protection" }
+      results: [
+        {
+          id: "SM-1",
+          control: "Session establishment and management",
+          status: "gap",
+          details: "Session establishment and management not implemented",
+          recommendation: "Implement secure session establishment and management procedures"
+        },
+        {
+          id: "SM-2",
+          control: "Session timeout and termination",
+          status: "gap",
+          details: "Session timeout and termination not implemented",
+          recommendation: "Implement session timeout and secure termination procedures"
+        },
+        {
+          id: "SM-3",
+          control: "Session monitoring and logging",
+          status: "gap",
+          details: "Session monitoring and logging not implemented",
+          recommendation: "Implement session monitoring and comprehensive logging"
+        },
+        {
+          id: "SM-4",
+          control: "Session hijacking protection",
+          status: "gap",
+          details: "Session hijacking protection not implemented",
+          recommendation: "Implement session hijacking protection mechanisms"
+        }
       ]
     },
     {
       name: "Privacy and Security Controls",
       description: "Protecting privacy and ensuring security",
-      controls: [
-        { id: "PSC-1", name: "Privacy protection and data minimization" },
-        { id: "PSC-2", name: "Security controls and monitoring" },
-        { id: "PSC-3", name: "Audit and accountability" },
-        { id: "PSC-4", name: "Incident response and recovery" }
+      results: [
+        {
+          id: "PSC-1",
+          control: "Privacy protection and data minimization",
+          status: "gap",
+          details: "Privacy protection and data minimization not implemented",
+          recommendation: "Implement privacy protection and data minimization controls"
+        },
+        {
+          id: "PSC-2",
+          control: "Security controls and monitoring",
+          status: "gap",
+          details: "Security controls and monitoring not implemented",
+          recommendation: "Implement comprehensive security controls and monitoring"
+        },
+        {
+          id: "PSC-3",
+          control: "Audit and accountability",
+          status: "gap",
+          details: "Audit and accountability not implemented",
+          recommendation: "Implement audit and accountability controls"
+        },
+        {
+          id: "PSC-4",
+          control: "Incident response and recovery",
+          status: "gap",
+          details: "Incident response and recovery not implemented",
+          recommendation: "Implement incident response and recovery procedures"
+        }
       ]
     }
   ]
