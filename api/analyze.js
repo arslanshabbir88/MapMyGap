@@ -4639,6 +4639,13 @@ If your analysis says "this satisfies the criteria for 'covered' status" or "ade
 
 Do NOT contradict your own analysis. If you say the documentation is sufficient, assign "covered" status.
 
+**CRITICAL INSTRUCTION - READ CAREFULLY:**
+When you write "This satisfies the criteria for 'covered' status" in your details, you MUST assign "covered" status.
+When you write "This is sufficient to meet the criteria for 'covered' status" in your details, you MUST assign "covered" status.
+When you write "adequately describes the implementation" in your details, you MUST assign "covered" status.
+
+**DO NOT USE "covered" language in details if you plan to assign "partial" status.**
+
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
 ${filteredFrameworkData.categories.some(cat => cat.name.includes('Session Management')) ? `
