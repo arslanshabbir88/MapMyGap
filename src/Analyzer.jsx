@@ -1222,7 +1222,11 @@ function Analyzer({ onNavigateHome }) {
                       { code: 'ILM', name: 'Identity Lifecycle Management', description: 'Managing identity throughout its lifecycle' },
                       { code: 'AM', name: 'Authenticator Management', description: 'Managing authenticators and their lifecycle' },
                       { code: 'SM', name: 'Session Management', description: 'Managing user sessions and access' },
-                      { code: 'PSC', name: 'Privacy and Security Controls', description: 'Protecting privacy and ensuring security' }
+                      { code: 'PSC', name: 'Privacy and Security Controls', description: 'Protecting privacy and ensuring security' },
+                      { code: 'IP', name: 'Identity Proofing', description: 'Methods and processes for identity verification' },
+                      { code: 'REG', name: 'Registration', description: 'Identity registration and enrollment processes' },
+                      { code: 'AUTH', name: 'Authentication', description: 'Authentication mechanisms and processes' },
+                      { code: 'FED', name: 'Federation', description: 'Federated identity and trust relationships' }
                     ].map(category => (
                       <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                         <input
@@ -1247,12 +1251,12 @@ function Analyzer({ onNavigateHome }) {
                     ))}
                   </div>
                   
-                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC'].includes(cat)).length === 0 && (
+                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC', 'IP', 'REG', 'AUTH', 'FED'].includes(cat)).length === 0 && (
                     <div className="mt-2 text-sm text-red-400">
                       Please select one category to analyze.
                     </div>
                   )}
-                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC'].includes(cat)).length > 1 && (
+                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC', 'IP', 'REG', 'AUTH', 'FED'].includes(cat)).length > 1 && (
                     <div className="mt-2 text-sm text-yellow-400">
                       Only one category can be selected at a time.
                     </div>
