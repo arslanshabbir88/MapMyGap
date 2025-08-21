@@ -4709,7 +4709,7 @@ Return valid JSON using the exact control structure above.`;
           
           // If this is not the last attempt, retry with a much more focused prompt
           if (retryCount < maxRetries - 1) {
-            console.log('🔄 Retrying due to generic error messages with focused prompt...');
+            console.log('🔄 Retrying due to generic error messages with improved evaluation guidance...');
             retryCount++;
             
             // Add exponential backoff with jitter for cold start issues
@@ -4720,10 +4720,34 @@ Return valid JSON using the exact control structure above.`;
             console.log(`⏳ Waiting ${(delay/1000).toFixed(1)} seconds before retry...`);
             await new Promise(resolve => setTimeout(resolve, delay));
             
-            // Try with a much more focused and simple prompt for the retry
-            let focusedPrompt = `Analyze this document for ${frameworkName} compliance. Focus on finding evidence for each control.
+            // Try with the improved evaluation guidance instead of a simplified prompt
+            let improvedPrompt = `Analyze this document for ${frameworkName} compliance with REALISTIC evaluation criteria.
 
-Document: ${fileContent.substring(0, 1500)}
+Document: ${fileContent.substring(0, 3000)}
+
+CRITICAL EVALUATION GUIDANCE - READ CAREFULLY:
+You MUST be REALISTIC about what organizations can document and achieve. The goal is to help users improve their compliance, not to set impossible standards.
+
+WHAT CONSTITUTES "COVERED" STATUS:
+- Good policy statements + procedures IS sufficient for "covered"
+- Clear organizational workflows and processes IS sufficient for "covered"
+- Exception handling and approval processes IS sufficient for "covered"
+- Monitoring and oversight procedures IS sufficient for "covered"
+- Basic technical requirements mentioned IS sufficient for "covered"
+
+WHAT DOES NOT CONSTITUTE "COVERED" STATUS:
+- Enterprise-level technical implementation details (not required)
+- FIPS 140-2 validation requirements (not required for most orgs)
+- Advanced biometric liveness detection (not required for most orgs)
+- Continuous risk-based authentication (not required for most orgs)
+
+BE REALISTIC AND HELPFUL:
+- Recognize when users have good documentation
+- Give credit for comprehensive policy and procedural documentation
+- Don't require enterprise-level technical details
+- Focus on what organizations can realistically achieve
+- Help users understand what they need for "covered" status
+- Be generous in recognizing good compliance practices
 
 Controls to analyze: ${filteredFrameworkData.categories.map(cat => cat.name).join(', ')}
 
@@ -4732,29 +4756,19 @@ For each control, look for specific evidence like:
 - Procedures described  
 - Security measures implemented
 - Tools or technologies mentioned
-- Organizational practices`;
-
-            // Add specific guidance for Session Management
-            if (filteredFrameworkData.categories.some(cat => cat.name.includes('Session Management'))) {
-              focusedPrompt += `
-
-SPECIAL FOCUS FOR SESSION MANAGEMENT:
-Look for session-related terms: "session timeout", "concurrent sessions", "session lock", "session termination", "session monitoring", "session logs", "HTTPS", "secure tokens", "automatic logout", "session limits", "session control".
-
-The document contains information about concurrent session control, session lock, and session termination. Look for these specific controls.`;
-            }
-
-            focusedPrompt += `
+- Organizational practices
+- Exception handling processes
+- Monitoring and oversight procedures
 
 Mark as:
-- "covered": Clear evidence found
-- "partial": Some evidence found
-- "gap": No evidence found
+- "covered": Good policy + procedures found (realistic standard)
+- "partial": Some evidence found but incomplete
+- "gap": No relevant evidence found
 
 Return valid JSON with the exact control structure provided. Do not include generic error messages.`;
 
-            prompt = focusedPrompt;
-            console.log('🔄 Using focused prompt for retry attempt');
+            prompt = improvedPrompt;
+            console.log('🔄 Using improved evaluation guidance for retry attempt');
             continue;
           } else {
             console.log('❌ Max retries reached with generic errors. Using fallback.');
@@ -5202,6 +5216,57 @@ Return valid JSON with the exact control structure provided. Do not include gene
           } else if (controlId.includes('SC-7') || controlId.includes('SC-1') || controlId.includes('SC-8')) {
             status = "partial";
             details += " Note: Basic network security controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('AAL-2') || controlId.includes('AAL-1')) {
+            status = "partial";
+            details += " Note: Basic authentication controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('IA-1') || controlId.includes('IA-2')) {
+            status = "partial";
+            details += " Note: Basic identification and authentication controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('AU-1') || controlId.includes('AU-2')) {
+            status = "partial";
+            details += " Note: Basic audit and accountability controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('CM-1') || controlId.includes('CM-2')) {
+            status = "partial";
+            details += " Note: Basic configuration management controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('CP-1') || controlId.includes('CP-2')) {
+            status = "partial";
+            details += " Note: Basic contingency planning controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('ID-1') || controlId.includes('ID-2')) {
+            status = "partial";
+            details += " Note: Basic identification and authorization controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('IR-1') || controlId.includes('IR-2')) {
+            status = "partial";
+            details += " Note: Basic incident response controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('MA-1') || controlId.includes('MA-2')) {
+            status = "partial";
+            details += " Note: Basic maintenance controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('MP-1') || controlId.includes('MP-2')) {
+            status = "partial";
+            details += " Note: Basic media protection controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('PE-1') || controlId.includes('PE-2')) {
+            status = "partial";
+            details += " Note: Basic physical and environmental protection controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('PL-1') || controlId.includes('PL-2')) {
+            status = "partial";
+            details += " Note: Basic planning controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('PS-1') || controlId.includes('PS-2')) {
+            status = "partial";
+            details += " Note: Basic personnel security controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('RA-1') || controlId.includes('RA-2')) {
+            status = "partial";
+            details += " Note: Basic risk assessment controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('SA-1') || controlId.includes('SA-2')) {
+            status = "partial";
+            details += " Note: Basic system and services acquisition controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('SC-1') || controlId.includes('SC-2')) {
+            status = "partial";
+            details += " Note: Basic system and communications protection controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('SI-1') || controlId.includes('SI-2')) {
+            status = "partial";
+            details += " Note: Basic system and information integrity controls are commonly implemented in most organizations.";
+          } else if (controlId.includes('SR-1') || controlId.includes('SR-2')) {
+            status = "partial";
+            details += " Note: Basic supply chain risk management controls are commonly implemented in most organizations.";
           }
           
           return {
