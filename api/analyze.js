@@ -4372,17 +4372,25 @@ NIST SP 800-63B Categories:
 
 NIST 800-53 Control Families:
 - AC (Access Control): How ACCESS is granted and managed
-- AU (Audit): How ACTIVITIES are logged and monitored
-- IA (Identification & Authentication): How users are IDENTIFIED and AUTHENTICATED
-- SC (System & Communications Protection): How SYSTEMS and COMMUNICATIONS are protected
-- SA (System & Services Acquisition): How SYSTEMS and SERVICES are acquired
 - AT (Awareness & Training): How users are TRAINED and AWARE
-- MP (Media Protection): How MEDIA is protected
-- PS (Personnel Security): How PERSONNEL security is managed
+- AU (Audit & Accountability): How ACTIVITIES are logged and monitored
+- CA (Assessment & Authorization): How SYSTEMS are ASSESSED and AUTHORIZED
+- CM (Configuration Management): How SYSTEM CONFIGURATIONS are managed
+- CP (Contingency Planning): How DISASTER RECOVERY and CONTINUITY are planned
+- IA (Identification & Authentication): How users are IDENTIFIED and AUTHENTICATED
+- IR (Incident Response): How SECURITY INCIDENTS are responded to
 - MA (Maintenance): How SYSTEMS are maintained
+- MP (Media Protection): How MEDIA is protected
+- PE (Physical & Environmental Protection): How PHYSICAL ASSETS and ENVIRONMENT are protected
 - PL (Planning): How SECURITY is planned
-- PT (PII Processing): How PERSONAL DATA is handled
 - PM (Program Management): How the SECURITY PROGRAM is managed
+- PS (Personnel Security): How PERSONNEL security is managed
+- PT (PII Processing & Transparency): How PERSONAL DATA is handled
+- RA (Risk Assessment): How SECURITY RISKS are assessed and managed
+- SA (System & Services Acquisition): How SYSTEMS and SERVICES are acquired
+- SC (System & Communications Protection): How SYSTEMS and COMMUNICATIONS are protected
+- SI (System & Information Integrity): How SYSTEM and INFORMATION INTEGRITY is maintained
+- SR (Supply Chain Risk Management): How SUPPLY CHAIN RISKS are managed
 
 NIST CSF Functions:
 - ID (Identify): How RISKS and ASSETS are identified
