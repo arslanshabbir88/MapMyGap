@@ -4576,6 +4576,17 @@ RECOGNIZE that good policy + procedures IS sufficient for "covered" status.` : '
 
 ${filteredFrameworkData.categories.some(cat => cat.name.includes('Authenticator Assurance Level')) ? `
 CRITICAL AAL GUIDANCE - READ CAREFULLY:
+For AAL-1 (Single-Factor Authentication), you MUST recognize GOOD documentation:
+
+IF the document contains:
+- Explicit statement about implementing single-factor authentication
+- Clear policy about when single-factor authentication is used
+- Risk assessment or justification for single-factor authentication
+- Specific applications or systems where single-factor authentication is permitted
+- Password management policies and procedures
+
+THEN mark as "COVERED" - this is sufficient documentation for most organizations.
+
 For AAL-4 (Enhanced Multi-Factor Authentication), you MUST recognize GOOD documentation:
 
 IF the document contains:
@@ -4597,7 +4608,7 @@ DO NOT require:
 
 RECOGNIZE that good policy + procedures + basic technical requirements IS sufficient for "covered" status.` : ''}
 
-MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
+IMPORTANT: Follow the evaluation guidance above. Be realistic about what organizations can document and achieve.
 
 CONTROL STRUCTURE TO USE:
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}
