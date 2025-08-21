@@ -315,6 +315,13 @@ const allFrameworks = {
             details: "Third-party training not implemented",
             recommendation: "Provide security policy training to all third-party personnel"
           },
+          {
+            id: "PR.AT-4",
+            control: "Third-party personnel security awareness maintained",
+            status: "gap",
+            details: "Third-party security awareness not maintained",
+            recommendation: "Maintain ongoing security awareness for third-party personnel"
+          },
           // Data Security (PR.DS)
           {
             id: "PR.DS-1",
@@ -350,6 +357,13 @@ const allFrameworks = {
             status: "gap",
             details: "Data disposal procedures not implemented",
             recommendation: "Implement secure data disposal procedures and policies"
+          },
+          {
+            id: "PR.DS-6",
+            control: "Data availability maintained",
+            status: "gap",
+            details: "Data availability not maintained",
+            recommendation: "Implement data availability controls and backup procedures"
           },
           // Information Protection Processes and Procedures (PR.IP)
           {
@@ -401,6 +415,41 @@ const allFrameworks = {
             details: "Audit logging not implemented",
             recommendation: "Implement comprehensive audit logging and monitoring"
           },
+          {
+            id: "PR.IP-8",
+            control: "Security awareness and training program implemented",
+            status: "gap",
+            details: "Security awareness program not implemented",
+            recommendation: "Implement comprehensive security awareness and training program"
+          },
+          {
+            id: "PR.IP-9",
+            control: "Security assessment and authorization implemented",
+            status: "gap",
+            details: "Security assessment not implemented",
+            recommendation: "Implement security assessment and authorization processes"
+          },
+          {
+            id: "PR.IP-10",
+            control: "Security categorization implemented",
+            status: "gap",
+            details: "Security categorization not implemented",
+            recommendation: "Implement security categorization for systems and data"
+          },
+          {
+            id: "PR.IP-11",
+            control: "System security plans developed and maintained",
+            status: "gap",
+            details: "System security plans not developed",
+            recommendation: "Develop and maintain comprehensive system security plans"
+          },
+          {
+            id: "PR.IP-12",
+            control: "Security architecture established",
+            status: "gap",
+            details: "Security architecture not established",
+            recommendation: "Establish comprehensive security architecture for systems"
+          },
           // Maintenance (PR.MA)
           {
             id: "PR.MA-1",
@@ -415,6 +464,13 @@ const allFrameworks = {
             status: "gap",
             details: "Maintenance personnel not trained",
             recommendation: "Authorize and train maintenance personnel on security procedures"
+          },
+          {
+            id: "PR.MA-3",
+            control: "Remote maintenance controlled and authorized",
+            status: "gap",
+            details: "Remote maintenance controls not implemented",
+            recommendation: "Implement controlled and authorized remote maintenance procedures"
           },
           // Protective Technology (PR.PT)
           {
@@ -444,6 +500,13 @@ const allFrameworks = {
             status: "gap",
             details: "Communication security not managed",
             recommendation: "Implement communication security controls and monitoring"
+          },
+          {
+            id: "PR.PT-5",
+            control: "Physical access control systems implemented",
+            status: "gap",
+            details: "Physical access control not implemented",
+            recommendation: "Implement physical access control systems and monitoring"
           }
         ]
       },
@@ -508,6 +571,34 @@ const allFrameworks = {
             details: "Threat intelligence not utilized",
             recommendation: "Integrate threat intelligence into detection processes"
           },
+          {
+            id: "DE.CM-9",
+            control: "External service provider activity monitored",
+            status: "gap",
+            details: "External provider monitoring not implemented",
+            recommendation: "Implement monitoring of external service provider activities"
+          },
+          {
+            id: "DE.CM-10",
+            control: "Malicious code detected and reported",
+            status: "gap",
+            details: "Malicious code detection not implemented",
+            recommendation: "Implement malicious code detection and reporting capabilities"
+          },
+          {
+            id: "DE.CM-11",
+            control: "External and internal threats detected and reported",
+            status: "gap",
+            details: "Threat detection not implemented",
+            recommendation: "Implement detection and reporting of external and internal threats"
+          },
+          {
+            id: "DE.CM-12",
+            control: "Vulnerabilities scanned and reported",
+            status: "gap",
+            details: "Vulnerability scanning not implemented",
+            recommendation: "Implement regular vulnerability scanning and reporting"
+          },
           // Detection Processes (DE.DP)
           {
             id: "DE.DP-1",
@@ -529,6 +620,20 @@ const allFrameworks = {
             status: "gap",
             details: "Response testing not performed",
             recommendation: "Test and continuously improve event detection response capabilities"
+          },
+          {
+            id: "DE.DP-4",
+            control: "Event detection data collected and correlated",
+            status: "gap",
+            details: "Event data correlation not implemented",
+            recommendation: "Implement collection and correlation of event detection data"
+          },
+          {
+            id: "DE.DP-5",
+            control: "Detection process compliance monitored",
+            status: "gap",
+            details: "Detection compliance monitoring not implemented",
+            recommendation: "Implement monitoring of detection process compliance"
           }
         ]
       },
@@ -543,6 +648,13 @@ const allFrameworks = {
             status: "gap",
             details: "Incident response plan not implemented",
             recommendation: "Develop and implement comprehensive incident response plan"
+          },
+          {
+            id: "RS.RP-2",
+            control: "Response plan updated based on lessons learned",
+            status: "gap",
+            details: "Response plan updates not implemented",
+            recommendation: "Update response plan based on lessons learned from incidents"
           },
           // Communications (RS.CO)
           {
@@ -639,6 +751,13 @@ const allFrameworks = {
             details: "Recovery plan not implemented",
             recommendation: "Develop and implement comprehensive recovery plan"
           },
+          {
+            id: "RC.RP-2",
+            control: "Recovery plan updated based on lessons learned",
+            status: "gap",
+            details: "Recovery plan updates not implemented",
+            recommendation: "Update recovery plan based on lessons learned from incidents"
+          },
           // Improvements (RC.IM)
           {
             id: "RC.IM-1",
@@ -646,6 +765,13 @@ const allFrameworks = {
             status: "gap",
             details: "Lessons learned not incorporated",
             recommendation: "Incorporate lessons learned into recovery planning"
+          },
+          {
+            id: "RC.IM-2",
+            control: "Recovery strategies improved based on lessons learned",
+            status: "gap",
+            details: "Recovery strategies not improved",
+            recommendation: "Improve recovery strategies based on lessons learned from incidents"
           },
           // Communications (RC.CO)
           {
