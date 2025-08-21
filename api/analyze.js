@@ -4634,6 +4634,11 @@ For each control, analyze the document content and mark as:
 - "partial": Control is partially addressed  
 - "gap": Control is not addressed
 
+**MANDATORY STATUS ASSIGNMENT RULE:**
+If your analysis says "this satisfies the criteria for 'covered' status" or "adequately describes the implementation" or "sufficient to meet the criteria for 'covered' status", then you MUST mark the control as "covered", not "partial".
+
+Do NOT contradict your own analysis. If you say the documentation is sufficient, assign "covered" status.
+
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
 ${filteredFrameworkData.categories.some(cat => cat.name.includes('Session Management')) ? `
