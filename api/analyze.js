@@ -4354,22 +4354,25 @@ Analysis Strictness Level: ${strictness}
 
 ${strictness === 'strict' ? `
 STRICT MODE - Comprehensive Documentation Required:
-- "Covered" status requires: Policy + Procedures + Technical Details + Monitoring
-- Look for comprehensive security implementation
-- Require evidence of multiple security layers
-- Be thorough in analysis but realistic about organizational capabilities
+- "Covered" status requires: Policy + Procedures + Technical Details + Monitoring + Evidence
+- Look for comprehensive security implementation with specific technical details
+- Require evidence of multiple security layers and monitoring capabilities
+- Be thorough in analysis and require concrete implementation evidence
+- Accept only well-documented, comprehensive security controls
 ` : strictness === 'balanced' ? `
 BALANCED MODE - Good Documentation Required:
-- "Covered" status requires: Policy + Procedures
-- Accept good security documentation
+- "Covered" status requires: Policy + Procedures + Some Technical Details
+- Accept good security documentation with implementation specifics
 - Recognize comprehensive policy and procedural coverage
-- Be realistic about what organizations can achieve
+- Require evidence of actual implementation, not just policy statements
+- Be realistic but thorough about what organizations can achieve
 ` : `
 LENIENT MODE - Basic Documentation Required:
-- "Covered" status requires: Policy OR Procedures
-- Accept basic security documentation
-- Recognize policy statements or implementation details
-- Be generous in recognizing security practices
+- "Covered" status requires: Policy OR Procedures OR Clear Implementation Evidence
+- Accept basic security documentation and policy statements
+- Recognize policy statements, implementation details, or procedural guidance
+- Be generous in recognizing security practices and organizational intent
+- Focus on whether security is addressed, not how comprehensively
 `}
 
 IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. Do not analyze any other categories.
