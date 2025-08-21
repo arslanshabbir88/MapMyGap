@@ -4346,8 +4346,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     
     const prompt = `Analyze this document against ${frameworkName} framework for compliance assessment.
 
-Document Content (First 4000 characters for focused analysis):
-${fileContent.substring(0, 4000)}
+Document Content (Full document for comprehensive analysis):
+${fileContent}
 
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
@@ -4580,7 +4580,7 @@ Return valid JSON using the exact control structure above.`;
             // Try with the improved evaluation guidance instead of a simplified prompt
             let improvedPrompt = `Analyze this document for ${frameworkName} compliance with REALISTIC evaluation criteria.
 
-Document: ${fileContent.substring(0, 3000)}
+Document: ${fileContent}
 
 CRITICAL EVALUATION GUIDANCE - READ CAREFULLY:
 You MUST be REALISTIC about what organizations can document and achieve. The goal is to help users improve their compliance, not to set impossible standards.
