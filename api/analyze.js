@@ -4486,6 +4486,30 @@ ${fileContent.substring(0, 4000)}
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
+CRITICAL EVALUATION GUIDANCE - READ CAREFULLY:
+You MUST be REALISTIC about what organizations can document and achieve. The goal is to help users improve their compliance, not to set impossible standards.
+
+WHAT CONSTITUTES "COVERED" STATUS:
+- Good policy statements + procedures IS sufficient for "covered"
+- Clear organizational workflows and processes IS sufficient for "covered"
+- Exception handling and approval processes IS sufficient for "covered"
+- Monitoring and oversight procedures IS sufficient for "covered"
+- Basic technical requirements mentioned IS sufficient for "covered"
+
+WHAT DOES NOT CONSTITUTE "COVERED" STATUS:
+- Enterprise-level technical implementation details (not required)
+- FIPS 140-2 validation requirements (not required for most orgs)
+- Advanced biometric liveness detection (not required for most orgs)
+- Continuous risk-based authentication (not required for most orgs)
+
+BE REALISTIC AND HELPFUL:
+- Recognize when users have good documentation
+- Give credit for comprehensive policy and procedural documentation
+- Don't require enterprise-level technical details
+- Focus on what organizations can realistically achieve
+- Help users understand what they need for "covered" status
+- Be generous in recognizing good compliance practices
+
 IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. Do not analyze any other categories.
 
 SELECTED CATEGORIES TO ANALYZE:
@@ -4549,6 +4573,29 @@ THEN mark as "COVERED" - this is sufficient documentation for most organizations
 ONLY mark as "gap" if truly missing access control content.
 DO NOT require enterprise-level technical details.
 RECOGNIZE that good policy + procedures IS sufficient for "covered" status.` : ''}
+
+${filteredFrameworkData.categories.some(cat => cat.name.includes('Authenticator Assurance Level')) ? `
+CRITICAL AAL GUIDANCE - READ CAREFULLY:
+For AAL-4 (Enhanced Multi-Factor Authentication), you MUST recognize GOOD documentation:
+
+IF the document contains:
+- Enhanced MFA requirements beyond basic MFA
+- Exception management and approval processes
+- Monitoring and auditing procedures
+- Risk-based authentication approaches
+- Biometric authentication methods
+- Hardware-based security measures
+- Continuous monitoring capabilities
+
+THEN mark as "COVERED" - this is sufficient documentation for most organizations.
+
+DO NOT require:
+- Enterprise-level technical implementation details
+- FIPS 140-2 validation requirements
+- Advanced biometric liveness detection
+- Continuous risk-based authentication systems
+
+RECOGNIZE that good policy + procedures + basic technical requirements IS sufficient for "covered" status.` : ''}
 
 MANDATORY: Your analysis MUST reflect the strictness level. A document analyzed as "strict" should have LOWER coverage than "balanced", and "balanced" should have LOWER coverage than "lenient" for the same content.
 
