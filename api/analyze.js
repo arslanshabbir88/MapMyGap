@@ -4634,6 +4634,25 @@ For each control, analyze the document content and mark as:
 - "partial": Control is partially addressed  
 - "gap": Control is not addressed
 
+**FORCED CHOICE EVALUATION - READ CAREFULLY:**
+You have ONLY THREE CHOICES for each control. Choose ONE and stick to it:
+
+**CHOICE 1: "covered"**
+- Use ONLY if the document clearly shows the control is implemented
+- Use language like: "This control is implemented and documented"
+- Do NOT use "covered" language if you plan to assign "partial"
+
+**CHOICE 2: "partial"**  
+- Use ONLY if the document shows some implementation but lacks key elements
+- Use language like: "This control is partially implemented but lacks [specific missing elements]"
+- Do NOT use "covered" language if you plan to assign "partial"
+
+**CHOICE 3: "gap"**
+- Use ONLY if the document shows no implementation of the control
+- Use language like: "This control is not addressed in the document"
+
+**CRITICAL RULE: Your details language MUST match your status choice.**
+
 **MANDATORY STATUS ASSIGNMENT RULE:**
 If your analysis says "this satisfies the criteria for 'covered' status" or "adequately describes the implementation" or "sufficient to meet the criteria for 'covered' status", then you MUST mark the control as "covered", not "partial".
 
