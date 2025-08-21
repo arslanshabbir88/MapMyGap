@@ -191,8 +191,8 @@ function Analyzer({ onNavigateHome }) {
   const [hasMoreHistory, setHasMoreHistory] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const [analysisStrictness, setAnalysisStrictness] = useState('balanced'); // 'strict', 'balanced', 'lenient'
-  const [lastAnalyzedStrictness, setLastAnalyzedStrictness] = useState(null);
+  // Removed strictness levels - now using comprehensive analysis mode
+  const [lastAnalyzedMode, setLastAnalyzedMode] = useState(null);
 
   console.log('About to call useAuth...');
   const { user, supabase } = useAuth();
@@ -327,6 +327,122 @@ function Analyzer({ onNavigateHome }) {
                         <h4 className="font-semibold text-slate-300 mb-2 flex items-center"><LightbulbIcon /><span className="ml-2">Recommendation</span></h4>
                         <p className="text-slate-400 text-sm leading-6">{result.recommendation}</p>
                     </div>
+                    
+                    {/* Enhanced Implementation Guidance */}
+                    {(result.status === 'gap' || result.status === 'partial') && (
+                      <>
+                        {/* Implementation Steps */}
+                        {result.implementationSteps && result.implementationSteps.length > 0 && (
+                          <div>
+                            <h4 className="font-semibold text-slate-300 mb-2 flex items-center">
+                              <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400" />
+                              <span className="ml-2">Implementation Steps</span>
+                            </h4>
+                            <div className="space-y-2">
+                              {result.implementationSteps.map((step, index) => (
+                                <div key={index} className="flex items-start space-x-3 p-3 bg-slate-700/30 rounded-lg">
+                                  <div className="flex-shrink-0 w-6 h-6 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center text-xs font-bold">
+                                    {index + 1}
+                                  </div>
+                                  <p className="text-slate-300 text-sm leading-6">{step}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Implementation Details Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Difficulty */}
+                          {result.difficulty && (
+                            <div className="p-3 bg-slate-700/30 rounded-lg">
+                              <h5 className="text-xs font-medium text-slate-400 mb-1">Implementation Difficulty</h5>
+                              <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                result.difficulty === 'Easy' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
+                                result.difficulty === 'Medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                'bg-red-500/20 text-red-400 border border-red-500/30'
+                              }`}>
+                                {result.difficulty}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Business Impact */}
+                          {result.businessImpact && (
+                            <div className="p-3 bg-slate-700/30 rounded-lg">
+                              <h5 className="text-xs font-medium text-slate-400 mb-1">Business Impact</h5>
+                              <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                result.businessImpact === 'High' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                                result.businessImpact === 'Medium' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                'bg-green-500/20 text-green-400 border border-green-500/30'
+                              }`}>
+                                {result.businessImpact}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Timeline */}
+                          {result.timeline && (
+                            <div className="p-3 bg-slate-700/30 rounded-lg">
+                              <h5 className="text-xs font-medium text-slate-400 mb-1">Implementation Timeline</h5>
+                              <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                result.timeline === 'Immediate' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                                result.timeline === 'Short-term' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                              }`}>
+                                {result.timeline}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Resources */}
+                          {result.resources && (
+                            <div className="p-3 bg-slate-700/30 rounded-lg">
+                              <h5 className="text-xs font-medium text-slate-400 mb-1">Resource Requirements</h5>
+                              <p className="text-slate-300 text-sm">{result.resources}</p>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {/* Advanced Implementation Details */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* Implementation Sequence */}
+                          {result.sequence && (
+                            <div className="p-3 bg-slate-700/30 rounded-lg">
+                              <h5 className="text-xs font-medium text-slate-400 mb-1">Implementation Sequence</h5>
+                              <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                                result.sequence === 'Foundation' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/30' :
+                                result.sequence === 'Core' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                'bg-green-500/20 text-green-400 border border-green-500/30'
+                              }`}>
+                                {result.sequence}
+                              </div>
+                              <p className="text-xs text-slate-400 mt-1">
+                                {result.sequence === 'Foundation' ? 'Must be implemented first' :
+                                 result.sequence === 'Core' ? 'Builds on foundation' :
+                                 'Final optimization layer'}
+                              </p>
+                            </div>
+                          )}
+                          
+                          {/* Dependencies */}
+                          {result.dependencies && result.dependencies.length > 0 && (
+                            <div className="p-3 bg-slate-700/30 rounded-lg">
+                              <h5 className="text-xs font-medium text-slate-400 mb-1">Prerequisites</h5>
+                              <div className="space-y-1">
+                                {result.dependencies.map((dep, index) => (
+                                  <div key={index} className="flex items-center space-x-2 text-xs">
+                                    <div className="w-1.5 h-1.5 bg-orange-400 rounded-full"></div>
+                                    <span className="text-slate-300">{dep}</span>
+                                  </div>
+                                ))}
+                              </div>
+                              <p className="text-xs text-slate-400 mt-1">Must be implemented first</p>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
                     {(result.status === 'gap' || result.status === 'partial') && (
                         <div>
                             <button 
@@ -496,7 +612,7 @@ function Analyzer({ onNavigateHome }) {
         user_id: user.id,
         framework: selectedFramework,
         filename: displayName,
-        strictness: analysisStrictness, // Save the strictness level
+        analysisMode: 'comprehensive', // Save the analysis mode
         results: results.categories || results,
         summary: results.summary || {
           score: 0,
@@ -690,12 +806,11 @@ function Analyzer({ onNavigateHome }) {
         console.log('File content preview (first 500 chars):', fileContent.substring(0, 500));
         console.log('Selected framework:', selectedFramework);
         console.log('Selected categories:', selectedCategories);
-        console.log('Strictness level:', analysisStrictness);
+        console.log('Analysis mode: Comprehensive');
         
         const requestBody = { 
           fileContent, 
           framework: selectedFramework,
-          strictness: analysisStrictness,
           selectedCategories: selectedCategories,
           timestamp: Date.now(),
           random: Math.random().toString()
@@ -749,7 +864,6 @@ function Analyzer({ onNavigateHome }) {
         const requestBody = {
           fileContent: fileContent,
           framework: selectedFramework,
-          strictness: analysisStrictness,
           selectedCategories: selectedCategories.length > 0 ? selectedCategories : null
         };
 
@@ -865,7 +979,7 @@ function Analyzer({ onNavigateHome }) {
           });
           
           const total = covered + partial + gaps;
-          // IMPORTANT: Calculate score from ADJUSTED results (after strictness adjustments)
+          // IMPORTANT: Calculate score from comprehensive analysis results
           const score = total > 0 ? Math.round(((covered + partial * 0.5) / total) * 100) : 0;
           
           console.log('=== FRONTEND SCORE CALCULATION ===');
@@ -877,7 +991,7 @@ function Analyzer({ onNavigateHome }) {
           
           const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
           setAnalysisResults(results);
-          setLastAnalyzedStrictness(analysisStrictness);
+          setLastAnalyzedMode('comprehensive');
           
           // Save to history for authenticated users
           if (user) {
@@ -1498,117 +1612,61 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
 
-              {/* Analysis Strictness Control */}
+              {/* Analysis Mode Control */}
               <div className="mb-6">
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Analysis Strictness
+                    Analysis Mode
                   </label>
                   <p className="text-xs text-slate-400">
-                    Choose how strictly the AI analyzes your policy against compliance controls
+                    AI-powered comprehensive compliance analysis with actionable recommendations
                   </p>
                 </div>
                 
-                {/* Strictness Level Selection */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-                  {/* Strict Mode */}
-                  <label className="relative cursor-pointer">
-                    <input
-                      type="radio"
-                      name="strictness"
-                      value="strict"
-                      checked={analysisStrictness === 'strict'}
-                      onChange={(e) => setAnalysisStrictness(e.target.value)}
-                      className="sr-only"
-                    />
-                    <div className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                      analysisStrictness === 'strict' 
-                        ? 'border-red-500 bg-red-500/10' 
-                        : 'border-slate-600 bg-slate-700/50 hover:border-red-500/50'
-                    }`}>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                        <span className="font-medium text-red-400">Strict</span>
-                      </div>
+                {/* Analysis Mode Display */}
+                <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
+                  <div className="flex items-center space-x-3">
+                    <SparklesIcon className="w-6 h-6 text-blue-400" />
+                    <div>
+                      <h3 className="font-medium text-blue-300">Comprehensive Analysis Mode</h3>
+                      <p className="text-sm text-slate-300">
+                        Thorough assessment with specific, actionable guidance for each compliance gap
+                      </p>
                     </div>
-                  </label>
-                  
-                  {/* Balanced Mode */}
-                  <label className="relative cursor-pointer">
-                    <input
-                      type="radio"
-                      name="strictness"
-                      value="balanced"
-                      checked={analysisStrictness === 'balanced'}
-                      onChange={(e) => setAnalysisStrictness(e.target.value)}
-                      className="sr-only"
-                    />
-                    <div className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                      analysisStrictness === 'balanced' 
-                        ? 'border-yellow-500 bg-yellow-500/10' 
-                        : 'border-slate-600 bg-slate-700/50 hover:border-yellow-500/50'
-                    }`}>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <span className="font-medium text-yellow-400">Balanced</span>
-                      </div>
-                    </div>
-                  </label>
-                  
-                  {/* Lenient Mode */}
-                  <label className="relative cursor-pointer">
-                    <input
-                      type="radio"
-                      name="strictness"
-                      value="lenient"
-                      checked={analysisStrictness === 'lenient'}
-                      onChange={(e) => setAnalysisStrictness(e.target.value)}
-                      className="sr-only"
-                    />
-                    <div className={`p-3 rounded-lg border-2 transition-all duration-200 ${
-                      analysisStrictness === 'lenient' 
-                        ? 'border-green-500 bg-green-500/10' 
-                        : 'border-slate-600 bg-slate-700/50 hover:border-green-500/50'
-                    }`}>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span className="font-medium text-green-400">Lenient</span>
-                      </div>
-                    </div>
-                  </label>
+                  </div>
                 </div>
                 
                 {/* Enhanced Explanation */}
-                <div className="p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                <div className="p-4 bg-slate-700/30 rounded-lg border border-slate-600 mt-4">
                   <div className="flex items-start space-x-2">
                     <LightbulbIcon className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
                     <div className="text-sm text-slate-300">
-                      <p className="font-medium mb-3 text-blue-300">How Strictness Affects Scoring:</p>
+                      <p className="font-medium mb-3 text-blue-300">What You'll Get:</p>
                       <div className="space-y-2">
                         <div className="flex items-start space-x-2">
-                          <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div>
-                            <p className="font-medium text-red-400">Strict Mode:</p>
-                            <p className="text-xs text-slate-400">Only counts explicit, undeniable evidence. Expect lower scores but higher confidence in compliance.</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start space-x-2">
-                          <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <p className="font-medium text-yellow-400">Balanced Mode:</p>
-                            <p className="text-xs text-slate-400">Accepts reasonable evidence and reasonable inferences. Provides realistic compliance assessment.</p>
+                            <p className="font-medium text-blue-400">Comprehensive Assessment:</p>
+                            <p className="text-xs text-slate-400">AI analyzes your document against every relevant control with evidence-based evaluation</p>
                           </div>
                         </div>
                         <div className="flex items-start space-x-2">
                           <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div>
-                            <p className="font-medium text-green-400">Lenient Mode:</p>
-                            <p className="text-xs text-slate-400">Accepts broad interpretations and implied practices. Higher scores but may overestimate actual compliance.</p>
+                            <p className="font-medium text-green-400">Actionable Recommendations:</p>
+                            <p className="text-xs text-slate-400">Specific guidance on how to address each compliance gap with implementation steps</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <div>
+                            <p className="font-medium text-purple-400">Priority-Based Insights:</p>
+                            <p className="text-xs text-slate-400">Understand which controls matter most for your business and compliance goals</p>
                           </div>
                         </div>
                       </div>
                       <p className="text-slate-400 text-xs mt-3 border-t border-slate-600 pt-2">
-                        <strong>Important:</strong> Scores reflect your document's actual content and evidence, not just the strictness level. The AI provides honest, evidence-based assessments regardless of mode.
+                        <strong>Focus:</strong> The AI provides honest, evidence-based assessments and practical guidance to help you achieve real compliance, not just higher scores.
                       </p>
                     </div>
                   </div>
@@ -1813,10 +1871,9 @@ function Analyzer({ onNavigateHome }) {
                                   if (item.framework) {
                                     setSelectedFramework(item.framework);
                                   }
-                                  // Set the strictness level to match the historical analysis
-                                  if (item.strictness) {
-                                    setLastAnalyzedStrictness(item.strictness);
-                                  }
+                                  // Set the analysis mode to match the historical analysis
+                                  // Note: All historical analyses are now treated as comprehensive
+                                  setLastAnalyzedMode('comprehensive');
                                   // Hide the history panel to show the results
                                   setShowHistory(false);
                                   // Scroll to the results section
@@ -2038,9 +2095,314 @@ function Analyzer({ onNavigateHome }) {
                                 )}
                               </div>
                               
+                              {/* Implementation Priority Summary */}
+                              {analysisResults.categories && (
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
+                                    <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400 mr-2" />
+                                    Implementation Priority Summary
+                                  </h4>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div className="text-center">
+                                      <div className="text-2xl font-bold text-red-400 mb-1">
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'High'
+                                          ).length, 0
+                                        )}
+                                      </div>
+                                      <div className="text-red-300 font-medium">High Priority</div>
+                                      <div className="text-xs text-slate-400">Address immediately</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-2xl font-bold text-yellow-400 mb-1">
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Medium'
+                                          ).length, 0
+                                        )}
+                                      </div>
+                                      <div className="text-yellow-300 font-medium">Medium Priority</div>
+                                      <div className="text-xs text-slate-400">Address within 90 days</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-2xl font-bold text-green-400 mb-1">
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Low'
+                                          ).length, 0
+                                        )}
+                                      </div>
+                                      <div className="text-green-300 font-medium">Low Priority</div>
+                                      <div className="text-xs text-slate-400">Address within 6-12 months</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Implementation Roadmap */}
+                              {analysisResults.categories && (
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
+                                    <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-purple-400 mr-2" />
+                                    Implementation Roadmap
+                                  </h4>
+                                  <div className="space-y-4">
+                                    {/* Foundation Phase */}
+                                    <div className="border-l-4 border-blue-500 pl-4">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <h5 className="font-medium text-blue-300">Phase 1: Foundation</h5>
+                                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">
+                                          {analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                            ).length, 0
+                                          )} controls
+                                        </span>
+                                      </div>
+                                      <p className="text-xs text-slate-400 mb-2">Infrastructure, policies, and foundational controls</p>
+                                      <div className="space-y-2">
+                                        {analysisResults.categories.flatMap(cat => 
+                                          cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                          )
+                                        ).slice(0, 3).map((control, index) => (
+                                          <div key={control.id} className="flex items-center space-x-2 text-sm">
+                                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                                            <span className="text-slate-300">{control.id}</span>
+                                            <span className="text-slate-400">-</span>
+                                            <span className="text-slate-400 truncate">{control.control}</span>
+                                          </div>
+                                        ))}
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                          ).length, 0
+                                        ) > 3 && (
+                                          <div className="text-xs text-slate-500 italic">
+                                            +{analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                              ).length, 0
+                                            ) - 3} more controls
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    
+                                    {/* Core Phase */}
+                                    <div className="border-l-4 border-yellow-500 pl-4">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <h5 className="font-medium text-yellow-300">Phase 2: Core</h5>
+                                        <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">
+                                          {analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                            ).length, 0
+                                          )} controls
+                                        </span>
+                                      </div>
+                                      <p className="text-xs text-slate-400 mb-2">Procedures, technical controls, and operational processes</p>
+                                      <div className="space-y-2">
+                                        {analysisResults.categories.flatMap(cat => 
+                                          cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                          )
+                                        ).slice(0, 3).map((control, index) => (
+                                          <div key={control.id} className="flex items-center space-x-2 text-sm">
+                                            <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
+                                            <span className="text-slate-300">{control.id}</span>
+                                            <span className="text-slate-400">-</span>
+                                            <span className="text-slate-400 truncate">{control.control}</span>
+                                          </div>
+                                        ))}
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                          ).length, 0
+                                        ) > 3 && (
+                                          <div className="text-xs text-slate-500 italic">
+                                            +{analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                              ).length, 0
+                                            ) - 3} more controls
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    
+                                    {/* Advanced Phase */}
+                                    <div className="border-l-4 border-green-500 pl-4">
+                                      <div className="flex items-center justify-between mb-2">
+                                        <h5 className="font-medium text-green-300">Phase 3: Advanced</h5>
+                                        <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
+                                          {analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                            ).length, 0
+                                          )} controls
+                                        </span>
+                                      </div>
+                                      <p className="text-xs text-slate-400 mb-2">Monitoring, optimization, and advanced security features</p>
+                                      <div className="space-y-2">
+                                        {analysisResults.categories.flatMap(cat => 
+                                          cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                          )
+                                        ).slice(0, 3).map((control, index) => (
+                                          <div key={control.id} className="flex items-center space-x-2 text-sm">
+                                            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                                            <span className="text-slate-300">{control.id}</span>
+                                            <span className="text-slate-400">-</span>
+                                            <span className="text-slate-400 truncate">{control.control}</span>
+                                          </div>
+                                        ))}
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                          ).length, 0
+                                        ) > 3 && (
+                                          <div className="text-xs text-slate-500 italic">
+                                            +{analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                              ).length, 0
+                                            ) - 3} more controls
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              
+                              {/* Progress Tracking & Timeline */}
+                              {analysisResults.categories && (
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
+                                    <Icon path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" className="w-5 h-5 text-indigo-400 mr-2" />
+                                    Progress Tracking & Timeline
+                                  </h4>
+                                  <div className="space-y-4">
+                                    {/* Timeline Overview */}
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                                      <div className="p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                                        <div className="text-lg font-bold text-red-400 mb-1">30 Days</div>
+                                        <div className="text-xs text-red-300">Foundation Phase</div>
+                                        <div className="text-xs text-slate-400 mt-1">
+                                          {analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.timeline === 'Immediate'
+                                            ).length, 0
+                                          )} controls
+                                        </div>
+                                      </div>
+                                      <div className="p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                                        <div className="text-lg font-bold text-yellow-400 mb-1">90 Days</div>
+                                        <div className="text-xs text-yellow-300">Core Phase</div>
+                                        <div className="text-xs text-slate-400 mt-1">
+                                          {analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.timeline === 'Short-term'
+                                            ).length, 0
+                                          )} controls
+                                        </div>
+                                      </div>
+                                      <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                                        <div className="text-lg font-bold text-green-400 mb-1">6-12 Months</div>
+                                        <div className="text-xs text-green-300">Advanced Phase</div>
+                                        <div className="text-xs text-slate-400 mt-1">
+                                          {analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.timeline === 'Long-term'
+                                            ).length, 0
+                                          )} controls
+                                        </div>
+                                      </div>
+                                    </div>
+                                    
+                                    {/* Progress Bars */}
+                                    <div className="space-y-3">
+                                      <div>
+                                        <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                          <span>Foundation Controls</span>
+                                          <span>{analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                            ).length, 0
+                                          )} remaining</span>
+                                        </div>
+                                        <div className="w-full bg-slate-600 rounded-full h-2">
+                                          <div className="bg-blue-500 h-2 rounded-full" style={{
+                                            width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                              ).length, 0
+                                            ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial')
+                                              ).length, 0
+                                            )) * 100))}%`
+                                          }}></div>
+                                        </div>
+                                      </div>
+                                      
+                                      <div>
+                                        <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                          <span>Core Controls</span>
+                                          <span>{analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                            ).length, 0
+                                          )} remaining</span>
+                                        </div>
+                                        <div className="w-full bg-slate-600 rounded-full h-2">
+                                          <div className="bg-yellow-500 h-2 rounded-full" style={{
+                                            width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                              ).length, 0
+                                            ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial')
+                                              ).length, 0
+                                            )) * 100))}%`
+                                          }}></div>
+                                        </div>
+                                      </div>
+                                      
+                                      <div>
+                                        <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                          <span>Advanced Controls</span>
+                                          <span>{analysisResults.categories.reduce((total, cat) => 
+                                            total + cat.results.filter(r => 
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                            ).length, 0
+                                          )} remaining</span>
+                                        </div>
+                                        <div className="w-full bg-slate-600 rounded-full h-2">
+                                          <div className="bg-green-500 h-2 rounded-full" style={{
+                                            width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                              ).length, 0
+                                            ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
+                                              total + cat.results.filter(r => 
+                                                (r.status === 'partial') && r.sequence === 'Advanced'
+                                              ).length, 0
+                                            )) * 100))}%`
+                                          }}></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              
                               {/* Pro Tip */}
                               <div className="p-2 bg-slate-700/30 rounded text-xs">
-                                <p><strong>💡 Pro Tip:</strong> {lastAnalyzedStrictness === 'strict' ? 'Best for internal audits and high-risk assessments.' : lastAnalyzedStrictness === 'balanced' ? 'Realistic compliance assessment for most organizations.' : 'Useful for initial assessments and identifying major gaps.'}</p>
+                                <p><strong>💡 Pro Tip:</strong> Focus on high-impact controls first, then work through medium and low-priority items based on your implementation timeline.</p>
                               </div>
                             </>
                           ) : (

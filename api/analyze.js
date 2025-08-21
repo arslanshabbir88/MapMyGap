@@ -17,10 +17,8 @@
  * - ISO 27001:2022 (4 categories)
  * - SOC 2 Type II (5 Trust Service Criteria)
  * 
- * STRICTNESS LEVELS:
- * - Strict: 10-30% typical coverage, requires explicit evidence
- * - Balanced: 30-60% typical coverage, reasonable interpretation
- * - Lenient: 50-80% typical coverage, broad interpretation
+ * ANALYSIS MODE:
+ * - Comprehensive: Thorough assessment with actionable recommendations
  */
 
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -4076,9 +4074,9 @@ const allFrameworks = {
 // AI results are now used directly without artificial strictness adjustments
 
 // Hybrid analysis function - uses predefined controls + AI analysis
-async function analyzeWithAI(fileContent, framework, selectedCategories = null, strictness = 'balanced') {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
   // SECURITY: Generate minimal hash for logging only (no content storage)
-  const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework + strictness).digest('hex');
+  const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework).digest('hex');
   
   // Declare filteredFrameworkData at function level to ensure it's always available
   let filteredFrameworkData = { categories: [] };
@@ -4086,7 +4084,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   try {
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);
-    console.log('Analysis Strictness Level:', strictness);
+    console.log('Analysis Mode: Comprehensive');
     console.log('Document hash (first 16 chars):', documentHash.substring(0, 16) + '...');
     console.log('Document content length:', fileContent.length);
     
@@ -4350,30 +4348,14 @@ Document Content (Full document for comprehensive analysis):
 ${fileContent}
 
 Framework: ${frameworkName}
-Analysis Strictness Level: ${strictness}
+Analysis Mode: Comprehensive
 
-${strictness === 'strict' ? `
-STRICT MODE - Comprehensive Documentation Required:
-- "Covered" status requires: Policy + Procedures + Technical Details + Monitoring + Evidence
-- Look for comprehensive security implementation with specific technical details
-- Require evidence of multiple security layers and monitoring capabilities
-- Be thorough in analysis and require concrete implementation evidence
-- Accept only well-documented, comprehensive security controls
-` : strictness === 'balanced' ? `
-BALANCED MODE - Good Documentation Required:
-- "Covered" status requires: Policy + Procedures + Some Technical Details
-- Accept good security documentation with implementation specifics
-- Recognize comprehensive policy and procedural coverage
+COMPREHENSIVE ANALYSIS MODE:
+- "Covered" status requires: Policy + Procedures + Technical Details + Evidence
+- Look for comprehensive security implementation with specific details
 - Require evidence of actual implementation, not just policy statements
-- Be realistic but thorough about what organizations can achieve
-` : `
-LENIENT MODE - Basic Documentation Required:
-- "Covered" status requires: Policy OR Procedures OR Clear Implementation Evidence
-- Accept basic security documentation and policy statements
-- Recognize policy statements, implementation details, or procedural guidance
-- Be generous in recognizing security practices and organizational intent
-- Focus on whether security is addressed, not how comprehensively
-`}
+- Be thorough in analysis and provide actionable recommendations
+- Focus on helping users achieve real compliance, not just higher scores
 
 IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. Do not analyze any other categories.
 
@@ -4389,9 +4371,54 @@ Look for evidence like: policies, procedures, "we implement", "access controls",
 
 IMPORTANT: Do NOT return generic error messages. If you cannot analyze a specific control, mark it as "gap" with a brief explanation of what evidence you looked for.
 
-When marking a control as "gap" or "partial", provide COMPLETE guidance about what the user needs to achieve "covered" status.
+ENHANCED RECOMMENDATIONS REQUIREMENTS:
+When marking a control as "gap" or "partial", provide:
 
-Return valid JSON using the exact control structure below:
+1. DETAILED IMPLEMENTATION STEPS:
+   - Specific actions the user needs to take
+   - Step-by-step guidance for implementation
+   - Required resources and tools
+
+2. IMPLEMENTATION DIFFICULTY:
+   - "Easy": Basic policy/procedure updates, minimal technical changes
+   - "Medium": Requires new tools/processes, moderate technical implementation
+   - "Hard": Complex technical implementation, significant organizational changes
+
+3. BUSINESS IMPACT:
+   - "High": Critical for compliance, security, or business operations
+   - "Medium": Important for compliance but manageable implementation
+   - "Low": Nice to have, minimal business impact
+
+4. IMPLEMENTATION TIMELINE:
+   - "Immediate": Should be addressed within 30 days
+   - "Short-term": Should be addressed within 90 days
+   - "Long-term": Can be addressed within 6-12 months
+
+5. RESOURCE REQUIREMENTS:
+   - Staff time needed
+   - Tools/software required
+   - Budget considerations
+
+6. DEPENDENCY ANALYSIS:
+   - List any controls that must be implemented first
+   - Identify prerequisite controls or foundational elements
+   - Note any external dependencies or vendor requirements
+
+7. IMPLEMENTATION SEQUENCE:
+   - "Foundation": Must be implemented first (infrastructure, policies)
+   - "Core": Builds on foundation (procedures, technical controls)
+   - "Advanced": Final layer (monitoring, optimization)
+
+Return valid JSON using the exact control structure below, but enhance each control with these additional fields:
+
+NOTE: For each control with status "gap" or "partial", add these fields to the JSON:
+- "implementationSteps": [Array of specific step-by-step actions]
+- "difficulty": "Easy" | "Medium" | "Hard"
+- "businessImpact": "High" | "Medium" | "Low"  
+- "timeline": "Immediate" | "Short-term" | "Long-term"
+- "resources": "Staff time, tools, budget requirements"
+- "dependencies": [Array of control IDs that must be implemented first]
+- "sequence": "Foundation" | "Core" | "Advanced"
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -4913,10 +4940,10 @@ Return valid JSON with the exact control structure provided. Do not include gene
        console.log('✅ AI analysis completed - all controls marked as gaps. This may be accurate for the document.');
      }
      
-     console.log('✅ AI analysis validation passed - proceeding with strictness adjustments');
+     console.log('✅ AI analysis validation passed - proceeding with comprehensive analysis');
      
-     // Apply strictness adjustments to AI results
-     console.log('=== BEFORE STRICTNESS ADJUSTMENTS ===');
+     // Process comprehensive analysis results
+     console.log('=== COMPREHENSIVE ANALYSIS RESULTS ===');
      console.log('AI Results - Gaps:', gapCount, 'Covered:', coveredCount, 'Partial:', partialCount);
      console.log('Total controls analyzed:', gapCount + coveredCount + partialCount);
      
@@ -4931,17 +4958,17 @@ Return valid JSON with the exact control structure provided. Do not include gene
        console.log('Example covered control:', categoriesToAnalyze.find(cat => cat.results?.some(r => r.status === 'covered'))?.results?.find(r => r.status === 'covered'));
      }
      
-     // Create the proper structure for strictness adjustments
-     const aiResultsForAdjustment = { categories: categoriesToAnalyze };
-     // Use AI results directly without artificial strictness adjustments
-    const adjustedResults = aiResultsForAdjustment;
+     // Create the proper structure for comprehensive analysis
+     const comprehensiveResults = { categories: categoriesToAnalyze };
+     // Use AI results directly for comprehensive analysis
+    const finalResults = comprehensiveResults;
      
-     // Count final results after strictness adjustments
+     // Count final results from comprehensive analysis
      let finalGapCount = 0;
      let finalCoveredCount = 0;
      let finalPartialCount = 0;
      
-     adjustedResults.categories.forEach(category => {
+     finalResults.categories.forEach(category => {
        if (category.results) {
          category.results.forEach(control => {
            if (control.status === 'gap') finalGapCount++;
@@ -4951,9 +4978,9 @@ Return valid JSON with the exact control structure provided. Do not include gene
        }
      });
      
-     console.log('=== AFTER STRICTNESS ADJUSTMENTS ===');
+     console.log('=== COMPREHENSIVE ANALYSIS COMPLETE ===');
      console.log('Final Results - Gaps:', finalGapCount, 'Covered:', finalCoveredCount, 'Partial:', finalPartialCount);
-     console.log('Strictness adjustments applied successfully for level:', strictness);
+     console.log('Comprehensive analysis completed successfully');
      console.log('Score calculation: Covered =', finalCoveredCount, 'Partial =', finalPartialCount, 'Total =', finalGapCount + finalCoveredCount + finalPartialCount);
      console.log('Percentage calculation: ((Covered + (Partial * 0.5)) / Total) * 100');
      const calculatedScore = ((finalCoveredCount + (finalPartialCount * 0.5)) / (finalGapCount + finalCoveredCount + finalPartialCount)) * 100;
@@ -4962,7 +4989,7 @@ Return valid JSON with the exact control structure provided. Do not include gene
     // SECURITY: No caching - results are discarded immediately after analysis
     console.log('✅ Analysis completed - no data persistence (enterprise security)');
     
-    return adjustedResults;
+    return finalResults;
 
   } catch (error) {
     console.error('AI Analysis Error:', error);
@@ -5075,21 +5102,21 @@ Return valid JSON with the exact control structure provided. Do not include gene
     // SECURITY: No caching - fallback results are discarded immediately
     console.log('✅ Fallback analysis completed - no data persistence (enterprise security)');
     
-    // Apply strictness adjustments to fallback results
-    console.log('=== FALLBACK STRICTNESS ADJUSTMENTS ===');
+         // Process fallback results
+     console.log('=== FALLBACK ANALYSIS PROCESSING ===');
     console.log('Fallback Results - Gaps:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'gap').length, 0));
     console.log('Fallback Results - Partial:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'partial').length, 0));
     console.log('Fallback Results - Covered:', fallbackResult.categories.reduce((total, cat) => total + cat.results.filter(r => r.status === 'covered').length, 0));
     
-    // Use fallback results directly without artificial strictness adjustments
-    const adjustedFallbackResults = fallbackResult;
+    // Use fallback results directly for comprehensive analysis
+    const processedFallbackResults = fallbackResult;
     
-    // Count final fallback results after strictness adjustments
+    // Count final fallback results after processing
     let finalFallbackGapCount = 0;
     let finalFallbackCoveredCount = 0;
     let finalFallbackPartialCount = 0;
     
-    adjustedFallbackResults.categories.forEach(category => {
+    processedFallbackResults.categories.forEach(category => {
       if (category.results) {
         category.results.forEach(control => {
           if (control.status === 'gap') finalFallbackGapCount++;
@@ -5099,11 +5126,11 @@ Return valid JSON with the exact control structure provided. Do not include gene
       }
     });
     
-    console.log('=== AFTER FALLBACK STRICTNESS ADJUSTMENTS ===');
+    console.log('=== FALLBACK ANALYSIS COMPLETE ===');
     console.log('Final Fallback Results - Gaps:', finalFallbackGapCount, 'Covered:', finalFallbackCoveredCount, 'Partial:', finalFallbackPartialCount);
-    console.log('Fallback strictness adjustments applied successfully for level:', strictness);
+    console.log('Fallback analysis processing completed successfully');
     
-    return adjustedFallbackResults;
+    return processedFallbackResults;
   }
 }
 
@@ -5591,12 +5618,12 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const { fileContent, framework, strictness = 'balanced', selectedCategories } = req.body;
+    const { fileContent, framework, selectedCategories } = req.body;
     
     console.log('=== REQUEST DEBUG ===');
     console.log('Request body keys:', Object.keys(req.body));
     console.log('Framework:', framework);
-    console.log('Strictness:', strictness);
+    console.log('Analysis Mode: Comprehensive');
     console.log('Selected categories:', selectedCategories);
     console.log('File content length:', fileContent?.length || 0);
     console.log('Selected categories type:', typeof selectedCategories);
@@ -5611,14 +5638,14 @@ module.exports = async function handler(req, res) {
     // SECURITY: No caching - all analysis is performed fresh and discarded immediately
     
     console.log('=== ANALYSIS START ===');
-    console.log('Strictness level:', strictness);
+    console.log('Analysis Mode: Comprehensive');
     console.log('Framework:', framework);
     console.log('Selected categories count:', selectedCategories ? selectedCategories.length : 'all');
 
-    // Use real AI analysis with strictness parameter
-    const analysisResult = await analyzeWithAI(fileContent, framework, selectedCategories, strictness);
+    // Use real AI analysis with comprehensive mode
+    const analysisResult = await analyzeWithAI(fileContent, framework, selectedCategories);
 
-    // Return in the expected format (strictness adjustments already applied in analyzeWithAI)
+    // Return in the expected format (comprehensive analysis results)
     res.status(200).json({
       candidates: [{
         content: {
