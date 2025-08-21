@@ -4578,14 +4578,20 @@ ${filteredFrameworkData.categories.some(cat => cat.name.includes('Authenticator 
 CRITICAL AAL GUIDANCE - READ CAREFULLY:
 For AAL-1 (Single-Factor Authentication), you MUST recognize GOOD documentation:
 
-IF the document contains:
+IF the document contains ANY of these:
 - Explicit statement about implementing single-factor authentication
 - Clear policy about when single-factor authentication is used
 - Risk assessment or justification for single-factor authentication
 - Specific applications or systems where single-factor authentication is permitted
 - Password management policies and procedures
+- OR if the document clearly shows single-factor authentication is being used (e.g., mentions passwords, PINs, and shows they are implemented)
 
 THEN mark as "COVERED" - this is sufficient documentation for most organizations.
+
+**SPECIFIC AAL-1 RECOGNITION:**
+- If the document mentions "passwords", "PINs", "something you know" and shows they are implemented, this IS sufficient for "covered"
+- Do NOT require formal policy language if the implementation is clearly documented
+- Recognize that showing authentication factors and their implementation IS policy documentation
 
 For AAL-4 (Enhanced Multi-Factor Authentication), you MUST recognize GOOD documentation:
 
