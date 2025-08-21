@@ -4565,6 +4565,34 @@ BE REALISTIC AND HELPFUL:
 - Help users understand what they need for "covered" status
 - Be generous in recognizing good compliance practices
 
+MANDATORY ENFORCEMENT - READ CAREFULLY:
+
+You are analyzing ${filteredFrameworkData.categories.map(cat => cat.name).join(', ')} controls.
+You MUST use the correct analysis mode for each category.
+
+CRITICAL RULES:
+1. Use the analysis mode specified for each category above
+2. Look for the content type specified in "Look for" instructions
+3. Ignore the content type specified in "Ignore" instructions
+4. Do NOT mix analysis modes between categories
+5. Do NOT look for authentication content when analyzing identity establishment controls
+6. Do NOT look for identity establishment content when analyzing authentication controls
+
+EXAMPLE ENFORCEMENT:
+- If analyzing IAL (Identity Assurance Level): Look for account creation, user enrollment, identity verification
+- If analyzing AAL (Authenticator Assurance Level): Look for login procedures, MFA, access verification
+- If analyzing AC (Access Control): Look for permission management, access grants, role-based access
+
+YOU MUST FOLLOW THESE RULES. DO NOT IGNORE THEM.
+
+CRITICAL RULE: If you find content about account creation, user enrollment, or identity verification, mark the control as "covered" or "partial" based on the quality of that content.
+
+DO NOT look for authentication content when analyzing IAL controls.
+DO NOT look for login procedures when analyzing IAL controls.
+DO NOT look for MFA implementation when analyzing IAL controls.
+
+You are analyzing IDENTITY ESTABLISHMENT, not AUTHENTICATION.
+
 IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. Do not analyze any other categories.
 
 SELECTED CATEGORIES TO ANALYZE:
