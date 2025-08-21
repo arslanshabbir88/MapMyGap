@@ -888,11 +888,89 @@ export const nist80053 = {
   ]
 };
 
+// NIST SP 800-63B Digital Identity Guidelines
+export const nist80063b = {
+  name: "NIST SP 800-63B",
+  description: "Digital Identity Guidelines - Authentication and Lifecycle Management",
+  categories: [
+    {
+      name: "Identity Assurance Level (IAL)",
+      description: "How identity is established and verified",
+      controls: [
+        { id: "IAL-1", name: "IAL1 - Self-asserted identity" },
+        { id: "IAL-2", name: "IAL2 - Remote or in-person identity proofing" },
+        { id: "IAL-3", name: "IAL3 - In-person identity proofing" }
+      ]
+    },
+    {
+      name: "Authenticator Assurance Level (AAL)",
+      description: "How authentication is performed and verified",
+      controls: [
+        { id: "AAL-1", name: "AAL1 - Single-factor authentication" },
+        { id: "AAL-2", name: "AAL2 - Multi-factor authentication" },
+        { id: "AAL-3", name: "AAL3 - Hardware-based authenticator" }
+      ]
+    },
+    {
+      name: "Federation Assurance Level (FAL)",
+      description: "How federated identity and single sign-on work",
+      controls: [
+        { id: "FAL-1", name: "FAL1 - Basic federation" },
+        { id: "FAL-2", name: "FAL2 - Advanced federation" },
+        { id: "FAL-3", name: "FAL3 - High federation" }
+      ]
+    },
+    {
+      name: "Identity Lifecycle Management",
+      description: "Managing identity throughout its lifecycle",
+      controls: [
+        { id: "ILM-1", name: "Identity establishment and enrollment" },
+        { id: "ILM-2", name: "Identity proofing and verification" },
+        { id: "ILM-3", name: "Identity binding and authentication" },
+        { id: "ILM-4", name: "Identity lifecycle maintenance" },
+        { id: "ILM-5", name: "Identity termination and deactivation" }
+      ]
+    },
+    {
+      name: "Authenticator Management",
+      description: "Managing authenticators and their lifecycle",
+      controls: [
+        { id: "AM-1", name: "Authenticator types and selection" },
+        { id: "AM-2", name: "Authenticator strength and requirements" },
+        { id: "AM-3", name: "Authenticator issuance and provisioning" },
+        { id: "AM-4", name: "Authenticator lifecycle management" },
+        { id: "AM-5", name: "Authenticator compromise and recovery" }
+      ]
+    },
+    {
+      name: "Session Management",
+      description: "Managing user sessions and access",
+      controls: [
+        { id: "SM-1", name: "Session establishment and management" },
+        { id: "SM-2", name: "Session timeout and termination" },
+        { id: "SM-3", name: "Session monitoring and logging" },
+        { id: "SM-4", name: "Session hijacking protection" }
+      ]
+    },
+    {
+      name: "Privacy and Security Controls",
+      description: "Protecting privacy and ensuring security",
+      controls: [
+        { id: "PSC-1", name: "Privacy protection and data minimization" },
+        { id: "PSC-2", name: "Security controls and monitoring" },
+        { id: "PSC-3", name: "Audit and accountability" },
+        { id: "PSC-4", name: "Incident response and recovery" }
+      ]
+    }
+  ]
+};
+
 // Export all frameworks for use in the application
 export const allFrameworks = {
   NIST_CSF: nistCSF,
   NIST_800_53: nist80053,
   PCI_DSS: pciDSS,
   ISO_27001: iso27001,
-  SOC_2: soc2
+  SOC_2: soc2,
+  NIST_800_63B: nist80063b
 };
