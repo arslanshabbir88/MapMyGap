@@ -4112,7 +4112,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
         console.log('Selected categories type:', typeof selectedCategories);
         console.log('Selected categories length:', selectedCategories.length);
         console.log('Selected categories JSON:', JSON.stringify(selectedCategories));
-        console.log('Analysis strictness level:', strictness);
+        console.log('Analysis Mode: Comprehensive');
         console.log('Available framework categories:', frameworkData.categories.map(c => c.name));
         
         // Special handling for SOC 2 framework
@@ -4338,7 +4338,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     console.log('Document content length:', fileContent.length);
     console.log('Document content preview:', fileContent.substring(0, 200));
     console.log('Framework name:', frameworkName);
-    console.log('Strictness level:', strictness);
+            console.log('Analysis Mode: Comprehensive');
     console.log('Categories being sent to AI:', filteredFrameworkData.categories.map(c => c.name));
     console.log('Total controls being sent to AI:', filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0));
     
@@ -4636,15 +4636,15 @@ Return valid JSON with the exact control structure provided. Do not include gene
     console.log('=== AI RESPONSE DEBUG ===');
     console.log('AI Response Text:', text);
     console.log('AI Response Length:', text.length);
-    console.log('Strictness level used:', strictness);
+            console.log('Analysis Mode: Comprehensive');
     console.log('AI Response contains "categories":', text.includes('"categories"'));
     console.log('AI Response contains "results":', text.includes('"results"'));
     console.log('AI Response contains "AC-1":', text.includes('AC-1'));
     console.log('AI Response contains "Access Control":', text.includes('Access Control'));
     
-    // Add strictness-specific debugging
-    console.log('=== STRICTNESS ANALYSIS DEBUG ===');
-    console.log('Requested strictness:', strictness);
+            // Add comprehensive analysis debugging
+        console.log('=== COMPREHENSIVE ANALYSIS DEBUG ===');
+        console.log('Analysis Mode: Comprehensive');
     console.log('Response contains generic errors:', text.includes('AI analysis encountered an issue'));
     console.log('Response contains "covered" status:', text.includes('"status": "covered"'));
     console.log('Response contains "partial" status:', text.includes('"status": "partial"'));
