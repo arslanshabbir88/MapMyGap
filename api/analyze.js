@@ -4657,10 +4657,22 @@ Return valid JSON with the exact control structure provided. Do not include gene
         jsonContent = extractedContent;
         console.log('✅ Full object content extracted successfully');
       } else {
-        console.error('❌ Incomplete content extracted from markdown');
-        console.error('Content starts with:', extractedContent.trim().substring(0, 10));
-        console.error('Content ends with:', extractedContent.trim().substring(extractedContent.length - 10));
-        throw new Error('Incomplete JSON content extracted from markdown response');
+        // Try to find complete JSON content within the extracted content
+        const arrayMatch = extractedContent.match(/\[[\s\S]*\]/);
+        const objectMatch = extractedContent.match(/\{[\s\S]*\}/);
+        
+        if (arrayMatch && arrayMatch[0].length > 50) { // Ensure it's substantial content
+          jsonContent = arrayMatch[0];
+          console.log('✅ Extracted complete array JSON from markdown content');
+        } else if (objectMatch && objectMatch[0].length > 50) { // Ensure it's substantial content
+          jsonContent = objectMatch[0];
+          console.log('✅ Extracted complete object JSON from markdown content');
+        } else {
+          console.error('❌ Incomplete content extracted from markdown');
+          console.error('Content starts with:', extractedContent.trim().substring(0, 10));
+          console.error('Content ends with:', extractedContent.trim().substring(extractedContent.length - 10));
+          throw new Error('Incomplete JSON content extracted from markdown response');
+        }
       }
     } else {
       // Regular format: just {...}
