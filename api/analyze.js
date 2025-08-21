@@ -4442,6 +4442,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       console.log('No specific categories selected, using all framework categories');
     }
 
+    console.log('🔍 CRITICAL CHECKPOINT: Category filtering completed successfully');
+    console.log('🔍 Filtered framework data has', filteredFrameworkData.categories.length, 'categories');
+    console.log('🔍 About to proceed to AI analysis...');
+
     // Calculate optimal token limit based on document size and framework complexity
     const calculateOptimalTokenLimit = (fileContent, frameworkData) => {
       const documentSize = fileContent.length;
@@ -4647,9 +4651,11 @@ Return valid JSON using the exact control structure above.`;
           setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), timeoutDuration);
         });
     
-    console.log('🚀 Starting AI analysis with Google Gemini...');
+    console.log('🚀 CRITICAL DEBUG: About to start AI analysis with Google Gemini...');
+    console.log('🔍 AI EXECUTION CHECK: This log should appear if AI execution is reached');
     console.log('Model being used: gemini-1.5-flash');
     console.log('Prompt length:', prompt.length, 'characters');
+    console.log('🔍 EXECUTION POINT: AI analysis starting NOW');
     
     let text; // Declare text variable outside try-catch block
     
