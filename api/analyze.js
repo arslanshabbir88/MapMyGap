@@ -4352,25 +4352,50 @@ ${fileContent.substring(0, 4000)}
 Framework: ${frameworkName}
 Analysis Strictness Level: ${strictness}
 
-CRITICAL EVALUATION GUIDANCE - READ CAREFULLY:
-You MUST be REALISTIC about what organizations can document and achieve. The goal is to help users improve their compliance, not to set impossible standards.
+UNIVERSAL SECURITY RECOGNITION APPROACH:
+The AI should recognize security implementation by looking for REAL security features, not framework jargon. Organizations write about what they DO, not what frameworks they follow.
 
-WHAT CONSTITUTES "COVERED" STATUS:
-- Good policy statements + procedures IS sufficient for "covered"
-- Clear organizational workflows and processes IS sufficient for "covered"
-- Exception handling and approval processes IS sufficient for "covered"
-- Monitoring and oversight procedures IS sufficient for "covered"
-- Basic technical requirements mentioned IS sufficient for "covered"
+WHAT TO LOOK FOR (Universal across all frameworks):
+- **Policy statements**: What the organization requires
+- **Procedures**: How they implement security
+- **Technical controls**: What technology they use
+- **Monitoring/auditing**: How they verify compliance
+- **Exception handling**: How they manage deviations
+- **Training/awareness**: How they educate users
 
-WHAT DOES NOT CONSTITUTE "COVERED" STATUS:
-- Enterprise-level technical implementation details (not required)
-- FIPS 140-2 validation requirements (not required for most orgs)
-- Advanced biometric liveness detection (not required for most orgs)
-- Continuous risk-based authentication (not required for most orgs)
+THREE ANALYSIS MODES (Strict/Balanced/Lenient):
+
+${strictness === 'strict' ? `
+STRICT MODE - Comprehensive Documentation Required:
+- "Covered" status requires: Policy + Procedures + Technical Details + Monitoring
+- Look for comprehensive security implementation
+- Require evidence of multiple security layers
+- Be thorough in analysis but realistic about organizational capabilities
+` : strictness === 'balanced' ? `
+BALANCED MODE - Good Documentation Required:
+- "Covered" status requires: Policy + Procedures
+- Accept good security documentation
+- Recognize comprehensive policy and procedural coverage
+- Be realistic about what organizations can achieve
+` : `
+LENIENT MODE - Basic Documentation Required:
+- "Covered" status requires: Policy OR Procedures
+- Accept basic security documentation
+- Recognize policy statements or implementation details
+- Be generous in recognizing security practices
+`}
+
+EXAMPLES OF WHAT CONSTITUTES "COVERED" STATUS:
+- Risk-based authentication (not "AAL-4 compliance")
+- Device security verification (not "NIST requirements")
+- Continuous monitoring (not "control standards")
+- User behavior analysis (not "framework terminology")
+- Access control policies (not "AC-1 implementation")
+- Multi-factor authentication (not "MFA requirements")
 
 BE REALISTIC AND HELPFUL:
-- Recognize when users have good documentation
-- Give credit for comprehensive policy and procedural documentation
+- Recognize when users have good security documentation
+- Give credit for comprehensive policy and procedural coverage
 - Don't require enterprise-level technical details
 - Focus on what organizations can realistically achieve
 - Help users understand what they need for "covered" status
@@ -4451,17 +4476,6 @@ For each control, analyze the document content and mark as:
 - "gap": Control is not addressed
 
 Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
-
-${filteredFrameworkData.categories.some(cat => cat.name.includes('Session Management')) ? `
-SPECIAL SESSION MANAGEMENT GUIDANCE:
-For session-related controls, look for specific evidence of:
-- Session timeout policies ("60 seconds", "automatic logout", "session termination")
-- Concurrent session limits ("concurrent sessions", "session limits", "maximum sessions")
-- Session lock mechanisms ("session lock", "automatic locking", "inactivity timeout")
-- Session monitoring ("session logs", "audit trails", "session tracking")
-- Session security ("HTTPS", "secure tokens", "session hijacking protection")
-
-The document contains information about these session controls - look for the specific details.` : ''}
 
 IMPORTANT: Do NOT return generic error messages. If you cannot analyze a specific control, mark it as "gap" with a brief explanation of what evidence you looked for.
 
