@@ -884,6 +884,102 @@ export const nist80053 = {
           recommendation: "Develop and maintain comprehensive incident response plan"
         }
       ]
+    },
+    {
+      name: "Planning (PL)",
+      description: "Develop and maintain security and privacy plans",
+      results: [
+        {
+          id: "PL-1",
+          control: "Security and Privacy Planning Policy and Procedures",
+          status: "gap",
+          details: "Security and privacy planning policy not established",
+          recommendation: "Develop and implement comprehensive security and privacy planning policy and procedures"
+        },
+        {
+          id: "PL-2",
+          control: "System Security and Privacy Plans",
+          status: "gap",
+          details: "System security and privacy plans not developed",
+          recommendation: "Develop comprehensive system security and privacy plans"
+        },
+        {
+          id: "PL-3",
+          control: "System Security and Privacy Plan Reviews",
+          status: "gap",
+          details: "System security and privacy plan reviews not implemented",
+          recommendation: "Implement regular reviews and updates of system security and privacy plans"
+        },
+        {
+          id: "PL-4",
+          control: "Security and Privacy Assessment Plans",
+          status: "gap",
+          details: "Security and privacy assessment plans not developed",
+          recommendation: "Develop comprehensive security and privacy assessment plans"
+        },
+        {
+          id: "PL-5",
+          control: "Privacy Impact Assessment",
+          status: "gap",
+          details: "Privacy impact assessment not conducted",
+          recommendation: "Conduct comprehensive privacy impact assessments for systems processing PII"
+        },
+        {
+          id: "PL-6",
+          control: "Security and Privacy Architecture",
+          status: "gap",
+          details: "Security and privacy architecture not established",
+          recommendation: "Establish comprehensive security and privacy architecture for information systems"
+        }
+      ]
+    },
+    {
+      name: "PII Processing and Transparency (PT)",
+      description: "Process personally identifiable information and provide transparency",
+      results: [
+        {
+          id: "PT-1",
+          control: "PII Processing and Transparency Policy and Procedures",
+          status: "gap",
+          details: "PII processing and transparency policy not established",
+          recommendation: "Develop and implement comprehensive PII processing and transparency policy and procedures"
+        },
+        {
+          id: "PT-2",
+          control: "PII Processing Purposes",
+          status: "gap",
+          details: "PII processing purposes not defined",
+          recommendation: "Define and document specific purposes for PII processing"
+        },
+        {
+          id: "PT-3",
+          control: "PII Processing Permissions",
+          status: "gap",
+          details: "PII processing permissions not established",
+          recommendation: "Establish and enforce permissions for PII processing activities"
+        },
+        {
+          id: "PT-4",
+          control: "PII Processing Notifications",
+          status: "gap",
+          details: "PII processing notifications not provided",
+          recommendation: "Provide clear notifications about PII processing activities"
+        },
+        {
+          id: "PT-5",
+          control: "PII Processing Consent",
+          status: "gap",
+          details: "PII processing consent mechanisms not implemented",
+          recommendation: "Implement mechanisms for obtaining and managing PII processing consent"
+        },
+        {
+          id: "PT-6",
+          control: "PII Processing Monitoring",
+          status: "gap",
+          details: "PII processing monitoring not implemented",
+          recommendation: "Implement monitoring and oversight of PII processing activities"
+        }
+      ]
     }
   ]
 };

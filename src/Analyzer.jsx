@@ -599,7 +599,7 @@ function Analyzer({ onNavigateHome }) {
       reader.onerror = (e) => {
         console.error('FileReader error:', e);
         setError('Failed to read text file');
-      };
+    };
     reader.readAsText(file);
     } else if (getFileExt(file.name) === 'docx') {
       // Handle .docx files
@@ -1135,7 +1135,9 @@ function Analyzer({ onNavigateHome }) {
                         { code: 'MA', name: 'Maintenance', description: 'Perform system maintenance securely' },
                         { code: 'MP', name: 'Media Protection', description: 'Protect and manage media throughout its lifecycle' },
                         { code: 'PE', name: 'Physical & Environmental Protection', description: 'Protect physical assets and environment' },
+                        { code: 'PL', name: 'Planning', description: 'Develop and maintain security and privacy plans' },
                         { code: 'PS', name: 'Personnel Security', description: 'Ensure personnel are trustworthy and qualified' },
+                        { code: 'PT', name: 'PII Processing & Transparency', description: 'Process PII and provide transparency' },
                         { code: 'RA', name: 'Risk Assessment', description: 'Assess and manage security risks' },
                         { code: 'SA', name: 'System & Services Acquisition', description: 'Acquire systems and services securely' },
                         { code: 'SC', name: 'System & Communications Protection', description: 'Protect system boundaries and communications' },
