@@ -4301,7 +4301,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
             'ILM': ['Identity Lifecycle Management'],
             'AM': ['Authenticator Management'],
             'SM': ['Session Management'],
-            'PSC': ['Privacy and Security Controls']
+            'PSC': ['Privacy and Security Controls'],
+            'IP': ['Identity Proofing (IP)'],
+            'REG': ['Registration (REG)'],
+            'AUTH': ['Authentication (AUTH)'],
+            'FED': ['Federation (FED)']
           };
           
           console.log('NIST 800-63B category mapping:', nist80063bCategoryMapping);
@@ -4410,7 +4414,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
             'ILM': ['Identity Lifecycle Management'],
             'AM': ['Authenticator Management'],
             'SM': ['Session Management'],
-            'PSC': ['Privacy and Security Controls']
+            'PSC': ['Privacy and Security Controls'],
+            'IP': ['Identity Proofing (IP)'],
+            'REG': ['Registration (REG)'],
+            'AUTH': ['Authentication (AUTH)'],
+            'FED': ['Federation (FED)']
           };
           const mappedCategories = nist80063bCategoryMapping[selectedCriteria] || [];
           console.log(`NIST 800-63B criteria "${selectedCriteria}" mapped to: [${mappedCategories.join(', ')}]`);
