@@ -33,10 +33,10 @@ const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 console.log('🔍 DEBUG: Loading allFrameworks object...');
 
 const allFrameworks = {
-  NIST_CSF: {
+      NIST_CSF: {
     name: "NIST Cybersecurity Framework (CSF) v2.0",
     description: "National Institute of Standards and Technology Cybersecurity Framework",
-    categories: [
+          categories: [
       {
         name: "IDENTIFY (ID)",
         description: "Develop an organizational understanding to manage cybersecurity risk",
@@ -736,12 +736,12 @@ const allFrameworks = {
           }
         ]
       }
-    ]
-  },
-  NIST_800_53: {
+          ]
+      },
+      NIST_800_53: {
     name: "NIST SP 800-53 Rev. 5",
     description: "Security and Privacy Controls for Information Systems and Organizations",
-    categories: [
+          categories: [
       {
         name: "Access Control (AC)",
         description: "Control access to information systems and resources",
@@ -3479,6 +3479,45 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           console.log(`Filtered categories: ${filteredFrameworkData.categories.length}`);
           console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name).join(', ')}`);
           
+        } else if (framework === 'NIST_800_63B') {
+          console.log('=== NIST 800-63B SPECIAL FILTERING ===');
+          console.log('NIST 800-63B framework detected - applying special category mapping...');
+          
+          // Map frontend codes to backend category patterns
+          const nist80063bCategoryMapping = {
+            'IAL': ['Identity Assurance Level'],
+            'AAL': ['Authenticator Assurance Level'],
+            'FAL': ['Federation Assurance Level'],
+            'ILM': ['Identity Lifecycle Management'],
+            'AM': ['Authenticator Management'],
+            'SM': ['Session Management'],
+            'PSC': ['Privacy and Security Controls']
+          };
+          
+          console.log('NIST 800-63B category mapping:', nist80063bCategoryMapping);
+          
+          filteredFrameworkData = {
+            ...frameworkData,
+            categories: frameworkData.categories.filter(category => {
+              // Check if this category matches any of the selected criteria
+              const selectedCriteria = selectedCategories[0]; // NIST 800-63B only allows one selection
+              const mappedCategories = nist80063bCategoryMapping[selectedCriteria] || [];
+              
+              const shouldInclude = mappedCategories.some(mappedName => 
+                category.name.includes(mappedName)
+              );
+              
+              console.log(`NIST 800-63B Filtering: ${category.name} -> Selected: ${selectedCriteria} -> Mapped: [${mappedCategories.join(', ')}] -> Include: ${shouldInclude}`);
+              
+              return shouldInclude;
+            })
+          };
+          
+          console.log(`=== NIST 800-63B FILTERING RESULTS ===`);
+          console.log(`Original categories: ${frameworkData.categories.length}`);
+          console.log(`Filtered categories: ${filteredFrameworkData.categories.length}`);
+          console.log(`Categories included: ${filteredFrameworkData.categories.map(c => c.name).join(', ')}`);
+          
         } else {
           // Standard filtering for other frameworks (NIST, PCI, ISO)
           console.log('=== STANDARD FRAMEWORK FILTERING ===');
@@ -3551,6 +3590,20 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           };
           const mappedCategories = soc2CategoryMapping[selectedCriteria] || [];
           console.log(`SOC 2 criteria "${selectedCriteria}" mapped to: [${mappedCategories.join(', ')}]`);
+        } else if (framework === 'NIST_800_63B') {
+          // For NIST 800-63B, show which criteria were mapped
+          const selectedCriteria = selectedCategories[0];
+          const nist80063bCategoryMapping = {
+            'IAL': ['Identity Assurance Level'],
+            'AAL': ['Authenticator Assurance Level'],
+            'FAL': ['Federation Assurance Level'],
+            'ILM': ['Identity Lifecycle Management'],
+            'AM': ['Authenticator Management'],
+            'SM': ['Session Management'],
+            'PSC': ['Privacy and Security Controls']
+          };
+          const mappedCategories = nist80063bCategoryMapping[selectedCriteria] || [];
+          console.log(`NIST 800-63B criteria "${selectedCriteria}" mapped to: [${mappedCategories.join(', ')}]`);
         } else {
           // For other frameworks, show excluded categories
           console.log(`Categories excluded: ${frameworkData.categories.filter(c => {
@@ -4233,7 +4286,7 @@ Return valid JSON with the exact control structure provided. Do not include gene
     console.log('✅ Analysis completed - no data persistence (enterprise security)');
     
     return adjustedResults;
-    
+
   } catch (error) {
     console.error('AI Analysis Error:', error);
     console.log('=== FALLBACK TRIGGERED ===');
