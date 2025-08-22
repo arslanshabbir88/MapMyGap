@@ -1953,33 +1953,17 @@ function Analyzer({ onNavigateHome }) {
                                </div>
                                <div className="flex-1">
                                  <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
-                                 <div className="text-xs text-blue-200 space-y-3 max-h-[600px] overflow-y-auto pr-2 pb-4 -ml-2">
+                                 <div className="text-xs text-blue-200 space-y-3 max-h-[600px] overflow-y-auto pr-2 pb-4 -ml-4">
                           {lastAnalyzedMode ? (
                             <>
                               {/* Analysis Summary */}
-                              <div className="flex items-center justify-between p-2 bg-slate-700/30 rounded -ml-1">
-                                <span><strong>Analysis Mode:</strong> Comprehensive Mode</span>
+                              <div className="flex items-center justify-between p-2 bg-slate-700/30 rounded -ml-3">
+                                <span className="text-slate-300">Compliance Score</span>
                                 <span className="text-lg font-bold text-blue-300">{analysisResults.summary.score}%</span>
                               </div>
                               
-                              {/* Comprehensive Analysis Mode */}
-                              <div className="text-blue-100 bg-blue-500/10 p-3 rounded border border-blue-500/20 -ml-1">
-                                <div className="flex items-center space-x-2 mb-2">
-                                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                                  <span className="font-medium">Comprehensive Analysis Mode</span>
-                                </div>
-                                <p className="mb-2">Thorough assessment with actionable recommendations for achieving compliance.</p>
-                                {analysisResults.summary.score < 30 ? (
-                                  <p className="text-red-200 text-xs">💡 <strong>Focus on foundation:</strong> Start with basic policies and procedures</p>
-                                ) : analysisResults.summary.score < 60 ? (
-                                  <p className="text-yellow-200 text-xs">✅ <strong>Good foundation:</strong> Build on existing controls with detailed procedures</p>
-                                ) : (
-                                  <p className="text-green-200 text-xs">🎯 <strong>Strong compliance:</strong> Optimize and enhance existing controls</p>
-                                )}
-                              </div>
-                              
                               {/* Score Interpretation */}
-                              <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50 -ml-1">
+                              <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50 -ml-3">
                                 <p className="font-medium text-blue-200 mb-2">📈 Score Interpretation</p>
                                 {analysisResults.summary.score < 25 ? (
                                   <div className="text-red-200">
@@ -2001,7 +1985,7 @@ function Analyzer({ onNavigateHome }) {
                               </div>
                               
                               {/* Quick Stats Grid */}
-                              <div className="grid grid-cols-3 gap-3 mt-4">
+                              <div className="grid grid-cols-3 gap-3 mt-4 -ml-3">
                                 <div className="text-center p-3 bg-red-500/10 rounded-lg border border-red-500/20">
                                   <div className="text-lg font-bold text-red-400">
                                     {analysisResults.categories.reduce((total, cat) => 
@@ -2035,7 +2019,7 @@ function Analyzer({ onNavigateHome }) {
                               </div>
                               
                               {/* Timeline Overview */}
-                              <div className="mt-4 p-3 bg-slate-700/30 rounded-lg border border-slate-600">
+                              <div className="mt-4 p-3 bg-slate-700/30 rounded-lg border border-slate-600 -ml-3">
                                 <h4 className="font-medium text-slate-300 mb-3 flex items-center">
                                   <Icon path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" className="w-4 h-4 text-indigo-400 mr-2" />
                                   Implementation Timeline
@@ -2075,7 +2059,7 @@ function Analyzer({ onNavigateHome }) {
                               </div>
                               
                               {/* Progress Bars */}
-                              <div className="mt-4 space-y-2">
+                              <div className="mt-4 space-y-2 -ml-3">
                                 <div>
                                   <div className="flex justify-between text-xs text-slate-400 mb-1">
                                     <span>Foundation</span>
@@ -2150,7 +2134,7 @@ function Analyzer({ onNavigateHome }) {
                               </div>
                               
                               {/* Pro Tip */}
-                              <div className="p-2 bg-slate-700/30 rounded text-xs">
+                              <div className="p-2 bg-slate-700/30 rounded text-xs -ml-3">
                                 <p><strong>💡 Pro Tip:</strong> Focus on high-impact controls first, then work through medium and low-priority items based on your implementation timeline.</p>
                               </div>
                             </>
