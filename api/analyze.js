@@ -4831,11 +4831,24 @@ Return valid JSON with the exact control structure provided. Do not include gene
     
     // Calculate actual controls in AI response
     if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
+      // Standard format: {"categories": [...]}
       parsedResponse.categories.forEach(category => {
         if (category.results && Array.isArray(category.results)) {
           actualControlCount += category.results.length;
         }
       });
+    } else if (Array.isArray(parsedResponse)) {
+      // Direct array format: [{category1}, {category2}, ...]
+      parsedResponse.forEach(category => {
+        if (category.results && Array.isArray(category.results)) {
+          actualControlCount += category.results.length;
+        }
+      });
+    } else if (parsedResponse.name && parsedResponse.results) {
+      // Single category format: {"name": "...", "results": [...]}
+      if (Array.isArray(parsedResponse.results)) {
+        actualControlCount += parsedResponse.results.length;
+      }
     }
     
     console.log(`=== CONTROL COUNT VALIDATION ===`);
