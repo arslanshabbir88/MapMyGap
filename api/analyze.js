@@ -4350,75 +4350,26 @@ ${fileContent}
 Framework: ${frameworkName}
 Analysis Mode: Comprehensive
 
-COMPREHENSIVE ANALYSIS MODE:
-- "Covered" status requires: Policy + Procedures + Technical Details + Evidence
-- Look for comprehensive security implementation with specific details
-- Require evidence of actual implementation, not just policy statements
-- Be thorough in analysis and provide actionable recommendations
-- Focus on helping users achieve real compliance, not just higher scores
-
-IMPORTANT: Analyze ONLY the ${filteredFrameworkData.categories.length} selected category/categories below. Do not analyze any other categories.
+ANALYSIS MODE: Comprehensive
+- "covered": Full implementation with evidence
+- "partial": Partial implementation  
+- "gap": Not implemented
 
 SELECTED CATEGORIES TO ANALYZE:
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
 
-For each control, analyze the document content and mark as:
-- "covered": Control is fully addressed with clear evidence
-- "partial": Control is partially addressed  
-- "gap": Control is not addressed
+Analyze ONLY the selected categories above. Look for: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
-Look for evidence like: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
+For "gap" or "partial" controls, add these fields:
+- "implementationSteps": [step-by-step actions]
+- "difficulty": "Easy"|"Medium"|"Hard"
+- "businessImpact": "High"|"Medium"|"Low"
+- "timeline": "Immediate"|"Short-term"|"Long-term"
+- "resources": "Staff time, tools, budget"
+- "dependencies": [control IDs to implement first]
+- "sequence": "Foundation"|"Core"|"Advanced"
 
-IMPORTANT: Do NOT return generic error messages. If you cannot analyze a specific control, mark it as "gap" with a brief explanation of what evidence you looked for.
-
-ENHANCED RECOMMENDATIONS REQUIREMENTS:
-When marking a control as "gap" or "partial", provide:
-
-1. DETAILED IMPLEMENTATION STEPS:
-   - Specific actions the user needs to take
-   - Step-by-step guidance for implementation
-   - Required resources and tools
-
-2. IMPLEMENTATION DIFFICULTY:
-   - "Easy": Basic policy/procedure updates, minimal technical changes
-   - "Medium": Requires new tools/processes, moderate technical implementation
-   - "Hard": Complex technical implementation, significant organizational changes
-
-3. BUSINESS IMPACT:
-   - "High": Critical for compliance, security, or business operations
-   - "Medium": Important for compliance but manageable implementation
-   - "Low": Nice to have, minimal business impact
-
-4. IMPLEMENTATION TIMELINE:
-   - "Immediate": Should be addressed within 30 days
-   - "Short-term": Should be addressed within 90 days
-   - "Long-term": Can be addressed within 6-12 months
-
-5. RESOURCE REQUIREMENTS:
-   - Staff time needed
-   - Tools/software required
-   - Budget considerations
-
-6. DEPENDENCY ANALYSIS:
-   - List any controls that must be implemented first
-   - Identify prerequisite controls or foundational elements
-   - Note any external dependencies or vendor requirements
-
-7. IMPLEMENTATION SEQUENCE:
-   - "Foundation": Must be implemented first (infrastructure, policies)
-   - "Core": Builds on foundation (procedures, technical controls)
-   - "Advanced": Final layer (monitoring, optimization)
-
-Return valid JSON using the exact control structure below, but enhance each control with these additional fields:
-
-NOTE: For each control with status "gap" or "partial", add these fields to the JSON:
-- "implementationSteps": [Array of specific step-by-step actions]
-- "difficulty": "Easy" | "Medium" | "Hard"
-- "businessImpact": "High" | "Medium" | "Low"  
-- "timeline": "Immediate" | "Short-term" | "Long-term"
-- "resources": "Staff time, tools, budget requirements"
-- "dependencies": [Array of control IDs that must be implemented first]
-- "sequence": "Foundation" | "Core" | "Advanced"
+Return valid JSON with enhanced fields for gap/partial controls:
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -4447,13 +4398,13 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         const controlCount = filteredFrameworkData.categories.reduce((sum, cat) => sum + (cat.results?.length || 0), 0);
         
         if (framework === 'SOC_2') {
-          timeoutDuration = 60000; // 60s for SOC 2 (large framework)
+          timeoutDuration = 90000; // 90s for SOC 2 (large framework)
         } else if (controlCount <= 20) {
-          timeoutDuration = 25000; // 25s for small frameworks (≤20 controls)
+          timeoutDuration = 45000; // 45s for small frameworks (≤20 controls)
         } else if (controlCount <= 40) {
-          timeoutDuration = 35000; // 35s for medium frameworks (21-40 controls)
+          timeoutDuration = 60000; // 60s for medium frameworks (21-40 controls)
         } else {
-          timeoutDuration = 40000; // 40s for large frameworks (41+ controls)
+          timeoutDuration = 75000; // 75s for large frameworks (41+ controls)
         }
         
         console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s for ${framework} framework (${controlCount} controls)`);
