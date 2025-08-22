@@ -2002,17 +2002,17 @@ function Analyzer({ onNavigateHome }) {
                     </div>
                   </div>
 
-                  {/* Score Explanation Box */}
-                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg overflow-hidden">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 mt-1">
-                        <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
-                        <div className="text-xs text-blue-200 space-y-3 max-h-96 overflow-y-auto pr-2 pb-4">
+                                             {/* Score Explanation Box */}
+                           <div className="mt-4 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg">
+                             <div className="flex items-start space-x-3">
+                               <div className="flex-shrink-0 mt-1">
+                                 <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                 </svg>
+                               </div>
+                               <div className="flex-1">
+                                 <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
+                                 <div className="text-xs text-blue-200 space-y-3 max-h-[600px] overflow-y-auto pr-2 pb-4">
                           {lastAnalyzedMode ? (
                             <>
                               {/* Analysis Summary */}
@@ -2059,9 +2059,9 @@ function Analyzer({ onNavigateHome }) {
                                 )}
                               </div>
                               
-                              {/* Implementation Priority Summary */}
-                              {analysisResults.categories && (
-                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 overflow-hidden">
+                                                                     {/* Implementation Priority Summary */}
+                                       {analysisResults.categories && (
+                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400 mr-2" />
                                     Implementation Priority Summary
@@ -2104,9 +2104,9 @@ function Analyzer({ onNavigateHome }) {
                                 </div>
                               )}
                               
-                              {/* Implementation Roadmap */}
-                              {analysisResults.categories && (
-                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 overflow-hidden">
+                                                                     {/* Implementation Roadmap */}
+                                       {analysisResults.categories && (
+                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-purple-400 mr-2" />
                                     Implementation Roadmap
