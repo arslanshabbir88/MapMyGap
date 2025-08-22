@@ -2003,7 +2003,7 @@ function Analyzer({ onNavigateHome }) {
                   </div>
 
                   {/* Score Explanation Box */}
-                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg">
+                  <div className="mt-4 p-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-lg overflow-hidden">
                     <div className="flex items-start space-x-3">
                       <div className="flex-shrink-0 mt-1">
                         <svg className="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2012,7 +2012,7 @@ function Analyzer({ onNavigateHome }) {
                       </div>
                       <div className="flex-1">
                         <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
-                        <div className="text-xs text-blue-200 space-y-3">
+                        <div className="text-xs text-blue-200 space-y-3 max-h-96 overflow-y-auto pr-2">
                           {lastAnalyzedMode ? (
                             <>
                               {/* Analysis Summary */}
@@ -2061,12 +2061,12 @@ function Analyzer({ onNavigateHome }) {
                               
                               {/* Implementation Priority Summary */}
                               {analysisResults.categories && (
-                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 overflow-hidden">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400 mr-2" />
                                     Implementation Priority Summary
                                   </h4>
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                                     <div className="text-center">
                                       <div className="text-2xl font-bold text-red-400 mb-1">
                                         {analysisResults.categories.reduce((total, cat) => 
@@ -2106,7 +2106,7 @@ function Analyzer({ onNavigateHome }) {
                               
                               {/* Implementation Roadmap */}
                               {analysisResults.categories && (
-                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 overflow-hidden">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-purple-400 mr-2" />
                                     Implementation Roadmap
