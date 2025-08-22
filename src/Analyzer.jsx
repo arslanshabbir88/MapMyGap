@@ -2012,17 +2012,17 @@ function Analyzer({ onNavigateHome }) {
                                </div>
                                <div className="flex-1">
                                  <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
-                                 <div className="text-xs text-blue-200 space-y-3 max-h-[600px] overflow-y-auto pr-2 pb-4">
+                                 <div className="text-xs text-blue-200 space-y-3 max-h-[600px] overflow-y-auto pr-2 pb-4 -ml-2">
                           {lastAnalyzedMode ? (
                             <>
                               {/* Analysis Summary */}
-                              <div className="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                              <div className="flex items-center justify-between p-2 bg-slate-700/30 rounded -ml-1">
                                 <span><strong>Analysis Mode:</strong> Comprehensive Mode</span>
                                 <span className="text-lg font-bold text-blue-300">{analysisResults.summary.score}%</span>
                               </div>
                               
                               {/* Comprehensive Analysis Mode */}
-                              <div className="text-blue-100 bg-blue-500/10 p-3 rounded border border-blue-500/20">
+                              <div className="text-blue-100 bg-blue-500/10 p-3 rounded border border-blue-500/20 -ml-1">
                                 <div className="flex items-center space-x-2 mb-2">
                                   <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                                   <span className="font-medium">Comprehensive Analysis Mode</span>
@@ -2038,7 +2038,7 @@ function Analyzer({ onNavigateHome }) {
                               </div>
                               
                               {/* Score Interpretation */}
-                              <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50">
+                              <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50 -ml-1">
                                 <p className="font-medium text-blue-200 mb-2">📈 Score Interpretation</p>
                                 {analysisResults.summary.score < 25 ? (
                                   <div className="text-red-200">
@@ -2061,7 +2061,7 @@ function Analyzer({ onNavigateHome }) {
                               
                                                                      {/* Implementation Priority Summary */}
                                        {analysisResults.categories && (
-                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 -ml-1">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400 mr-2" />
                                     Implementation Priority Summary
@@ -2106,7 +2106,7 @@ function Analyzer({ onNavigateHome }) {
                               
                                                                      {/* Implementation Roadmap */}
                                        {analysisResults.categories && (
-                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 -ml-1">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-purple-400 mr-2" />
                                     Implementation Roadmap
@@ -2243,7 +2243,7 @@ function Analyzer({ onNavigateHome }) {
                               
                               {/* Progress Tracking & Timeline */}
                               {analysisResults.categories && (
-                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 -ml-1">
                                   <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
                                     <Icon path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" className="w-5 h-5 text-indigo-400 mr-2" />
                                     Progress Tracking & Timeline
