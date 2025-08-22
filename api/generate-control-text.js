@@ -43,7 +43,7 @@ try {
         startsWithAIza: apiKey ? apiKey.startsWith('AIza') : false
       });
 
-      const prompt = `You are a cybersecurity compliance expert. Your task is to generate COMPLETE control text for a specific control that will achieve "covered" status.
+      const prompt = `You are a cybersecurity compliance expert specializing in creating COMPREHENSIVE implementation documents that achieve "covered" status.
 
 Original Document Content:
 ${originalDocument.substring(0, 4000)}
@@ -53,28 +53,42 @@ ${targetControl}
 
 Framework: ${framework}
 
-CRITICAL REQUIREMENT - COMPLETE GUIDANCE:
-You must provide COMPREHENSIVE control text that includes ALL elements needed for "covered" status. Do not give incomplete recommendations that will leave users frustrated.
+🎯 MISSION: Generate a COMPLETE implementation document that will instantly achieve "covered" status when analyzed.
 
-For example, if a control needs BOTH policy statements AND procedures, include BOTH in your generated text. Don't just provide procedures if policy content is also required.
+📋 REQUIRED SECTIONS (Include ALL of these):
 
-Your generated text should be COMPLETE and ACTIONABLE, allowing users to achieve "covered" status in one attempt.
+1. **POLICY STATEMENT** - Clear, authoritative policy language
+2. **IMPLEMENTATION PROCEDURES** - Step-by-step operational procedures
+3. **TECHNICAL SPECIFICATIONS** - System requirements, configurations, tools
+4. **ROLES & RESPONSIBILITIES** - Who does what, when, and how
+5. **MONITORING & EVIDENCE** - How compliance is tracked and documented
+6. **INTEGRATION DETAILS** - How this control connects to other systems
+7. **COMPLIANCE VERIFICATION** - How to verify the control is working
 
-Instructions:
-1. Analyze what the control actually requires for "covered" status
-2. Generate COMPLETE control text that includes ALL required elements
-3. Match the original document's writing style, tone, and format
-4. Make it specific, actionable, and professional
-5. Ensure it addresses the complete control requirement, not just part of it
+🔍 ANALYSIS REQUIREMENTS:
+- Study the original document's writing style, tone, and format
+- Match the organization's naming conventions and terminology
+- Use the same document structure and formatting
+- Include specific, measurable, and actionable content
 
-Return only the generated control text, no additional formatting or explanations.`;
+💡 IMPLEMENTATION GUIDANCE:
+- Provide REAL implementation details, not generic statements
+- Include specific tools, systems, and configurations
+- Add monitoring procedures and evidence collection
+- Specify roles, responsibilities, and timelines
+- Include integration with existing systems
+
+📝 OUTPUT FORMAT:
+Return a COMPLETE, ready-to-use document section that includes all required elements. The document should be comprehensive enough that when analyzed, it immediately achieves "covered" status.
+
+Make it specific, professional, and implementation-ready. Include enough detail that an auditor would say "Yes, this is fully implemented."`;
 
       console.log('Sending prompt to Gemini API...');
       console.log('Prompt length:', prompt.length);
 
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 15000); // 15 second timeout
+        setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 30000); // 30 second timeout for comprehensive generation
       });
       
       let result;
@@ -121,7 +135,7 @@ Return only the generated control text, no additional formatting or explanations
       if (error.message && error.message.includes('timeout')) {
         return res.status(408).json({ 
           error: 'AI generation timed out',
-          details: 'The AI analysis is taking too long. Please try again or review manually.',
+          details: 'The comprehensive control text generation is taking too long. Please try again.',
           suggestion: 'Try again with a shorter document or different control'
         });
       }
