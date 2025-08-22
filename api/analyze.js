@@ -4350,15 +4350,19 @@ ${fileContent}
 Framework: ${frameworkName}
 Analysis Mode: Comprehensive
 
+CRITICAL REQUIREMENT: You MUST analyze ALL controls in the selected categories below. Do NOT skip any controls.
+
 ANALYSIS MODE: Comprehensive
 - "covered": Full implementation with evidence
 - "partial": Partial implementation  
 - "gap": Not implemented
 
 SELECTED CATEGORIES TO ANALYZE:
-${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
+${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description} (${cat.results.length} controls)`).join('\n')}
 
-Analyze ONLY the selected categories above. Look for: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
+MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls.
+
+Look for evidence: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
 
 For "gap" or "partial" controls, add these fields:
 - "implementationSteps": [step-by-step actions]
@@ -4369,7 +4373,7 @@ For "gap" or "partial" controls, add these fields:
 - "dependencies": [control IDs to implement first]
 - "sequence": "Foundation"|"Core"|"Advanced"
 
-Return valid JSON with enhanced fields for gap/partial controls:
+IMPORTANT: Your response MUST include ALL controls from the input structure. Do NOT create a partial analysis.
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -4794,6 +4798,41 @@ Return valid JSON with the exact control structure provided. Do not include gene
     console.log('=== AI RESPONSE QUALITY CHECK ===');
     console.log('Has meaningful analysis:', hasMeaningfulAnalysis);
     console.log('Generic message count:', genericMessageCount);
+    
+    // Validate that AI response contains all expected controls
+    let expectedControlCount = 0;
+    let actualControlCount = 0;
+    let missingControls = [];
+    
+    // Calculate expected controls from input
+    filteredFrameworkData.categories.forEach(category => {
+      if (category.results && Array.isArray(category.results)) {
+        expectedControlCount += category.results.length;
+      }
+    });
+    
+    // Calculate actual controls in AI response
+    if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
+      parsedResponse.categories.forEach(category => {
+        if (category.results && Array.isArray(category.results)) {
+          actualControlCount += category.results.length;
+        }
+      });
+    }
+    
+    console.log(`=== CONTROL COUNT VALIDATION ===`);
+    console.log(`Expected controls: ${expectedControlCount}`);
+    console.log(`Actual controls in response: ${actualControlCount}`);
+    
+    if (actualControlCount < expectedControlCount) {
+      console.warn(`⚠️ WARNING: AI response is missing ${expectedControlCount - actualControlCount} controls!`);
+      console.warn(`This indicates incomplete analysis - falling back to predefined structure`);
+      
+      // If AI response is incomplete, use fallback
+      throw new Error(`AI response incomplete: Expected ${expectedControlCount} controls, got ${actualControlCount}. Using fallback analysis.`);
+    } else {
+      console.log(`✅ AI response contains all expected controls (${actualControlCount}/${expectedControlCount})`);
+    }
     
     // If too many generic messages, consider this a failed analysis
     if (genericMessageCount > 0 && !hasMeaningfulAnalysis) {
