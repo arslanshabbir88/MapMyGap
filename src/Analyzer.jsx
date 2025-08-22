@@ -2257,7 +2257,7 @@ function Analyzer({ onNavigateHome }) {
                                         <div className="text-xs text-slate-400 mt-1">
                                           {analysisResults.categories.reduce((total, cat) => 
                                             total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.timeline === 'Immediate'
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
                                             ).length, 0
                                           )} controls
                                         </div>
@@ -2268,7 +2268,7 @@ function Analyzer({ onNavigateHome }) {
                                         <div className="text-xs text-slate-400 mt-1">
                                           {analysisResults.categories.reduce((total, cat) => 
                                             total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.timeline === 'Short-term'
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
                                             ).length, 0
                                           )} controls
                                         </div>
@@ -2279,7 +2279,7 @@ function Analyzer({ onNavigateHome }) {
                                         <div className="text-xs text-slate-400 mt-1">
                                           {analysisResults.categories.reduce((total, cat) => 
                                             total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.timeline === 'Long-term'
+                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
                                             ).length, 0
                                           )} controls
                                         </div>
