@@ -2000,310 +2000,154 @@ function Analyzer({ onNavigateHome }) {
                                 )}
                               </div>
                               
-                                                                     {/* Implementation Priority Summary */}
-                                       {analysisResults.categories && (
-                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 -ml-1">
-                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
-                                    <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400 mr-2" />
-                                    Implementation Priority Summary
-                                  </h4>
-                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
-                                    <div className="text-center">
-                                      <div className="text-2xl font-bold text-red-400 mb-1">
-                                        {analysisResults.categories.reduce((total, cat) => 
-                                          total + cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'High'
-                                          ).length, 0
-                                        )}
-                                      </div>
-                                      <div className="text-red-300 font-medium">High Priority</div>
-                                      <div className="text-xs text-slate-400">Address immediately</div>
-                                    </div>
-                                    <div className="text-center">
-                                      <div className="text-2xl font-bold text-yellow-400 mb-1">
-                                        {analysisResults.categories.reduce((total, cat) => 
-                                          total + cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Medium'
-                                          ).length, 0
-                                        )}
-                                      </div>
-                                      <div className="text-yellow-300 font-medium">Medium Priority</div>
-                                      <div className="text-xs text-slate-400">Address within 90 days</div>
-                                    </div>
-                                    <div className="text-center">
-                                      <div className="text-2xl font-bold text-green-400 mb-1">
-                                        {analysisResults.categories.reduce((total, cat) => 
-                                          total + cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Low'
-                                          ).length, 0
-                                        )}
-                                      </div>
-                                      <div className="text-green-300 font-medium">Low Priority</div>
-                                      <div className="text-xs text-slate-400">Address within 6-12 months</div>
-                                    </div>
+                              {/* Quick Stats Grid */}
+                              <div className="grid grid-cols-3 gap-3 mt-4">
+                                <div className="text-center p-3 bg-red-500/10 rounded-lg border border-red-500/20">
+                                  <div className="text-lg font-bold text-red-400">
+                                    {analysisResults.categories.reduce((total, cat) => 
+                                      total + cat.results.filter(r => 
+                                        (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'High'
+                                      ).length, 0
+                                    )}
                                   </div>
+                                  <div className="text-xs text-red-300">High Priority</div>
                                 </div>
-                              )}
+                                <div className="text-center p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                                  <div className="text-lg font-bold text-yellow-400">
+                                    {analysisResults.categories.reduce((total, cat) => 
+                                      total + cat.results.filter(r => 
+                                        (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Medium'
+                                      ).length, 0
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-yellow-300">Medium Priority</div>
+                                </div>
+                                <div className="text-center p-3 bg-green-500/10 rounded-lg border border-green-500/20">
+                                  <div className="text-lg font-bold text-green-400">
+                                    {analysisResults.categories.reduce((total, cat) => 
+                                      total + cat.results.filter(r => 
+                                        (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Low'
+                                      ).length, 0
+                                    )}
+                                  </div>
+                                  <div className="text-xs text-green-300">Low Priority</div>
+                                </div>
+                              </div>
                               
-                                                                     {/* Implementation Roadmap */}
-                                       {analysisResults.categories && (
-                                         <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 -ml-1">
-                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
-                                    <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-purple-400 mr-2" />
-                                    Implementation Roadmap
-                                  </h4>
-                                  <div className="space-y-4">
-                                    {/* Foundation Phase */}
-                                    <div className="border-l-4 border-blue-500 pl-4">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <h5 className="font-medium text-blue-300">Phase 1: Foundation</h5>
-                                        <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">
-                                          {analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                            ).length, 0
-                                          )} controls
-                                        </span>
-                                      </div>
-                                      <p className="text-xs text-slate-400 mb-2">Infrastructure, policies, and foundational controls</p>
-                                      <div className="space-y-2">
-                                        {analysisResults.categories.flatMap(cat => 
-                                          cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                          )
-                                        ).slice(0, 3).map((control, index) => (
-                                          <div key={control.id} className="flex items-center space-x-2 text-sm">
-                                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                                            <span className="text-slate-300">{control.id}</span>
-                                            <span className="text-slate-400">-</span>
-                                            <span className="text-slate-400 truncate">{control.control}</span>
-                                          </div>
-                                        ))}
-                                        {analysisResults.categories.reduce((total, cat) => 
-                                          total + cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                          ).length, 0
-                                        ) > 3 && (
-                                          <div className="text-xs text-slate-500 italic">
-                                            +{analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                              ).length, 0
-                                            ) - 3} more controls
-                                          </div>
-                                        )}
-                                      </div>
+                              {/* Timeline Overview */}
+                              <div className="mt-4 p-3 bg-slate-700/30 rounded-lg border border-slate-600">
+                                <h4 className="font-medium text-slate-300 mb-3 flex items-center">
+                                  <Icon path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" className="w-4 h-4 text-indigo-400 mr-2" />
+                                  Implementation Timeline
+                                </h4>
+                                <div className="grid grid-cols-3 gap-3 text-center">
+                                  <div className="p-2 bg-blue-500/10 rounded border border-blue-500/20">
+                                    <div className="text-sm font-bold text-blue-400">30 Days</div>
+                                    <div className="text-xs text-blue-300">
+                                      {analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                        ).length, 0
+                                      )} controls
                                     </div>
-                                    
-                                    {/* Core Phase */}
-                                    <div className="border-l-4 border-yellow-500 pl-4">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <h5 className="font-medium text-yellow-300">Phase 2: Core</h5>
-                                        <span className="text-xs bg-yellow-500/20 text-yellow-300 px-2 py-1 rounded-full">
-                                          {analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                            ).length, 0
-                                          )} controls
-                                        </span>
-                                      </div>
-                                      <p className="text-xs text-slate-400 mb-2">Procedures, technical controls, and operational processes</p>
-                                      <div className="space-y-2">
-                                        {analysisResults.categories.flatMap(cat => 
-                                          cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                          )
-                                        ).slice(0, 3).map((control, index) => (
-                                          <div key={control.id} className="flex items-center space-x-2 text-sm">
-                                            <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                                            <span className="text-slate-300">{control.id}</span>
-                                            <span className="text-slate-400">-</span>
-                                            <span className="text-slate-400 truncate">{control.control}</span>
-                                          </div>
-                                        ))}
-                                        {analysisResults.categories.reduce((total, cat) => 
-                                          total + cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                          ).length, 0
-                                        ) > 3 && (
-                                          <div className="text-xs text-slate-500 italic">
-                                            +{analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                              ).length, 0
-                                            ) - 3} more controls
-                                          </div>
-                                        )}
-                                      </div>
+                                  </div>
+                                  <div className="p-2 bg-yellow-500/10 rounded border border-yellow-500/20">
+                                    <div className="text-sm font-bold text-yellow-400">90 Days</div>
+                                    <div className="text-xs text-yellow-300">
+                                      {analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                        ).length, 0
+                                      )} controls
                                     </div>
-                                    
-                                    {/* Advanced Phase */}
-                                    <div className="border-l-4 border-green-500 pl-4">
-                                      <div className="flex items-center justify-between mb-2">
-                                        <h5 className="font-medium text-green-300">Phase 3: Advanced</h5>
-                                        <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded-full">
-                                          {analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                            ).length, 0
-                                          )} controls
-                                        </span>
-                                      </div>
-                                      <p className="text-xs text-slate-400 mb-2">Monitoring, optimization, and advanced security features</p>
-                                      <div className="space-y-2">
-                                        {analysisResults.categories.flatMap(cat => 
-                                          cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                          )
-                                        ).slice(0, 3).map((control, index) => (
-                                          <div key={control.id} className="flex items-center space-x-2 text-sm">
-                                            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                                            <span className="text-slate-300">{control.id}</span>
-                                            <span className="text-slate-400">-</span>
-                                            <span className="text-slate-400 truncate">{control.control}</span>
-                                          </div>
-                                        ))}
-                                        {analysisResults.categories.reduce((total, cat) => 
-                                          total + cat.results.filter(r => 
-                                            (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                          ).length, 0
-                                        ) > 3 && (
-                                          <div className="text-xs text-slate-500 italic">
-                                            +{analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                              ).length, 0
-                                            ) - 3} more controls
-                                          </div>
-                                        )}
-                                      </div>
+                                  </div>
+                                  <div className="p-2 bg-green-500/10 rounded border border-green-500/20">
+                                    <div className="text-sm font-bold text-green-400">6-12 Months</div>
+                                    <div className="text-xs text-green-300">
+                                      {analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                        ).length, 0
+                                      )} controls
                                     </div>
                                   </div>
                                 </div>
-                              )}
+                              </div>
                               
-                              {/* Progress Tracking & Timeline */}
-                              {analysisResults.categories && (
-                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600 -ml-1">
-                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
-                                    <Icon path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" className="w-5 h-5 text-indigo-400 mr-2" />
-                                    Progress Tracking & Timeline
-                                  </h4>
-                                  <div className="space-y-4">
-                                    {/* Timeline Overview */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                                      <div className="p-3 bg-red-500/10 rounded-lg border border-red-500/20">
-                                        <div className="text-lg font-bold text-red-400 mb-1">30 Days</div>
-                                        <div className="text-xs text-red-300">Foundation Phase</div>
-                                        <div className="text-xs text-slate-400 mt-1">
-                                          {analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                            ).length, 0
-                                          )} controls
-                                        </div>
-                                      </div>
-                                      <div className="p-3 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                                        <div className="text-lg font-bold text-yellow-400 mb-1">90 Days</div>
-                                        <div className="text-xs text-yellow-300">Core Phase</div>
-                                        <div className="text-xs text-slate-400 mt-1">
-                                          {analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                            ).length, 0
-                                          )} controls
-                                        </div>
-                                      </div>
-                                      <div className="p-3 bg-green-500/10 rounded-lg border border-green-500/20">
-                                        <div className="text-lg font-bold text-green-400 mb-1">6-12 Months</div>
-                                        <div className="text-xs text-green-300">Advanced Phase</div>
-                                        <div className="text-xs text-slate-400 mt-1">
-                                          {analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                            ).length, 0
-                                          )} controls
-                                        </div>
-                                      </div>
-                                    </div>
-                                    
-                                    {/* Progress Bars */}
-                                    <div className="space-y-3">
-                                      <div>
-                                        <div className="flex justify-between text-xs text-slate-400 mb-1">
-                                          <span>Foundation Controls</span>
-                                          <span>{analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                            ).length, 0
-                                          )} remaining</span>
-                                        </div>
-                                        <div className="w-full bg-slate-600 rounded-full h-2">
-                                          <div className="bg-blue-500 h-2 rounded-full" style={{
-                                            width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
-                                              ).length, 0
-                                            ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial')
-                                              ).length, 0
-                                            )) * 100))}%`
-                                          }}></div>
-                                        </div>
-                                      </div>
-                                      
-                                      <div>
-                                        <div className="flex justify-between text-xs text-slate-400 mb-1">
-                                          <span>Core Controls</span>
-                                          <span>{analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                            ).length, 0
-                                          )} remaining</span>
-                                        </div>
-                                        <div className="w-full bg-slate-600 rounded-full h-2">
-                                          <div className="bg-yellow-500 h-2 rounded-full" style={{
-                                            width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
-                                              ).length, 0
-                                            ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial')
-                                              ).length, 0
-                                            )) * 100))}%`
-                                          }}></div>
-                                        </div>
-                                      </div>
-                                      
-                                      <div>
-                                        <div className="flex justify-between text-xs text-slate-400 mb-1">
-                                          <span>Advanced Controls</span>
-                                          <span>{analysisResults.categories.reduce((total, cat) => 
-                                            total + cat.results.filter(r => 
-                                              (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                            ).length, 0
-                                          )} remaining</span>
-                                        </div>
-                                        <div className="w-full bg-slate-600 rounded-full h-2">
-                                          <div className="bg-green-500 h-2 rounded-full" style={{
-                                            width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
-                                              ).length, 0
-                                            ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
-                                              total + cat.results.filter(r => 
-                                                (r.status === 'partial') && r.sequence === 'Advanced'
-                                              ).length, 0
-                                            )) * 100))}%`
-                                          }}></div>
-                                        </div>
-                                      </div>
-                                    </div>
+                              {/* Progress Bars */}
+                              <div className="mt-4 space-y-2">
+                                <div>
+                                  <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                    <span>Foundation</span>
+                                    <span>{analysisResults.categories.reduce((total, cat) => 
+                                      total + cat.results.filter(r => 
+                                        (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                      ).length, 0
+                                    )} remaining</span>
+                                  </div>
+                                  <div className="w-full bg-slate-600 rounded-full h-2">
+                                    <div className="bg-blue-500 h-2 rounded-full" style={{
+                                      width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Foundation'
+                                        ).length, 0
+                                      ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial')
+                                        ).length, 0
+                                      )) * 100))}%`
+                                    }}></div>
                                   </div>
                                 </div>
-                              )}
+                                
+                                <div>
+                                  <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                    <span>Core</span>
+                                    <span>{analysisResults.categories.reduce((total, cat) => 
+                                      total + cat.results.filter(r => 
+                                        (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                      ).length, 0
+                                    )} remaining</span>
+                                  </div>
+                                  <div className="w-full bg-slate-600 rounded-full h-2">
+                                    <div className="bg-yellow-500 h-2 rounded-full" style={{
+                                      width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Core'
+                                        ).length, 0
+                                      ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial')
+                                        ).length, 0
+                                      )) * 100))}%`
+                                    }}></div>
+                                  </div>
+                                </div>
+                                
+                                <div>
+                                  <div className="flex justify-between text-xs text-slate-400 mb-1">
+                                    <span>Advanced</span>
+                                    <span>{analysisResults.categories.reduce((total, cat) => 
+                                      total + cat.results.filter(r => 
+                                        (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                      ).length, 0
+                                    )} remaining</span>
+                                  </div>
+                                  <div className="w-full bg-slate-600 rounded-full h-2">
+                                    <div className="bg-green-500 h-2 rounded-full" style={{
+                                      width: `${Math.max(0, 100 - (analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial') && r.sequence === 'Advanced'
+                                        ).length, 0
+                                      ) / Math.max(1, analysisResults.categories.reduce((total, cat) => 
+                                        total + cat.results.filter(r => 
+                                          (r.status === 'gap' || r.status === 'partial')
+                                        ).length, 0
+                                      )) * 100))}%`
+                                    }}></div>
+                                  </div>
+                                </div>
+                              </div>
                               
                               {/* Pro Tip */}
                               <div className="p-2 bg-slate-700/30 rounded text-xs">
