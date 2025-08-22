@@ -1612,66 +1612,7 @@ function Analyzer({ onNavigateHome }) {
                 </div>
               )}
 
-              {/* Analysis Mode Control */}
-              <div className="mb-6">
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
-                    Analysis Mode
-                  </label>
-                  <p className="text-xs text-slate-400">
-                    AI-powered comprehensive compliance analysis with actionable recommendations
-                  </p>
-                </div>
-                
-                {/* Analysis Mode Display */}
-                <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-500/20">
-                  <div className="flex items-center space-x-3">
-                    <SparklesIcon className="w-6 h-6 text-blue-400" />
-                    <div>
-                      <h3 className="font-medium text-blue-300">Comprehensive Analysis Mode</h3>
-                      <p className="text-sm text-slate-300">
-                        Thorough assessment with specific, actionable guidance for each compliance gap
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Enhanced Explanation */}
-                <div className="p-4 bg-slate-700/30 rounded-lg border border-slate-600 mt-4">
-                  <div className="flex items-start space-x-2">
-                    <LightbulbIcon className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
-                    <div className="text-sm text-slate-300">
-                      <p className="font-medium mb-3 text-blue-300">What You'll Get:</p>
-                      <div className="space-y-2">
-                        <div className="flex items-start space-x-2">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <p className="font-medium text-blue-400">Comprehensive Assessment:</p>
-                            <p className="text-xs text-slate-400">AI analyzes your document against every relevant control with evidence-based evaluation</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start space-x-2">
-                          <div className="w-2 h-2 bg-green-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <p className="font-medium text-green-400">Actionable Recommendations:</p>
-                            <p className="text-xs text-slate-400">Specific guidance on how to address each compliance gap with implementation steps</p>
-                          </div>
-                        </div>
-                        <div className="flex items-start space-x-2">
-                          <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 flex-shrink-0"></div>
-                          <div>
-                            <p className="font-medium text-purple-400">Priority-Based Insights:</p>
-                            <p className="text-xs text-slate-400">Understand which controls matter most for your business and compliance goals</p>
-                          </div>
-                        </div>
-                      </div>
-                      <p className="text-slate-400 text-xs mt-3 border-t border-slate-600 pt-2">
-                        <strong>Focus:</strong> The AI provides honest, evidence-based assessments and practical guidance to help you achieve real compliance, not just higher scores.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
 
               <button
                 onClick={handleAnalyze}
