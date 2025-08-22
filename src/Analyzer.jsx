@@ -2011,27 +2011,98 @@ function Analyzer({ onNavigateHome }) {
                         </svg>
                       </div>
                       <div className="flex-1">
-                        <h4 className="text-sm font-medium text-blue-300 mb-3">📊 Score Summary</h4>
-                        <div className="text-xs text-blue-200">
+                        <h4 className="text-sm font-medium text-blue-300 mb-2">📊 Understanding Your Score</h4>
+                        <div className="text-xs text-blue-200 space-y-3 max-h-[500px] overflow-y-auto pr-2 pb-4">
                           {lastAnalyzedMode ? (
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm mb-3">
-                              <div className="text-center p-3 bg-green-500/20 rounded-lg border border-green-500/30">
-                                <div className="text-2xl font-bold text-green-300">{coveredCount}</div>
-                                <div className="text-green-200">Covered</div>
+                            <>
+                              {/* Analysis Summary */}
+                              <div className="flex items-center justify-between p-2 bg-slate-700/30 rounded">
+                                <span><strong>Analysis Mode:</strong> Comprehensive Mode</span>
+                                <span className="text-lg font-bold text-blue-300">{analysisResults.summary.score}%</span>
                               </div>
-                              <div className="text-center p-3 bg-yellow-500/20 rounded-lg border border-yellow-500/30">
-                                <div className="text-2xl font-bold text-yellow-300">{partialCount}</div>
-                                <div className="text-yellow-200">Partial</div>
+                              
+                              {/* Comprehensive Analysis Mode */}
+                              <div className="text-blue-100 bg-blue-500/10 p-3 rounded border border-blue-500/20">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                                  <span className="font-medium">Comprehensive Analysis Mode</span>
+                                </div>
+                                <p className="mb-2">Thorough assessment with actionable recommendations for achieving compliance.</p>
+                                {analysisResults.summary.score < 30 ? (
+                                  <p className="text-red-200 text-xs">💡 <strong>Focus on foundation:</strong> Start with basic policies and procedures</p>
+                                ) : analysisResults.summary.score < 60 ? (
+                                  <p className="text-yellow-200 text-xs">✅ <strong>Good foundation:</strong> Build on existing controls with detailed procedures</p>
+                                ) : (
+                                  <p className="text-green-200 text-xs">🎯 <strong>Strong compliance:</strong> Optimize and enhance existing controls</p>
+                                )}
                               </div>
-                              <div className="text-center p-3 bg-red-500/20 rounded-lg border border-red-500/30">
-                                <div className="text-2xl font-bold text-red-300">{gapCount}</div>
-                                <div className="text-red-200">Gaps</div>
+                              
+                              {/* Score Interpretation */}
+                              <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50">
+                                <p className="font-medium text-blue-200 mb-2">📈 Score Interpretation</p>
+                                {analysisResults.summary.score < 25 ? (
+                                  <div className="text-red-200">
+                                    <p><strong>🔴 Low Coverage:</strong> Needs significant improvements. Focus on specific policies and procedures.</p>
+                                  </div>
+                                ) : analysisResults.summary.score < 50 ? (
+                                  <div className="text-yellow-200">
+                                    <p><strong>🟡 Moderate Coverage:</strong> Good foundation, expand coverage with more controls.</p>
+                                  </div>
+                                ) : analysisResults.summary.score < 75 ? (
+                                  <div className="text-blue-200">
+                                    <p><strong>🔵 Good Coverage:</strong> Strong foundation, minor improvements for excellence.</p>
+                                  </div>
+                                ) : (
+                                  <div className="text-green-200">
+                                    <p><strong>🟢 Excellent Coverage:</strong> Outstanding compliance position!</p>
+                                  </div>
+                                )}
                               </div>
-                            </div>
-                          ) : (
-                            <p className="text-slate-400">No analysis results available.</p>
-                          )}
-                        </div>
+                              
+                              {/* Implementation Priority Summary */}
+                              {analysisResults.categories && (
+                                <div className="mt-4 p-4 bg-slate-700/30 rounded-lg border border-slate-600">
+                                  <h4 className="font-semibold text-slate-300 mb-3 flex items-center">
+                                    <Icon path="M9 5l7 7-7 7" className="w-5 h-5 text-blue-400 mr-2" />
+                                    Implementation Priority Summary
+                                  </h4>
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                                    <div className="text-center">
+                                      <div className="text-2xl font-bold text-red-400 mb-1">
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'High'
+                                          ).length, 0
+                                        )}
+                                      </div>
+                                      <div className="text-red-300 font-medium">High Priority</div>
+                                      <div className="text-xs text-slate-400">Address immediately</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-2xl font-bold text-yellow-400 mb-1">
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Medium'
+                                          ).length, 0
+                                        )}
+                                      </div>
+                                      <div className="text-yellow-300 font-medium">Medium Priority</div>
+                                      <div className="text-xs text-slate-400">Address within 90 days</div>
+                                    </div>
+                                    <div className="text-center">
+                                      <div className="text-2xl font-bold text-green-400 mb-1">
+                                        {analysisResults.categories.reduce((total, cat) => 
+                                          total + cat.results.filter(r => 
+                                            (r.status === 'gap' || r.status === 'partial') && r.businessImpact === 'Low'
+                                          ).length, 0
+                                        )}
+                                      </div>
+                                      <div className="text-green-300 font-medium">Low Priority</div>
+                                      <div className="text-xs text-slate-400">Address within 6-12 months</div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                               
                               {/* Implementation Roadmap */}
                               {analysisResults.categories && (
@@ -2305,7 +2376,7 @@ function Analyzer({ onNavigateHome }) {
                           )}
                         </div>
                       </div>
-                    </div>
+                      </div>
                   </div>
 
                   <div className="space-y-4">
@@ -2330,7 +2401,7 @@ function Analyzer({ onNavigateHome }) {
                               </span>
                             </div>
                           </div>
-                          <ul className="divide-y divide-slate-700">
+                        <ul className="divide-y divide-slate-700">
                           {category.results.map(result => (
                               <li key={result.id} onClick={() => setModalData(result)} className="p-4 flex items-center justify-between hover:bg-slate-700/50 cursor-pointer transition-all duration-200 group">
                                 <div className="flex items-start flex-1 min-w-0">
