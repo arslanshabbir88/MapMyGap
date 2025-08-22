@@ -4342,7 +4342,16 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     console.log('Categories being sent to AI:', filteredFrameworkData.categories.map(c => c.name));
     console.log('Total controls being sent to AI:', filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0));
     
+    // Generate a unique prompt with cache buster and timestamp
+    const timestamp = Date.now();
+    const randomSeed = Math.random().toString(36).substring(7);
     const prompt = `Analyze this document against ${frameworkName} framework for compliance assessment.
+
+TIMESTAMP: ${timestamp}
+RANDOM SEED: ${randomSeed}
+CACHE BUSTER: ${Math.random().toString(36).substring(7)}
+
+This ensures a fresh analysis every time.
 
 Document Content (Full document for comprehensive analysis):
 ${fileContent}
@@ -4362,7 +4371,16 @@ ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}
 
 MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls.
 
-Look for evidence: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit".
+DOCUMENT ANALYSIS INSTRUCTIONS:
+1. Read the document content carefully
+2. For each control, search for evidence of implementation
+3. Look for: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit"
+4. Mark as "covered" if you find clear evidence
+5. Mark as "partial" if you find some evidence but not complete
+6. Mark as "gap" if you find no evidence
+
+CRITICAL: Do NOT use generic phrases like "AI analysis encountered an issue" or "requires manual review". 
+You MUST provide actual analysis based on the document content.
 
 For "gap" or "partial" controls, add these fields:
 - "implementationSteps": [step-by-step actions]
