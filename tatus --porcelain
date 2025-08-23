@@ -1,0 +1,5 @@
+[33m6e3289f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix framework mismatches: Add all 20 NIST 800-53 control families, 6 NIST CSF functions, and 11 NIST 800-63B categories
+[33mbecdd87[m Fix text cutoff in Understanding Your Score section by adding left padding to compensate for negative margins
+[33me92f5be[m Adjust left margins in Understanding Your Score section to reduce excessive gap and improve visual balance
+[33m4738e07[m Redesign Understanding Your Score section for better readability and overflow prevention
+[33m3a4a6a9[m Remove redundant Analysis Mode section to clean up UI
