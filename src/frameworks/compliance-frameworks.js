@@ -631,6 +631,101 @@ export const nistCSF = {
           recommendation: "Establish incident alert thresholds and escalation procedures"
         }
       ]
+    },
+    {
+      name: "RESPOND (RS)",
+      description: "Develop and implement appropriate activities to take action regarding a detected cybersecurity incident",
+      results: [
+        {
+          id: "RS.RP-1",
+          control: "Response plan is executed during or after an incident",
+          status: "gap",
+          details: "Response plan execution procedures not established",
+          recommendation: "Develop and implement incident response plan execution procedures"
+        },
+        {
+          id: "RS.CO-1",
+          control: "Personnel know their roles and order of operations when a response is needed",
+          status: "gap",
+          details: "Response roles and procedures not defined",
+          recommendation: "Define and communicate response roles and operational procedures"
+        },
+        {
+          id: "RS.CO-2",
+          control: "Events are reported consistent with established criteria",
+          status: "gap",
+          details: "Event reporting criteria not established",
+          recommendation: "Establish and communicate event reporting criteria and procedures"
+        },
+        {
+          id: "RS.CO-3",
+          control: "Information is shared consistent with response plans",
+          status: "gap",
+          details: "Information sharing procedures not established",
+          recommendation: "Establish information sharing procedures aligned with response plans"
+        },
+        {
+          id: "RS.CO-4",
+          control: "Coordination with stakeholders occurs consistent with response plans",
+          status: "gap",
+          details: "Stakeholder coordination procedures not established",
+          recommendation: "Establish stakeholder coordination procedures for incident response"
+        }
+      ]
+    },
+    {
+      name: "RECOVER (RC)",
+      description: "Develop and implement appropriate activities to maintain plans for resilience and to restore any capabilities or services that were impaired due to a cybersecurity incident",
+      results: [
+        {
+          id: "RC.RP-1",
+          control: "Recovery plan is executed during or after an incident",
+          status: "gap",
+          details: "Recovery plan execution procedures not established",
+          recommendation: "Develop and implement recovery plan execution procedures"
+        },
+        {
+          id: "RC.IM-1",
+          control: "Recovery plans incorporate lessons learned",
+          status: "gap",
+          details: "Lessons learned not incorporated into recovery plans",
+          recommendation: "Establish process to incorporate lessons learned into recovery planning"
+        },
+        {
+          id: "RC.IM-2",
+          control: "Recovery strategies are updated",
+          status: "gap",
+          details: "Recovery strategies not updated",
+          recommendation: "Establish process to update recovery strategies based on lessons learned"
+        }
+      ]
+    },
+    {
+      name: "GOVERN (GV)",
+      description: "Establish and monitor the organization's cybersecurity risk management strategy, expectations, and policy",
+      results: [
+        {
+          id: "GV.ID-1",
+          control: "Organizational security policies are established and communicated",
+          status: "gap",
+          details: "Organizational security policies not established",
+          recommendation: "Develop and communicate comprehensive organizational security policies"
+        },
+        {
+          id: "GV.ID-2",
+          control: "Security roles & responsibilities are coordinated and aligned with internal roles and external partners",
+          status: "gap",
+          details: "Security roles not coordinated",
+          recommendation: "Coordinate and align security roles with internal and external stakeholders"
+        },
+        {
+          id: "GV.ID-3",
+          control: "Legal and regulatory requirements regarding cybersecurity are understood and managed",
+          status: "gap",
+          details: "Legal and regulatory requirements not managed",
+          recommendation: "Establish process to understand and manage cybersecurity legal requirements"
+        }
+      ]
     }
   ]
 };
@@ -681,6 +776,33 @@ export const nist80053 = {
       ]
     },
     {
+      name: "Awareness and Training (AT)",
+      description: "Ensure personnel are aware of security responsibilities",
+      results: [
+        {
+          id: "AT-1",
+          control: "Awareness and Training Policy and Procedures",
+          status: "gap",
+          details: "Awareness and training policy not established",
+          recommendation: "Develop and implement comprehensive security awareness and training policy"
+        },
+        {
+          id: "AT-2",
+          control: "Security Awareness Training",
+          status: "gap",
+          details: "Security awareness training not provided",
+          recommendation: "Provide regular security awareness training to all personnel"
+        },
+        {
+          id: "AT-3",
+          control: "Role-Based Training",
+          status: "gap",
+          details: "Role-based training not implemented",
+          recommendation: "Implement role-based security training for different job functions"
+        }
+      ]
+    },
+    {
       name: "Audit and Accountability (AU)",
       description: "Create, protect, and retain information system audit records",
       results: [
@@ -704,20 +826,33 @@ export const nist80053 = {
           status: "gap",
           details: "Audit record content not defined",
           recommendation: "Define and implement comprehensive audit record content requirements"
+        }
+      ]
+    },
+    {
+      name: "Assessment, Authorization, and Monitoring (CA)",
+      description: "Assess and authorize systems",
+      results: [
+        {
+          id: "CA-1",
+          control: "Assessment, Authorization, and Monitoring Policy and Procedures",
+          status: "gap",
+          details: "Assessment policy not established",
+          recommendation: "Develop and implement assessment, authorization, and monitoring policy"
         },
         {
-          id: "AU-4",
-          control: "Audit Storage Capacity",
+          id: "CA-2",
+          control: "Security Assessments",
           status: "gap",
-          details: "Audit storage capacity not managed",
-          recommendation: "Implement audit storage capacity management and monitoring"
+          details: "Security assessments not conducted",
+          recommendation: "Conduct regular security assessments of information systems"
         },
         {
-          id: "AU-5",
-          control: "Response to Audit Processing Failures",
+          id: "CA-3",
+          control: "System Interconnections",
           status: "gap",
-          details: "Audit failure response not implemented",
-          recommendation: "Implement procedures to respond to audit processing failures"
+          details: "System interconnections not managed",
+          recommendation: "Manage and monitor system interconnections and data exchanges"
         }
       ]
     },
@@ -745,20 +880,33 @@ export const nist80053 = {
           status: "gap",
           details: "Configuration change control not implemented",
           recommendation: "Implement configuration change control procedures and approval processes"
+        }
+      ]
+    },
+    {
+      name: "Contingency Planning (CP)",
+      description: "Plan for system recovery and continuity",
+      results: [
+        {
+          id: "CP-1",
+          control: "Contingency Planning Policy and Procedures",
+          status: "gap",
+          details: "Contingency planning policy not established",
+          recommendation: "Develop and implement comprehensive contingency planning policy"
         },
         {
-          id: "CM-4",
-          control: "Security Impact Analysis",
+          id: "CP-2",
+          control: "Contingency Plan",
           status: "gap",
-          details: "Security impact analysis not performed",
-          recommendation: "Implement security impact analysis for configuration changes"
+          details: "Contingency plan not developed",
+          recommendation: "Develop comprehensive contingency plan for system recovery"
         },
         {
-          id: "CM-5",
-          control: "Access Restrictions for Change",
+          id: "CP-3",
+          control: "Contingency Training",
           status: "gap",
-          details: "Change access restrictions not implemented",
-          recommendation: "Implement access restrictions for configuration changes"
+          details: "Contingency training not provided",
+          recommendation: "Provide regular training on contingency procedures and recovery"
         }
       ]
     },
@@ -786,68 +934,6 @@ export const nist80053 = {
           status: "gap",
           details: "Device identification and authentication not implemented",
           recommendation: "Implement device identification and authentication mechanisms"
-        },
-        {
-          id: "IA-4",
-          control: "Identifier Management",
-          status: "gap",
-          details: "Identifier management not implemented",
-          recommendation: "Implement comprehensive identifier management system"
-        },
-        {
-          id: "IA-5",
-          control: "Authenticator Management",
-          status: "gap",
-          details: "Authenticator management not implemented",
-          recommendation: "Implement secure authenticator management procedures"
-        },
-        {
-          id: "IA-6",
-          control: "Authenticator Feedback",
-          status: "gap",
-          details: "Authenticator feedback not implemented",
-          recommendation: "Implement secure authenticator feedback mechanisms"
-        }
-      ]
-    },
-    {
-      name: "System and Communications Protection (SC)",
-      description: "Protect system and communications",
-      results: [
-        {
-          id: "SC-1",
-          control: "System and Communications Protection Policy and Procedures",
-          status: "gap",
-          details: "System and communications protection policy not established",
-          recommendation: "Develop and implement system and communications protection policy"
-        },
-        {
-          id: "SC-8",
-          control: "Transmission Confidentiality and Integrity",
-          status: "gap",
-          details: "Transmission confidentiality and integrity not implemented",
-          recommendation: "Implement transmission confidentiality and integrity controls"
-        },
-        {
-          id: "SC-12",
-          control: "Cryptographic Key Establishment and Management",
-          status: "gap",
-          details: "Cryptographic key management not implemented",
-          recommendation: "Implement secure cryptographic key establishment and management"
-        },
-        {
-          id: "SC-13",
-          control: "Cryptographic Protection",
-          status: "gap",
-          details: "Cryptographic protection not implemented",
-          recommendation: "Implement cryptographic protection for information in accordance with requirements"
-        },
-        {
-          id: "SC-28",
-          control: "Protection of Information at Rest",
-          status: "gap",
-          details: "Information at rest protection not implemented",
-          recommendation: "Implement protection mechanisms for information at rest"
         }
       ]
     },
@@ -875,13 +961,87 @@ export const nist80053 = {
           status: "gap",
           details: "Incident reporting procedures not implemented",
           recommendation: "Implement incident reporting procedures and escalation mechanisms"
+        }
+      ]
+    },
+    {
+      name: "Maintenance (MA)",
+      description: "Perform system maintenance securely",
+      results: [
+        {
+          id: "MA-1",
+          control: "System Maintenance Policy and Procedures",
+          status: "gap",
+          details: "Maintenance policy not established",
+          recommendation: "Develop and implement system maintenance policy and procedures"
         },
         {
-          id: "IR-8",
-          control: "Incident Response Plan",
+          id: "MA-2",
+          control: "Controlled Maintenance",
           status: "gap",
-          details: "Incident response plan not developed",
-          recommendation: "Develop and maintain comprehensive incident response plan"
+          details: "Controlled maintenance not implemented",
+          recommendation: "Implement controlled maintenance procedures for all system changes"
+        },
+        {
+          id: "MA-3",
+          control: "Maintenance Tools",
+          status: "gap",
+          details: "Maintenance tools not controlled",
+          recommendation: "Control and monitor maintenance tools and equipment"
+        }
+      ]
+    },
+    {
+      name: "Media Protection (MP)",
+      description: "Protect and manage media throughout its lifecycle",
+      results: [
+        {
+          id: "MP-1",
+          control: "Media Protection Policy and Procedures",
+          status: "gap",
+          details: "Media protection policy not established",
+          recommendation: "Develop and implement comprehensive media protection policy"
+        },
+        {
+          id: "MP-2",
+          control: "Media Access",
+          status: "gap",
+          details: "Media access controls not implemented",
+          recommendation: "Implement access controls for all media types"
+        },
+        {
+          id: "MP-3",
+          control: "Media Marking",
+          status: "gap",
+          details: "Media marking not implemented",
+          recommendation: "Implement media marking and labeling procedures"
+        }
+      ]
+    },
+    {
+      name: "Physical and Environmental Protection (PE)",
+      description: "Protect physical assets and environment",
+      results: [
+        {
+          id: "PE-1",
+          control: "Physical and Environmental Protection Policy and Procedures",
+          status: "gap",
+          details: "Physical protection policy not established",
+          recommendation: "Develop and implement comprehensive physical and environmental protection policy"
+        },
+        {
+          id: "PE-2",
+          control: "Physical Access Authorizations",
+          status: "gap",
+          details: "Physical access authorizations not implemented",
+          recommendation: "Implement physical access authorization and control procedures"
+        },
+        {
+          id: "PE-3",
+          control: "Physical Access Control",
+          status: "gap",
+          details: "Physical access control not implemented",
+          recommendation: "Implement physical access control mechanisms and monitoring"
         }
       ]
     },
@@ -909,27 +1069,33 @@ export const nist80053 = {
           status: "gap",
           details: "System security and privacy plan reviews not implemented",
           recommendation: "Implement regular reviews and updates of system security and privacy plans"
+        }
+      ]
+    },
+    {
+      name: "Personnel Security (PS)",
+      description: "Ensure personnel are trustworthy and qualified",
+      results: [
+        {
+          id: "PS-1",
+          control: "Personnel Security Policy and Procedures",
+          status: "gap",
+          details: "Personnel security policy not established",
+          recommendation: "Develop and implement comprehensive personnel security policy"
         },
         {
-          id: "PL-4",
-          control: "Security and Privacy Assessment Plans",
+          id: "PS-2",
+          control: "Position Risk Designation",
           status: "gap",
-          details: "Security and privacy assessment plans not developed",
-          recommendation: "Develop comprehensive security and privacy assessment plans"
+          details: "Position risk designation not implemented",
+          recommendation: "Implement position risk designation and screening procedures"
         },
         {
-          id: "PL-5",
-          control: "Privacy Impact Assessment",
+          id: "PS-3",
+          control: "Personnel Screening",
           status: "gap",
-          details: "Privacy impact assessment not conducted",
-          recommendation: "Conduct comprehensive privacy impact assessments for systems processing PII"
-        },
-        {
-          id: "PL-6",
-          control: "Security and Privacy Architecture",
-          status: "gap",
-          details: "Security and privacy architecture not established",
-          recommendation: "Establish comprehensive security and privacy architecture for information systems"
+          details: "Personnel screening not implemented",
+          recommendation: "Implement comprehensive personnel screening procedures"
         }
       ]
     },
@@ -957,27 +1123,141 @@ export const nist80053 = {
           status: "gap",
           details: "PII processing permissions not established",
           recommendation: "Establish and enforce permissions for PII processing activities"
+        }
+      ]
+    },
+    {
+      name: "Risk Assessment (RA)",
+      description: "Assess and manage security risks",
+      results: [
+        {
+          id: "RA-1",
+          control: "Risk Assessment Policy and Procedures",
+          status: "gap",
+          details: "Risk assessment policy not established",
+          recommendation: "Develop and implement comprehensive risk assessment policy"
         },
         {
-          id: "PT-4",
-          control: "PII Processing Notifications",
+          id: "RA-2",
+          control: "Security Categorization",
           status: "gap",
-          details: "PII processing notifications not provided",
-          recommendation: "Provide clear notifications about PII processing activities"
+          details: "Security categorization not performed",
+          recommendation: "Perform security categorization of information systems"
         },
         {
-          id: "PT-5",
-          control: "PII Processing Consent",
+          id: "RA-3",
+          control: "Risk Assessment",
           status: "gap",
-          details: "PII processing consent mechanisms not implemented",
-          recommendation: "Implement mechanisms for obtaining and managing PII processing consent"
+          details: "Risk assessment not conducted",
+          recommendation: "Conduct comprehensive risk assessments of information systems"
+        }
+      ]
+    },
+    {
+      name: "System and Services Acquisition (SA)",
+      description: "Acquire systems and services securely",
+      results: [
+        {
+          id: "SA-1",
+          control: "System and Services Acquisition Policy and Procedures",
+          status: "gap",
+          details: "Acquisition policy not established",
+          recommendation: "Develop and implement comprehensive system and services acquisition policy"
         },
         {
-          id: "PT-6",
-          control: "PII Processing Monitoring",
+          id: "SA-2",
+          control: "Allocation of Resources",
           status: "gap",
-          details: "PII processing monitoring not implemented",
-          recommendation: "Implement monitoring and oversight of PII processing activities"
+          details: "Resource allocation not planned",
+          recommendation: "Plan and allocate resources for system and services acquisition"
+        },
+        {
+          id: "SA-3",
+          control: "System Development Life Cycle",
+          status: "gap",
+          details: "System development life cycle not implemented",
+          recommendation: "Implement comprehensive system development life cycle"
+        }
+      ]
+    },
+    {
+      name: "System and Communications Protection (SC)",
+      description: "Protect system boundaries and communications",
+      results: [
+        {
+          id: "SC-1",
+          control: "System and Communications Protection Policy and Procedures",
+          status: "gap",
+          details: "System and communications protection policy not established",
+          recommendation: "Develop and implement system and communications protection policy"
+        },
+        {
+          id: "SC-8",
+          control: "Transmission Confidentiality and Integrity",
+          status: "gap",
+          details: "Transmission confidentiality and integrity not implemented",
+          recommendation: "Implement transmission confidentiality and integrity controls"
+        },
+        {
+          id: "SC-12",
+          control: "Cryptographic Key Establishment and Management",
+          status: "gap",
+          details: "Cryptographic key management not implemented",
+          recommendation: "Implement secure cryptographic key establishment and management"
+        }
+      ]
+    },
+    {
+      name: "System and Information Integrity (SI)",
+      description: "Maintain system and information integrity",
+      results: [
+        {
+          id: "SI-1",
+          control: "System and Information Integrity Policy and Procedures",
+          status: "gap",
+          details: "System integrity policy not established",
+          recommendation: "Develop and implement comprehensive system and information integrity policy"
+        },
+        {
+          id: "SI-2",
+          control: "Flaw Remediation",
+          status: "gap",
+          details: "Flaw remediation not implemented",
+          recommendation: "Implement comprehensive flaw remediation procedures"
+        },
+        {
+          id: "SI-3",
+          control: "Malicious Code Protection",
+          status: "gap",
+          details: "Malicious code protection not implemented",
+          recommendation: "Implement comprehensive malicious code protection mechanisms"
+        }
+      ]
+    },
+    {
+      name: "Supply Chain Risk Management (SR)",
+      description: "Manage supply chain risks",
+      results: [
+        {
+          id: "SR-1",
+          control: "Supply Chain Risk Management Policy and Procedures",
+          status: "gap",
+          details: "Supply chain risk management policy not established",
+          recommendation: "Develop and implement comprehensive supply chain risk management policy"
+        },
+        {
+          id: "SR-2",
+          control: "Supply Chain Risk Management Plan",
+          status: "gap",
+          details: "Supply chain risk management plan not developed",
+          recommendation: "Develop comprehensive supply chain risk management plan"
+        },
+        {
+          id: "SR-3",
+          control: "Supply Chain Risk Assessment",
+          status: "gap",
+          details: "Supply chain risk assessment not conducted",
+          recommendation: "Conduct comprehensive supply chain risk assessments"
         }
       ]
     },
@@ -1005,195 +1285,6 @@ export const nist80053 = {
           status: "gap",
           details: "Information security resources not allocated",
           recommendation: "Allocate adequate resources for information security program implementation"
-        },
-        {
-          id: "PM-4",
-          control: "Plan of Action and Milestones Process",
-          status: "gap",
-          details: "Plan of action and milestones process not implemented",
-          recommendation: "Implement plan of action and milestones process for tracking security improvements"
-        },
-        {
-          id: "PM-5",
-          control: "Information System Inventory",
-          status: "gap",
-          details: "Information system inventory not maintained",
-          recommendation: "Maintain comprehensive inventory of all information systems and their security status"
-        },
-        {
-          id: "PM-6",
-          control: "Information Security Measures of Performance",
-          status: "gap",
-          details: "Information security performance measures not established",
-          recommendation: "Establish and monitor information security performance measures and metrics"
-        },
-        {
-          id: "PM-7",
-          control: "Enterprise Architecture",
-          status: "gap",
-          details: "Enterprise architecture not developed",
-          recommendation: "Develop enterprise architecture that incorporates information security requirements"
-        },
-        {
-          id: "PM-8",
-          control: "Critical Infrastructure Plan",
-          status: "gap",
-          details: "Critical infrastructure plan not developed",
-          recommendation: "Develop plan for protecting critical infrastructure and key resources"
-        },
-        {
-          id: "PM-9",
-          control: "Risk Management Strategy",
-          status: "gap",
-          details: "Risk management strategy not developed",
-          recommendation: "Develop comprehensive risk management strategy for information security"
-        },
-        {
-          id: "PM-10",
-          control: "Security Authorization Process",
-          status: "gap",
-          details: "Security authorization process not implemented",
-          recommendation: "Implement security authorization process for information systems"
-        },
-        {
-          id: "PM-11",
-          control: "Mission and Business Process Definition",
-          status: "gap",
-          details: "Mission and business processes not defined",
-          recommendation: "Define mission and business processes to inform security requirements"
-        },
-        {
-          id: "PM-12",
-          control: "Insider Threat Program",
-          status: "gap",
-          details: "Insider threat program not implemented",
-          recommendation: "Implement insider threat program to detect and prevent insider threats"
-        },
-        {
-          id: "PM-13",
-          control: "Security and Privacy Workforce",
-          status: "gap",
-          details: "Security and privacy workforce not established",
-          recommendation: "Establish qualified security and privacy workforce with appropriate training"
-        },
-        {
-          id: "PM-14",
-          control: "Testing, Training, and Monitoring",
-          status: "gap",
-          details: "Testing, training, and monitoring not implemented",
-          recommendation: "Implement testing, training, and monitoring programs for security controls"
-        },
-        {
-          id: "PM-15",
-          control: "Contacts with Security Groups and Associations",
-          status: "gap",
-          details: "Security group contacts not established",
-          recommendation: "Establish contacts with security groups and associations for information sharing"
-        },
-        {
-          id: "PM-16",
-          control: "Threat Awareness Program",
-          status: "gap",
-          details: "Threat awareness program not implemented",
-          recommendation: "Implement threat awareness program to inform security decisions"
-        },
-        {
-          id: "PM-17",
-          control: "Protect Controlled Unclassified Information",
-          status: "gap",
-          details: "Controlled unclassified information protection not implemented",
-          recommendation: "Implement controls to protect controlled unclassified information"
-        },
-        {
-          id: "PM-18",
-          control: "Privacy Program Plan",
-          status: "gap",
-          details: "Privacy program plan not developed",
-          recommendation: "Develop comprehensive privacy program plan aligned with privacy requirements"
-        },
-        {
-          id: "PM-19",
-          control: "Privacy Program Leadership",
-          status: "gap",
-          details: "Privacy program leadership not designated",
-          recommendation: "Designate privacy program leadership with appropriate authority"
-        },
-        {
-          id: "PM-20",
-          control: "Privacy Program Resources",
-          status: "gap",
-          details: "Privacy program resources not allocated",
-          recommendation: "Allocate adequate resources for privacy program implementation"
-        },
-        {
-          id: "PM-21",
-          control: "Privacy Program Metrics",
-          status: "gap",
-          details: "Privacy program metrics not established",
-          recommendation: "Establish and monitor privacy program performance metrics"
-        },
-        {
-          id: "PM-22",
-          control: "Privacy Program Reporting",
-          status: "gap",
-          details: "Privacy program reporting not implemented",
-          recommendation: "Implement regular privacy program reporting to stakeholders"
-        },
-        {
-          id: "PM-23",
-          control: "Privacy Program Reviews",
-          status: "gap",
-          details: "Privacy program reviews not conducted",
-          recommendation: "Conduct regular reviews of privacy program effectiveness"
-        },
-        {
-          id: "PM-24",
-          control: "Privacy Program Updates",
-          status: "gap",
-          details: "Privacy program updates not implemented",
-          recommendation: "Implement regular updates to privacy program based on reviews and changes"
-        },
-        {
-          id: "PM-25",
-          control: "Privacy Program Training",
-          status: "gap",
-          details: "Privacy program training not provided",
-          recommendation: "Provide regular training on privacy requirements and procedures"
-        },
-        {
-          id: "PM-26",
-          control: "Privacy Program Communications",
-          status: "gap",
-          details: "Privacy program communications not established",
-          recommendation: "Establish effective communications about privacy program and requirements"
-        },
-        {
-          id: "PM-27",
-          control: "Privacy Program Compliance",
-          status: "gap",
-          details: "Privacy program compliance not monitored",
-          recommendation: "Monitor and ensure compliance with privacy requirements and regulations"
-        },
-        {
-          id: "PM-28",
-          control: "Privacy Program Risk Management",
-          status: "gap",
-          details: "Privacy program risk management not implemented",
-          recommendation: "Implement risk management processes for privacy program"
-        },
-        {
-          id: "PM-29",
-          control: "Privacy Program Incident Response",
-          status: "gap",
-          details: "Privacy program incident response not implemented",
-          recommendation: "Implement incident response procedures for privacy-related incidents"
-        },
-        {
-          id: "PM-30",
-          control: "Privacy Program Business Continuity",
-          status: "gap",
-          details: "Privacy program business continuity not addressed",
-          recommendation: "Address privacy requirements in business continuity planning"
         }
       ]
     }
@@ -1433,6 +1524,114 @@ export const nist80063b = {
           status: "gap",
           details: "Incident response and recovery not implemented",
           recommendation: "Implement incident response and recovery procedures"
+        }
+      ]
+    },
+    {
+      name: "Identity Proofing (IP)",
+      description: "Methods and processes for identity verification",
+      results: [
+        {
+          id: "IP-1",
+          control: "Identity proofing procedures are established",
+          status: "gap",
+          details: "Identity proofing procedures not established",
+          recommendation: "Establish comprehensive identity proofing procedures and requirements"
+        },
+        {
+          id: "IP-2",
+          control: "Identity proofing methods are validated",
+          status: "gap",
+          details: "Identity proofing methods not validated",
+          recommendation: "Validate identity proofing methods against security requirements"
+        },
+        {
+          id: "IP-3",
+          control: "Identity proofing documentation is maintained",
+          status: "gap",
+          details: "Identity proofing documentation not maintained",
+          recommendation: "Establish procedures to maintain identity proofing documentation"
+        }
+      ]
+    },
+    {
+      name: "Registration (REG)",
+      description: "Identity registration and enrollment processes",
+      results: [
+        {
+          id: "REG-1",
+          control: "Registration procedures are established",
+          status: "gap",
+          details: "Registration procedures not established",
+          recommendation: "Establish comprehensive registration procedures and requirements"
+        },
+        {
+          id: "REG-2",
+          control: "Registration validation is performed",
+          status: "gap",
+          details: "Registration validation not performed",
+          recommendation: "Implement registration validation procedures and controls"
+        },
+        {
+          id: "REG-3",
+          control: "Registration records are maintained",
+          status: "gap",
+          details: "Registration records not maintained",
+          recommendation: "Establish procedures to maintain registration records"
+        }
+      ]
+    },
+    {
+      name: "Authentication (AUTH)",
+      description: "Authentication mechanisms and processes",
+      results: [
+        {
+          id: "AUTH-1",
+          control: "Authentication procedures are established",
+          status: "gap",
+          details: "Authentication procedures not established",
+          recommendation: "Establish comprehensive authentication procedures and requirements"
+        },
+        {
+          id: "AUTH-2",
+          control: "Authentication methods are validated",
+          status: "gap",
+          details: "Authentication methods not validated",
+          recommendation: "Validate authentication methods against security requirements"
+        },
+        {
+          id: "AUTH-3",
+          control: "Authentication monitoring is implemented",
+          status: "gap",
+          details: "Authentication monitoring not implemented",
+          recommendation: "Implement authentication monitoring and alerting"
+        }
+      ]
+    },
+    {
+      name: "Federation (FED)",
+      description: "Federated identity and trust relationships",
+      results: [
+        {
+          id: "FED-1",
+          control: "Federation procedures are established",
+          status: "gap",
+          details: "Federation procedures not established",
+          recommendation: "Establish comprehensive federation procedures and requirements"
+        },
+        {
+          id: "FED-2",
+          control: "Trust relationships are managed",
+          status: "gap",
+          details: "Trust relationships not managed",
+          recommendation: "Establish procedures to manage federation trust relationships"
+        },
+        {
+          id: "FED-3",
+          control: "Federation monitoring is implemented",
+          status: "gap",
+          details: "Federation monitoring not implemented",
+          recommendation: "Implement federation monitoring and alerting"
         }
       ]
     }
