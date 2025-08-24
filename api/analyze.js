@@ -21,8 +21,8 @@
  * - Comprehensive: Thorough assessment with actionable recommendations
  */
 
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const crypto = require('crypto');
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import crypto from 'crypto';
 
 // Debug environment variable
 console.log('🔑 DEBUG: Environment variables check:');

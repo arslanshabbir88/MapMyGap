@@ -4,7 +4,7 @@
     "api/upload-analyze.js": {
       "maxDuration": 60
     },
-    "api/analyze.cjs": {
+    "api/analyze.js": {
       "maxDuration": 60
     },
     "api/generate-control-text.js": {
@@ -12,10 +12,6 @@
     }
   },
   "rewrites": [
-    {
-      "source": "/api/analyze",
-      "destination": "/api/analyze.cjs"
-    },
     {
       "source": "/api/(.*)",
       "destination": "/api/$1"
