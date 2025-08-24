@@ -24,6 +24,12 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const crypto = require('crypto');
 
+// Debug environment variable
+console.log('🔑 DEBUG: Environment variables check:');
+console.log('🔑 GOOGLE_AI_API_KEY exists:', !!process.env.GOOGLE_AI_API_KEY);
+console.log('🔑 GOOGLE_AI_API_KEY length:', process.env.GOOGLE_AI_API_KEY ? process.env.GOOGLE_AI_API_KEY.length : 'undefined');
+console.log('🔑 GOOGLE_AI_API_KEY preview:', process.env.GOOGLE_AI_API_KEY ? process.env.GOOGLE_AI_API_KEY.substring(0, 10) + '...' : 'undefined');
+
 // Initialize Google AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 

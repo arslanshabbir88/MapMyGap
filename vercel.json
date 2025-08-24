@@ -4,7 +4,7 @@
     "api/upload-analyze.js": {
       "maxDuration": 60
     },
-    "api/analyze.js": {
+    "api/analyze.cjs": {
       "maxDuration": 60
     },
     "api/generate-control-text.js": {
