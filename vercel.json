@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "domains": ["mapmygap.com"],
   "functions": {
     "api/upload-analyze.js": {
       "maxDuration": 60
