@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // Vercel deployment URL
-const VERCEL_URL = 'https://align-iq.vercel.app'
+const VERCEL_URL = 'https://mapmygap.com'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
