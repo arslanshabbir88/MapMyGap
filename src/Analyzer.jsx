@@ -41,7 +41,7 @@ const validateEnvironment = () => {
     
     // Additional validation to prevent unauthorized use
     const domain = window.location.hostname;
-    if (!domain.includes('vercel.app') && !domain.includes('localhost') && !domain.includes('127.0.0.1')) {
+    if (!domain.includes('vercel.app') && !domain.includes('localhost') && !domain.includes('127.0.0.1') && !domain.includes('mapmygap.com')) {
       console.warn('Unauthorized domain detected:', domain);
       // Don't block rendering, just log the warning
       return true;
