@@ -1,11 +1,15 @@
 {
   "version": 2,
+  "domains": ["mapmygap.com"],
   "functions": {
     "api/upload-analyze.js": {
       "maxDuration": 60
     },
     "api/analyze.js": {
       "maxDuration": 60
+    },
+    "api/generate-control-text.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
@@ -22,6 +26,22 @@
         { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/www/(.*)",
+      "destination": "/$1",
+      "permanent": true
     }
   ]
 }
