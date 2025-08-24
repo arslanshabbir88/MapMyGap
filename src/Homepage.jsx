@@ -72,7 +72,12 @@ function Homepage({ onNavigate }) {
         {/* Header */}
         <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-white tracking-tight">ConformIQ</h1>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                <span className="text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+              </div>
+            </div>
             <div className="flex items-center space-x-4">
               {user ? (
                 <>
@@ -112,10 +117,10 @@ function Homepage({ onNavigate }) {
           <section className="py-24 sm:py-32 text-center">
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <h1 className="text-5xl sm:text-7xl font-extrabold text-white tracking-tighter hero-glow">
-                Close Compliance Gaps, <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500">Intelligently</span>.
+                Map Your Compliance Gaps with AI
               </h1>
               <p className="mt-6 text-lg text-slate-400 max-w-2xl mx-auto">
-                ConformIQ uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
+                MapMyGap uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
               </p>
               <div className="mt-10">
                 <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
@@ -137,7 +142,7 @@ function Homepage({ onNavigate }) {
                   Upload your policy documents and let our AI instantly compare them against frameworks like NIST, PCI DSS, and ISO 27001 to pinpoint exact compliance gaps.
                 </FeatureCard>
                 <FeatureCard icon={<DocumentTextIcon className="w-8 h-8 text-purple-400" />} title="Automated Policy Generation">
-                  Don't just find problems—solve them. ConformIQ generates the exact policy language 
+                  Don't just find problems—solve them. MapMyGap generates the exact policy language 
                   you need to address each gap, saving you hours of research and writing.
                 </FeatureCard>
                 <FeatureCard icon={<ShieldCheckIcon className="w-8 h-8 text-green-400" />} title="Continuous Compliance">
@@ -155,7 +160,7 @@ function Homepage({ onNavigate }) {
                 </div>
                 <div className="space-y-12">
                   <HowItWorksStep number="1" title="Upload Your Document">
-                    Securely upload your internal standards or policy document. ConformIQ is ready to 
+                    Securely upload your internal standards or policy document. MapMyGap is ready to 
                     analyze and provide actionable insights.
                   </HowItWorksStep>
                   <HowItWorksStep number="2" title="Select a Framework & Analyze">
@@ -185,15 +190,12 @@ function Homepage({ onNavigate }) {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-slate-800">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex justify-between items-center text-sm text-slate-500">
-                <p>&copy; 2025 ConformIQ. All rights reserved.</p>
-                <div className="space-x-6">
-                    <a href="#" className="hover:text-slate-300 transition-colors">Terms</a>
-                    <a href="#" className="hover:text-slate-300 transition-colors">Privacy</a>
-                    <a href="#" className="hover:text-slate-300 transition-colors">Contact</a>
-                </div>
+        <footer className="bg-slate-900/50 border-t border-slate-800 mt-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="text-center">
+              <p>&copy; 2025 MapMyGap. All rights reserved.</p>
             </div>
+          </div>
         </footer>
       </div>
     </>

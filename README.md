@@ -1,8 +1,8 @@
-# ConformIQ - AI-Powered Compliance Analysis
+# MapMyGap - AI-Powered Compliance Analysis
 
-<!-- Caching system deployed - saves 66% on AI tokens! -->
+## Overview
 
-ConformIQ is an intelligent compliance analysis platform that helps organizations assess their security posture against industry-standard frameworks like NIST 800-53, ISO 27001, and more.
+MapMyGap is an intelligent compliance analysis platform that helps organizations assess their security posture against industry-standard frameworks like NIST 800-53, ISO 27001, and more.
 
 ## ✨ Features
 
@@ -14,14 +14,12 @@ ConformIQ is an intelligent compliance analysis platform that helps organization
 - **Export Options**: Download reports in JSON or CSV format
 - **Copy to Clipboard**: Easy copying of generated text and control details
 
-## 🚀 Quick Start
+## Getting Started
 
-### 1. Clone and Install
-
+1. Clone the repository:
 ```bash
-git clone <your-repo-url>
-cd conformiq-app
-npm install
+git clone https://github.com/arslanshabbir88/MapMyGap.git
+cd MapMyGap
 ```
 
 ### 2. Set Up Supabase (Required for Authentication)

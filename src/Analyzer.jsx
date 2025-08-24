@@ -1,12 +1,12 @@
 /**
- * ConformIQ - AI-Powered Compliance Analysis Platform
+ * MapMyGap - AI-Powered Compliance Analysis Platform
  * 
- * Copyright (c) 2024 ConformIQ. All rights reserved.
+ * Copyright (c) 2024 MapMyGap. All rights reserved.
  * 
- * This software is proprietary and confidential. Unauthorized copying, 
- * distribution, or use of this software is strictly prohibited.
+ * This software is proprietary and confidential. Unauthorized copying, distribution,
+ * or use is strictly prohibited.
  * 
- * For licensing inquiries, contact: legal@conformiq.com
+ * For licensing inquiries, contact: legal@mapmygap.com
  */
 
 /**
@@ -1115,9 +1115,11 @@ function Analyzer({ onNavigateHome }) {
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
         <header className="sticky top-0 z-10 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div>
-                              <h1 className="text-2xl font-bold text-white tracking-tight">ConformIQ</h1>
-              <p className="text-slate-400 mt-1">Compliance Analyzer</p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <h1 className="text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                <span className="text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+              </div>
             </div>
             <div className="flex items-center space-x-4">
               {user && (
