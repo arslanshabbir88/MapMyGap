@@ -168,10 +168,10 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
-        return true; // Authentication successful
+        return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
-        return false;
+        return { success: false, client: null };
       }
     } else {
       console.log('🔑 No header token, trying getVercelOidcToken()...');
@@ -235,14 +235,14 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
-        return true; // Authentication successful
+        return { success: true, client: authClient }; // Return both success and client
         
       } catch (tokenError) {
         console.log('❌ Failed to get Vercel OIDC token or exchange for GCP token:', tokenError.message);
         oidcToken = null;
         gcpAccessToken = null;
         authClient = null;
-        return false;
+        return { success: false, client: null };
       }
     }
   } catch (error) {
@@ -5893,11 +5893,11 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize authentication and inspect OIDC headers
   console.log('🔍 DEBUG: Starting authentication initialization...');
-  const authSuccess = await initializeAuthentication(req);
+  const { success: authSuccess, client: authClient } = await initializeAuthentication(req);
   console.log('🔑 Authentication initialization result:', authSuccess ? 'SUCCESS' : 'FAILED');
 
   // CRITICAL: Initialize Vertex AI based on authentication result
-  if (authSuccess && authClient && gcpAccessToken) {
+  if (authSuccess && authClient) {
     console.log('🔑 DEBUG: Using ExternalAccountClient for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
@@ -5925,10 +5925,10 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: Fallback - GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: Fallback - GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     
-            vertexAI = new VertexAI({
-          project: process.env.GCP_PROJECT_ID,
-          location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
-        });
+    vertexAI = new VertexAI({
+      project: process.env.GCP_PROJECT_ID,
+      location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
+    });
     console.log('🔑 Vertex AI initialized with default authentication (fallback)');
   }
 
