@@ -61,7 +61,7 @@ try {
     oidcToken = null;
   }
   
-  // CRITICAL: Updated for attribute-based principal mapping
+  // CRITICAL: Use subject_token_supplier approach for Workload Identity Federation
   // This matches the new principal: owner:map-my-gap:project:mapmygap:environment:production
   authClient = ExternalAccountClient.fromJSON({
     type: 'external_account',
@@ -73,14 +73,6 @@ try {
       // Use the Vercel OIDC token as the subject token
       getSubjectToken: getVercelOidcToken,
     },
-    // CRITICAL: Add attribute mapping for the new principal structure
-    credential_source: {
-      url: 'https://oidc.vercel.com/map-my-gap',
-      headers: {},
-      format: {
-        type: 'text'
-      }
-    }
   });
   console.log('🔑 External Account Client initialized with Vercel OIDC');
 } catch (error) {
