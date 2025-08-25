@@ -127,22 +127,32 @@ async function initializeAuthentication(req) {
     
     if (headerToken) {
       console.log('🔑 Using OIDC token from request header');
-      // Exchange header token for GCP access token
+      // Build ExternalAccountClient that performs STS under the hood using Vercel OIDC subject token
       try {
-        gcpAccessToken = await getGcpAccessToken(headerToken);
-        // CRITICAL: Create ExternalAccountClient with proper WIF configuration
+        const requiredEnvOk = !!process.env.GCP_PROJECT_NUMBER && !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID && !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID && !!process.env.GCP_SERVICE_ACCOUNT_EMAIL;
+        if (!requiredEnvOk) {
+          console.log('❌ Missing required env vars for WIF. Vars present:', {
+            GCP_PROJECT_NUMBER: !!process.env.GCP_PROJECT_NUMBER,
+            GCP_WORKLOAD_IDENTITY_POOL_ID: !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
+            GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
+            GCP_SERVICE_ACCOUNT_EMAIL: !!process.env.GCP_SERVICE_ACCOUNT_EMAIL,
+          });
+          return false;
+        }
+
+        const audience = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
+        console.log('🔑 DEBUG: Computed audience:', audience);
+
         const { ExternalAccountClient } = await import('google-auth-library');
         const wifConfig = {
-          type: "external_account",
-          quota_project_id: process.env.GCP_PROJECT_ID,
-          subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-          token_url: "https://sts.googleapis.com/v1/token",
+          type: 'external_account',
+          audience,
+          subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+          token_url: 'https://sts.googleapis.com/v1/token',
           service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-          credential_source: {
-            // Use the STS access token we already obtained
-            access_token: gcpAccessToken
-          },
-          scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          // Supply the Vercel OIDC token directly as the subject token
+          subject_token_supplier: async () => headerToken,
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
         };
         authClient = ExternalAccountClient.fromJSON(wifConfig);
         console.log('🔑 ExternalAccountClient created with fromJSON()');
@@ -195,25 +205,31 @@ async function initializeAuthentication(req) {
           }
         }
         
-        // CRITICAL: Exchange OIDC token for GCP access token
-        gcpAccessToken = await getGcpAccessToken(oidcToken);
-        console.log('🔑 GCP Access Token obtained via STS exchange');
-        
-        // CRITICAL: Create ExternalAccountClient with proper WIF configuration
+        // Build ExternalAccountClient that performs STS under the hood using Vercel OIDC subject token
+        const requiredEnvOk2 = !!process.env.GCP_PROJECT_NUMBER && !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID && !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID && !!process.env.GCP_SERVICE_ACCOUNT_EMAIL;
+        if (!requiredEnvOk2) {
+          console.log('❌ Missing required env vars for WIF. Vars present:', {
+            GCP_PROJECT_NUMBER: !!process.env.GCP_PROJECT_NUMBER,
+            GCP_WORKLOAD_IDENTITY_POOL_ID: !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
+            GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
+            GCP_SERVICE_ACCOUNT_EMAIL: !!process.env.GCP_SERVICE_ACCOUNT_EMAIL,
+          });
+          return false;
+        }
+        const audience2 = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
+        console.log('🔑 DEBUG: Computed audience:', audience2);
+
         const { ExternalAccountClient } = await import('google-auth-library');
-        const wifConfig = {
-          type: "external_account",
-          quota_project_id: process.env.GCP_PROJECT_ID,
-          subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-          token_url: "https://sts.googleapis.com/v1/token",
+        const wifConfig2 = {
+          type: 'external_account',
+          audience: audience2,
+          subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+          token_url: 'https://sts.googleapis.com/v1/token',
           service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-          credential_source: {
-            // Use the STS access token we already obtained
-            access_token: gcpAccessToken
-          },
-          scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          subject_token_supplier: async () => oidcToken,
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
         };
-        authClient = ExternalAccountClient.fromJSON(wifConfig);
+        authClient = ExternalAccountClient.fromJSON(wifConfig2);
         console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
