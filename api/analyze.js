@@ -34,6 +34,33 @@ import crypto from 'crypto';
 // Initialize External Account Client for Workload Identity Federation
 let authClient;
 try {
+  // CRITICAL: Get and debug the OIDC token first
+  let oidcToken;
+  try {
+    oidcToken = await getVercelOidcToken();
+    console.log('🔑 DEBUG: Vercel OIDC Token retrieved successfully');
+    console.log('🔑 DEBUG: OIDC Token length:', oidcToken.length);
+    console.log('🔑 DEBUG: OIDC Token preview (first 100 chars):', oidcToken.substring(0, 100));
+    console.log('🔑 DEBUG: OIDC Token preview (last 100 chars):', oidcToken.substring(oidcToken.length - 100));
+    
+    // Decode the JWT to see the payload (without verification for debugging)
+    const tokenParts = oidcToken.split('.');
+    if (tokenParts.length === 3) {
+      try {
+        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+        console.log('🔑 DEBUG: OIDC Token Payload:', JSON.stringify(payload, null, 2));
+        console.log('🔑 DEBUG: OIDC Token Subject (sub):', payload.sub);
+        console.log('🔑 DEBUG: OIDC Token Issuer (iss):', payload.iss);
+        console.log('🔑 DEBUG: OIDC Token Audience (aud):', payload.aud);
+      } catch (decodeError) {
+        console.log('🔑 DEBUG: Could not decode OIDC token payload:', decodeError.message);
+      }
+    }
+  } catch (tokenError) {
+    console.log('❌ Failed to get Vercel OIDC token:', tokenError.message);
+    oidcToken = null;
+  }
+  
   authClient = ExternalAccountClient.fromJSON({
     type: 'external_account',
     audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
