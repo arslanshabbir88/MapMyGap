@@ -146,21 +146,20 @@ async function initializeAuthentication(req) {
         // CRITICAL: Create a proper auth client that Vertex AI can use
         const { GoogleAuth } = await import('google-auth-library');
         
-        // Create GoogleAuth with explicit credentials
-        authClient = new GoogleAuth({
-          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-          credentials: {
-            type: 'external_account',
-            audience,
-            subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-            token_url: 'https://sts.googleapis.com/v1/token',
-            subject_token_supplier: {
-              getSubjectToken: async () => headerToken
-            }
+        // Create GoogleAuth using fromJSON with proper WIF configuration
+        const wifConfig = {
+          type: 'external_account',
+          audience,
+          subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+          token_url: 'https://sts.googleapis.com/v1/token',
+          subject_token_supplier: {
+            getSubjectToken: async () => headerToken
           }
-        });
+        };
         
-        console.log('🔑 GoogleAuth created with explicit credentials');
+        authClient = GoogleAuth.fromJSON(wifConfig);
+        
+        console.log('🔑 GoogleAuth created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
@@ -224,21 +223,20 @@ async function initializeAuthentication(req) {
         // CRITICAL: Create a proper auth client that Vertex AI can use
         const { GoogleAuth } = await import('google-auth-library');
         
-        // Create GoogleAuth with explicit credentials
-        authClient = new GoogleAuth({
-          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-          credentials: {
-            type: 'external_account',
-            audience: audience2,
-            subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-            token_url: 'https://sts.googleapis.com/v1/token',
-            subject_token_supplier: {
-              getSubjectToken: async () => oidcToken
-            }
+        // Create GoogleAuth using fromJSON with proper WIF configuration
+        const wifConfig2 = {
+          type: 'external_account',
+          audience: audience2,
+          subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+          token_url: 'https://sts.googleapis.com/v1/token',
+          subject_token_supplier: {
+            getSubjectToken: async () => oidcToken
           }
-        });
+        };
         
-        console.log('🔑 GoogleAuth created with explicit credentials');
+        authClient = GoogleAuth.fromJSON(wifConfig2);
+        
+        console.log('🔑 GoogleAuth created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
