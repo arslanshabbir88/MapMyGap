@@ -5908,9 +5908,9 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
     
     vertexAI = new VertexAI({
-      project: process.env.GCP_PROJECT_ID,
+      authClient: authClient, // Pass IdentityPoolClient directly
+      projectId: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global', // Use 'global' as fallback
-      authClient: authClient, // Use authClient with OAuth2Client (as recommended)
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
@@ -5926,7 +5926,7 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: Fallback - GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     
     vertexAI = new VertexAI({
-      project: process.env.GCP_PROJECT_ID,
+      projectId: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
     });
     console.log('🔑 Vertex AI initialized with default authentication (fallback)');
