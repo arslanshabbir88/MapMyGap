@@ -132,7 +132,7 @@ async function initializeAuthentication(req) {
         gcpAccessToken = await getGcpAccessToken(headerToken);
         // CRITICAL: Create External Account Client with proper configuration
         const { ExternalAccountClient } = await import('google-auth-library');
-        authClient = new ExternalAccountClient({
+        const externalAccountConfig = {
           type: "external_account",
           quota_project_id: process.env.GCP_PROJECT_ID,
           subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
@@ -143,8 +143,9 @@ async function initializeAuthentication(req) {
             access_token: gcpAccessToken
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
-        });
-        console.log('🔑 External Account Client created with proper configuration');
+        };
+        authClient = ExternalAccountClient.fromJSON(externalAccountConfig);
+        console.log('🔑 External Account Client created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
@@ -190,7 +191,7 @@ async function initializeAuthentication(req) {
         
         // CRITICAL: Create External Account Client with proper configuration
         const { ExternalAccountClient } = await import('google-auth-library');
-        authClient = new ExternalAccountClient({
+        const externalAccountConfig = {
           type: "external_account",
           quota_project_id: process.env.GCP_PROJECT_ID,
           subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
@@ -201,8 +202,9 @@ async function initializeAuthentication(req) {
             access_token: gcpAccessToken
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
-        });
-        console.log('🔑 External Account Client created with proper configuration');
+        };
+        authClient = ExternalAccountClient.fromJSON(externalAccountConfig);
+        console.log('🔑 External Account Client created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
