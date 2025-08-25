@@ -52,14 +52,26 @@ try {
 }
 
 // Initialize Vertex AI with proper authentication
-const vertexAI = new VertexAI({
-  project: process.env.GCP_PROJECT_ID,
-  location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-  googleAuthOptions: authClient ? {
-    authClient,
-    projectId: process.env.GCP_PROJECT_ID,
-  } : undefined
-});
+let vertexAI;
+if (authClient) {
+  // Use authenticated External Account Client
+  vertexAI = new VertexAI({
+    project: process.env.GCP_PROJECT_ID,
+    location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+    googleAuthOptions: {
+      authClient,
+      projectId: process.env.GCP_PROJECT_ID,
+    }
+  });
+  console.log('🔑 Vertex AI initialized with authenticated External Account Client');
+} else {
+  // Fallback to default authentication
+  vertexAI = new VertexAI({
+    project: process.env.GCP_PROJECT_ID,
+    location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
+  });
+  console.log('🔑 Vertex AI initialized with default authentication (fallback)');
+}
 
 // Debug environment variables for Workload Identity Federation
 console.log('🔑 DEBUG: Vercel OIDC Federation Configuration:');
