@@ -4373,7 +4373,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     // Initialize Vertex AI model with optimal token limit
     const model = vertexAI.preview.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-1.5-flash-002",
       generationConfig: {
         maxOutputTokens: optimalTokenLimit,
         temperature: 0.1, // Low temperature for consistent compliance analysis
@@ -4460,7 +4460,7 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
     console.log('Estimated prompt tokens (rough):', Math.ceil(prompt.length / 4));
     console.log('Available output tokens:', optimalTokenLimit);
     console.log('Total estimated tokens needed:', Math.ceil(prompt.length / 4) + optimalTokenLimit);
-    console.log('Gemini Flash model limit: 1M tokens total');
+    console.log('Vertex AI Gemini model limit: 1M tokens total');
     console.log('Token usage efficiency:', ((Math.ceil(prompt.length / 4) + optimalTokenLimit) / 1000000 * 100).toFixed(2) + '% of model limit');
     
     // Special debugging for MA category
@@ -4494,9 +4494,9 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
           setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), timeoutDuration);
         });
     
-    console.log('🚀 CRITICAL DEBUG: About to start AI analysis with Google Gemini...');
+    console.log('🚀 CRITICAL DEBUG: About to start AI analysis with Vertex AI...');
     console.log('🔍 AI EXECUTION CHECK: This log should appear if AI execution is reached');
-    console.log('Model being used: gemini-1.5-flash');
+    console.log('Model being used: gemini-1.5-flash-002 (Vertex AI)');
     console.log('Prompt length:', prompt.length, 'characters');
     console.log('🔍 EXECUTION POINT: AI analysis starting NOW');
     
