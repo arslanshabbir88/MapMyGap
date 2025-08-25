@@ -140,6 +140,11 @@ async function initializeAuthentication(req) {
         console.log('🔑 OAuth2Client created with GCP access token from header');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+        
+        // CRITICAL: Verify the OAuth2Client is properly configured
+        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+        console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
+        console.log('🔑 DEBUG: authClient.credentials.access_token length:', authClient.credentials?.access_token?.length);
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -183,6 +188,11 @@ async function initializeAuthentication(req) {
         console.log('🔑 OAuth2Client created with GCP access token');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+        
+        // CRITICAL: Verify the OAuth2Client is properly configured
+        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+        console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
+        console.log('🔑 DEBUG: authClient.credentials.access_token length:', authClient.credentials?.access_token?.length);
         return true; // Authentication successful
         
       } catch (tokenError) {
@@ -5851,7 +5861,7 @@ export default async function handler(req, res) {
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-      authClient: authClient, // Use the OAuth2 client directly
+      credentials: authClient, // Use credentials instead of authClient
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
