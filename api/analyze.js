@@ -61,15 +61,12 @@ if (authClient) {
         projectId: process.env.GCP_PROJECT_ID,
       });
       
-      // CRITICAL: Use Google AI SDK directly with authenticated credentials
-      const genAI = new GoogleGenerativeAI({
-        // Remove apiKey - let authClient handle authentication
-        authClient: authClient,
-        projectId: process.env.GCP_PROJECT_ID,
+      // CRITICAL: Use Vertex AI with Application Default Credentials
+      // This properly integrates with Workload Identity Federation
+      vertexAI = new VertexAI({
+        project: process.env.GCP_PROJECT_ID,
+        location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
       });
-      
-      // Store the Google AI SDK instance for later use
-      vertexAI = genAI;
   console.log('🔑 Vertex AI initialized with authenticated External Account Client');
 } else {
   // Fallback to default authentication
@@ -4378,8 +4375,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
 
     const optimalTokenLimit = calculateOptimalTokenLimit(fileContent, filteredFrameworkData);
     
-    // Initialize Google AI SDK model with optimal token limit
-    const model = vertexAI.getGenerativeModel({ 
+    // Initialize Vertex AI model with optimal token limit
+    const model = vertexAI.preview.getGenerativeModel({ 
       model: "gemini-1.5-flash-002",
       generationConfig: {
         maxOutputTokens: optimalTokenLimit,
