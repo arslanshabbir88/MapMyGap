@@ -4683,11 +4683,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    // CRITICAL: The issue is Vertex AI API not enabled or model not available
-    // Let's try the most basic approach - use a model that definitely exists
+    // CRITICAL: Vertex AI API is enabled, but model might not exist
+    // Let's try a model that definitely exists in Vertex AI
     const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global)
-    // Try the most basic model that should definitely be available
-    const model = 'text-bison'; // Remove version number - try base model
+    // Try a model that definitely exists in Vertex AI global location
+    const model = 'gemini-1.5-flash'; // This model definitely exists in global location
     
     // DEBUG: Let's also try to see what models are actually available
     console.log('🔍 DEBUG: Trying to list available models...');
