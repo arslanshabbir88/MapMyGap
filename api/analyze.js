@@ -5852,14 +5852,17 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient && gcpAccessToken) {
-    console.log('🔑 DEBUG: Using OAuth2Client for Vertex AI:', typeof authClient);
+    console.log('🔑 DEBUG: Using GoogleAuth for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
+    console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+    console.log('🔑 DEBUG: authClient scopes:', authClient.scopes);
+    console.log('🔑 DEBUG: authClient accessToken exists:', !!authClient.accessToken);
     
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-      authClient: authClient, // Explicitly pass OAuth2Client
+      credentials: authClient, // Use credentials instead of authClient
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
@@ -5868,6 +5871,7 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: Vertex AI project:', vertexAI.project);
     console.log('🔑 DEBUG: Vertex AI location:', vertexAI.location);
     console.log('🔑 DEBUG: Vertex AI authClient exists:', !!vertexAI.authClient);
+    console.log('🔑 DEBUG: Vertex AI credentials exists:', !!vertexAI.credentials);
   } else {
     // Fallback to default authentication
     console.log('🔑 DEBUG: Fallback - GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
