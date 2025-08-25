@@ -38,20 +38,15 @@ const vertexAI = new VertexAI({
   serviceAccountEmail: process.env.GCP_SERVICE_ACCOUNT_EMAIL
 });
 
-// Debug environment variables
+// Debug environment variables for Workload Identity Federation
 console.log('🔑 DEBUG: Workload Identity Federation Configuration:');
 console.log('🔑 GCP_PROJECT_ID exists:', !!process.env.GCP_PROJECT_ID);
 console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID);
 console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID);
 console.log('🔑 GCP_SERVICE_ACCOUNT_EMAIL exists:', !!process.env.GCP_SERVICE_ACCOUNT_EMAIL);
 console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
+console.log('🔑 GCP_PROJECT_NUMBER exists:', !!process.env.GCP_PROJECT_NUMBER);
 console.log('🔑 Using Workload Identity Federation for authentication');
-
-// Debug environment variables
-console.log('🔑 DEBUG: Environment variables check:');
-console.log('🔑 GOOGLE_CLOUD_PROJECT_ID exists:', !!process.env.GOOGLE_CLOUD_PROJECT_ID);
-console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
-console.log('🔑 Using service account authentication for Vertex AI');
 
 
 
