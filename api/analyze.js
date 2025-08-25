@@ -75,6 +75,7 @@ async function getGcpAccessToken(vercelOidcToken) {
     audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
     scope: "https://www.googleapis.com/auth/cloud-platform",
     subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+    requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
     subject_token: vercelOidcToken,
   };
   
@@ -83,6 +84,7 @@ async function getGcpAccessToken(vercelOidcToken) {
   console.log('🔑 DEBUG: audience:', requestParams.audience);
   console.log('🔑 DEBUG: scope:', requestParams.scope);
   console.log('🔑 DEBUG: subject_token_type:', requestParams.subject_token_type);
+  console.log('🔑 DEBUG: requested_token_type:', requestParams.requested_token_type);
   console.log('🔑 DEBUG: subject_token length:', requestParams.subject_token.length);
   console.log('🔑 DEBUG: subject_token preview:', requestParams.subject_token.substring(0, 100));
   
