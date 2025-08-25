@@ -4691,6 +4691,16 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // DEBUG: Using enterprise-grade Gemini 2.5 Flash model
     console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash for professional compliance analysis');
     
+    // CRITICAL: The issue is that the service account doesn't have the right IAM role
+    // We need to add the 'Vertex AI User' role to the service account
+    
+    // DEBUG: Let's check what permissions we actually have
+    console.log('🔍 DEBUG: Checking service account permissions...');
+    console.log('🔍 DEBUG: Service Account:', process.env.GCP_SERVICE_ACCOUNT_EMAIL);
+    console.log('🔍 DEBUG: Project ID:', process.env.GCP_PROJECT_ID);
+    console.log('🔍 DEBUG: Location:', location);
+    console.log('🔍 DEBUG: Model:', model);
+    
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
     if (location === 'global') {
@@ -4879,6 +4889,15 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         
         console.log('📤 DEBUG: Sending direct API request...');
         
+        // DEBUG: Let's see the exact request we're making
+        console.log('🔍 DEBUG: Request details:');
+        console.log('🔍 DEBUG: - Method: POST');
+        console.log('🔍 DEBUG: - URL:', apiUrl);
+        console.log('🔍 DEBUG: - Authorization: Bearer [TOKEN] (length:', gcpToken.length, ')');
+        console.log('🔍 DEBUG: - X-Goog-User-Project:', projectId);
+        console.log('🔍 DEBUG: - Content-Type: application/json');
+        console.log('🔍 DEBUG: - Request body keys:', Object.keys(requestBody));
+        
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
@@ -4894,6 +4913,31 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         if (!response.ok) {
           const errorText = await response.text();
           console.error(`❌ Direct API error ${response.status}:`, errorText);
+          
+          // DEBUG: Let's analyze the error more carefully
+          console.log('🔍 DEBUG: Error analysis:');
+          console.log('🔍 DEBUG: - Status:', response.status);
+          console.log('🔍 DEBUG: - Error text length:', errorText.length);
+          console.log('🔍 DEBUG: - Error text preview:', errorText.substring(0, 500));
+          
+          // Try to parse the error JSON for more details
+          try {
+            const errorJson = JSON.parse(errorText);
+            console.log('🔍 DEBUG: Parsed error JSON:');
+            console.log('🔍 DEBUG: - Error code:', errorJson.error?.code);
+            console.log('🔍 DEBUG: - Error message:', errorJson.error?.message);
+            console.log('🔍 DEBUG: - Error status:', errorJson.error?.status);
+            console.log('🔍 DEBUG: - Error details:', errorJson.error?.details);
+            
+            // Check if it's a permission issue
+            if (errorJson.error?.details?.[0]?.reason === 'IAM_PERMISSION_DENIED') {
+              console.log('🔍 DEBUG: IAM Permission Denied detected!');
+              console.log('🔍 DEBUG: - Required permission:', errorJson.error.details[0].metadata?.permission);
+              console.log('🔍 DEBUG: - Resource:', errorJson.error.details[0].metadata?.resource);
+            }
+          } catch (parseError) {
+            console.log('🔍 DEBUG: Could not parse error as JSON:', parseError.message);
+          }
           
           if (response.status === 401) {
             throw new Error(`Direct API authentication failed: ${errorText}`);
