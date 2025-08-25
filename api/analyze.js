@@ -144,9 +144,9 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { GoogleAuth } = await import('google-auth-library');
+        const { ExternalAccountClient, GoogleAuth } = await import('google-auth-library');
         
-        // Create GoogleAuth with proper WIF configuration
+        // Step 1: Use ExternalAccountClient to exchange for GCP token
         const wifConfig = {
           type: 'external_account',
           audience,
@@ -157,26 +157,25 @@ async function initializeAuthentication(req) {
           }
         };
         
-        // Try GoogleAuth.fromJSON() first, fallback to constructor if needed
-        try {
-          authClient = GoogleAuth.fromJSON(wifConfig);
-          console.log('🔑 GoogleAuth created with fromJSON()');
-        } catch (error) {
-          console.log('🔑 GoogleAuth.fromJSON() failed, trying constructor approach...');
-          authClient = new GoogleAuth({
-            credentials: wifConfig,
-            scopes: ['https://www.googleapis.com/auth/cloud-platform']
-          });
-          console.log('🔑 GoogleAuth created with constructor');
-        }
+        console.log('🔑 Step 1: Creating ExternalAccountClient for token exchange...');
+        const idClient = ExternalAccountClient.fromJSON(wifConfig);
+        
+        console.log('🔑 Step 2: Exchanging OIDC token for GCP access token...');
+        const { token } = await idClient.getAccessToken();
+        console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
+        
+        // Step 3: Wrap that token in GoogleAuth
+        console.log('🔑 Step 3: Wrapping GCP token in GoogleAuth...');
+        authClient = new GoogleAuth();
+        authClient.setCredentials({ access_token: token });
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
         console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
-        const { token } = await authClient.getAccessToken();
-        console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
+        const { token: tokenCheck } = await authClient.getAccessToken();
+        console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck?.length || 0);
 
         // CRITICAL: Verify the GoogleAuth is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
@@ -231,9 +230,9 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { GoogleAuth } = await import('google-auth-library');
+        const { ExternalAccountClient, GoogleAuth } = await import('google-auth-library');
         
-        // Create GoogleAuth with proper WIF configuration
+        // Step 1: Use ExternalAccountClient to exchange for GCP token
         const wifConfig2 = {
           type: 'external_account',
           audience: audience2,
@@ -244,26 +243,25 @@ async function initializeAuthentication(req) {
           }
         };
         
-        // Try GoogleAuth.fromJSON() first, fallback to constructor if needed
-        try {
-          authClient = GoogleAuth.fromJSON(wifConfig2);
-          console.log('🔑 GoogleAuth created with fromJSON()');
-        } catch (error) {
-          console.log('🔑 GoogleAuth.fromJSON() failed, trying constructor approach...');
-          authClient = new GoogleAuth({
-            credentials: wifConfig2,
-            scopes: ['https://www.googleapis.com/auth/cloud-platform']
-          });
-          console.log('🔑 DEBUG: GoogleAuth created with constructor');
-        }
+        console.log('🔑 Step 1: Creating ExternalAccountClient for token exchange...');
+        const idClient2 = ExternalAccountClient.fromJSON(wifConfig2);
+        
+        console.log('🔑 Step 2: Exchanging OIDC token for GCP access token...');
+        const { token: token2 } = await idClient2.getAccessToken();
+        console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
+        
+        // Step 3: Wrap that token in GoogleAuth
+        console.log('🔑 Step 3: Wrapping GCP token in GoogleAuth...');
+        authClient = new GoogleAuth();
+        authClient.setCredentials({ access_token: token2 });
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
         console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
-        const { token: token2 } = await authClient.getAccessToken();
-        console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
+        const { token: tokenCheck2 } = await authClient.getAccessToken();
+        console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck2?.length || 0);
 
         // CRITICAL: Verify the GoogleAuth is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
