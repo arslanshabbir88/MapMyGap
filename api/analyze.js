@@ -26,51 +26,50 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
-import { GoogleAuth } from 'google-auth-library';
+import { ExternalAccountClient } from 'google-auth-library';
+import { getVercelOidcToken } from '@vercel/functions/oidc';
 import crypto from 'crypto';
 
-// Initialize Google Auth with Workload Identity Federation
-let auth;
-if (process.env.VERCEL_OIDC_TOKEN || process.env.OIDC_TOKEN) {
-  // Use Workload Identity Federation with OIDC token
-  auth = new GoogleAuth({
-    projectId: process.env.GCP_PROJECT_ID,
-    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    // Workload Identity Federation configuration
-    workloadIdentityPool: process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
-    workloadIdentityProvider: process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
-    serviceAccountEmail: process.env.GCP_SERVICE_ACCOUNT_EMAIL,
-    // Get OIDC token from Vercel environment
-    oidcToken: process.env.VERCEL_OIDC_TOKEN || process.env.OIDC_TOKEN
+// Initialize External Account Client for Workload Identity Federation
+let authClient;
+try {
+  authClient = ExternalAccountClient.fromJSON({
+    type: 'external_account',
+    audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+    subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+    token_url: 'https://sts.googleapis.com/v1/token',
+    service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+    subject_token_supplier: {
+      // Use the Vercel OIDC token as the subject token
+      getSubjectToken: getVercelOidcToken,
+    },
   });
-  console.log('🔑 Using Workload Identity Federation with OIDC token');
-} else {
-  // Fallback to default authentication (for local development)
-  auth = new GoogleAuth({
-    projectId: process.env.GCP_PROJECT_ID,
-    scopes: ['https://www.googleapis.com/auth/cloud-platform']
-  });
-  console.log('🔑 Using default Google Auth (no OIDC token available)');
+  console.log('🔑 External Account Client initialized with Vercel OIDC');
+} catch (error) {
+  console.log('❌ Failed to initialize External Account Client:', error.message);
+  console.log('🔑 Falling back to default authentication');
+  authClient = null;
 }
 
-// Initialize Vertex AI with exchanged credentials
+// Initialize Vertex AI with proper authentication
 const vertexAI = new VertexAI({
   project: process.env.GCP_PROJECT_ID,
   location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-  auth: auth
+  googleAuthOptions: authClient ? {
+    authClient,
+    projectId: process.env.GCP_PROJECT_ID,
+  } : undefined
 });
 
 // Debug environment variables for Workload Identity Federation
-console.log('🔑 DEBUG: Workload Identity Federation Configuration:');
+console.log('🔑 DEBUG: Vercel OIDC Federation Configuration:');
 console.log('🔑 GCP_PROJECT_ID exists:', !!process.env.GCP_PROJECT_ID);
 console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID);
 console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID);
 console.log('🔑 GCP_SERVICE_ACCOUNT_EMAIL exists:', !!process.env.GCP_SERVICE_ACCOUNT_EMAIL);
 console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
 console.log('🔑 GCP_PROJECT_NUMBER exists:', !!process.env.GCP_PROJECT_NUMBER);
-console.log('🔑 VERCEL_OIDC_TOKEN exists:', !!process.env.VERCEL_OIDC_TOKEN);
-console.log('🔑 OIDC_TOKEN exists:', !!process.env.OIDC_TOKEN);
-console.log('🔑 Using Google Auth with Workload Identity Federation for authentication');
+console.log('🔑 Using External Account Client with Vercel OIDC for authentication');
 
 
 
