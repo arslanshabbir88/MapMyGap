@@ -5909,7 +5909,7 @@ export default async function handler(req, res) {
     
     vertexAI = new VertexAI({
       authClient: authClient, // Pass IdentityPoolClient directly
-      projectId: process.env.GCP_PROJECT_ID,
+      project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global', // Use 'global' as fallback
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
@@ -5926,7 +5926,7 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: Fallback - GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     
     vertexAI = new VertexAI({
-      projectId: process.env.GCP_PROJECT_ID,
+      project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
     });
     console.log('🔑 Vertex AI initialized with default authentication (fallback)');
