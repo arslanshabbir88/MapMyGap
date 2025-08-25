@@ -143,7 +143,7 @@ async function initializeAuthentication(req) {
         const audience = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience);
 
-        const { IdentityPoolClient } = await import('google-auth-library');
+        const { ExternalAccountClient } = await import('google-auth-library');
         const identityConfig = {
           type: 'external_account',
           audience,
@@ -154,8 +154,8 @@ async function initializeAuthentication(req) {
             access_token: headerToken
           }
         };
-        authClient = IdentityPoolClient.fromJSON(identityConfig);
-        console.log('🔑 IdentityPoolClient created with fromJSON()');
+        authClient = ExternalAccountClient.fromJSON(identityConfig);
+        console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
@@ -211,7 +211,7 @@ async function initializeAuthentication(req) {
         const audience2 = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
-        const { IdentityPoolClient } = await import('google-auth-library');
+        const { ExternalAccountClient } = await import('google-auth-library');
         const identityConfig2 = {
           type: 'external_account',
           audience: audience2,
@@ -222,8 +222,8 @@ async function initializeAuthentication(req) {
             access_token: oidcToken
           }
         };
-        authClient = IdentityPoolClient.fromJSON(identityConfig2);
-        console.log('🔑 IdentityPoolClient created with fromJSON()');
+        authClient = ExternalAccountClient.fromJSON(identityConfig2);
+        console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
