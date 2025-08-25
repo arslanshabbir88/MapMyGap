@@ -28,6 +28,7 @@
 import { VertexAI } from '@google-cloud/vertexai';
 import { ExternalAccountClient, GoogleAuth } from 'google-auth-library';
 import { getVercelOidcToken } from '@vercel/functions/oidc';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 import crypto from 'crypto';
 
 // Initialize External Account Client for Workload Identity Federation
@@ -54,30 +55,21 @@ try {
 // Initialize Vertex AI with proper authentication
 let vertexAI;
 if (authClient) {
-        // Use authenticated External Account Client with explicit auth
+        // Use authenticated External Account Client with Google AI SDK
       const googleAuth = new GoogleAuth({
         authClient,
         projectId: process.env.GCP_PROJECT_ID,
       });
       
-      // CRITICAL: Initialize Vertex AI with explicit credentials
-      vertexAI = new VertexAI({
-        project: process.env.GCP_PROJECT_ID,
-        location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-        googleAuthOptions: {
-          authClient: googleAuth,
-          projectId: process.env.GCP_PROJECT_ID,
-        }
+      // CRITICAL: Use Google AI SDK directly with authenticated credentials
+      const genAI = new GoogleGenerativeAI({
+        apiKey: 'dummy-key', // Will be overridden by authClient
+        authClient: authClient,
+        projectId: process.env.GCP_PROJECT_ID,
       });
       
-      // CRITICAL: Force Vertex AI to use our authenticated client
-      vertexAI.authClient = authClient;
-      vertexAI.googleAuth = googleAuth;
-      
-      // CRITICAL: Set the credentials explicitly on the client
-      if (vertexAI.preview && vertexAI.preview.getGenerativeModel) {
-        vertexAI.preview.authClient = authClient;
-      }
+      // Store the Google AI SDK instance for later use
+      vertexAI = genAI;
   console.log('🔑 Vertex AI initialized with authenticated External Account Client');
 } else {
   // Fallback to default authentication
@@ -4386,8 +4378,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
 
     const optimalTokenLimit = calculateOptimalTokenLimit(fileContent, filteredFrameworkData);
     
-    // Initialize Vertex AI model with optimal token limit
-    const model = vertexAI.preview.getGenerativeModel({ 
+    // Initialize Google AI SDK model with optimal token limit
+    const model = vertexAI.getGenerativeModel({ 
       model: "gemini-1.5-flash-002",
       generationConfig: {
         maxOutputTokens: optimalTokenLimit,
