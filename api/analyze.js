@@ -6018,40 +6018,47 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: Using custom auth client for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
-    console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-    console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
-    console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
-    console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
-    console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
     
-    console.log('🔑 DEBUG: About to create Vertex AI with authenticated client...');
-    console.log('🔑 DEBUG: authClient type:', typeof authClient);
-    console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-    console.log('🔑 DEBUG: authClient methods:', Object.getOwnPropertyNames(authClient).filter(name => typeof authClient[name] === 'function'));
+    // CRITICAL: Extract the raw GCP access token from our custom auth client
+    const rawToken = authClient.accessToken;
+    console.log('🔑 DEBUG: Raw GCP access token extracted, length:', rawToken?.length || 0);
     
-    vertexAI = new VertexAI({
-      project: process.env.GCP_PROJECT_ID,
-      location: process.env.GOOGLE_CLOUD_LOCATION || 'global', // Use 'global' as fallback
-      authClient: authClient, // Pass ExternalAccountClient directly (this is the critical part)
-    });
-    console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
+    // CRITICAL: Create Vertex AI with raw token in credentials instead of authClient
+    console.log('🔑 DEBUG: Creating Vertex AI with raw GCP token in credentials...');
     
-    // CRITICAL: Verify the authenticated client is properly set
-    console.log('🔑 DEBUG: Vertex AI authClient type:', typeof vertexAI.authClient);
-    console.log('🔑 DEBUG: Vertex AI project:', vertexAI.project);
-    console.log('🔑 DEBUG: Vertex AI location:', vertexAI.location);
-    console.log('🔑 DEBUG: Vertex AI authClient exists:', !!vertexAI.authClient);
-    console.log('🔑 DEBUG: Vertex AI credentials exists:', !!vertexAI.credentials);
+    try {
+      vertexAI = new VertexAI({
+        project: process.env.GCP_PROJECT_ID,
+        location: process.env.GOOGLE_CLOUD_LOCATION || 'global',
+        // CRITICAL: Pass the raw token directly in credentials instead of authClient
+        credentials: {
+          access_token: rawToken,
+          token_type: 'Bearer'
+        }
+      });
+      
+      console.log('🔑 DEBUG: Vertex AI created with raw token credentials');
+      console.log('🔑 DEBUG: vertexAI exists:', !!vertexAI);
+      console.log('🔑 DEBUG: vertexAI type:', typeof vertexAI);
+      console.log('🔑 DEBUG: vertexAI.preview exists:', !!vertexAI?.preview);
+      console.log('🔑 DEBUG: vertexAI.preview.getGenerativeModel exists:', !!vertexAI?.preview?.getGenerativeModel);
+      
+    } catch (error) {
+      console.error('❌ Failed to create Vertex AI with raw token credentials:', error);
+      // Fallback to default authentication
+      vertexAI = new VertexAI({
+        project: process.env.GCP_PROJECT_ID,
+        location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
+      });
+      console.log('🔑 DEBUG: Fallback to default Vertex AI authentication');
+    }
+    
   } else {
-    // Fallback to default authentication
-    console.log('🔑 DEBUG: Fallback - GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
-    console.log('🔑 DEBUG: Fallback - GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
-    
+    console.log('🔑 DEBUG: Authentication failed, using default Vertex AI authentication');
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
     });
-    console.log('🔑 Vertex AI initialized with default authentication (fallback)');
   }
 
   try {
