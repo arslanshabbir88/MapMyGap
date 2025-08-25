@@ -55,17 +55,15 @@ try {
 // Initialize Vertex AI with proper authentication
 let vertexAI;
 if (authClient) {
-        // Use authenticated External Account Client with Google AI SDK
-      const googleAuth = new GoogleAuth({
-        authClient,
-        projectId: process.env.GCP_PROJECT_ID,
-      });
-      
-      // CRITICAL: Use Vertex AI with Application Default Credentials
+        // CRITICAL: Use Vertex AI with our authenticated External Account Client
       // This properly integrates with Workload Identity Federation
       vertexAI = new VertexAI({
         project: process.env.GCP_PROJECT_ID,
         location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+        googleAuthOptions: {
+          authClient: authClient, // CRITICAL: Pass our authenticated client
+          projectId: process.env.GCP_PROJECT_ID,
+        }
       });
   console.log('🔑 Vertex AI initialized with authenticated External Account Client');
 } else {
