@@ -159,23 +159,15 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Ensure credentials are ready and resolve a refreshable client
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
-        await authClient.getAccessToken();
-        const resolvedClient = await authClient.getClient();
-        console.log('🔑 DEBUG: Resolved client obtained:', resolvedClient?.constructor?.name || typeof resolvedClient);
+        // CRITICAL: Ensure credentials are ready by calling getAccessToken()
+        console.log('🔑 DEBUG: Ensuring IdentityPoolClient credentials are ready...');
+        const { token } = await authClient.getAccessToken();
+        console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
 
-        // CRITICAL: Verify the External Account Client is properly configured
-        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
-        console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
-        console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
-        console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
-        console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
-        console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
-
-        // Use the resolved client for Vertex AI
-        authClient = resolvedClient;
-        console.log('🔑 DEBUG: Final authClient constructor:', authClient?.constructor?.name || typeof authClient);
+        // CRITICAL: Verify the IdentityPoolClient is properly configured
+        console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+        console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
+        console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -234,23 +226,15 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Ensure credentials are ready and resolve a refreshable client
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
-        await authClient.getAccessToken();
-        const resolvedClient = await authClient.getClient();
-        console.log('🔑 DEBUG: Resolved client obtained:', resolvedClient?.constructor?.name || typeof resolvedClient);
+        // CRITICAL: Ensure credentials are ready by calling getAccessToken()
+        console.log('🔑 DEBUG: Ensuring IdentityPoolClient credentials are ready...');
+        const { token: token2 } = await authClient.getAccessToken();
+        console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
 
-        // CRITICAL: Verify the External Account Client is properly configured
-        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
-        console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
-        console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
-        console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
-        console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
-        console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
-
-        // Use the resolved client for Vertex AI
-        authClient = resolvedClient;
-        console.log('🔑 DEBUG: Final authClient constructor:', authClient?.constructor?.name || typeof authClient);
+        // CRITICAL: Verify the IdentityPoolClient is properly configured
+        console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+        console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
+        console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
         return true; // Authentication successful
         
       } catch (tokenError) {
