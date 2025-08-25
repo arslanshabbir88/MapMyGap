@@ -150,8 +150,8 @@ async function initializeAuthentication(req) {
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
           service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-          // Supply the Vercel OIDC token directly as the subject token
-          subject_token_supplier: async () => headerToken,
+          // Supply the Vercel OIDC token via supplier object API
+          subject_token_supplier: { getSubjectToken: async () => headerToken },
           scopes: ['https://www.googleapis.com/auth/cloud-platform'],
         };
         authClient = ExternalAccountClient.fromJSON(wifConfig);
@@ -226,7 +226,7 @@ async function initializeAuthentication(req) {
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
           service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-          subject_token_supplier: async () => oidcToken,
+          subject_token_supplier: { getSubjectToken: async () => oidcToken },
           scopes: ['https://www.googleapis.com/auth/cloud-platform'],
         };
         authClient = ExternalAccountClient.fromJSON(wifConfig2);
