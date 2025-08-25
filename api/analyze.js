@@ -130,21 +130,19 @@ async function initializeAuthentication(req) {
       // Exchange header token for GCP access token
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
-        // CRITICAL: Create OAuth2 client directly with the access token
-        const { OAuth2Client } = await import('google-auth-library');
-        authClient = new OAuth2Client();
-        authClient.setCredentials({
-          access_token: gcpAccessToken,
-          scope: 'https://www.googleapis.com/auth/cloud-platform'
+        // CRITICAL: Create GoogleAuth client with the access token
+        const { GoogleAuth } = await import('google-auth-library');
+        authClient = new GoogleAuth({
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          accessToken: gcpAccessToken
         });
-        console.log('🔑 OAuth2Client created with GCP access token from header');
+        console.log('🔑 GoogleAuth created with GCP access token from header');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Verify the OAuth2Client is properly configured
-        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
-        console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
-        console.log('🔑 DEBUG: authClient.credentials.access_token length:', authClient.credentials?.access_token?.length);
+        // CRITICAL: Verify the GoogleAuth client is properly configured
+        console.log('🔑 DEBUG: authClient.scopes:', authClient.scopes);
+        console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -178,21 +176,19 @@ async function initializeAuthentication(req) {
         gcpAccessToken = await getGcpAccessToken(oidcToken);
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
-        // CRITICAL: Create OAuth2 client directly with the access token
-        const { OAuth2Client } = await import('google-auth-library');
-        authClient = new OAuth2Client();
-        authClient.setCredentials({
-          access_token: gcpAccessToken,
-          scope: 'https://www.googleapis.com/auth/cloud-platform'
+        // CRITICAL: Create GoogleAuth client with the access token
+        const { GoogleAuth } = await import('google-auth-library');
+        authClient = new GoogleAuth({
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          accessToken: gcpAccessToken
         });
-        console.log('🔑 OAuth2Client created with GCP access token');
+        console.log('🔑 GoogleAuth created with GCP access token');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Verify the OAuth2Client is properly configured
-        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
-        console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
-        console.log('🔑 DEBUG: authClient.credentials.access_token length:', authClient.credentials?.access_token?.length);
+        // CRITICAL: Verify the GoogleAuth client is properly configured
+        console.log('🔑 DEBUG: authClient.scopes:', authClient.scopes);
+        console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
         return true; // Authentication successful
         
       } catch (tokenError) {
