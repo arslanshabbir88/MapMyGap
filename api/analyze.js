@@ -4683,11 +4683,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    // DEBUG: Try both locations to see which works
-    // Your env shows GOOGLE_CLOUD_LOCATION: global, so let's try that first
-    const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global) instead of forcing us-central1
-    // Try different models - some models have different availability in global location
-    const model = 'gemini-1.5-flash'; // Try gemini-1.5-flash (more commonly available in global)
+    // CRITICAL: Gemini models are NOT available in global location
+    // We MUST use a regional location like us-central1 for Gemini models
+    const location = 'us-central1'; // Force us-central1 for Gemini model compatibility
+    // Use a model that's definitely available in us-central1
+    const model = 'gemini-1.5-flash'; // This model exists in regional locations
     
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
