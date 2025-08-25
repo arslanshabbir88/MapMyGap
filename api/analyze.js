@@ -26,16 +26,38 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
+import { GoogleAuth } from 'google-auth-library';
 import crypto from 'crypto';
 
-// Initialize Vertex AI with Workload Identity Federation
+// Initialize Google Auth with Workload Identity Federation
+let auth;
+if (process.env.VERCEL_OIDC_TOKEN || process.env.OIDC_TOKEN) {
+  // Use Workload Identity Federation with OIDC token
+  auth = new GoogleAuth({
+    projectId: process.env.GCP_PROJECT_ID,
+    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    // Workload Identity Federation configuration
+    workloadIdentityPool: process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
+    workloadIdentityProvider: process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
+    serviceAccountEmail: process.env.GCP_SERVICE_ACCOUNT_EMAIL,
+    // Get OIDC token from Vercel environment
+    oidcToken: process.env.VERCEL_OIDC_TOKEN || process.env.OIDC_TOKEN
+  });
+  console.log('🔑 Using Workload Identity Federation with OIDC token');
+} else {
+  // Fallback to default authentication (for local development)
+  auth = new GoogleAuth({
+    projectId: process.env.GCP_PROJECT_ID,
+    scopes: ['https://www.googleapis.com/auth/cloud-platform']
+  });
+  console.log('🔑 Using default Google Auth (no OIDC token available)');
+}
+
+// Initialize Vertex AI with exchanged credentials
 const vertexAI = new VertexAI({
   project: process.env.GCP_PROJECT_ID,
   location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-  // Workload Identity Federation configuration
-  workloadIdentityPool: process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
-  workloadIdentityProvider: process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
-  serviceAccountEmail: process.env.GCP_SERVICE_ACCOUNT_EMAIL
+  auth: auth
 });
 
 // Debug environment variables for Workload Identity Federation
@@ -46,7 +68,9 @@ console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID exists:', !!process.env
 console.log('🔑 GCP_SERVICE_ACCOUNT_EMAIL exists:', !!process.env.GCP_SERVICE_ACCOUNT_EMAIL);
 console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
 console.log('🔑 GCP_PROJECT_NUMBER exists:', !!process.env.GCP_PROJECT_NUMBER);
-console.log('🔑 Using Workload Identity Federation for authentication');
+console.log('🔑 VERCEL_OIDC_TOKEN exists:', !!process.env.VERCEL_OIDC_TOKEN);
+console.log('🔑 OIDC_TOKEN exists:', !!process.env.OIDC_TOKEN);
+console.log('🔑 Using Google Auth with Workload Identity Federation for authentication');
 
 
 
