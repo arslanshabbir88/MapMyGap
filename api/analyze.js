@@ -130,9 +130,9 @@ async function initializeAuthentication(req) {
       // Exchange header token for GCP access token
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
-        // CRITICAL: Create External Account Client with proper configuration
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const externalAccountConfig = {
+        // CRITICAL: Create GoogleAuth client with external account credentials
+        const { GoogleAuth } = await import('google-auth-library');
+        const credentials = {
           type: "external_account",
           quota_project_id: process.env.GCP_PROJECT_ID,
           subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
@@ -144,8 +144,8 @@ async function initializeAuthentication(req) {
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         };
-        authClient = ExternalAccountClient.fromJSON(externalAccountConfig);
-        console.log('🔑 External Account Client created with fromJSON()');
+        authClient = new GoogleAuth({ credentials });
+        console.log('🔑 GoogleAuth client created with external account credentials');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
@@ -189,9 +189,9 @@ async function initializeAuthentication(req) {
         gcpAccessToken = await getGcpAccessToken(oidcToken);
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
-        // CRITICAL: Create External Account Client with proper configuration
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const externalAccountConfig = {
+        // CRITICAL: Create GoogleAuth client with external account credentials
+        const { GoogleAuth } = await import('google-auth-library');
+        const credentials = {
           type: "external_account",
           quota_project_id: process.env.GCP_PROJECT_ID,
           subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
@@ -203,8 +203,8 @@ async function initializeAuthentication(req) {
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         };
-        authClient = ExternalAccountClient.fromJSON(externalAccountConfig);
-        console.log('🔑 External Account Client created with fromJSON()');
+        authClient = new GoogleAuth({ credentials });
+        console.log('🔑 GoogleAuth client created with external account credentials');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
