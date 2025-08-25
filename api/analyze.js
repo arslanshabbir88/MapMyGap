@@ -159,14 +159,19 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring IdentityPoolClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
         const { token } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
 
-        // CRITICAL: Verify the IdentityPoolClient is properly configured
+        // CRITICAL: Verify the ExternalAccountClient is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
+        
+        // CRITICAL: Ensure the client is fully ready before returning
+        await authClient.getAccessToken(); // Force token refresh
+        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        
         return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -226,14 +231,19 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring IdentityPoolClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
         const { token: token2 } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
 
-        // CRITICAL: Verify the IdentityPoolClient is properly configured
+        // CRITICAL: Verify the ExternalAccountClient is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
+        
+        // CRITICAL: Ensure the client is fully ready before returning
+        await authClient.getAccessToken(); // Force token refresh
+        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        
         return { success: true, client: authClient }; // Return both success and client
         
       } catch (tokenError) {
@@ -5906,10 +5916,15 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
     console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
     
+    console.log('🔑 DEBUG: About to create Vertex AI with authenticated client...');
+    console.log('🔑 DEBUG: authClient type:', typeof authClient);
+    console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+    console.log('🔑 DEBUG: authClient methods:', Object.getOwnPropertyNames(authClient).filter(name => typeof authClient[name] === 'function'));
+    
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global', // Use 'global' as fallback
-      authClient: authClient, // Pass IdentityPoolClient directly (this is the critical part)
+      authClient: authClient, // Pass ExternalAccountClient directly (this is the critical part)
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
