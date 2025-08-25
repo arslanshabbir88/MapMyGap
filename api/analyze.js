@@ -130,8 +130,13 @@ async function initializeAuthentication(req) {
       // Exchange header token for GCP access token
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
-        authClient = new GoogleAuth().fromAPIKey(gcpAccessToken);
+        authClient = new GoogleAuth({
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          accessToken: gcpAccessToken
+        });
         console.log('🔑 GoogleAuth client created with GCP access token from header');
+        console.log('🔑 DEBUG: authClient type:', typeof authClient);
+        console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -166,8 +171,13 @@ async function initializeAuthentication(req) {
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
         // Create authenticated GoogleAuth client with the access token
-        authClient = new GoogleAuth().fromAPIKey(gcpAccessToken);
+        authClient = new GoogleAuth({
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          accessToken: gcpAccessToken
+        });
         console.log('🔑 GoogleAuth client created with GCP access token');
+        console.log('🔑 DEBUG: authClient type:', typeof authClient);
+        console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         return true; // Authentication successful
         
       } catch (tokenError) {
