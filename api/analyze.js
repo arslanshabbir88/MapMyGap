@@ -60,11 +60,16 @@ if (authClient) {
       vertexAI = new VertexAI({
         project: process.env.GCP_PROJECT_ID,
         location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-        googleAuthOptions: {
-          authClient: authClient, // CRITICAL: Pass our authenticated client
-          projectId: process.env.GCP_PROJECT_ID,
-        }
       });
+      
+      // CRITICAL: Set the authenticated client directly on the Vertex AI instance
+      // This ensures Vertex AI uses our WIF credentials for all API calls
+      vertexAI.authClient = authClient;
+      
+      // CRITICAL: Also set it on the preview client for model operations
+      if (vertexAI.preview) {
+        vertexAI.preview.authClient = authClient;
+      }
   console.log('🔑 Vertex AI initialized with authenticated External Account Client');
 } else {
   // Fallback to default authentication
