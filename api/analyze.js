@@ -144,7 +144,7 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { ExternalAccountClient, GoogleAuth } = await import('google-auth-library');
+        const { ExternalAccountClient, OAuth2Client } = await import('google-auth-library');
         
         // Step 1: Use ExternalAccountClient to exchange for GCP token
         const wifConfig = {
@@ -164,27 +164,27 @@ async function initializeAuthentication(req) {
         const { token } = await idClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
         
-        // Step 3: Wrap that token in GoogleAuth
-        console.log('🔑 Step 3: Wrapping GCP token in GoogleAuth...');
-        authClient = new GoogleAuth();
+        // Step 3: Wrap that token in OAuth2Client
+        console.log('🔑 Step 3: Wrapping GCP token in OAuth2Client...');
+        authClient = new OAuth2Client();
         authClient.setCredentials({ access_token: token });
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring OAuth2Client credentials are ready...');
         const { token: tokenCheck } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck?.length || 0);
 
-        // CRITICAL: Verify the GoogleAuth is properly configured
+        // CRITICAL: Verify the OAuth2Client is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
-        console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
+        console.log('🔑 DEBUG: authClient has setCredentials:', typeof authClient.setCredentials === 'function');
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: GoogleAuth fully initialized and ready');
+        console.log('🔑 DEBUG: OAuth2Client fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
@@ -230,7 +230,7 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { ExternalAccountClient, GoogleAuth } = await import('google-auth-library');
+        const { ExternalAccountClient, OAuth2Client } = await import('google-auth-library');
         
         // Step 1: Use ExternalAccountClient to exchange for GCP token
         const wifConfig2 = {
@@ -250,26 +250,26 @@ async function initializeAuthentication(req) {
         const { token: token2 } = await idClient2.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
         
-        // Step 3: Wrap that token in GoogleAuth
-        console.log('🔑 Step 3: Wrapping GCP token in GoogleAuth...');
-        authClient = new GoogleAuth();
+        // Step 3: Wrap that token in OAuth2Client
+        console.log('🔑 Step 3: Wrapping GCP token in OAuth2Client...');
+        authClient = new OAuth2Client();
         authClient.setCredentials({ access_token: token2 });
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring OAuth2Client credentials are ready...');
         const { token: tokenCheck2 } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck2?.length || 0);
 
-        // CRITICAL: Verify the GoogleAuth is properly configured
+        // CRITICAL: Verify the OAuth2Client is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-        console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
+        console.log('🔑 DEBUG: authClient has setCredentials:', typeof authClient.setCredentials === 'function');
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: GoogleAuth fully initialized and ready');
+        console.log('🔑 DEBUG: OAuth2Client fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
         
