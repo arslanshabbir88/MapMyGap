@@ -54,15 +54,20 @@ try {
 // Initialize Vertex AI with proper authentication
 let vertexAI;
 if (authClient) {
-  // Use authenticated External Account Client
-  vertexAI = new VertexAI({
-    project: process.env.GCP_PROJECT_ID,
-    location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-    googleAuthOptions: {
-      authClient,
-      projectId: process.env.GCP_PROJECT_ID,
-    }
-  });
+        // Use authenticated External Account Client with explicit auth
+      const googleAuth = new GoogleAuth({
+        authClient,
+        projectId: process.env.GCP_PROJECT_ID,
+      });
+      
+      vertexAI = new VertexAI({
+        project: process.env.GCP_PROJECT_ID,
+        location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+        googleAuthOptions: {
+          authClient: googleAuth,
+          projectId: process.env.GCP_PROJECT_ID,
+        }
+      });
   console.log('🔑 Vertex AI initialized with authenticated External Account Client');
 } else {
   // Fallback to default authentication
