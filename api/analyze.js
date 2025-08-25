@@ -130,19 +130,20 @@ async function initializeAuthentication(req) {
       // Exchange header token for GCP access token
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
-        // CRITICAL: Create GoogleAuth client with the access token
-        const { GoogleAuth } = await import('google-auth-library');
-        authClient = new GoogleAuth({
-          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-          accessToken: gcpAccessToken
+        // CRITICAL: Create OAuth2Client with the STS access token
+        const { OAuth2Client } = await import('google-auth-library');
+        authClient = new OAuth2Client();
+        authClient.setCredentials({
+          access_token: gcpAccessToken,  // your STS token from Vercel
         });
-        console.log('🔑 GoogleAuth created with GCP access token from header');
+        console.log('🔑 OAuth2Client created with STS access token from header');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Verify the GoogleAuth client is properly configured
-        console.log('🔑 DEBUG: authClient.scopes:', authClient.scopes);
-        console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
+        // CRITICAL: Verify the OAuth2Client is properly configured
+        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+        console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
+        console.log('🔑 DEBUG: authClient.credentials.access_token length:', authClient.credentials?.access_token?.length);
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -176,19 +177,20 @@ async function initializeAuthentication(req) {
         gcpAccessToken = await getGcpAccessToken(oidcToken);
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
-        // CRITICAL: Create GoogleAuth client with the access token
-        const { GoogleAuth } = await import('google-auth-library');
-        authClient = new GoogleAuth({
-          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-          accessToken: gcpAccessToken
+        // CRITICAL: Create OAuth2Client with the STS access token
+        const { OAuth2Client } = await import('google-auth-library');
+        authClient = new OAuth2Client();
+        authClient.setCredentials({
+          access_token: gcpAccessToken,  // your STS token from Vercel
         });
-        console.log('🔑 GoogleAuth created with GCP access token');
+        console.log('🔑 OAuth2Client created with STS access token');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Verify the GoogleAuth client is properly configured
-        console.log('🔑 DEBUG: authClient.scopes:', authClient.scopes);
-        console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
+        // CRITICAL: Verify the OAuth2Client is properly configured
+        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+        console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
+        console.log('🔑 DEBUG: authClient.credentials.access_token length:', authClient.credentials?.access_token?.length);
         return true; // Authentication successful
         
       } catch (tokenError) {
@@ -5852,17 +5854,17 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient && gcpAccessToken) {
-    console.log('🔑 DEBUG: Using GoogleAuth for Vertex AI:', typeof authClient);
+    console.log('🔑 DEBUG: Using OAuth2Client for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-    console.log('🔑 DEBUG: authClient scopes:', authClient.scopes);
-    console.log('🔑 DEBUG: authClient accessToken exists:', !!authClient.accessToken);
+    console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+    console.log('🔑 DEBUG: authClient.credentials.access_token exists:', !!authClient.credentials?.access_token);
     
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-      credentials: authClient, // Use credentials instead of authClient
+      authClient: authClient, // Use authClient with OAuth2Client
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
