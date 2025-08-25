@@ -4683,17 +4683,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    // CRITICAL: Vertex AI API is enabled, but model might not exist
-    // Let's try a model that definitely exists in Vertex AI
+    // ENTERPRISE CHOICE: Using latest Gemini 2.5 Flash for professional compliance analysis
     const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global)
-    // Try a model that definitely exists in Vertex AI global location
-    const model = 'gemini-1.5-flash'; // This model definitely exists in global location
+    // Using the latest and most professional model available in Vertex AI
+    const model = 'gemini-2.5-flash'; // Latest 2.5 generation, enterprise-grade, cost-effective
     
-    // DEBUG: Let's also try to see what models are actually available
-    console.log('🔍 DEBUG: Trying to list available models...');
-    
-    // CRITICAL: The issue is that the service account doesn't have the right IAM role
-    // We need to add the 'Vertex AI User' role to the service account
+    // DEBUG: Using enterprise-grade Gemini 2.5 Flash model
+    console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash for professional compliance analysis');
     
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
