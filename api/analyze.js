@@ -4683,13 +4683,21 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    // CRITICAL: Vertex AI API requires us-central1, not global
-    const location = 'us-central1'; // Force us-central1 for API compatibility
+    // DEBUG: Try both locations to see which works
+    // Your env shows GOOGLE_CLOUD_LOCATION: global, so let's try that first
+    const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global) instead of forcing us-central1
     // Try different model - some models have different permission requirements
     const model = 'gemini-1.5-pro'; // Changed from gemini-1.5-flash-002
     
-    // Direct Vertex AI API endpoint - MUST use us-central1
-    const apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    // Direct Vertex AI API endpoint - handle both global and regional locations
+    let apiUrl;
+    if (location === 'global') {
+      // Global location uses different URL format
+      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    } else {
+      // Regional locations use location-prefixed URL
+      apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    }
     
     console.log('🔗 DEBUG: Direct API URL:', apiUrl);
 
