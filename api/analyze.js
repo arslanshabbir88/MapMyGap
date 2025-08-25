@@ -164,26 +164,67 @@ async function initializeAuthentication(req) {
         const { token } = await idClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
         
-        // Step 3: Pass ExternalAccountClient directly to Vertex AI
-        console.log('🔑 Step 3: Passing ExternalAccountClient directly to Vertex AI...');
-        authClient = idClient; // Pass the working client directly
+        // Step 3: Create a custom auth client with the working token
+        console.log('🔑 Step 3: Creating custom auth client with GCP token...');
+        
+        // Create a custom auth client that implements the required interface
+        const customAuthClient = {
+          // Store the token
+          accessToken: token,
+          
+          // Required method: getAccessToken
+          async getAccessToken() {
+            return { token: this.accessToken };
+          },
+          
+          // Required method: request (for HTTP calls)
+          async request(options) {
+            // Add authorization header to requests
+            if (!options.headers) options.headers = {};
+            options.headers['Authorization'] = `Bearer ${this.accessToken}`;
+            
+            // Use fetch for the actual request
+            const response = await fetch(options.url, {
+              method: options.method || 'GET',
+              headers: options.headers,
+              body: options.body
+            });
+            
+            return response;
+          },
+          
+          // Required method: getRequestHeaders
+          getRequestHeaders() {
+            return {
+              'Authorization': `Bearer ${this.accessToken}`
+            };
+          },
+          
+          // Required method: isExpired
+          isExpired() {
+            return false; // We'll handle token refresh manually if needed
+          }
+        };
+        
+        authClient = customAuthClient;
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring custom auth client credentials are ready...');
         const { token: tokenCheck } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck?.length || 0);
 
-        // CRITICAL: Verify the ExternalAccountClient is properly configured
+        // CRITICAL: Verify the custom auth client is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
+        console.log('🔑 DEBUG: authClient has request:', typeof authClient.request === 'function');
         console.log('🔑 DEBUG: authClient methods:', Object.getOwnPropertyNames(authClient).filter(name => typeof authClient[name] === 'function'));
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        console.log('🔑 DEBUG: Custom auth client fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
@@ -249,26 +290,67 @@ async function initializeAuthentication(req) {
         const { token: token2 } = await idClient2.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
         
-        // Step 3: Pass ExternalAccountClient directly to Vertex AI
-        console.log('🔑 Step 3: Passing ExternalAccountClient directly to Vertex AI...');
-        authClient = idClient2; // Pass the working client directly
+        // Step 3: Create a custom auth client with the working token
+        console.log('🔑 Step 3: Creating custom auth client with GCP token...');
+        
+        // Create a custom auth client that implements the required interface
+        const customAuthClient2 = {
+          // Store the token
+          accessToken: token2,
+          
+          // Required method: getAccessToken
+          async getAccessToken() {
+            return { token: this.accessToken };
+          },
+          
+          // Required method: request (for HTTP calls)
+          async request(options) {
+            // Add authorization header to requests
+            if (!options.headers) options.headers = {};
+            options.headers['Authorization'] = `Bearer ${this.accessToken}`;
+            
+            // Use fetch for the actual request
+            const response = await fetch(options.url, {
+              method: options.method || 'GET',
+              headers: options.headers,
+              body: options.body
+            });
+            
+            return response;
+          },
+          
+          // Required method: getRequestHeaders
+          getRequestHeaders() {
+            return {
+              'Authorization': `Bearer ${this.accessToken}`
+            };
+          },
+          
+          // Required method: isExpired
+          isExpired() {
+            return false; // We'll handle token refresh manually if needed
+          }
+        };
+        
+        authClient = customAuthClient2;
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring custom auth client credentials are ready...');
         const { token: tokenCheck2 } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck2?.length || 0);
 
-        // CRITICAL: Verify the ExternalAccountClient is properly configured
+        // CRITICAL: Verify the custom auth client is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
+        console.log('🔑 DEBUG: authClient has request:', typeof authClient.request === 'function');
         console.log('🔑 DEBUG: authClient methods:', Object.getOwnPropertyNames(authClient).filter(name => typeof authClient[name] === 'function'));
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        console.log('🔑 DEBUG: Custom auth client fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
         
@@ -5933,7 +6015,7 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient) {
-    console.log('🔑 DEBUG: Using ExternalAccountClient directly for Vertex AI:', typeof authClient);
+    console.log('🔑 DEBUG: Using custom auth client for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
