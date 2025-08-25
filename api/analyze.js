@@ -143,34 +143,40 @@ async function initializeAuthentication(req) {
         const audience = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience);
 
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const identityConfig = {
-          type: 'external_account',
-          audience,
-          subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-          token_url: 'https://sts.googleapis.com/v1/token',
-          subject_token_supplier: {
-            getSubjectToken: async () => headerToken
+        // CRITICAL: Create a proper auth client that Vertex AI can use
+        const { GoogleAuth } = await import('google-auth-library');
+        
+        // Create GoogleAuth with explicit credentials
+        authClient = new GoogleAuth({
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          credentials: {
+            type: 'external_account',
+            audience,
+            subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+            token_url: 'https://sts.googleapis.com/v1/token',
+            subject_token_supplier: {
+              getSubjectToken: async () => headerToken
+            }
           }
-        };
-        authClient = ExternalAccountClient.fromJSON(identityConfig);
-        console.log('🔑 ExternalAccountClient created with fromJSON()');
+        });
+        
+        console.log('🔑 GoogleAuth created with explicit credentials');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
         const { token } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
 
-        // CRITICAL: Verify the ExternalAccountClient is properly configured
+        // CRITICAL: Verify the GoogleAuth is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        console.log('🔑 DEBUG: GoogleAuth fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
@@ -215,34 +221,40 @@ async function initializeAuthentication(req) {
         const audience2 = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const identityConfig2 = {
-          type: 'external_account',
-          audience: audience2,
-          subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-          token_url: 'https://sts.googleapis.com/v1/token',
-          subject_token_supplier: {
-            getSubjectToken: async () => oidcToken
+        // CRITICAL: Create a proper auth client that Vertex AI can use
+        const { GoogleAuth } = await import('google-auth-library');
+        
+        // Create GoogleAuth with explicit credentials
+        authClient = new GoogleAuth({
+          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          credentials: {
+            type: 'external_account',
+            audience: audience2,
+            subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
+            token_url: 'https://sts.googleapis.com/v1/token',
+            subject_token_supplier: {
+              getSubjectToken: async () => oidcToken
+            }
           }
-        };
-        authClient = ExternalAccountClient.fromJSON(identityConfig2);
-        console.log('🔑 ExternalAccountClient created with fromJSON()');
+        });
+        
+        console.log('🔑 GoogleAuth created with explicit credentials');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
         const { token: token2 } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
 
-        // CRITICAL: Verify the ExternalAccountClient is properly configured
+        // CRITICAL: Verify the GoogleAuth is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        console.log('🔑 DEBUG: GoogleAuth fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
         
