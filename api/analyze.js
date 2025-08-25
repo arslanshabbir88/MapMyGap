@@ -4683,11 +4683,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    // DEBUG: Let's go back to global and fix the actual issue
-    // Your env shows GOOGLE_CLOUD_LOCATION: global, so let's use that
+    // CRITICAL: The issue is Vertex AI API not enabled or model not available
+    // Let's try the most basic approach - use a model that definitely exists
     const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global)
-    // Try a model that might actually be available in global location
-    const model = 'text-bison-001'; // Try text-bison-001 (more commonly available globally)
+    // Try the most basic model that should definitely be available
+    const model = 'text-bison'; // Remove version number - try base model
     
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
