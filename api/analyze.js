@@ -130,9 +130,9 @@ async function initializeAuthentication(req) {
       // Exchange header token for GCP access token
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
-        // CRITICAL: Create GoogleAuth client with external account credentials
-        const { GoogleAuth } = await import('google-auth-library');
-        const credentials = {
+        // CRITICAL: Create ExternalAccountClient with proper WIF configuration
+        const { ExternalAccountClient } = await import('google-auth-library');
+        const wifConfig = {
           type: "external_account",
           quota_project_id: process.env.GCP_PROJECT_ID,
           subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
@@ -144,11 +144,17 @@ async function initializeAuthentication(req) {
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         };
-        authClient = new GoogleAuth({ credentials });
-        console.log('🔑 GoogleAuth client created with external account credentials');
+        authClient = ExternalAccountClient.fromJSON(wifConfig);
+        console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
+        // CRITICAL: Ensure credentials are ready and resolve a refreshable client
+        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        await authClient.getAccessToken();
+        const resolvedClient = await authClient.getClient();
+        console.log('🔑 DEBUG: Resolved client obtained:', resolvedClient?.constructor?.name || typeof resolvedClient);
+
         // CRITICAL: Verify the External Account Client is properly configured
         console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
         console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
@@ -156,6 +162,10 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
         console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
         console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
+
+        // Use the resolved client for Vertex AI
+        authClient = resolvedClient;
+        console.log('🔑 DEBUG: Final authClient constructor:', authClient?.constructor?.name || typeof authClient);
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -189,9 +199,9 @@ async function initializeAuthentication(req) {
         gcpAccessToken = await getGcpAccessToken(oidcToken);
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
-        // CRITICAL: Create GoogleAuth client with external account credentials
-        const { GoogleAuth } = await import('google-auth-library');
-        const credentials = {
+        // CRITICAL: Create ExternalAccountClient with proper WIF configuration
+        const { ExternalAccountClient } = await import('google-auth-library');
+        const wifConfig = {
           type: "external_account",
           quota_project_id: process.env.GCP_PROJECT_ID,
           subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
@@ -203,11 +213,17 @@ async function initializeAuthentication(req) {
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         };
-        authClient = new GoogleAuth({ credentials });
-        console.log('🔑 GoogleAuth client created with external account credentials');
+        authClient = ExternalAccountClient.fromJSON(wifConfig);
+        console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
+        // CRITICAL: Ensure credentials are ready and resolve a refreshable client
+        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        await authClient.getAccessToken();
+        const resolvedClient = await authClient.getClient();
+        console.log('🔑 DEBUG: Resolved client obtained:', resolvedClient?.constructor?.name || typeof resolvedClient);
+
         // CRITICAL: Verify the External Account Client is properly configured
         console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
         console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
@@ -215,6 +231,10 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
         console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
         console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
+
+        // Use the resolved client for Vertex AI
+        authClient = resolvedClient;
+        console.log('🔑 DEBUG: Final authClient constructor:', authClient?.constructor?.name || typeof authClient);
         return true; // Authentication successful
         
       } catch (tokenError) {
