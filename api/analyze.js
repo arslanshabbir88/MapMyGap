@@ -137,6 +137,11 @@ async function initializeAuthentication(req) {
         console.log('🔑 GoogleAuth client created with GCP access token from header');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+        
+        // CRITICAL: Get the actual auth client instance
+        const actualAuthClient = await authClient.getClient();
+        console.log('🔑 DEBUG: actualAuthClient type:', typeof actualAuthClient);
+        console.log('🔑 DEBUG: actualAuthClient constructor:', actualAuthClient.constructor.name);
         return true; // Authentication successful
       } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
@@ -178,6 +183,11 @@ async function initializeAuthentication(req) {
         console.log('🔑 GoogleAuth client created with GCP access token');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
+        
+        // CRITICAL: Get the actual auth client instance
+        const actualAuthClient = await authClient.getClient();
+        console.log('🔑 DEBUG: actualAuthClient type:', typeof actualAuthClient);
+        console.log('🔑 DEBUG: actualAuthClient constructor:', actualAuthClient.constructor.name);
         return true; // Authentication successful
         
       } catch (tokenError) {
@@ -5841,10 +5851,14 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient && gcpAccessToken) {
+    // CRITICAL: Get the actual auth client instance for Vertex AI
+    const actualAuthClient = await authClient.getClient();
+    console.log('🔑 DEBUG: Using actualAuthClient for Vertex AI:', typeof actualAuthClient);
+    
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-      authClient: authClient, // Use the authenticated GoogleAuth client
+      authClient: actualAuthClient, // Use the actual authenticated client
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
