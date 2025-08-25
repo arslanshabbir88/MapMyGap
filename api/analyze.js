@@ -102,7 +102,7 @@ let authClient = null;
 
 // CRITICAL: Check if we have access to the request object for header inspection
 // This will be called from the main handler function
-function initializeAuthentication(req) {
+async function initializeAuthentication(req) {
   try {
     // CRITICAL: First, inspect Vercel OIDC headers
     const headerToken = inspectVercelOidcHeaders(req);
@@ -110,17 +110,20 @@ function initializeAuthentication(req) {
     if (headerToken) {
       console.log('🔑 Using OIDC token from request header');
       // Exchange header token for GCP access token
-      getGcpAccessToken(headerToken).then(token => {
-        gcpAccessToken = token;
-        authClient = new GoogleAuth().fromAPIKey(token);
+      try {
+        gcpAccessToken = await getGcpAccessToken(headerToken);
+        authClient = new GoogleAuth().fromAPIKey(gcpAccessToken);
         console.log('🔑 GoogleAuth client created with GCP access token from header');
-      }).catch(error => {
+        return true; // Authentication successful
+      } catch (error) {
         console.log('❌ Failed to exchange header token for GCP token:', error.message);
-      });
+        return false;
+      }
     } else {
       console.log('🔑 No header token, trying getVercelOidcToken()...');
       // Fallback to getVercelOidcToken
-      getVercelOidcToken().then(oidcToken => {
+      try {
+        const oidcToken = await getVercelOidcToken();
         console.log('🔑 DEBUG: Vercel OIDC Token retrieved successfully');
         console.log('🔑 DEBUG: OIDC Token length:', oidcToken.length);
         console.log('🔑 DEBUG: OIDC Token preview (first 100 chars):', oidcToken.substring(0, 100));
@@ -141,49 +144,32 @@ function initializeAuthentication(req) {
         }
         
         // CRITICAL: Exchange OIDC token for GCP access token
-        return getGcpAccessToken(oidcToken);
-      }).then(token => {
-        gcpAccessToken = token;
+        gcpAccessToken = await getGcpAccessToken(oidcToken);
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
         // Create authenticated GoogleAuth client with the access token
-        authClient = new GoogleAuth().fromAPIKey(token);
+        authClient = new GoogleAuth().fromAPIKey(gcpAccessToken);
         console.log('🔑 GoogleAuth client created with GCP access token');
+        return true; // Authentication successful
         
-      }).catch(tokenError => {
+      } catch (tokenError) {
         console.log('❌ Failed to get Vercel OIDC token or exchange for GCP token:', tokenError.message);
         oidcToken = null;
         gcpAccessToken = null;
         authClient = null;
-      });
+        return false;
+      }
     }
   } catch (error) {
     console.log('❌ Authentication setup failed:', error.message);
     console.log('🔑 Falling back to default authentication');
     authClient = null;
+    return false;
   }
 }
 
-// Initialize Vertex AI with proper authentication
-let vertexAI;
-if (authClient && gcpAccessToken) {
-  // CRITICAL: Use Vertex AI with our GCP access token from STS exchange
-  // This properly integrates with Workload Identity Federation
-  vertexAI = new VertexAI({
-    project: process.env.GCP_PROJECT_ID,
-    location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-    authClient: authClient, // Use the authenticated GoogleAuth client
-  });
-  
-  console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
-} else {
-  // Fallback to default authentication
-  vertexAI = new VertexAI({
-    project: process.env.GCP_PROJECT_ID,
-    location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
-  });
-  console.log('🔑 Vertex AI initialized with default authentication (fallback)');
-}
+// CRITICAL: Vertex AI will be initialized dynamically after authentication
+let vertexAI = null;
 
 // Debug environment variables for Workload Identity Federation
 console.log('🔑 DEBUG: Vercel OIDC Federation Configuration:');
@@ -5812,7 +5798,25 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize authentication and inspect OIDC headers
   console.log('🔍 DEBUG: Starting authentication initialization...');
-  initializeAuthentication(req);
+  const authSuccess = await initializeAuthentication(req);
+  console.log('🔑 Authentication initialization result:', authSuccess ? 'SUCCESS' : 'FAILED');
+
+  // CRITICAL: Initialize Vertex AI based on authentication result
+  if (authSuccess && authClient && gcpAccessToken) {
+    vertexAI = new VertexAI({
+      project: process.env.GCP_PROJECT_ID,
+      location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+      authClient: authClient, // Use the authenticated GoogleAuth client
+    });
+    console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
+  } else {
+    // Fallback to default authentication
+    vertexAI = new VertexAI({
+      project: process.env.GCP_PROJECT_ID,
+      location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
+    });
+    console.log('🔑 Vertex AI initialized with default authentication (fallback)');
+  }
 
   try {
     const { fileContent, framework, selectedCategories } = req.body;
