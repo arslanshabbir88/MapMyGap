@@ -150,8 +150,13 @@ async function initializeAuthentication(req) {
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
           credential_source: {
-            // Pass your Vercel OIDC token here (as per working example)
-            access_token: headerToken
+            url: 'https://oidc.vercel.com/map-my-gap',
+            headers: {
+              'Authorization': `Bearer ${headerToken}`
+            },
+            format: {
+              type: 'text'
+            }
           }
         };
         authClient = ExternalAccountClient.fromJSON(identityConfig);
@@ -218,8 +223,13 @@ async function initializeAuthentication(req) {
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
           credential_source: {
-            // Pass your Vercel OIDC token here (as per working example)
-            access_token: oidcToken
+            url: 'https://oidc.vercel.com/map-my-gap',
+            headers: {
+              'Authorization': `Bearer ${oidcToken}`
+            },
+            format: {
+              type: 'text'
+            }
           }
         };
         authClient = ExternalAccountClient.fromJSON(identityConfig2);
