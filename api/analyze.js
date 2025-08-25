@@ -4692,6 +4692,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // DEBUG: Let's also try to see what models are actually available
     console.log('🔍 DEBUG: Trying to list available models...');
     
+    // CRITICAL: The issue is that the service account doesn't have the right IAM role
+    // We need to add the 'Vertex AI User' role to the service account
+    
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
     if (location === 'global') {
