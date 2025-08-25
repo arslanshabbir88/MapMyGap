@@ -19,19 +19,34 @@
  * 
  * ANALYSIS MODE:
  * - Comprehensive: Thorough assessment with actionable recommendations
+ * 
+ * AUTHENTICATION:
+ * - Workload Identity Federation with Google Cloud
+ * - Enterprise-grade security with automatic authentication
  */
 
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { VertexAI } from '@google-cloud/vertexai';
 import crypto from 'crypto';
 
-// Debug environment variable
-console.log('🔑 DEBUG: Environment variables check:');
-console.log('🔑 GOOGLE_AI_API_KEY exists:', !!process.env.GOOGLE_AI_API_KEY);
-console.log('🔑 GOOGLE_AI_API_KEY length:', process.env.GOOGLE_AI_API_KEY ? process.env.GOOGLE_AI_API_KEY.length : 'undefined');
-console.log('🔑 GOOGLE_AI_API_KEY preview:', process.env.GOOGLE_AI_API_KEY ? process.env.GOOGLE_AI_API_KEY.substring(0, 10) + '...' : 'undefined');
+// Initialize Vertex AI with Workload Identity Federation
+const vertexAI = new VertexAI({
+  project: process.env.GOOGLE_CLOUD_PROJECT_ID,
+  location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
+});
 
-// Initialize Google AI
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+// Debug environment variables
+console.log('🔑 DEBUG: Environment variables check:');
+console.log('🔑 GOOGLE_CLOUD_PROJECT_ID exists:', !!process.env.GOOGLE_CLOUD_PROJECT_ID);
+console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
+console.log('🔑 Using Workload Identity Federation for authentication');
+
+// Debug environment variables
+console.log('🔑 DEBUG: Environment variables check:');
+console.log('🔑 GOOGLE_CLOUD_PROJECT_ID exists:', !!process.env.GOOGLE_CLOUD_PROJECT_ID);
+console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
+console.log('🔑 Using Workload Identity Federation for authentication');
+
+// Using Vertex AI with Workload Identity Federation
 
 // Inline framework control structures to avoid import issues
 console.log('🔍 DEBUG: Loading allFrameworks object...');
@@ -4317,8 +4332,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
 
     const optimalTokenLimit = calculateOptimalTokenLimit(fileContent, filteredFrameworkData);
     
-    // Initialize Google AI model with optimal token limit
-    const model = genAI.getGenerativeModel({ 
+    // Initialize Vertex AI model with optimal token limit
+    const model = vertexAI.preview.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       generationConfig: {
         maxOutputTokens: optimalTokenLimit,
