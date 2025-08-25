@@ -4433,7 +4433,7 @@ const allFrameworks = {
 
 // AI results are now used directly without artificial strictness adjustments
 
-// Hybrid analysis function - uses predefined controls + AI analysis
+// NUCLEAR OPTION: Direct HTTP calls to Vertex AI API - bypassing broken SDK
 async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
   // SECURITY: Generate minimal hash for logging only (no content storage)
   const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework).digest('hex');
@@ -4442,6 +4442,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
   let filteredFrameworkData = { categories: [] };
   
   try {
+    console.log('🚀 NUCLEAR OPTION: Using direct HTTP calls to Vertex AI API');
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);
     console.log('Analysis Mode: Comprehensive');
@@ -4450,7 +4451,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     // SECURITY: No caching - all analysis is performed fresh and discarded immediately
     
-    console.log('🔄 Running fresh AI analysis');
+    console.log('🔄 Running fresh AI analysis with DIRECT API CALLS');
     
     // Get predefined control structure for the framework
     const frameworkData = allFrameworks[framework];
@@ -4671,16 +4672,24 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
 
     const optimalTokenLimit = calculateOptimalTokenLimit(fileContent, filteredFrameworkData);
     
-    // Initialize Vertex AI model with optimal token limit
-    const model = vertexAI.preview.getGenerativeModel({ 
-      model: "gemini-1.5-flash-002",
-      generationConfig: {
-        maxOutputTokens: optimalTokenLimit,
-        temperature: 0.1, // Low temperature for consistent compliance analysis
-        topP: 0.8,
-        topK: 40
-      }
-    });
+    // NUCLEAR OPTION: Skip broken SDK, prepare for direct API calls
+    console.log('🚀 NUCLEAR OPTION: Bypassing broken Vertex AI SDK');
+    console.log('🔑 DEBUG: Using GCP token for direct API calls, length:', authClient?.accessToken?.length || 0);
+    
+    // Get the working GCP access token from our custom auth client
+    const gcpToken = authClient?.accessToken;
+    if (!gcpToken) {
+      throw new Error('No GCP access token available for direct API calls');
+    }
+    
+    const projectId = process.env.GCP_PROJECT_ID;
+    const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+    const model = 'gemini-1.5-flash-002';
+    
+    // Direct Vertex AI API endpoint
+    const apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    
+    console.log('🔗 DEBUG: Direct API URL:', apiUrl);
 
     // Framework name mapping for better AI understanding
     const frameworkNames = {
@@ -4820,14 +4829,80 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
     
     while (retryCount < maxRetries) {
       try {
-        console.log(`🔄 AI analysis attempt ${retryCount + 1}/${maxRetries}...`);
-        const aiPromise = model.generateContent(prompt);
-        console.log('⏳ AI request sent, waiting for response...');
-        const result = await Promise.race([aiPromise, timeoutPromise]);
-        console.log('✅ AI response received successfully');
-        const response = await result.response;
-        text = response.text(); // Assign to the outer variable
-        console.log('📝 AI response text extracted, length:', text.length);
+        console.log(`🔄 NUCLEAR OPTION: Direct API attempt ${retryCount + 1}/${maxRetries}...`);
+        
+        // NUCLEAR OPTION: Direct HTTP call to Vertex AI API
+        const requestBody = {
+          contents: [{
+            role: "user",
+            parts: [{
+              text: prompt
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.1,
+            topP: 0.8,
+            topK: 40,
+            maxOutputTokens: optimalTokenLimit,
+          },
+          safetySettings: [
+            {
+              category: "HARM_CATEGORY_HARASSMENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_HATE_SPEECH",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            },
+            {
+              category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+            }
+          ]
+        };
+        
+        console.log('📤 DEBUG: Sending direct API request...');
+        
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${gcpToken}`,
+            'Content-Type': 'application/json',
+            'X-Goog-User-Project': projectId
+          },
+          body: JSON.stringify(requestBody)
+        });
+        
+        console.log('📥 DEBUG: Direct API response status:', response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`❌ Direct API error ${response.status}:`, errorText);
+          
+          if (response.status === 401) {
+            throw new Error(`Direct API authentication failed: ${errorText}`);
+          } else if (response.status === 429) {
+            throw new Error(`Direct API rate limited: ${errorText}`);
+          } else {
+            throw new Error(`Direct API error ${response.status}: ${errorText}`);
+          }
+        }
+        
+        const responseData = await response.json();
+        console.log('✅ Direct API call successful!');
+        console.log('📊 DEBUG: Response data keys:', Object.keys(responseData));
+        
+        // Extract the generated text from Vertex AI response
+        if (responseData.candidates && responseData.candidates[0] && responseData.candidates[0].content) {
+          text = responseData.candidates[0].content.parts[0].text;
+          console.log('📝 AI response text extracted, length:', text.length);
+        } else {
+          throw new Error('Direct API response missing generated content');
+        }
         
         // Check if response contains generic error messages that indicate AI failure
         const genericErrorIndicators = [
