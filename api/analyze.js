@@ -26,13 +26,45 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
-import { ExternalAccountClient, GoogleAuth } from 'google-auth-library';
+import { GoogleAuth } from 'google-auth-library';
 import { getVercelOidcToken } from '@vercel/functions/oidc';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import crypto from 'crypto';
 
-// Initialize External Account Client for Workload Identity Federation
-let authClient;
+// CRITICAL: Implement explicit STS token exchange for Workload Identity Federation
+async function getGcpAccessToken(vercelOidcToken) {
+  const stsUrl = "https://sts.googleapis.com/v1/token";
+  
+  try {
+    const resp = await fetch(stsUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+        audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+        scope: "https://www.googleapis.com/auth/cloud-platform",
+        subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+        subject_token: vercelOidcToken,
+      }),
+    });
+
+    if (!resp.ok) {
+      throw new Error(`STS request failed: ${resp.status} ${resp.statusText}`);
+    }
+
+    const data = await resp.json();
+    console.log('🔑 DEBUG: STS token exchange successful');
+    console.log('🔑 DEBUG: GCP Access Token length:', data.access_token?.length || 0);
+    return data.access_token;
+  } catch (error) {
+    console.log('❌ STS token exchange failed:', error.message);
+    throw error;
+  }
+}
+
+// Initialize authentication for Workload Identity Federation
+let gcpAccessToken = null;
+let authClient = null;
+
 try {
   // CRITICAL: Get and debug the OIDC token first
   let oidcToken;
@@ -56,50 +88,39 @@ try {
         console.log('🔑 DEBUG: Could not decode OIDC token payload:', decodeError.message);
       }
     }
+    
+    // CRITICAL: Exchange OIDC token for GCP access token
+    gcpAccessToken = await getGcpAccessToken(oidcToken);
+    console.log('🔑 GCP Access Token obtained via STS exchange');
+    
+    // Create authenticated GoogleAuth client with the access token
+    authClient = new GoogleAuth().fromAPIKey(gcpAccessToken);
+    console.log('🔑 GoogleAuth client created with GCP access token');
+    
   } catch (tokenError) {
-    console.log('❌ Failed to get Vercel OIDC token:', tokenError.message);
+    console.log('❌ Failed to get Vercel OIDC token or exchange for GCP token:', tokenError.message);
     oidcToken = null;
+    gcpAccessToken = null;
+    authClient = null;
   }
-  
-  // CRITICAL: Use subject_token_supplier approach for Workload Identity Federation
-  // This matches the new principal: owner:map-my-gap:project:mapmygap:environment:production
-  authClient = ExternalAccountClient.fromJSON({
-    type: 'external_account',
-    audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
-    subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
-    token_url: 'https://sts.googleapis.com/v1/token',
-    service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-    subject_token_supplier: {
-      // Use the Vercel OIDC token as the subject token
-      getSubjectToken: getVercelOidcToken,
-    },
-  });
-  console.log('🔑 External Account Client initialized with Vercel OIDC');
 } catch (error) {
-  console.log('❌ Failed to initialize External Account Client:', error.message);
+  console.log('❌ Authentication setup failed:', error.message);
   console.log('🔑 Falling back to default authentication');
   authClient = null;
 }
 
 // Initialize Vertex AI with proper authentication
 let vertexAI;
-if (authClient) {
-        // CRITICAL: Use Vertex AI with our authenticated External Account Client
-      // This properly integrates with Workload Identity Federation
-      vertexAI = new VertexAI({
-        project: process.env.GCP_PROJECT_ID,
-        location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
-      });
-      
-      // CRITICAL: Set the authenticated client directly on the Vertex AI instance
-      // This ensures Vertex AI uses our WIF credentials for all API calls
-      vertexAI.authClient = authClient;
-      
-      // CRITICAL: Also set it on the preview client for model operations
-      if (vertexAI.preview) {
-        vertexAI.preview.authClient = authClient;
-      }
-  console.log('🔑 Vertex AI initialized with authenticated External Account Client');
+if (authClient && gcpAccessToken) {
+  // CRITICAL: Use Vertex AI with our GCP access token from STS exchange
+  // This properly integrates with Workload Identity Federation
+  vertexAI = new VertexAI({
+    project: process.env.GCP_PROJECT_ID,
+    location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+    authClient: authClient, // Use the authenticated GoogleAuth client
+  });
+  
+  console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
 } else {
   // Fallback to default authentication
   vertexAI = new VertexAI({
