@@ -144,7 +144,7 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { ExternalAccountClient, OAuth2Client } = await import('google-auth-library');
+        const { ExternalAccountClient } = await import('google-auth-library');
         
         // Step 1: Use ExternalAccountClient to exchange for GCP token
         const wifConfig = {
@@ -164,27 +164,26 @@ async function initializeAuthentication(req) {
         const { token } = await idClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
         
-        // Step 3: Wrap that token in OAuth2Client
-        console.log('🔑 Step 3: Wrapping GCP token in OAuth2Client...');
-        authClient = new OAuth2Client();
-        authClient.setCredentials({ access_token: token });
+        // Step 3: Pass ExternalAccountClient directly to Vertex AI
+        console.log('🔑 Step 3: Passing ExternalAccountClient directly to Vertex AI...');
+        authClient = idClient; // Pass the working client directly
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring OAuth2Client credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
         const { token: tokenCheck } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck?.length || 0);
 
-        // CRITICAL: Verify the OAuth2Client is properly configured
+        // CRITICAL: Verify the ExternalAccountClient is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
-        console.log('🔑 DEBUG: authClient has setCredentials:', typeof authClient.setCredentials === 'function');
+        console.log('🔑 DEBUG: authClient methods:', Object.getOwnPropertyNames(authClient).filter(name => typeof authClient[name] === 'function'));
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: OAuth2Client fully initialized and ready');
+        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
@@ -230,7 +229,7 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { ExternalAccountClient, OAuth2Client } = await import('google-auth-library');
+        const { ExternalAccountClient } = await import('google-auth-library');
         
         // Step 1: Use ExternalAccountClient to exchange for GCP token
         const wifConfig2 = {
@@ -250,26 +249,26 @@ async function initializeAuthentication(req) {
         const { token: token2 } = await idClient2.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
         
-        // Step 3: Wrap that token in OAuth2Client
-        console.log('🔑 Step 3: Wrapping GCP token in OAuth2Client...');
-        authClient = new OAuth2Client();
-        authClient.setCredentials({ access_token: token2 });
+        // Step 3: Pass ExternalAccountClient directly to Vertex AI
+        console.log('🔑 Step 3: Passing ExternalAccountClient directly to Vertex AI...');
+        authClient = idClient2; // Pass the working client directly
         
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring OAuth2Client credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
         const { token: tokenCheck2 } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', tokenCheck2?.length || 0);
 
-        // CRITICAL: Verify the OAuth2Client is properly configured
+        // CRITICAL: Verify the ExternalAccountClient is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-        console.log('🔑 DEBUG: authClient has setCredentials:', typeof authClient.setCredentials === 'function');
+        console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
+        console.log('🔑 DEBUG: authClient methods:', Object.getOwnPropertyNames(authClient).filter(name => typeof authClient[name] === 'function'));
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: OAuth2Client fully initialized and ready');
+        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
         
@@ -5934,7 +5933,7 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient) {
-    console.log('🔑 DEBUG: Using ExternalAccountClient for Vertex AI:', typeof authClient);
+    console.log('🔑 DEBUG: Using ExternalAccountClient directly for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
