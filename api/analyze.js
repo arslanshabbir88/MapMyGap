@@ -30,6 +30,41 @@ import { GoogleAuth } from 'google-auth-library';
 import { getVercelOidcToken } from '@vercel/functions/oidc';
 import crypto from 'crypto';
 
+// CRITICAL: Debug function to inspect Vercel OIDC headers
+function inspectVercelOidcHeaders(req) {
+  console.log('🔍 DEBUG: Inspecting Vercel OIDC headers...');
+  
+  // Check for x-vercel-oidc-token header
+  const oidcTokenHeader = req.headers['x-vercel-oidc-token'];
+  if (oidcTokenHeader) {
+    console.log('✅ x-vercel-oidc-token header found!');
+    console.log('🔑 Header length:', oidcTokenHeader.length);
+    console.log('🔑 Header preview (first 100 chars):', oidcTokenHeader.substring(0, 100));
+    console.log('🔑 Header preview (last 100 chars):', oidcTokenHeader.substring(oidcTokenHeader.length - 100));
+    
+    // Try to decode the JWT to see the payload
+    try {
+      const tokenParts = oidcTokenHeader.split('.');
+      if (tokenParts.length === 3) {
+        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+        console.log('🔑 DEBUG: OIDC Token Payload from header:', JSON.stringify(payload, null, 2));
+        console.log('🔑 DEBUG: OIDC Token Subject (sub):', payload.sub);
+        console.log('🔑 DEBUG: OIDC Token Issuer (iss):', payload.iss);
+        console.log('🔑 DEBUG: OIDC Token Audience (aud):', payload.aud);
+        return oidcTokenHeader; // Return the token from header
+      }
+    } catch (decodeError) {
+      console.log('🔑 DEBUG: Could not decode OIDC token from header:', decodeError.message);
+    }
+  } else {
+    console.log('❌ x-vercel-oidc-token header NOT found');
+    console.log('🔍 Available headers:', Object.keys(req.headers));
+    console.log('🔍 All headers:', JSON.stringify(req.headers, null, 2));
+  }
+  
+  return null;
+}
+
 // CRITICAL: Implement explicit STS token exchange for Workload Identity Federation
 async function getGcpAccessToken(vercelOidcToken) {
   const stsUrl = "https://sts.googleapis.com/v1/token";
@@ -65,48 +100,68 @@ async function getGcpAccessToken(vercelOidcToken) {
 let gcpAccessToken = null;
 let authClient = null;
 
-try {
-  // CRITICAL: Get and debug the OIDC token first
-  let oidcToken;
+// CRITICAL: Check if we have access to the request object for header inspection
+// This will be called from the main handler function
+function initializeAuthentication(req) {
   try {
-    oidcToken = await getVercelOidcToken();
-    console.log('🔑 DEBUG: Vercel OIDC Token retrieved successfully');
-    console.log('🔑 DEBUG: OIDC Token length:', oidcToken.length);
-    console.log('🔑 DEBUG: OIDC Token preview (first 100 chars):', oidcToken.substring(0, 100));
-    console.log('🔑 DEBUG: OIDC Token preview (last 100 chars):', oidcToken.substring(oidcToken.length - 100));
+    // CRITICAL: First, inspect Vercel OIDC headers
+    const headerToken = inspectVercelOidcHeaders(req);
     
-    // Decode the JWT to see the payload (without verification for debugging)
-    const tokenParts = oidcToken.split('.');
-    if (tokenParts.length === 3) {
-      try {
-        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
-        console.log('🔑 DEBUG: OIDC Token Payload:', JSON.stringify(payload, null, 2));
-        console.log('🔑 DEBUG: OIDC Token Subject (sub):', payload.sub);
-        console.log('🔑 DEBUG: OIDC Token Issuer (iss):', payload.iss);
-        console.log('🔑 DEBUG: OIDC Token Audience (aud):', payload.aud);
-      } catch (decodeError) {
-        console.log('🔑 DEBUG: Could not decode OIDC token payload:', decodeError.message);
-      }
+    if (headerToken) {
+      console.log('🔑 Using OIDC token from request header');
+      // Exchange header token for GCP access token
+      getGcpAccessToken(headerToken).then(token => {
+        gcpAccessToken = token;
+        authClient = new GoogleAuth().fromAPIKey(token);
+        console.log('🔑 GoogleAuth client created with GCP access token from header');
+      }).catch(error => {
+        console.log('❌ Failed to exchange header token for GCP token:', error.message);
+      });
+    } else {
+      console.log('🔑 No header token, trying getVercelOidcToken()...');
+      // Fallback to getVercelOidcToken
+      getVercelOidcToken().then(oidcToken => {
+        console.log('🔑 DEBUG: Vercel OIDC Token retrieved successfully');
+        console.log('🔑 DEBUG: OIDC Token length:', oidcToken.length);
+        console.log('🔑 DEBUG: OIDC Token preview (first 100 chars):', oidcToken.substring(0, 100));
+        console.log('🔑 DEBUG: OIDC Token preview (last 100 chars):', oidcToken.substring(oidcToken.length - 100));
+        
+        // Decode the JWT to see the payload (without verification for debugging)
+        const tokenParts = oidcToken.split('.');
+        if (tokenParts.length === 3) {
+          try {
+            const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
+            console.log('🔑 DEBUG: OIDC Token Payload:', JSON.stringify(payload, null, 2));
+            console.log('🔑 DEBUG: OIDC Token Subject (sub):', payload.sub);
+            console.log('🔑 DEBUG: OIDC Token Issuer (iss):', payload.iss);
+            console.log('🔑 DEBUG: OIDC Token Audience (aud):', payload.aud);
+          } catch (decodeError) {
+            console.log('🔑 DEBUG: Could not decode OIDC token payload:', decodeError.message);
+          }
+        }
+        
+        // CRITICAL: Exchange OIDC token for GCP access token
+        return getGcpAccessToken(oidcToken);
+      }).then(token => {
+        gcpAccessToken = token;
+        console.log('🔑 GCP Access Token obtained via STS exchange');
+        
+        // Create authenticated GoogleAuth client with the access token
+        authClient = new GoogleAuth().fromAPIKey(token);
+        console.log('🔑 GoogleAuth client created with GCP access token');
+        
+      }).catch(tokenError => {
+        console.log('❌ Failed to get Vercel OIDC token or exchange for GCP token:', tokenError.message);
+        oidcToken = null;
+        gcpAccessToken = null;
+        authClient = null;
+      });
     }
-    
-    // CRITICAL: Exchange OIDC token for GCP access token
-    gcpAccessToken = await getGcpAccessToken(oidcToken);
-    console.log('🔑 GCP Access Token obtained via STS exchange');
-    
-    // Create authenticated GoogleAuth client with the access token
-    authClient = new GoogleAuth().fromAPIKey(gcpAccessToken);
-    console.log('🔑 GoogleAuth client created with GCP access token');
-    
-  } catch (tokenError) {
-    console.log('❌ Failed to get Vercel OIDC token or exchange for GCP token:', tokenError.message);
-    oidcToken = null;
-    gcpAccessToken = null;
+  } catch (error) {
+    console.log('❌ Authentication setup failed:', error.message);
+    console.log('🔑 Falling back to default authentication');
     authClient = null;
   }
-} catch (error) {
-  console.log('❌ Authentication setup failed:', error.message);
-  console.log('🔑 Falling back to default authentication');
-  authClient = null;
 }
 
 // Initialize Vertex AI with proper authentication
@@ -5754,6 +5809,10 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // CRITICAL: Initialize authentication and inspect OIDC headers
+  console.log('🔍 DEBUG: Starting authentication initialization...');
+  initializeAuthentication(req);
 
   try {
     const { fileContent, framework, selectedCategories } = req.body;
