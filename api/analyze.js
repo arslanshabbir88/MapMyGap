@@ -4683,13 +4683,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    // ENTERPRISE CHOICE: Using latest Gemini 2.5 Flash for professional compliance analysis
+    // ENTERPRISE CHOICE: Using latest Gemini 2.5 Flash Lite for professional compliance analysis
     const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global)
     // Using the latest and most professional model available in Vertex AI
-    const model = 'gemini-2.5-flash'; // Latest 2.5 generation, enterprise-grade, cost-effective
+    const model = 'gemini-2.5-flash-lite'; // Latest 2.5 generation, enterprise-grade, cost-effective
     
-    // DEBUG: Using enterprise-grade Gemini 2.5 Flash model
-    console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash for professional compliance analysis');
+    // DEBUG: Using enterprise-grade Gemini 2.5 Flash Lite model
+    console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash Lite for professional compliance analysis');
     
     // CRITICAL: The issue is that the service account doesn't have the right IAM role
     // We need to add the 'Vertex AI User' role to the service account
