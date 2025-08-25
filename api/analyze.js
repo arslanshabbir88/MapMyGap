@@ -26,7 +26,7 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
-import { ExternalAccountClient } from 'google-auth-library';
+import { ExternalAccountClient, GoogleAuth } from 'google-auth-library';
 import { getVercelOidcToken } from '@vercel/functions/oidc';
 import crypto from 'crypto';
 
