@@ -4686,8 +4686,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // CRITICAL: Gemini models are NOT available in global location
     // We MUST use a regional location like us-central1 for Gemini models
     const location = 'us-central1'; // Force us-central1 for Gemini model compatibility
-    // Use a model that's definitely available in us-central1
-    const model = 'gemini-1.5-flash'; // This model exists in regional locations
+    // Try different models - some models have different permission requirements
+    const model = 'gemini-1.5-pro'; // Try gemini-1.5-pro (might have different permissions)
     
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
