@@ -143,19 +143,19 @@ async function initializeAuthentication(req) {
         const audience = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience);
 
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const wifConfig = {
+        const { IdentityPoolClient } = await import('google-auth-library');
+        const identityConfig = {
           type: 'external_account',
           audience,
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
-          service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-          // Supply the Vercel OIDC token via supplier object API
-          subject_token_supplier: { getSubjectToken: async () => headerToken },
-          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          credential_source: {
+            // Pass your Vercel OIDC token here (as per working example)
+            access_token: headerToken
+          }
         };
-        authClient = ExternalAccountClient.fromJSON(wifConfig);
-        console.log('🔑 ExternalAccountClient created with fromJSON()');
+        authClient = IdentityPoolClient.fromJSON(identityConfig);
+        console.log('🔑 IdentityPoolClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
@@ -211,18 +211,19 @@ async function initializeAuthentication(req) {
         const audience2 = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
-        const { ExternalAccountClient } = await import('google-auth-library');
-        const wifConfig2 = {
+        const { IdentityPoolClient } = await import('google-auth-library');
+        const identityConfig2 = {
           type: 'external_account',
           audience: audience2,
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
-          service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-          subject_token_supplier: { getSubjectToken: async () => oidcToken },
-          scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+          credential_source: {
+            // Pass your Vercel OIDC token here (as per working example)
+            access_token: oidcToken
+          }
         };
-        authClient = ExternalAccountClient.fromJSON(wifConfig2);
-        console.log('🔑 ExternalAccountClient created with fromJSON()');
+        authClient = IdentityPoolClient.fromJSON(identityConfig2);
+        console.log('🔑 IdentityPoolClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
@@ -5908,9 +5909,9 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
     
     vertexAI = new VertexAI({
-      authClient: authClient, // Pass IdentityPoolClient directly
-      project: process.env.GCP_PROJECT_ID,
+      projectId: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global', // Use 'global' as fallback
+      authClient: authClient, // Pass IdentityPoolClient directly (this is the critical part)
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
     
