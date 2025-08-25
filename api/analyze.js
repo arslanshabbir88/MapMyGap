@@ -4683,10 +4683,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
-    const location = process.env.GOOGLE_CLOUD_LOCATION || 'global';
+    // CRITICAL: Vertex AI API requires us-central1, not global
+    const location = 'us-central1'; // Force us-central1 for API compatibility
     const model = 'gemini-1.5-flash-002';
     
-    // Direct Vertex AI API endpoint
+    // Direct Vertex AI API endpoint - MUST use us-central1
     const apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
     
     console.log('🔗 DEBUG: Direct API URL:', apiUrl);
