@@ -30,13 +30,20 @@ import crypto from 'crypto';
 
 // Initialize Vertex AI with Workload Identity Federation
 const vertexAI = new VertexAI({
-  project: process.env.GOOGLE_CLOUD_PROJECT_ID,
-  location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'
+  project: process.env.GCP_PROJECT_ID,
+  location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
+  // Workload Identity Federation configuration
+  workloadIdentityPool: process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
+  workloadIdentityProvider: process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
+  serviceAccountEmail: process.env.GCP_SERVICE_ACCOUNT_EMAIL
 });
 
 // Debug environment variables
-console.log('🔑 DEBUG: Environment variables check:');
-console.log('🔑 GOOGLE_CLOUD_PROJECT_ID exists:', !!process.env.GOOGLE_CLOUD_PROJECT_ID);
+console.log('🔑 DEBUG: Workload Identity Federation Configuration:');
+console.log('🔑 GCP_PROJECT_ID exists:', !!process.env.GCP_PROJECT_ID);
+console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID);
+console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID);
+console.log('🔑 GCP_SERVICE_ACCOUNT_EMAIL exists:', !!process.env.GCP_SERVICE_ACCOUNT_EMAIL);
 console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
 console.log('🔑 Using Workload Identity Federation for authentication');
 
@@ -44,7 +51,9 @@ console.log('🔑 Using Workload Identity Federation for authentication');
 console.log('🔑 DEBUG: Environment variables check:');
 console.log('🔑 GOOGLE_CLOUD_PROJECT_ID exists:', !!process.env.GOOGLE_CLOUD_PROJECT_ID);
 console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
-console.log('🔑 Using Workload Identity Federation for authentication');
+console.log('🔑 Using service account authentication for Vertex AI');
+
+
 
 // Using Vertex AI with Workload Identity Federation
 
