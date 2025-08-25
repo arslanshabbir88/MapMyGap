@@ -4616,6 +4616,16 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
     console.log('Prompt length:', prompt.length, 'characters');
     console.log('🔍 EXECUTION POINT: AI analysis starting NOW');
     
+    // CRITICAL: Debug Vertex AI authentication status
+    console.log('🔑 DEBUG: Vertex AI instance check:');
+    console.log('🔑 DEBUG: vertexAI exists:', !!vertexAI);
+    console.log('🔑 DEBUG: vertexAI type:', typeof vertexAI);
+    console.log('🔑 DEBUG: vertexAI.preview exists:', !!vertexAI?.preview);
+    console.log('🔑 DEBUG: vertexAI.preview.getGenerativeModel exists:', !!vertexAI?.preview?.getGenerativeModel);
+    console.log('🔑 DEBUG: vertexAI project:', vertexAI?.project);
+    console.log('🔑 DEBUG: vertexAI location:', vertexAI?.location);
+    console.log('🔑 DEBUG: vertexAI authClient exists:', !!vertexAI?.authClient);
+    
     let text; // Declare text variable outside try-catch block
     
     // Implement enhanced retry logic for API overload and cold start issues
@@ -5827,6 +5837,11 @@ export default async function handler(req, res) {
       authClient: authClient, // Use the authenticated GoogleAuth client
     });
     console.log('🔑 Vertex AI initialized with GCP access token from STS exchange');
+    
+    // CRITICAL: Verify the authenticated client is properly set
+    console.log('🔑 DEBUG: Vertex AI authClient type:', typeof vertexAI.authClient);
+    console.log('🔑 DEBUG: Vertex AI project:', vertexAI.project);
+    console.log('🔑 DEBUG: Vertex AI location:', vertexAI.location);
   } else {
     // Fallback to default authentication
     vertexAI = new VertexAI({
