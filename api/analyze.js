@@ -4689,6 +4689,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // Try the most basic model that should definitely be available
     const model = 'text-bison'; // Remove version number - try base model
     
+    // DEBUG: Let's also try to see what models are actually available
+    console.log('🔍 DEBUG: Trying to list available models...');
+    
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
     if (location === 'global') {
