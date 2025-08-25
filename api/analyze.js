@@ -69,21 +69,37 @@ function inspectVercelOidcHeaders(req) {
 async function getGcpAccessToken(vercelOidcToken) {
   const stsUrl = "https://sts.googleapis.com/v1/token";
   
+  // CRITICAL: Debug the STS request parameters
+  const requestParams = {
+    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+    audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
+    scope: "https://www.googleapis.com/auth/cloud-platform",
+    subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+    subject_token: vercelOidcToken,
+  };
+  
+  console.log('🔑 DEBUG: STS Request Parameters:');
+  console.log('🔑 DEBUG: grant_type:', requestParams.grant_type);
+  console.log('🔑 DEBUG: audience:', requestParams.audience);
+  console.log('🔑 DEBUG: scope:', requestParams.scope);
+  console.log('🔑 DEBUG: subject_token_type:', requestParams.subject_token_type);
+  console.log('🔑 DEBUG: subject_token length:', requestParams.subject_token.length);
+  console.log('🔑 DEBUG: subject_token preview:', requestParams.subject_token.substring(0, 100));
+  
   try {
     const resp = await fetch(stsUrl, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-        audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
-        scope: "https://www.googleapis.com/auth/cloud-platform",
-        subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-        subject_token: vercelOidcToken,
-      }),
+      body: new URLSearchParams(requestParams),
     });
 
     if (!resp.ok) {
-      throw new Error(`STS request failed: ${resp.status} ${resp.statusText}`);
+      // CRITICAL: Get detailed error response
+      const errorText = await resp.text();
+      console.log('❌ STS Error Response Status:', resp.status);
+      console.log('❌ STS Error Response Headers:', Object.fromEntries(resp.headers.entries()));
+      console.log('❌ STS Error Response Body:', errorText);
+      throw new Error(`STS request failed: ${resp.status} ${resp.statusText} - ${errorText}`);
     }
 
     const data = await resp.json();
