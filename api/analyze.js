@@ -63,7 +63,7 @@ if (authClient) {
       
       // CRITICAL: Use Google AI SDK directly with authenticated credentials
       const genAI = new GoogleGenerativeAI({
-        apiKey: 'dummy-key', // Will be overridden by authClient
+        // Remove apiKey - let authClient handle authentication
         authClient: authClient,
         projectId: process.env.GCP_PROJECT_ID,
       });
