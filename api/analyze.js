@@ -4684,9 +4684,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     const projectId = process.env.GCP_PROJECT_ID;
     // ENTERPRISE CHOICE: Using latest Gemini 2.5 Flash Lite for professional compliance analysis
-    const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global)
+    const location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1'; // Use us-central1 where Gemini models are definitely available
     // Using the latest and most professional model available in Vertex AI
-    const model = 'gemini-1.5-flash'; // Using Gemini 1.5 Flash which is definitely available in global
+    const model = 'gemini-1.5-flash'; // Using Gemini 1.5 Flash which is definitely available in us-central1
     
     // DEBUG: Using enterprise-grade Gemini 1.5 Flash model
     console.log('🚀 ENTERPRISE: Using Gemini 1.5 Flash for professional compliance analysis');
