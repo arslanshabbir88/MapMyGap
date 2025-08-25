@@ -131,18 +131,16 @@ async function initializeAuthentication(req) {
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
         // CRITICAL: Create External Account Client with proper configuration
-        const { GoogleAuth } = await import('google-auth-library');
-        authClient = new GoogleAuth({
-          credentials: {
-            type: "external_account",
-            quota_project_id: process.env.GCP_PROJECT_ID,
-            subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-            token_url: "https://sts.googleapis.com/v1/token",
-            service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-            credential_source: {
-              // Use the STS access token we already obtained
-              access_token: gcpAccessToken
-            }
+        const { ExternalAccountClient } = await import('google-auth-library');
+        authClient = new ExternalAccountClient({
+          type: "external_account",
+          quota_project_id: process.env.GCP_PROJECT_ID,
+          subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+          token_url: "https://sts.googleapis.com/v1/token",
+          service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+          credential_source: {
+            // Use the STS access token we already obtained
+            access_token: gcpAccessToken
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         });
@@ -191,18 +189,16 @@ async function initializeAuthentication(req) {
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
         // CRITICAL: Create External Account Client with proper configuration
-        const { GoogleAuth } = await import('google-auth-library');
-        authClient = new GoogleAuth({
-          credentials: {
-            type: "external_account",
-            quota_project_id: process.env.GCP_PROJECT_ID,
-            subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-            token_url: "https://sts.googleapis.com/v1/token",
-            service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
-            credential_source: {
-              // Use the STS access token we already obtained
-              access_token: gcpAccessToken
-            }
+        const { ExternalAccountClient } = await import('google-auth-library');
+        authClient = new ExternalAccountClient({
+          type: "external_account",
+          quota_project_id: process.env.GCP_PROJECT_ID,
+          subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+          token_url: "https://sts.googleapis.com/v1/token",
+          service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+          credential_source: {
+            // Use the STS access token we already obtained
+            access_token: gcpAccessToken
           },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         });
@@ -5880,7 +5876,7 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient && gcpAccessToken) {
-    console.log('🔑 DEBUG: Using External Account Client for Vertex AI:', typeof authClient);
+    console.log('🔑 DEBUG: Using ExternalAccountClient for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
