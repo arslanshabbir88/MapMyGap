@@ -144,9 +144,9 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { ExternalAccountClient } = await import('google-auth-library');
+        const { GoogleAuth } = await import('google-auth-library');
         
-        // Create ExternalAccountClient with proper WIF configuration
+        // Create GoogleAuth with proper WIF configuration
         const wifConfig = {
           type: 'external_account',
           audience,
@@ -157,25 +157,35 @@ async function initializeAuthentication(req) {
           }
         };
         
-        authClient = ExternalAccountClient.fromJSON(wifConfig);
+        // Try GoogleAuth.fromJSON() first, fallback to constructor if needed
+        try {
+          authClient = GoogleAuth.fromJSON(wifConfig);
+          console.log('🔑 GoogleAuth created with fromJSON()');
+        } catch (error) {
+          console.log('🔑 GoogleAuth.fromJSON() failed, trying constructor approach...');
+          authClient = new GoogleAuth({
+            credentials: wifConfig,
+            scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          });
+          console.log('🔑 GoogleAuth created with constructor');
+        }
         
-        console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
         const { token } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token?.length || 0);
 
-        // CRITICAL: Verify the ExternalAccountClient is properly configured
+        // CRITICAL: Verify the GoogleAuth is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        console.log('🔑 DEBUG: GoogleAuth fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
       } catch (error) {
@@ -221,9 +231,9 @@ async function initializeAuthentication(req) {
         console.log('🔑 DEBUG: Computed audience:', audience2);
 
         // CRITICAL: Create a proper auth client that Vertex AI can use
-        const { ExternalAccountClient } = await import('google-auth-library');
+        const { GoogleAuth } = await import('google-auth-library');
         
-        // Create ExternalAccountClient with proper WIF configuration
+        // Create GoogleAuth with proper WIF configuration
         const wifConfig2 = {
           type: 'external_account',
           audience: audience2,
@@ -234,25 +244,34 @@ async function initializeAuthentication(req) {
           }
         };
         
-        authClient = ExternalAccountClient.fromJSON(wifConfig2);
+        // Try GoogleAuth.fromJSON() first, fallback to constructor if needed
+        try {
+          authClient = GoogleAuth.fromJSON(wifConfig2);
+          console.log('🔑 GoogleAuth created with fromJSON()');
+        } catch (error) {
+          console.log('🔑 GoogleAuth.fromJSON() failed, trying constructor approach...');
+          authClient = new GoogleAuth({
+            credentials: wifConfig2,
+            scopes: ['https://www.googleapis.com/auth/cloud-platform']
+          });
+          console.log('🔑 DEBUG: GoogleAuth created with constructor');
+        }
         
-        console.log('🔑 ExternalAccountClient created with fromJSON()');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
         // CRITICAL: Ensure credentials are ready by calling getAccessToken()
-        console.log('🔑 DEBUG: Ensuring ExternalAccountClient credentials are ready...');
+        console.log('🔑 DEBUG: Ensuring GoogleAuth credentials are ready...');
         const { token: token2 } = await authClient.getAccessToken();
         console.log('🔑 DEBUG: GCP access token obtained, length:', token2?.length || 0);
 
-        // CRITICAL: Verify the ExternalAccountClient is properly configured
+        // CRITICAL: Verify the GoogleAuth is properly configured
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-        console.log('🔑 DEBUG: authClient has getAccessToken:', typeof authClient.getAccessToken === 'function');
         console.log('🔑 DEBUG: authClient has getRequestHeaders:', typeof authClient.getRequestHeaders === 'function');
         
         // CRITICAL: Ensure the client is fully ready before returning
         await authClient.getAccessToken(); // Force token refresh
-        console.log('🔑 DEBUG: ExternalAccountClient fully initialized and ready');
+        console.log('🔑 DEBUG: GoogleAuth fully initialized and ready');
         
         return { success: true, client: authClient }; // Return both success and client
         
