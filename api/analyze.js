@@ -5907,7 +5907,7 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
     
     vertexAI = new VertexAI({
-      projectId: process.env.GCP_PROJECT_ID,
+      project: process.env.GCP_PROJECT_ID,
       location: process.env.GOOGLE_CLOUD_LOCATION || 'global', // Use 'global' as fallback
       authClient: authClient, // Pass IdentityPoolClient directly (this is the critical part)
     });
