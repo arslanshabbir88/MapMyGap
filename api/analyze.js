@@ -130,20 +130,31 @@ async function initializeAuthentication(req) {
       // Exchange header token for GCP access token
       try {
         gcpAccessToken = await getGcpAccessToken(headerToken);
-        // CRITICAL: Create GoogleAuth client with the STS access token
+        // CRITICAL: Create External Account Client with proper configuration
         const { GoogleAuth } = await import('google-auth-library');
         authClient = new GoogleAuth({
+          credentials: {
+            type: "external_account",
+            quota_project_id: process.env.GCP_PROJECT_ID,
+            subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+            token_url: "https://sts.googleapis.com/v1/token",
+            service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+            credential_source: {
+              // Use the STS access token we already obtained
+              access_token: gcpAccessToken
+            }
+          },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         });
-        // Set the access token directly on the client
-        authClient.accessToken = gcpAccessToken;
-        console.log('🔑 GoogleAuth created with STS access token from header');
+        console.log('🔑 External Account Client created with proper configuration');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Verify the GoogleAuth client is properly configured
-        console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
-        console.log('🔑 DEBUG: authClient.accessToken length:', authClient.accessToken?.length);
+        // CRITICAL: Verify the External Account Client is properly configured
+        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+        console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
+        console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
+        console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
         console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
         console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
         return true; // Authentication successful
@@ -179,20 +190,31 @@ async function initializeAuthentication(req) {
         gcpAccessToken = await getGcpAccessToken(oidcToken);
         console.log('🔑 GCP Access Token obtained via STS exchange');
         
-        // CRITICAL: Create GoogleAuth client with the STS access token
+        // CRITICAL: Create External Account Client with proper configuration
         const { GoogleAuth } = await import('google-auth-library');
         authClient = new GoogleAuth({
+          credentials: {
+            type: "external_account",
+            quota_project_id: process.env.GCP_PROJECT_ID,
+            subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
+            token_url: "https://sts.googleapis.com/v1/token",
+            service_account_impersonation_url: `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${process.env.GCP_SERVICE_ACCOUNT_EMAIL}:generateAccessToken`,
+            credential_source: {
+              // Use the STS access token we already obtained
+              access_token: gcpAccessToken
+            }
+          },
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
         });
-        // Set the access token directly on the client
-        authClient.accessToken = gcpAccessToken;
-        console.log('🔑 GoogleAuth created with STS access token');
+        console.log('🔑 External Account Client created with proper configuration');
         console.log('🔑 DEBUG: authClient type:', typeof authClient);
         console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
         
-        // CRITICAL: Verify the GoogleAuth client is properly configured
-        console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
-        console.log('🔑 DEBUG: authClient.accessToken length:', authClient.accessToken?.length);
+        // CRITICAL: Verify the External Account Client is properly configured
+        console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+        console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
+        console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
+        console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
         console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
         console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
         return true; // Authentication successful
@@ -5858,14 +5880,14 @@ export default async function handler(req, res) {
 
   // CRITICAL: Initialize Vertex AI based on authentication result
   if (authSuccess && authClient && gcpAccessToken) {
-    console.log('🔑 DEBUG: Using GoogleAuth for Vertex AI:', typeof authClient);
+    console.log('🔑 DEBUG: Using External Account Client for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
     console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
     console.log('🔑 DEBUG: authClient constructor:', authClient.constructor.name);
-    console.log('🔑 DEBUG: authClient.accessToken exists:', !!authClient.accessToken);
-    console.log('🔑 DEBUG: authClient.accessToken length:', authClient.accessToken?.length);
-    console.log('🔑 DEBUG: authClient.scopes exists:', !!authClient.scopes);
-    console.log('🔑 DEBUG: authClient.scopes value:', authClient.scopes);
+    console.log('🔑 DEBUG: authClient.credentials exists:', !!authClient.credentials);
+    console.log('🔑 DEBUG: authClient.credentials.type:', authClient.credentials?.type);
+    console.log('🔑 DEBUG: authClient.credentials.quota_project_id:', authClient.credentials?.quota_project_id);
+    console.log('🔑 DEBUG: authClient.credentials.credential_source.access_token exists:', !!authClient.credentials?.credential_source?.access_token);
     
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
