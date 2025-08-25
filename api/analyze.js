@@ -149,14 +149,8 @@ async function initializeAuthentication(req) {
           audience,
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
-          credential_source: {
-            url: 'https://oidc.vercel.com/map-my-gap',
-            headers: {
-              'Authorization': `Bearer ${headerToken}`
-            },
-            format: {
-              type: 'text'
-            }
+          subject_token_supplier: {
+            getSubjectToken: async () => headerToken
           }
         };
         authClient = ExternalAccountClient.fromJSON(identityConfig);
@@ -222,14 +216,8 @@ async function initializeAuthentication(req) {
           audience: audience2,
           subject_token_type: 'urn:ietf:params:oauth:token-type:jwt',
           token_url: 'https://sts.googleapis.com/v1/token',
-          credential_source: {
-            url: 'https://oidc.vercel.com/map-my-gap',
-            headers: {
-              'Authorization': `Bearer ${oidcToken}`
-            },
-            format: {
-              type: 'text'
-            }
+          subject_token_supplier: {
+            getSubjectToken: async () => oidcToken
           }
         };
         authClient = ExternalAccountClient.fromJSON(identityConfig2);
