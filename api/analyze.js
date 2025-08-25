@@ -60,6 +60,7 @@ if (authClient) {
         projectId: process.env.GCP_PROJECT_ID,
       });
       
+      // CRITICAL: Initialize Vertex AI with explicit credentials
       vertexAI = new VertexAI({
         project: process.env.GCP_PROJECT_ID,
         location: process.env.GOOGLE_CLOUD_LOCATION || 'us-central1',
@@ -68,6 +69,15 @@ if (authClient) {
           projectId: process.env.GCP_PROJECT_ID,
         }
       });
+      
+      // CRITICAL: Force Vertex AI to use our authenticated client
+      vertexAI.authClient = authClient;
+      vertexAI.googleAuth = googleAuth;
+      
+      // CRITICAL: Set the credentials explicitly on the client
+      if (vertexAI.preview && vertexAI.preview.getGenerativeModel) {
+        vertexAI.preview.authClient = authClient;
+      }
   console.log('🔑 Vertex AI initialized with authenticated External Account Client');
 } else {
   // Fallback to default authentication
