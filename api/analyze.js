@@ -4653,10 +4653,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       const complexityMultiplier = Math.min(1.5, 1 + (totalControls / 100));
       
       // Calculate optimal output tokens with safety margin
-      let optimalTokens = Math.min(65536, Math.max(32000, baseTokens * complexityMultiplier));
+      let optimalTokens = Math.min(65535, Math.max(32000, baseTokens * complexityMultiplier));
       
       // Ensure we don't exceed Gemini 2.5 Flash limits
-      const maxSafeTokens = 65536; // Gemini 2.5 Flash maximum output tokens
+      const maxSafeTokens = 65535; // Gemini 2.5 Flash maximum output tokens (exclusive range)
       optimalTokens = Math.min(optimalTokens, maxSafeTokens);
       
       console.log('=== TOKEN LIMIT CALCULATION ===');
@@ -4666,7 +4666,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       console.log('Base tokens needed:', baseTokens.toLocaleString());
       console.log('Optimal output tokens:', optimalTokens.toLocaleString());
       console.log('Max safe tokens:', maxSafeTokens.toLocaleString());
-      console.log('⚠️ WARNING: Output tokens limited to Gemini 2.5 Flash maximum of 65,536');
+      console.log('⚠️ WARNING: Output tokens limited to Gemini 2.5 Flash maximum of 65,535 (exclusive range)');
       
       return Math.floor(optimalTokens);
     };
@@ -4918,7 +4918,7 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
           ...requestBody,
           generationConfig: {
             ...requestBody.generationConfig,
-            maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 65536, 65536)
+            maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 65535, 65535)
           }
         };
         
