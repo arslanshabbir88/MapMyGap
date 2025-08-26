@@ -4837,7 +4837,7 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
     
     console.log('🚀 CRITICAL DEBUG: About to start AI analysis with Vertex AI...');
     console.log('🔍 AI EXECUTION CHECK: This log should appear if AI execution is reached');
-    console.log('Model being used: gemini-1.5-flash-002 (Vertex AI)');
+    console.log('Model being used: gemini-2.5-flash (Vertex AI)');
     console.log('Prompt length:', prompt.length, 'characters');
     console.log('🔍 EXECUTION POINT: AI analysis starting NOW');
     
