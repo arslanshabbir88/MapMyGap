@@ -4686,7 +4686,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // ENTERPRISE CHOICE: Using Gemini 1.5 Flash 002 for professional compliance analysis
     const location = process.env.GCP_LOCATION || 'us-central1'; // Use env value (us-central1)
     // Using the latest and most professional model available in Vertex AI
-    const model = 'gemini-2.5-flash'; // Enterprise-grade model (global location)
+    const model = 'publishers/google/models/gemini-2.5-flash'; // Full model ID path
     
     // DEBUG: Using enterprise-grade Gemini 2.5 Flash model
     console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash for professional compliance analysis');
@@ -4715,10 +4715,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     let apiUrl;
     if (location === 'global') {
       // Global location uses different URL format - no /locations/global/ in path
-      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/publishers/google/models/${model}:generateContent`;
+      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/${model}:generateContent`;
     } else {
       // Regional locations use location-prefixed URL
-      apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+      apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/${model}:generateContent`;
     }
     
     console.log('🔗 DEBUG: Direct API URL:', apiUrl);
