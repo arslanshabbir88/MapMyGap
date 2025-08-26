@@ -1965,11 +1965,11 @@ function Analyzer({ onNavigateHome }) {
                                 <span className="text-lg font-bold text-blue-300">{analysisResults.summary.score}%</span>
                               </div>
                               
-                              {/* Deterministic Mode Disclaimer */}
+                              {/* Evidence-Based Normalization Disclaimer */}
                               <div className="p-2 bg-blue-500/10 rounded border border-blue-500/20 -ml-3 pl-3 mt-2">
                                 <p className="text-xs text-blue-200">
-                                  <span className="font-medium">ℹ️ Note:</span> This analysis uses deterministic AI mode for consistent, reproducible results. 
-                                  While the same document should produce the same compliance score, slight variations may occasionally occur.
+                                  <span className="font-medium">ℹ️ Note:</span> Results are normalized based on evidence strength to ensure consistency. 
+                                  Controls with weak evidence are automatically adjusted to prevent over-scoring.
                                 </p>
                               </div>
                               

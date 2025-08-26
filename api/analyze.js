@@ -4793,6 +4793,13 @@ IMPORTANT: Your response MUST include ALL controls from the input structure. Do 
 
 CRITICAL: You are ONLY allowed to analyze the categories and controls provided in the JSON structure below. Do NOT add any other categories or controls. Do NOT analyze any framework categories that are not in this list.
 
+ANALYSIS CONSISTENCY REQUIREMENTS:
+1. For each control, provide a confidence level (1-10) indicating how certain you are about your assessment
+2. Always cite specific evidence from the document to support your status decision
+3. If evidence is ambiguous, default to "partial" status rather than making assumptions
+4. Use consistent evaluation criteria across all controls
+5. If you cannot find clear evidence for a control, mark it as "gap" with explanation
+
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
     console.log('=== PROMPT TOKEN ANALYSIS ===');
@@ -5554,8 +5561,49 @@ Return valid JSON with the exact control structure provided. Do not include gene
      
      // Create the proper structure for comprehensive analysis
      const comprehensiveResults = { categories: categoriesToAnalyze };
-     // Use AI results directly for comprehensive analysis
-    const finalResults = comprehensiveResults;
+     
+     // POST-PROCESSING: Normalize results based on evidence strength and consistency
+     console.log('=== POST-PROCESSING: Normalizing results for consistency ===');
+     
+     comprehensiveResults.categories.forEach(category => {
+       if (category.results) {
+         category.results.forEach(control => {
+           // Analyze evidence strength in the details
+           const details = control.details || '';
+           const hasSpecificEvidence = details.includes('document') || details.includes('policy') || details.includes('procedure') || details.includes('implemented');
+           const hasTechnicalDetails = details.includes('SIEM') || details.includes('IDPS') || details.includes('EDR') || details.includes('monitoring');
+           const hasPolicyReference = details.includes('Policy') || details.includes('Procedure') || details.includes('document');
+           
+           // Calculate evidence strength score (1-10)
+           let evidenceScore = 1;
+           if (hasSpecificEvidence) evidenceScore += 3;
+           if (hasTechnicalDetails) evidenceScore += 3;
+           if (hasPolicyReference) evidenceScore += 2;
+           if (details.length > 100) evidenceScore += 1; // Detailed explanation
+           
+           // Normalize status based on evidence strength
+           if (control.status === 'covered' && evidenceScore < 6) {
+             console.log(`⚠️ Downgrading ${control.id} from 'covered' to 'partial' due to weak evidence (score: ${evidenceScore})`);
+             control.status = 'partial';
+             control.evidenceScore = evidenceScore;
+             control.statusReason = 'Downgraded due to insufficient evidence strength';
+           } else if (control.status === 'partial' && evidenceScore < 4) {
+             console.log(`⚠️ Downgrading ${control.id} from 'partial' to 'gap' due to very weak evidence (score: ${evidenceScore})`);
+             control.status = 'gap';
+             control.evidenceScore = evidenceScore;
+             control.statusReason = 'Downgraded due to very weak evidence';
+           } else {
+             control.evidenceScore = evidenceScore;
+           }
+           
+           // Add evidence strength indicator
+           control.evidenceStrength = evidenceScore >= 8 ? 'Strong' : evidenceScore >= 5 ? 'Moderate' : 'Weak';
+         });
+       }
+     });
+     
+     // Use normalized results for comprehensive analysis
+     const finalResults = comprehensiveResults;
      
      // Count final results from comprehensive analysis
      let finalGapCount = 0;
