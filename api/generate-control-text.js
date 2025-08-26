@@ -110,6 +110,7 @@ Make it specific, professional, and implementation-ready. Include enough detail 
       // Prepare request body with proper token limits
       const requestBody = {
         contents: [{
+          role: "user",
           parts: [{
             text: prompt
           }]
