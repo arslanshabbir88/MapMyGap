@@ -4905,7 +4905,6 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         console.log('🔍 DEBUG: - Request body keys:', Object.keys(requestBody));
         
         // Get access token using service account credentials
-        const { GoogleAuth } = require('google-auth-library');
         const auth = new GoogleAuth({
           credentials: credentials,
           scopes: ['https://www.googleapis.com/auth/cloud-platform']
