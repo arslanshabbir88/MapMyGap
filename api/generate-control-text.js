@@ -227,4 +227,3 @@ Make it specific, professional, and implementation-ready. Include enough detail 
       });
     }
   }
-}
