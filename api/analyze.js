@@ -4757,17 +4757,17 @@ ${fileContent}
 Framework: ${frameworkName}
 Analysis Mode: Comprehensive
 
-CRITICAL REQUIREMENT: You MUST analyze ALL controls in the selected categories below. Do NOT skip any controls.
+CRITICAL REQUIREMENT: You MUST analyze ONLY the controls in the selected categories below. Do NOT analyze any other categories.
 
 ANALYSIS MODE: Comprehensive
 - "covered": Full implementation with evidence
 - "partial": Partial implementation  
 - "gap": Not implemented
 
-SELECTED CATEGORIES TO ANALYZE:
+SELECTED CATEGORIES TO ANALYZE (ONLY ANALYZE THESE):
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description} (${cat.results.length} controls)`).join('\n')}
 
-MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls.
+MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls. Do NOT add any controls from other categories.
 
 DOCUMENT ANALYSIS INSTRUCTIONS:
 1. Read the document content carefully
@@ -4790,6 +4790,8 @@ For "gap" or "partial" controls, add these fields:
 - "sequence": "Foundation"|"Core"|"Advanced"
 
 IMPORTANT: Your response MUST include ALL controls from the input structure. Do NOT create a partial analysis.
+
+CRITICAL: You are ONLY allowed to analyze the categories and controls provided in the JSON structure below. Do NOT add any other categories or controls. Do NOT analyze any framework categories that are not in this list.
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -4924,7 +4926,8 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         
         console.log('🔧 DEBUG: Limited maxOutputTokens to:', limitedRequestBody.generationConfig.maxOutputTokens);
         
-        const response = await fetch(apiUrl, {
+        // Wrap the fetch call with timeout protection
+        const fetchPromise = fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -4933,6 +4936,8 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
           },
           body: JSON.stringify(limitedRequestBody)
         });
+        
+        const response = await Promise.race([fetchPromise, timeoutPromise]);
         
         console.log('📥 DEBUG: Direct API response status:', response.status);
         
@@ -5366,6 +5371,36 @@ Return valid JSON with the exact control structure provided. Do not include gene
         expectedControlCount += category.results.length;
       }
     });
+    
+    // Validate that AI only analyzed the expected categories
+    const expectedCategoryNames = filteredFrameworkData.categories.map(cat => cat.name);
+    const actualCategoryNames = [];
+    
+    if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
+      actualCategoryNames.push(...parsedResponse.categories.map(cat => cat.name));
+    } else if (Array.isArray(parsedResponse)) {
+      actualCategoryNames.push(...parsedResponse.map(cat => cat.name));
+    } else if (parsedResponse.name) {
+      actualCategoryNames.push(parsedResponse.name);
+    }
+    
+    console.log(`=== CATEGORY VALIDATION ===`);
+    console.log(`Expected categories: ${expectedCategoryNames.join(', ')}`);
+    console.log(`Actual categories in response: ${actualCategoryNames.join(', ')}`);
+    
+    // Check for unexpected categories
+    const unexpectedCategories = actualCategoryNames.filter(cat => !expectedCategoryNames.includes(cat));
+    if (unexpectedCategories.length > 0) {
+      console.warn(`⚠️ WARNING: AI analyzed unexpected categories: ${unexpectedCategories.join(', ')}`);
+      console.warn(`This indicates the AI did not follow instructions properly`);
+    }
+    
+    // Check for missing categories
+    const missingCategories = expectedCategoryNames.filter(cat => !actualCategoryNames.includes(cat));
+    if (missingCategories.length > 0) {
+      console.warn(`⚠️ WARNING: AI missed expected categories: ${missingCategories.join(', ')}`);
+      console.warn(`This indicates incomplete analysis`);
+    }
     
     // Calculate actual controls in AI response
     if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
