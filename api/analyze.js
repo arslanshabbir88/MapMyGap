@@ -4715,10 +4715,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     let apiUrl;
     if (location === 'global') {
       // Global location uses different URL format - no /locations/global/ in path
-      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/${model}:generateContent`;
+      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/publishers/google/models/${model}:generateContent`;
     } else {
       // Regional locations use location-prefixed URL
-      apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/${model}:generateContent`;
+      apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
     }
     
     console.log('🔗 DEBUG: Direct API URL:', apiUrl);
