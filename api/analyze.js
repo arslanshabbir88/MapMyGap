@@ -4653,10 +4653,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       const complexityMultiplier = Math.min(1.5, 1 + (totalControls / 100));
       
       // Calculate optimal output tokens with safety margin
-      let optimalTokens = Math.min(256000, Math.max(32000, baseTokens * complexityMultiplier));
+      let optimalTokens = Math.min(65536, Math.max(32000, baseTokens * complexityMultiplier));
       
-      // Ensure we don't exceed model limits
-      const maxSafeTokens = 900000; // Leave 100K buffer for input
+      // Ensure we don't exceed Gemini 2.5 Flash limits
+      const maxSafeTokens = 65536; // Gemini 2.5 Flash maximum output tokens
       optimalTokens = Math.min(optimalTokens, maxSafeTokens);
       
       console.log('=== TOKEN LIMIT CALCULATION ===');
@@ -4666,6 +4666,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       console.log('Base tokens needed:', baseTokens.toLocaleString());
       console.log('Optimal output tokens:', optimalTokens.toLocaleString());
       console.log('Max safe tokens:', maxSafeTokens.toLocaleString());
+      console.log('⚠️ WARNING: Output tokens limited to Gemini 2.5 Flash maximum of 65,536');
       
       return Math.floor(optimalTokens);
     };
@@ -4912,6 +4913,17 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         
         const accessToken = await auth.getAccessToken();
         
+        // CRITICAL: Limit output tokens to stay within Gemini 2.5 Flash limits
+        const limitedRequestBody = {
+          ...requestBody,
+          generationConfig: {
+            ...requestBody.generationConfig,
+            maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 65536, 65536)
+          }
+        };
+        
+        console.log('🔧 DEBUG: Limited maxOutputTokens to:', limitedRequestBody.generationConfig.maxOutputTokens);
+        
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
@@ -4919,7 +4931,7 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
             'Content-Type': 'application/json',
             'X-Goog-User-Project': projectId
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(limitedRequestBody)
         });
         
         console.log('📥 DEBUG: Direct API response status:', response.status);
