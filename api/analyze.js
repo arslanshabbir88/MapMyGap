@@ -4869,9 +4869,9 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
             }]
           }],
           generationConfig: {
-            temperature: 0.1,
-            topP: 0.8,
-            topK: 40,
+            temperature: 0.0,  // Deterministic mode - eliminates randomness
+            topP: 1.0,         // Use all available tokens
+            topK: 1,           // Always pick top choice
             maxOutputTokens: optimalTokenLimit,
           },
           safetySettings: [

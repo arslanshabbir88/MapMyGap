@@ -117,9 +117,9 @@ Make it specific, professional, and implementation-ready. Include enough detail 
         }],
         generationConfig: {
           maxOutputTokens: 8192,
-          temperature: 0.1,
-          topP: 0.8,
-          topK: 40
+          temperature: 0.0,  // Deterministic mode - eliminates randomness
+          topP: 1.0,         // Use all available tokens
+          topK: 1            // Always pick top choice
         },
         safetySettings: [
           {

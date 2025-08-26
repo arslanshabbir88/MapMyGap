@@ -1964,6 +1964,14 @@ function Analyzer({ onNavigateHome }) {
                                 <span className="text-lg font-bold text-blue-300">{analysisResults.summary.score}%</span>
                               </div>
                               
+                              {/* Deterministic Mode Disclaimer */}
+                              <div className="p-2 bg-blue-500/10 rounded border border-blue-500/20 -ml-3 pl-3 mt-2">
+                                <p className="text-xs text-blue-200">
+                                  <span className="font-medium">ℹ️ Note:</span> This analysis uses deterministic AI mode for consistent, reproducible results. 
+                                  The same document will always produce the same compliance score.
+                                </p>
+                              </div>
+                              
                               {/* Score Interpretation */}
                               <div className="p-3 bg-slate-600/20 rounded border-l-4 border-blue-400/50 -ml-3 pl-3">
                                 <p className="font-medium text-blue-200 mb-2">📈 Score Interpretation</p>
