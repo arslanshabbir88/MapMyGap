@@ -1,41 +1,5 @@
 import { VertexAI } from '@google-cloud/vertexai';
 
-// Initialize VertexAI with service account key
-async function initializeVertexAI() {
-  try {
-    // Get the service account credentials from environment variable
-    const serviceAccountKey = process.env.GCP_SERVICE_KEY;
-    if (!serviceAccountKey) {
-      throw new Error('No GCP service account key available');
-    }
-    
-    // Parse the base64-encoded service account key
-    let credentials;
-    try {
-      credentials = JSON.parse(
-        Buffer.from(serviceAccountKey, "base64").toString()
-      );
-      console.log('🔑 DEBUG: Service account key parsed successfully, client_email:', credentials.client_email);
-    } catch (error) {
-      throw new Error(`Failed to parse service account key: ${error.message}`);
-    }
-    
-    // Initialize VertexAI with service account credentials
-    const vertex = new VertexAI({
-      project: process.env.GCP_PROJECT_ID,
-      location: process.env.GCP_LOCATION || 'us-central1',
-      auth: {
-        credentials: credentials
-      }
-    });
-
-    return vertex;
-  } catch (error) {
-    console.error('❌ Failed to initialize VertexAI:', error);
-    throw error;
-  }
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -54,8 +18,34 @@ export default async function handler(req, res) {
       documentLength: originalDocument.length
     });
 
-    // Initialize VertexAI with Service Account Key
-    const vertex = await initializeVertexAI();
+    // CRITICAL: Use direct API calls instead of broken VertexAI SDK
+    console.log('🚀 NUCLEAR OPTION: Using direct API calls to bypass broken VertexAI SDK');
+    
+    // Get the service account credentials from environment variable
+    const serviceAccountKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceAccountKey) {
+      throw new Error('No GCP service account key available for direct API calls');
+    }
+    
+    // Parse the base64-encoded service account key
+    let credentials;
+    try {
+      credentials = JSON.parse(
+        Buffer.from(serviceAccountKey, "base64").toString()
+      );
+      console.log('🔑 DEBUG: Service account key parsed successfully, client_email:', credentials.client_email);
+    } catch (error) {
+      throw new Error(`Failed to parse service account key: ${error.message}`);
+    }
+    
+    const projectId = process.env.GCP_PROJECT_ID;
+    const location = process.env.GCP_LOCATION || 'us-central1';
+    const model = 'gemini-2.5-flash-lite';
+    
+    // Direct Vertex AI API endpoint
+    const apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+    
+    console.log('🔗 DEBUG: Direct API URL:', apiUrl);
     
     const prompt = `You are a cybersecurity compliance expert specializing in creating COMPREHENSIVE implementation documents that achieve "covered" status.
 
@@ -105,101 +95,153 @@ Make it specific, professional, and implementation-ready. Include enough detail 
       setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 30000);
     });
     
-    let result;
+    // CRITICAL: Use GoogleAuth for direct API authentication
+    const { GoogleAuth } = await import('google-auth-library');
+    
     try {
-      // Try with gemini-2.5-flash-lite first
-      console.log('Attempting with gemini-2.5-flash-lite model...');
-      const model = vertex.preview.getGenerativeModel({
-        model: "gemini-2.5-flash-lite",
-        generation_config: {
-          max_output_tokens: 8192,
-          temperature: 0.1,
-          top_p: 0.8,
-          top_k: 40
-        }
+      // Get access token using service account credentials
+      const auth = new GoogleAuth({
+        credentials: credentials,
+        scopes: ['https://www.googleapis.com/auth/cloud-platform']
       });
       
-      const aiPromise = model.generateContent(prompt);
-      result = await Promise.race([aiPromise, timeoutPromise]);
-    } catch (modelError) {
-      console.log('Primary model failed, trying fallback...', modelError.message);
-      // Fallback to gemini-1.5-pro if the primary model fails
-      try {
-        const fallbackModel = vertex.preview.getGenerativeModel({
-          model: "gemini-1.5-pro",
-          generation_config: {
-            max_output_tokens: 8192,
-            temperature: 0.1,
-            top_p: 0.8,
-            top_k: 40
+      const accessToken = await auth.getAccessToken();
+      
+      // Prepare request body with proper token limits
+      const requestBody = {
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          maxOutputTokens: 8192,
+          temperature: 0.1,
+          topP: 0.8,
+          topK: 40
+        },
+        safetySettings: [
+          {
+            category: "HARM_CATEGORY_HARASSMENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_HATE_SPEECH",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
+          },
+          {
+            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+            threshold: "BLOCK_MEDIUM_AND_ABOVE"
           }
-        });
-        
-        const aiPromise = fallbackModel.generateContent(prompt);
-        result = await Promise.race([aiPromise, timeoutPromise]);
-        console.log('Fallback model successful');
-      } catch (fallbackError) {
-        console.log('Fallback model also failed:', fallbackError.message);
-        throw fallbackError;
+        ]
+      };
+      
+      // CRITICAL: Limit maxOutputTokens to Gemini 2.5 Flash-Lite maximum (exclusive range)
+      const limitedRequestBody = {
+        ...requestBody,
+        generationConfig: {
+          ...requestBody.generationConfig,
+          maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 8192, 8192)
+        }
+      };
+      
+      console.log('🔧 DEBUG: Limited maxOutputTokens to:', limitedRequestBody.generationConfig.maxOutputTokens);
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'X-Goog-User-Project': projectId
+        },
+        body: JSON.stringify(limitedRequestBody)
+      });
+      
+      console.log('📥 DEBUG: Direct API response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`❌ Direct API error ${response.status}:`, errorText);
+        throw new Error(`Direct API error ${response.status}: ${errorText}`);
       }
+      
+      const responseData = await response.json();
+      console.log('✅ Direct API call successful!');
+      
+      // Extract the generated text from Vertex AI response
+      let generatedText;
+      if (responseData.candidates && responseData.candidates[0] && responseData.candidates[0].content) {
+        generatedText = responseData.candidates[0].content.parts[0].text;
+        console.log('📝 AI response text extracted, length:', generatedText.length);
+      } else {
+        throw new Error('Direct API response missing generated content');
+      }
+
+      console.log('Successfully generated text with Service Account Key, length:', generatedText.length);
+
+      res.status(200).json({
+        generatedText: generatedText
+      });
+
+    } catch (error) {
+      console.error('Error in /generate-control-text:', error);
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack,
+        code: error.code,
+        status: error.status
+      });
+      
+      // Handle timeout errors specifically
+      if (error.message && error.message.includes('timeout')) {
+        return res.status(408).json({ 
+          error: 'AI generation timed out',
+          details: 'The comprehensive control text generation is taking too long. Please try again.',
+          suggestion: 'Try again with a shorter document or different control'
+        });
+      }
+      
+      // Handle authentication errors
+      if (error.message && (error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403'))) {
+        return res.status(401).json({ 
+          error: 'Service account authentication failed',
+          details: 'Failed to authenticate with Google Cloud using service account key',
+          suggestion: 'Check your GCP_SERVICE_KEY environment variable and service account permissions'
+        });
+      }
+      
+      // Handle Vertex AI service errors
+      if (error.message && (error.message.includes('Vertex') || error.message.includes('AI') || error.message.includes('model') || error.message.includes('content'))) {
+        return res.status(500).json({ 
+          error: 'Vertex AI service error',
+          details: 'There was an issue with the Vertex AI service. Please try again later.',
+          suggestion: 'Check your GCP project configuration and try again.'
+        });
+      }
+      
+      // Handle network/connection errors
+      if (error.message && (error.message.includes('network') || error.message.includes('connection') || error.message.includes('fetch') || error.message.includes('timeout') || error.message.includes('ENOTFOUND'))) {
+        return res.status(503).json({ 
+          error: 'Service temporarily unavailable',
+          details: 'Unable to connect to the AI service. Please try again later.',
+          suggestion: 'Check your internet connection and try again'
+        });
+      }
+      
+      // Generic error fallback
+      res.status(500).json({ 
+        error: 'Server error', 
+        details: error.message || 'An unexpected error occurred',
+        suggestion: 'Please try again later or contact support'
+      });
     }
-    
-    const response = await result.response;
-    const generatedText = response.text();
-
-    console.log('Successfully generated text with Service Account Key, length:', generatedText.length);
-
-    res.status(200).json({
-      generatedText: generatedText
-    });
-
   } catch (error) {
     console.error('Error in /generate-control-text:', error);
-    console.error('Error details:', {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      code: error.code,
-      status: error.status
-    });
-    
-    // Handle timeout errors specifically
-    if (error.message && error.message.includes('timeout')) {
-      return res.status(408).json({ 
-        error: 'AI generation timed out',
-        details: 'The comprehensive control text generation is taking too long. Please try again.',
-        suggestion: 'Try again with a shorter document or different control'
-      });
-    }
-    
-    // Handle authentication errors
-    if (error.message && (error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403'))) {
-      return res.status(401).json({ 
-        error: 'Service account authentication failed',
-        details: 'Failed to authenticate with Google Cloud using service account key',
-        suggestion: 'Check your GCP_SERVICE_KEY environment variable and service account permissions'
-      });
-    }
-    
-    // Handle Vertex AI service errors
-    if (error.message && (error.message.includes('Vertex') || error.message.includes('AI') || error.message.includes('model') || error.message.includes('content'))) {
-      return res.status(500).json({ 
-        error: 'Vertex AI service error',
-        details: 'There was an issue with the Vertex AI service. Please try again later.',
-        suggestion: 'Check your GCP project configuration and try again.'
-      });
-    }
-    
-    // Handle network/connection errors
-    if (error.message && (error.message.includes('network') || error.message.includes('connection') || error.message.includes('fetch') || error.message.includes('timeout') || error.message.includes('ENOTFOUND'))) {
-      return res.status(503).json({ 
-        error: 'Service temporarily unavailable',
-        details: 'Unable to connect to the AI service. Please try again later.',
-        suggestion: 'Check your internet connection and try again'
-      });
-    }
-    
-    // Generic error fallback
     res.status(500).json({ 
       error: 'Server error', 
       details: error.message || 'An unexpected error occurred',
