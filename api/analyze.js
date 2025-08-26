@@ -4769,36 +4769,58 @@ ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}
 
 MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls. Do NOT add any controls from other categories.
 
-DOCUMENT ANALYSIS INSTRUCTIONS:
-1. Read the document content carefully
-2. For each control, search for evidence of implementation
-3. Look for: policies, procedures, "we implement", "access controls", "security policies", "monitoring", "audit"
-4. Mark as "covered" if you find clear evidence
-5. Mark as "partial" if you find some evidence but not complete
-6. Mark as "gap" if you find no evidence
+STRUCTURED EVIDENCE ANALYSIS TEMPLATE:
+For each control, you MUST follow this EXACT format:
 
-CRITICAL: Do NOT use generic phrases like "AI analysis encountered an issue" or "requires manual review". 
-You MUST provide actual analysis based on the document content.
+1. EVIDENCE EXTRACTION: Extract specific evidence points from the document
+   - Direct quotes from the document (use quotation marks)
+   - Specific policy names, procedure references, or document sections
+   - Technical implementation details (tool names, system names, etc.)
+   - Page numbers or section references if available
 
-For "gap" or "partial" controls, add these fields:
-- "implementationSteps": [step-by-step actions]
-- "difficulty": "Easy"|"Medium"|"Hard"
-- "businessImpact": "High"|"Medium"|"Low"
-- "timeline": "Immediate"|"Short-term"|"Long-term"
-- "resources": "Staff time, tools, budget"
-- "dependencies": [control IDs to implement first]
-- "sequence": "Foundation"|"Core"|"Advanced"
+2. EVIDENCE SCORING: For each evidence point, assign a score (1-10):
+   - 10: Direct, explicit implementation statement
+   - 8-9: Strong supporting evidence with specific details
+   - 6-7: Moderate evidence with some specifics
+   - 4-5: Weak evidence, mostly general statements
+   - 1-3: Very weak or no evidence
 
-IMPORTANT: Your response MUST include ALL controls from the input structure. Do NOT create a partial analysis.
+3. STATUS DETERMINATION: Use evidence scores to determine status:
+   - "covered": Evidence score ≥ 7 AND specific implementation details found
+   - "partial": Evidence score 4-6 OR some evidence but incomplete
+   - "gap": Evidence score ≤ 3 OR no evidence found
 
-CRITICAL: You are ONLY allowed to analyze the categories and controls provided in the JSON structure below. Do NOT add any other categories or controls. Do NOT analyze any framework categories that are not in this list.
+4. REQUIRED FIELDS FOR EACH CONTROL:
+   - evidencePoints: [array of specific evidence found]
+   - evidenceScores: [array of scores for each evidence point]
+   - totalEvidenceScore: sum of all evidence scores
+   - status: determined by evidence score
+   - details: summary of evidence and reasoning
+   - recommendation: specific action items if gap/partial
 
-ANALYSIS CONSISTENCY REQUIREMENTS:
-1. For each control, provide a confidence level (1-10) indicating how certain you are about your assessment
-2. Always cite specific evidence from the document to support your status decision
-3. If evidence is ambiguous, default to "partial" status rather than making assumptions
-4. Use consistent evaluation criteria across all controls
-5. If you cannot find clear evidence for a control, mark it as "gap" with explanation
+EXAMPLE CONTROL ANALYSIS:
+{
+  "id": "DE.AE-1",
+  "control": "DE.AE-1 - Baseline network operations and data flows are established and managed",
+  "evidencePoints": [
+    "Section 3.2: 'Network monitoring tools are deployed across all critical systems'",
+    "Policy document: 'Network Security Policy v2.1'",
+    "Procedure: 'Daily network traffic analysis and reporting'"
+  ],
+  "evidenceScores": [8, 7, 6],
+  "totalEvidenceScore": 21,
+  "status": "covered",
+  "details": "Strong evidence of network monitoring implementation with documented policies and procedures",
+  "recommendation": "Continue current implementation"
+}
+
+CRITICAL INSTRUCTIONS:
+- Extract ONLY factual evidence from the document
+- Do NOT make assumptions or interpretations
+- If evidence is ambiguous, default to "partial" with explanation
+- Use consistent scoring criteria across all controls
+- Provide specific quotes and references when possible
+- If no evidence is found, mark as "gap" with "No evidence found in document"
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -5562,42 +5584,85 @@ Return valid JSON with the exact control structure provided. Do not include gene
      // Create the proper structure for comprehensive analysis
      const comprehensiveResults = { categories: categoriesToAnalyze };
      
-     // POST-PROCESSING: Normalize results based on evidence strength and consistency
-     console.log('=== POST-PROCESSING: Normalizing results for consistency ===');
+     // POST-PROCESSING: Normalize results based on structured evidence scoring
+     console.log('=== POST-PROCESSING: Normalizing results using structured evidence scoring ===');
      
      comprehensiveResults.categories.forEach(category => {
        if (category.results) {
          category.results.forEach(control => {
-           // Analyze evidence strength in the details
-           const details = control.details || '';
-           const hasSpecificEvidence = details.includes('document') || details.includes('policy') || details.includes('procedure') || details.includes('implemented');
-           const hasTechnicalDetails = details.includes('SIEM') || details.includes('IDPS') || details.includes('EDR') || details.includes('monitoring');
-           const hasPolicyReference = details.includes('Policy') || details.includes('Procedure') || details.includes('document');
-           
-           // Calculate evidence strength score (1-10)
-           let evidenceScore = 1;
-           if (hasSpecificEvidence) evidenceScore += 3;
-           if (hasTechnicalDetails) evidenceScore += 3;
-           if (hasPolicyReference) evidenceScore += 2;
-           if (details.length > 100) evidenceScore += 1; // Detailed explanation
-           
-           // Normalize status based on evidence strength
-           if (control.status === 'covered' && evidenceScore < 6) {
-             console.log(`⚠️ Downgrading ${control.id} from 'covered' to 'partial' due to weak evidence (score: ${evidenceScore})`);
-             control.status = 'partial';
-             control.evidenceScore = evidenceScore;
-             control.statusReason = 'Downgraded due to insufficient evidence strength';
-           } else if (control.status === 'partial' && evidenceScore < 4) {
-             console.log(`⚠️ Downgrading ${control.id} from 'partial' to 'gap' due to very weak evidence (score: ${evidenceScore})`);
-             control.status = 'gap';
-             control.evidenceScore = evidenceScore;
-             control.statusReason = 'Downgraded due to very weak evidence';
+           // Use structured evidence scoring if available, otherwise fall back to legacy scoring
+           if (control.totalEvidenceScore !== undefined && control.evidencePoints && control.evidenceScores) {
+             // New structured evidence format
+             console.log(`📊 ${control.id}: Evidence score ${control.totalEvidenceScore} from ${control.evidencePoints.length} evidence points`);
+             
+             // Validate evidence scores are within expected range
+             const validScores = control.evidenceScores.filter(score => score >= 1 && score <= 10);
+             if (validScores.length !== control.evidenceScores.length) {
+               console.warn(`⚠️ ${control.id}: Invalid evidence scores detected, normalizing...`);
+               control.evidenceScores = validScores;
+               control.totalEvidenceScore = validScores.reduce((sum, score) => sum + score, 0);
+             }
+             
+             // Normalize status based on evidence score thresholds
+             const avgEvidenceScore = control.totalEvidenceScore / control.evidencePoints.length;
+             let normalizedStatus = control.status;
+             let statusReason = '';
+             
+             if (avgEvidenceScore >= 7 && control.evidencePoints.length >= 2) {
+               normalizedStatus = 'covered';
+               statusReason = 'Strong evidence with multiple supporting points';
+             } else if (avgEvidenceScore >= 4 || control.evidencePoints.length >= 1) {
+               normalizedStatus = 'partial';
+               statusReason = 'Moderate evidence or limited supporting points';
+             } else {
+               normalizedStatus = 'gap';
+               statusReason = 'Insufficient evidence';
+             }
+             
+             // Apply normalization if status changed
+             if (normalizedStatus !== control.status) {
+               console.log(`🔄 ${control.id}: Normalizing status from '${control.status}' to '${normalizedStatus}' (evidence: ${avgEvidenceScore.toFixed(1)})`);
+               control.status = normalizedStatus;
+               control.statusReason = statusReason;
+             }
+             
+             // Add evidence strength indicator based on structured scoring
+             control.evidenceStrength = avgEvidenceScore >= 8 ? 'Strong' : avgEvidenceScore >= 5 ? 'Moderate' : 'Weak';
+             control.evidenceScore = avgEvidenceScore;
+             
            } else {
-             control.evidenceScore = evidenceScore;
+             // Legacy format - fall back to text-based analysis
+             console.log(`📝 ${control.id}: Using legacy evidence analysis (no structured scoring)`);
+             const details = control.details || '';
+             const hasSpecificEvidence = details.includes('document') || details.includes('policy') || details.includes('procedure') || details.includes('implemented');
+             const hasTechnicalDetails = details.includes('SIEM') || details.includes('IDPS') || details.includes('EDR') || details.includes('monitoring');
+             const hasPolicyReference = details.includes('Policy') || details.includes('Procedure') || details.includes('document');
+             
+             // Calculate legacy evidence strength score (1-10)
+             let evidenceScore = 1;
+             if (hasSpecificEvidence) evidenceScore += 3;
+             if (hasTechnicalDetails) evidenceScore += 3;
+             if (hasPolicyReference) evidenceScore += 2;
+             if (details.length > 100) evidenceScore += 1;
+             
+             // Normalize status based on evidence strength
+             if (control.status === 'covered' && evidenceScore < 6) {
+               console.log(`⚠️ Downgrading ${control.id} from 'covered' to 'partial' due to weak evidence (score: ${evidenceScore})`);
+               control.status = 'partial';
+               control.evidenceScore = evidenceScore;
+               control.statusReason = 'Downgraded due to insufficient evidence strength';
+             } else if (control.status === 'partial' && evidenceScore < 4) {
+               console.log(`⚠️ Downgrading ${control.id} from 'partial' to 'gap' due to very weak evidence (score: ${evidenceScore})`);
+               control.status = 'gap';
+               control.evidenceScore = evidenceScore;
+               control.statusReason = 'Downgraded due to very weak evidence';
+             } else {
+               control.evidenceScore = evidenceScore;
+             }
+             
+             // Add evidence strength indicator
+             control.evidenceStrength = evidenceScore >= 8 ? 'Strong' : evidenceScore >= 5 ? 'Moderate' : 'Weak';
            }
-           
-           // Add evidence strength indicator
-           control.evidenceStrength = evidenceScore >= 8 ? 'Strong' : evidenceScore >= 5 ? 'Moderate' : 'Weak';
          });
        }
      });
