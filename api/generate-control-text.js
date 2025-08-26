@@ -1,6 +1,5 @@
-try {
-  const { VertexAI } = require('@google-cloud/vertexai');
-  const { getVercelOidcToken } = require('@vercel/functions/oidc');
+import { VertexAI } from '@google-cloud/vertexai';
+import { getVercelOidcToken } from '@vercel/functions/oidc';
 
   // CRITICAL: Debug function to inspect Vercel OIDC headers
   function inspectVercelOidcHeaders(req) {
@@ -57,7 +56,7 @@ try {
     }
   }
 
-  module.exports = async function handler(req, res) {
+  export default async function handler(req, res) {
     if (req.method !== 'POST') {
       return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -227,16 +226,5 @@ Make it specific, professional, and implementation-ready. Include enough detail 
         suggestion: 'Please try again later or contact support'
       });
     }
-  };
-
-} catch (packageError) {
-  console.error('Failed to load Vertex AI package:', packageError);
-  
-  module.exports = async function handler(req, res) {
-    return res.status(500).json({ 
-      error: 'Package error',
-      details: 'Failed to load Vertex AI package',
-      suggestion: 'Please check your dependencies and try again'
-    });
-  };
+  }
 }
