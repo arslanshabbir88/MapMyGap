@@ -127,9 +127,9 @@ try {
       // Test with a simple prompt
       let result;
       try {
-        console.log('Testing with gemini-1.5-flash model...');
+        console.log('Testing with gemini-2.5-flash model...');
         const model = vertex.preview.getGenerativeModel({ 
-          model: "gemini-1.5-flash",
+          model: "gemini-2.5-flash",
           generation_config: {
             max_output_tokens: 100,
             temperature: 0.1
