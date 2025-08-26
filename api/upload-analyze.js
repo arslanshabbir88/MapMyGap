@@ -2301,7 +2301,7 @@ async function identifyRelevantControls(fileContent, framework) {
   try {
     console.log('=== SMART FILTERING: Identifying relevant controls ===');
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     
     // First, do a high-level content analysis to identify relevant areas
     const contentAnalysisPrompt = `Analyze this document content and identify which cybersecurity control families are most relevant.
@@ -2787,7 +2787,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       credentials: credentials
     });
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     
     // Map framework IDs to display names
     const frameworkNames = {

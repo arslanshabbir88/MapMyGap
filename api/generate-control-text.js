@@ -109,10 +109,10 @@ Make it specific, professional, and implementation-ready. Include enough detail 
       
       let result;
       try {
-        // Try with gemini-2.5-flash first
-        console.log('Attempting with gemini-2.5-flash model...');
+        // Try with gemini-2.5-flash-lite first
+        console.log('Attempting with gemini-2.5-flash-lite model...');
         const model = vertex.preview.getGenerativeModel({
-          model: "gemini-2.5-flash",
+          model: "gemini-2.5-flash-lite",
           generation_config: {
             max_output_tokens: 8192,
             temperature: 0.1,

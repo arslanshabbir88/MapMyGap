@@ -212,7 +212,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       credentials: credentials
     });
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     // Map framework IDs to display names
     const frameworkNames = {
@@ -598,7 +598,7 @@ app.post('/api/generate-control-text', async (req, res) => {
       credentials: credentials
     });
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const prompt = `You are a cybersecurity compliance expert. Analyze the writing style and tone of the following document, then generate a comprehensive policy text that matches that exact style and tone.
 
