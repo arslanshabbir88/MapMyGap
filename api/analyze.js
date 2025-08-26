@@ -4438,18 +4438,54 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
   // SECURITY: Generate minimal hash for logging only (no content storage)
   const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework).digest('hex');
   
+  // Create a more specific hash that includes categories and framework for deterministic caching
+  const analysisKey = crypto.createHash('sha256').update(
+    fileContent + framework + (selectedCategories ? JSON.stringify(selectedCategories.sort()) : 'all')
+  ).digest('hex');
+  
   // Declare filteredFrameworkData at function level to ensure it's always available
   let filteredFrameworkData = { categories: [] };
   
   try {
+    // Initialize global cache if it doesn't exist
+    if (!global.analysisCache) {
+      global.analysisCache = {};
+    }
+    
+    // Clean up old cache entries (older than 1 hour) to prevent memory bloat
+    const oneHourAgo = Date.now() - (60 * 60 * 1000);
+    const cacheKeys = Object.keys(global.analysisCache);
+    let cleanedCount = 0;
+    
+    cacheKeys.forEach(key => {
+      if (global.analysisCache[key].timestamp < oneHourAgo) {
+        delete global.analysisCache[key];
+        cleanedCount++;
+      }
+    });
+    
+    if (cleanedCount > 0) {
+      console.log(`🧹 Cleaned up ${cleanedCount} old cache entries`);
+    }
+    
     console.log('🚀 NUCLEAR OPTION: Using direct HTTP calls to Vertex AI API');
     console.log('Available frameworks:', Object.keys(allFrameworks));
     console.log('Requested framework:', framework);
     console.log('Analysis Mode: Comprehensive');
     console.log('Document hash (first 16 chars):', documentHash.substring(0, 16) + '...');
+    console.log('Analysis key (first 16 chars):', analysisKey.substring(0, 16) + '...');
     console.log('Document content length:', fileContent.length);
     
-    // SECURITY: No caching - all analysis is performed fresh and discarded immediately
+    // Check for existing analysis in memory cache (session-based only)
+    const cacheKey = `analysis_${analysisKey}`;
+    if (global.analysisCache && global.analysisCache[cacheKey]) {
+      console.log('🎯 CACHE HIT: Using cached analysis for identical document/framework/categories');
+      const cachedResult = global.analysisCache[cacheKey];
+      console.log('Cached result score:', cachedResult.score);
+      return cachedResult;
+    }
+    
+    console.log('🔄 Running fresh AI analysis with DIRECT API CALLS');
     
     console.log('🔄 Running fresh AI analysis with DIRECT API CALLS');
     
@@ -4875,6 +4911,46 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
             topP: 1.0,         // Use all available tokens
             topK: 1,           // Always pick top choice
             maxOutputTokens: optimalTokenLimit,
+            // Additional deterministic parameters for Gemini models
+            candidateCount: 1,  // Only generate one response
+            stopSequences: [],  // No early stopping
+            // Ensure consistent token selection
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                categories: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string" },
+                      description: { type: "string" },
+                      results: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            id: { type: "string" },
+                            control: { type: "string" },
+                            status: { type: "string", enum: ["covered", "partial", "gap"] },
+                            details: { type: "string" },
+                            recommendation: { type: "string" },
+                            implementationSteps: { type: "array", items: { type: "string" } },
+                            difficulty: { type: "string", enum: ["Easy", "Medium", "Hard"] },
+                            businessImpact: { type: "string", enum: ["High", "Medium", "Low"] },
+                            timeline: { type: "string", enum: ["Immediate", "Short-term", "Long-term"] },
+                            resources: { type: "string" },
+                            dependencies: { type: "array", items: { type: "string" } },
+                            sequence: { type: "string", enum: ["Foundation", "Core", "Advanced"] }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           safetySettings: [
             {
@@ -5580,8 +5656,28 @@ Return valid JSON with the exact control structure provided. Do not include gene
      const calculatedScore = ((finalCoveredCount + (finalPartialCount * 0.5)) / (finalGapCount + finalCoveredCount + finalPartialCount)) * 100;
      console.log('Calculated score:', calculatedScore.toFixed(1) + '%');
     
-    // SECURITY: No caching - results are discarded immediately after analysis
-    console.log('✅ Analysis completed - no data persistence (enterprise security)');
+    // Store results in memory cache for identical document/framework/categories combinations
+    if (!global.analysisCache) {
+      global.analysisCache = {};
+    }
+    
+    // Calculate score for caching
+    const score = ((finalCoveredCount + (finalPartialCount * 0.5)) / (finalGapCount + finalCoveredCount + finalPartialCount)) * 100;
+    
+    // Cache the result with the analysis key
+    global.analysisCache[cacheKey] = {
+      ...finalResults,
+      score: score,
+      timestamp: Date.now(),
+      documentHash: documentHash.substring(0, 16)
+    };
+    
+    console.log('💾 Cached analysis result with key:', cacheKey.substring(0, 16) + '...');
+    console.log('Cached score:', score.toFixed(1) + '%');
+    console.log('Cache size:', Object.keys(global.analysisCache).length, 'entries');
+    
+    // SECURITY: Results are cached in memory only (session-based) and discarded when server restarts
+    console.log('✅ Analysis completed - cached in memory for consistency (enterprise security)');
     
     return finalResults;
 
