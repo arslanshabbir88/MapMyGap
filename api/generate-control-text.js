@@ -1,24 +1,6 @@
 import { VertexAI } from '@google-cloud/vertexai';
-import { getVercelOidcToken } from '@vercel/functions/oidc';
 
-  // CRITICAL: Debug function to inspect Vercel OIDC headers
-  function inspectVercelOidcHeaders(req) {
-    console.log('🔍 DEBUG: Inspecting Vercel OIDC headers...');
-    
-    // Check for x-vercel-oidc-token header
-    const oidcTokenHeader = req.headers['x-vercel-oidc-token'];
-    if (oidcTokenHeader) {
-      console.log('✅ x-vercel-oidc-token header found!');
-      console.log('🔑 Header length:', oidcTokenHeader.length);
-      console.log('🔑 Header preview (first 100 chars):', oidcTokenHeader.substring(0, 100));
-      return oidcTokenHeader;
-    } else {
-      console.log('❌ x-vercel-oidc-token header NOT found');
-      console.log('🔍 Available headers:', Object.keys(req.headers));
-    }
-    
-    return null;
-  }
+
 
   // Initialize VertexAI with service account key
   async function initializeVertexAI() {
@@ -68,13 +50,13 @@ import { getVercelOidcToken } from '@vercel/functions/oidc';
         return res.status(400).json({ error: 'Missing required parameters: originalDocument, targetControl, or framework.' });
       }
 
-      console.log('Starting AI generation with Workload Identity Federation:', {
+      console.log('Starting AI generation with Service Account Key authentication:', {
         framework,
         targetControl: targetControl.substring(0, 100) + '...',
         documentLength: originalDocument.length
       });
 
-      // Initialize VertexAI with Workload Identity
+      // Initialize VertexAI with Service Account Key
       const vertex = await initializeVertexAI();
       
       const prompt = `You are a cybersecurity compliance expert specializing in creating COMPREHENSIVE implementation documents that achieve "covered" status.
@@ -117,7 +99,7 @@ Return a COMPLETE, ready-to-use document section that includes all required elem
 
 Make it specific, professional, and implementation-ready. Include enough detail that an auditor would say "Yes, this is fully implemented."`;
 
-      console.log('Sending prompt to Vertex AI with Workload Identity...');
+      console.log('Sending prompt to Vertex AI with Service Account Key...');
       console.log('Prompt length:', prompt.length);
 
       // Add timeout to prevent hanging
@@ -167,7 +149,7 @@ Make it specific, professional, and implementation-ready. Include enough detail 
       const response = await result.response;
       const generatedText = response.text();
 
-      console.log('Successfully generated text with Workload Identity, length:', generatedText.length);
+      console.log('Successfully generated text with Service Account Key, length:', generatedText.length);
 
       res.status(200).json({
         generatedText: generatedText
@@ -192,12 +174,12 @@ Make it specific, professional, and implementation-ready. Include enough detail 
         });
       }
       
-      // Handle Workload Identity authentication errors
-      if (error.message && (error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403') || error.message.includes('STS token exchange failed'))) {
+      // Handle authentication errors
+      if (error.message && (error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403'))) {
         return res.status(401).json({ 
-          error: 'Workload Identity authentication failed',
-          details: 'Failed to authenticate with Google Cloud using Workload Identity Federation',
-          suggestion: 'Check your GCP Workload Identity configuration and Vercel OIDC setup'
+          error: 'Service account authentication failed',
+          details: 'Failed to authenticate with Google Cloud using service account key',
+          suggestion: 'Check your GCP_SERVICE_KEY environment variable and service account permissions'
         });
       }
       
