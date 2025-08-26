@@ -379,7 +379,7 @@ console.log('🔑 GCP_PROJECT_ID exists:', !!process.env.GCP_PROJECT_ID);
 console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID);
 console.log('🔑 GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID exists:', !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID);
 console.log('🔑 GCP_SERVICE_ACCOUNT_EMAIL exists:', !!process.env.GCP_SERVICE_ACCOUNT_EMAIL);
-console.log('🔑 GOOGLE_CLOUD_LOCATION:', process.env.GOOGLE_CLOUD_LOCATION || 'us-central1');
+    console.log('🔑 GCP_LOCATION:', process.env.GCP_LOCATION || 'us-central1');
 console.log('🔑 GCP_PROJECT_NUMBER exists:', !!process.env.GCP_PROJECT_NUMBER);
 console.log('🔑 Using External Account Client with Vercel OIDC for authentication');
 
@@ -4684,9 +4684,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     const projectId = process.env.GCP_PROJECT_ID;
     // ENTERPRISE CHOICE: Using latest Gemini 2.5 Flash Lite for professional compliance analysis
-    const location = process.env.GOOGLE_CLOUD_LOCATION || 'global'; // Use env value (global)
+    const location = process.env.GCP_LOCATION || 'us-central1'; // Use env value (us-central1)
     // Using the latest and most professional model available in Vertex AI
-    const model = 'gemini-2.5-flash-lite'; // Latest 2.5 generation, enterprise-grade, cost-effective
+    const model = 'gemini-1.5-flash-002'; // Widely available, stable model
     
     // DEBUG: Using enterprise-grade Gemini 2.5 Flash Lite model
     console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash Lite for professional compliance analysis');
@@ -4714,8 +4714,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
     if (location === 'global') {
-      // Global location uses different URL format
-      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
+      // Global location uses different URL format - no /locations/global/ in path
+      apiUrl = `https://aiplatform.googleapis.com/v1/projects/${projectId}/publishers/google/models/${model}:generateContent`;
     } else {
       // Regional locations use location-prefixed URL
       apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
@@ -5119,8 +5119,15 @@ Return valid JSON with the exact control structure provided. Do not include gene
     
     console.log('=== AI RESPONSE DEBUG ===');
     console.log('AI Response Text:', text);
-    console.log('AI Response Length:', text.length);
-            console.log('Analysis Mode: Comprehensive');
+    console.log('AI Response Length:', text ? text.length : 'undefined');
+    
+    // Safety check for text before proceeding
+    if (!text) {
+      console.log('❌ No AI response text available - cannot proceed with analysis');
+      throw new Error('AI analysis failed - no response text received');
+    }
+    
+    console.log('Analysis Mode: Comprehensive');
     console.log('AI Response contains "categories":', text.includes('"categories"'));
     console.log('AI Response contains "results":', text.includes('"results"'));
     console.log('AI Response contains "AC-1":', text.includes('AC-1'));
@@ -5137,6 +5144,10 @@ Return valid JSON with the exact control structure provided. Do not include gene
     
     // Add comprehensive token analysis
     console.log('=== AI RESPONSE TOKEN ANALYSIS ===');
+    if (!text) {
+      console.log('❌ No AI response text available - cannot analyze tokens');
+      throw new Error('AI analysis failed - no response text received');
+    }
     console.log('Response length:', text.length, 'characters');
     console.log('Estimated response tokens (rough):', Math.ceil(text.length / 4));
     console.log('Token limit used:', optimalTokenLimit);
@@ -6158,7 +6169,7 @@ export default async function handler(req, res) {
   if (authSuccess && authClient) {
     console.log('🔑 DEBUG: Using custom auth client for Vertex AI:', typeof authClient);
     console.log('🔑 DEBUG: GCP_PROJECT_ID from env:', process.env.GCP_PROJECT_ID);
-    console.log('🔑 DEBUG: GOOGLE_CLOUD_LOCATION from env:', process.env.GOOGLE_CLOUD_LOCATION);
+    console.log('🔑 DEBUG: GCP_LOCATION from env:', process.env.GCP_LOCATION);
     
     // CRITICAL: Extract the raw GCP access token from our custom auth client
     const rawToken = authClient.accessToken;
@@ -6170,7 +6181,7 @@ export default async function handler(req, res) {
     try {
       vertexAI = new VertexAI({
         project: process.env.GCP_PROJECT_ID,
-        location: process.env.GOOGLE_CLOUD_LOCATION || 'global',
+        location: process.env.GCP_LOCATION || 'us-central1',
         // CRITICAL: Pass the raw token directly in credentials instead of authClient
         credentials: {
           access_token: rawToken,
@@ -6189,7 +6200,7 @@ export default async function handler(req, res) {
       // Fallback to default authentication
       vertexAI = new VertexAI({
         project: process.env.GCP_PROJECT_ID,
-        location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
+        location: process.env.GCP_LOCATION || 'us-central1'
       });
       console.log('🔑 DEBUG: Fallback to default Vertex AI authentication');
     }
@@ -6198,7 +6209,7 @@ export default async function handler(req, res) {
     console.log('🔑 DEBUG: Authentication failed, using default Vertex AI authentication');
     vertexAI = new VertexAI({
       project: process.env.GCP_PROJECT_ID,
-      location: process.env.GOOGLE_CLOUD_LOCATION || 'global'
+      location: process.env.GCP_LOCATION || 'us-central1'
     });
   }
 

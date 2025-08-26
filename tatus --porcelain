@@ -3,3 +3,291 @@
 [33me92f5be[m Adjust left margins in Understanding Your Score section to reduce excessive gap and improve visual balance
 [33m4738e07[m Redesign Understanding Your Score section for better readability and overflow prevention
 [33m3a4a6a9[m Remove redundant Analysis Mode section to clean up UI
+[1mdiff --git a/api/generate-control-text.js b/api/generate-control-text.js[m
+[1mindex 7f9ece8..04ec415 100644[m
+[1m--- a/api/generate-control-text.js[m
+[1m+++ b/api/generate-control-text.js[m
+[36m@@ -1,26 +1,98 @@[m
+ try {[m
+[31m-  const { GoogleGenerativeAI } = require('@google/generative-ai');[m
+[32m+[m[32m  const { VertexAI } = require('@google-cloud/vertexai');[m
+[32m+[m[32m  const { getVercelOidcToken } = require('@vercel/functions/oidc');[m
+ [m
+[31m-  // Check package version for debugging[m
+[31m-  console.log('Google AI package version:', require('@google/generative-ai/package.json').version);[m
+[32m+[m[32m  // CRITICAL: Debug function to inspect Vercel OIDC headers[m
+[32m+[m[32m  function inspectVercelOidcHeaders(req) {[m
+[32m+[m[32m    console.log('🔍 DEBUG: Inspecting Vercel OIDC headers...');[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Check for x-vercel-oidc-token header[m
+[32m+[m[32m    const oidcTokenHeader = req.headers['x-vercel-oidc-token'];[m
+[32m+[m[32m    if (oidcTokenHeader) {[m
+[32m+[m[32m      console.log('✅ x-vercel-oidc-token header found!');[m
+[32m+[m[32m      console.log('🔑 Header length:', oidcTokenHeader.length);[m
+[32m+[m[32m      console.log('🔑 Header preview (first 100 chars):', oidcTokenHeader.substring(0, 100));[m
+[32m+[m[32m      return oidcTokenHeader;[m
+[32m+[m[32m    } else {[m
+[32m+[m[32m      console.log('❌ x-vercel-oidc-token header NOT found');[m
+[32m+[m[32m      console.log('🔍 Available headers:', Object.keys(req.headers));[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    return null;[m
+[32m+[m[32m  }[m
+ [m
+[31m-  // Initialize Google AI[m
+[31m-  const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY);[m
+[32m+[m[32m  // CRITICAL: Implement explicit STS token exchange for Workload Identity Federation[m
+[32m+[m[32m  async function getGcpAccessToken(vercelOidcToken) {[m
+[32m+[m[32m    const stsUrl = "https://sts.googleapis.com/v1/token";[m
+[32m+[m[41m    [m
+[32m+[m[32m    const requestParams = {[m
+[32m+[m[32m      grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",[m
+[32m+[m[32m      audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,[m
+[32m+[m[32m      scope: "https://www.googleapis.com/auth/cloud-platform",[m
+[32m+[m[32m      subject_token_type: "urn:ietf:params:oauth:token-type:jwt",[m
+[32m+[m[32m      requested_token_type: "urn:ietf:params:oauth:token-type:access_token",[m
+[32m+[m[32m      subject_token: vercelOidcToken,[m
+[32m+[m[32m    };[m
+[32m+[m[41m    [m
+[32m+[m[32m    console.log('🔑 DEBUG: STS Request Parameters:');[m
+[32m+[m[32m    console.log('🔑 DEBUG: audience:', requestParams.audience);[m
+[32m+[m[32m    console.log('🔑 DEBUG: scope:', requestParams.scope);[m
+[32m+[m[41m    [m
+[32m+[m[32m    try {[m
+[32m+[m[32m      const resp = await fetch(stsUrl, {[m
+[32m+[m[32m        method: "POST",[m
+[32m+[m[32m        headers: { "Content-Type": "application/x-www-form-urlencoded" },[m
+[32m+[m[32m        body: new URLSearchParams(requestParams),[m
+[32m+[m[32m      });[m
+ [m
+[31m-  module.exports = async function handler(req, res) {[m
+[31m-    if (req.method !== 'POST') {[m
+[31m-      return res.status(405).json({ error: 'Method not allowed' });[m
+[32m+[m[32m      if (!resp.ok) {[m
+[32m+[m[32m        const errorText = await resp.text();[m
+[32m+[m[32m        console.error('❌ STS token exchange failed:', resp.status, errorText);[m
+[32m+[m[32m        throw new Error(`STS token exchange failed: ${resp.status} - ${errorText}`);[m
+[32m+[m[32m      }[m
+[32m+[m
+[32m+[m[32m      const tokenData = await resp.json();[m
+[32m+[m[32m      console.log('✅ STS token exchange successful');[m
+[32m+[m[32m      console.log('🔑 Access token length:', tokenData.access_token?.length || 0);[m
+[32m+[m[41m      [m
+[32m+[m[32m      return tokenData.access_token;[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('❌ Error in STS token exchange:', error);[m
+[32m+[m[32m      throw error;[m
+     }[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  // Initialize VertexAI with Workload Identity[m
+[32m+[m[32m  async function initializeVertexAI() {[m
+[32m+[m[32m    try {[m
+[32m+[m[32m      // Get OIDC token from Vercel[m
+[32m+[m[32m      const vercelOidcToken = getVercelOidcToken();[m
+[32m+[m[32m      if (!vercelOidcToken) {[m
+[32m+[m[32m        throw new Error('No Vercel OIDC token available');[m
+[32m+[m[32m      }[m
+ [m
+[31m-    // Check if API key is available[m
+[31m-    const apiKey = process.env.GOOGLE_AI_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;[m
+[31m-    if (!apiKey) {[m
+[31m-      console.error('Missing Google AI API key environment variable');[m
+[31m-      return res.status(500).json({ [m
+[31m-        error: 'Configuration error',[m
+[31m-        details: 'Google AI API key is not configured. Tried: GOOGLE_AI_API_KEY, GEMINI_API_KEY, GOOGLE_API_KEY',[m
+[31m-        suggestion: 'Please check your Vercel environment variables'[m
+[32m+[m[32m      // Exchange for GCP access token[m
+[32m+[m[32m      const gcpAccessToken = await getGcpAccessToken(vercelOidcToken);[m
+[32m+[m[41m      [m
+[32m+[m[32m      // Initialize VertexAI with the access token[m
+[32m+[m[32m      const vertex = new VertexAI({[m
+[32m+[m[32m        project: process.env.GCP_PROJECT_ID,[m
+[32m+[m[32m        location: process.env.GCP_LOCATION || 'us-central1',[m
+[32m+[m[32m        auth: {[m
+[32m+[m[32m          accessToken: gcpAccessToken[m
+[32m+[m[32m        }[m
+       });[m
+[32m+[m
+[32m+[m[32m      return vertex;[m
+[32m+[m[32m    } catch (error) {[m
+[32m+[m[32m      console.error('❌ Failed to initialize VertexAI:', error);[m
+[32m+[m[32m      throw error;[m
+[32m+[m[32m    }[m
+[32m+[m[32m  }[m
+[32m+[m
+[32m+[m[32m  module.exports = async function handler(req, res) {[m
+[32m+[m[32m    if (req.method !== 'POST') {[m
+[32m+[m[32m      return res.status(405).json({ error: 'Method not allowed' });[m
+     }[m
+ [m
+     try {[m
+[36m@@ -30,19 +102,15 @@[m [mtry {[m
+         return res.status(400).json({ error: 'Missing required parameters: originalDocument, targetControl, or framework.' });[m
+       }[m
+ [m
+[31m-      console.log('Starting AI generation with:', {[m
+[32m+[m[32m      console.log('Starting AI generation with Workload Identity Federation:', {[m
+         framework,[m
+         targetControl: targetControl.substring(0, 100) + '...',[m
+         documentLength: originalDocument.length[m
+       });[m
+ [m
+[31m-      // Test the API key format[m
+[31m-      console.log('API Key check:', {[m
+[31m-        exists: !!apiKey,[m
+[31m-        length: apiKey ? apiKey.length : 0,[m
+[31m-        startsWithAIza: apiKey ? apiKey.startsWith('AIza') : false[m
+[31m-      });[m
+[31m-[m
+[32m+[m[32m      // Initialize VertexAI with Workload Identity[m
+[32m+[m[32m      const vertex = await initializeVertexAI();[m
+[32m+[m[41m      [m
+       const prompt = `You are a cybersecurity compliance expert specializing in creating COMPREHENSIVE implementation documents that achieve "covered" status.[m
+ [m
+ Original Document Content:[m
+[36m@@ -83,39 +151,57 @@[m [mReturn a COMPLETE, ready-to-use document section that includes all required elem[m
+ [m
+ Make it specific, professional, and implementation-ready. Include enough detail that an auditor would say "Yes, this is fully implemented."`;[m
+ [m
+[31m-      console.log('Sending prompt to Gemini API...');[m
+[32m+[m[32m      console.log('Sending prompt to Vertex AI with Workload Identity...');[m
+       console.log('Prompt length:', prompt.length);[m
+ [m
+       // Add timeout to prevent hanging[m
+       const timeoutPromise = new Promise((_, reject) => {[m
+[31m-        setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 30000); // 30 second timeout for comprehensive generation[m
+[32m+[m[32m        setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 30000);[m
+       });[m
+       [m
+       let result;[m
+       try {[m
+         // Try with gemini-1.5-flash first[m
+         console.log('Attempting with gemini-1.5-flash model...');[m
+[31m-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });[m
+[32m+[m[32m        const model = vertex.preview.getGenerativeModel({[m
+[32m+[m[32m          model: "gemini-1.5-flash",[m
+[32m+[m[32m          generation_config: {[m
+[32m+[m[32m            max_output_tokens: 8192,[m
+[32m+[m[32m            temperature: 0.1,[m
+[32m+[m[32m            top_p: 0.8,[m
+[32m+[m[32m            top_k: 40[m
+[32m+[m[32m          }[m
+[32m+[m[32m        });[m
+[32m+[m[41m        [m
+         const aiPromise = model.generateContent(prompt);[m
+         result = await Promise.race([aiPromise, timeoutPromise]);[m
+       } catch (modelError) {[m
+         console.log('Primary model failed, trying fallback...', modelError.message);[m
+         // Fallback to gemini-1.5-pro if the primary model fails[m
+         try {[m
+[31m-          const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });[m
+[32m+[m[32m          const fallbackModel = vertex.preview.getGenerativeModel({[m
+[32m+[m[32m            model: "gemini-1.5-pro",[m
+[32m+[m[32m            generation_config: {[m
+[32m+[m[32m              max_output_tokens: 8192,[m
+[32m+[m[32m              temperature: 0.1,[m
+[32m+[m[32m              top_p: 0.8,[m
+[32m+[m[32m              top_k: 40[m
+[32m+[m[32m            }[m
+[32m+[m[32m          });[m
+[32m+[m[41m          [m
+           const aiPromise = fallbackModel.generateContent(prompt);[m
+           result = await Promise.race([aiPromise, timeoutPromise]);[m
+           console.log('Fallback model successful');[m
+         } catch (fallbackError) {[m
+           console.log('Fallback model also failed:', fallbackError.message);[m
+[31m-          throw fallbackError; // Re-throw the error to be handled by the main catch block[m
+[32m+[m[32m          throw fallbackError;[m
+         }[m
+       }[m
+       [m
+       const response = await result.response;[m
+       const generatedText = response.text();[m
+ [m
+[31m-      console.log('Successfully generated text, length:', generatedText.length);[m
+[32m+[m[32m      console.log('Successfully generated text with Workload Identity, length:', generatedText.length);[m
+ [m
+       res.status(200).json({[m
+         generatedText: generatedText[m
+[36m@@ -140,39 +226,21 @@[m [mMake it specific, professional, and implementation-ready. Include enough detail[m
+         });[m
+       }[m
+       [m
+[31m-      // Handle Google AI authentication errors[m
+[31m-      if (error.message && (error.message.includes('API_KEY_INVALID') || error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403'))) {[m
+[32m+[m[32m      // Handle Workload Identity authentication errors[m
+[32m+[m[32m      if (error.message && (error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403') || error.message.includes('STS token exchange failed'))) {[m
+         return res.status(401).json({ [m
+[31m-          error: 'Authentication failed',[m
+[31m-          details: 'Invalid or expired Google AI API key',[m
+[31m-          suggestion: 'Please check your API key configuration in Vercel'[m
+[31m-        });[m
+[31m-      }[m
+[31m-      [m
+[31m-      // Handle Google AI quota/rate limit errors[m
+[31m-      if (error.message && (error.message.includes('quota') || error.message.includes('rate limit') || error.message.includes('429') || error.message.includes('exceeded'))) {[m
+[31m-        return res.status(429).json({ [m
+[31m-          error: 'API rate limit exceeded',[m
+[31m-          details: 'You have exceeded your daily quota for the Google Gemini API. Please try again tomorrow or upgrade to a paid plan.',[m
+[31m-          retryAfter: '24 hours',[m
+[31m-          suggestion: 'Consider upgrading to a paid plan at https://aistudio.google.com/ for higher limits'[m
+[32m+[m[32m          error: 'Workload Identity authentication failed',[m
+[32m+[m[32m          details: 'Failed to authenticate with Google Cloud using Workload Identity Federation',[m
+[32m+[m[32m          suggestion: 'Check your GCP Workload Identity configuration and Vercel OIDC setup'[m
+         });[m
+       }[m
+       [m
+[31m-      // Handle Google AI service errors more broadly[m
+[31m-      if (error.message && ([m
+[31m-        error.message.includes('GoogleGenerativeAI') || [m
+[31m-        error.message.includes('Google') || [m
+[31m-        error.message.includes('Gemini') ||[m
+[31m-        error.message.includes('generative') ||[m
+[31m-        error.message.includes('AI') ||[m
+[31m-        error.message.includes('model') ||[m
+[31m-        error.message.includes('content')[m
+[31m-      )) {[m
+[32m+[m[32m      // Handle Vertex AI service errors[m
+[32m+[m[32m      if (error.message && (error.message.includes('Vertex') || error.message.includes('AI') || error.message.includes('model') || error.message.includes('content'))) {[m
+         return res.status(500).json({ [m
+[31m-          error: 'Google AI service error',[m
+[31m-          details: 'There was an issue with the AI service. Please try again later.',[m
+[31m-          suggestion: 'Check your API key and try again. If the problem persists, contact support.'[m
+[32m+[m[32m          error: 'Vertex AI service error',[m
+[32m+[m[32m          details: 'There was an issue with the Vertex AI service. Please try again later.',[m
+[32m+[m[32m          suggestion: 'Check your GCP project configuration and try again.'[m
+         });[m
+       }[m
+       [m
+[36m@@ -185,15 +253,6 @@[m [mMake it specific, professional, and implementation-ready. Include enough detail[m
+         });[m
+       }[m
+       [m
+[31m-      // Handle content safety/filtering errors[m
+[31m-      if (error.message && (error.message.includes('safety') || error.message.includes('filter') || error.message.includes('blocked') || error.message.includes('inappropriate'))) {[m
+[31m-        return res.status(400).json({ [m
+[31m-          error: 'Content blocked',[m
+[31m-          details: 'The generated content was blocked by content safety filters',[m
+[31m-          suggestion: 'Try rephrasing your request or using different terminology'[m
+[31m-        });[m
+[31m-      }[m
+[31m-      [m
+       // Generic error fallback[m
+       res.status(500).json({ [m
+         error: 'Server error', [m
+[36m@@ -204,12 +263,12 @@[m [mMake it specific, professional, and implementation-ready. Include enough detail[m
+   };[m
+ [m
+ } catch (packageError) {[m
+[31m-  console.error('Failed to load Google AI package:', packageError);[m
+[32m+[m[32m  console.error('Failed to load Vertex AI package:', packageError);[m
+   [m
+   module.exports = async function handler(req, res) {[m
+     return res.status(500).json({ [m
+       error: 'Package error',[m
+[31m-      details: 'Failed to load Google AI package',[m
+[32m+[m[32m      details: 'Failed to load Vertex AI package',[m
+       suggestion: 'Please check your dependencies and try again'[m
+     });[m
+   };[m
