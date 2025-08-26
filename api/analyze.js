@@ -4845,17 +4845,18 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
             // Add timeout to prevent hanging - dynamic timeout based on framework size
         // Calculate timeout based on number of controls and framework complexity
+        // INCREASED timeouts for structured evidence analysis which requires more processing time
         let timeoutDuration;
         const controlCount = filteredFrameworkData.categories.reduce((sum, cat) => sum + (cat.results?.length || 0), 0);
         
         if (framework === 'SOC_2') {
-          timeoutDuration = 90000; // 90s for SOC 2 (large framework)
+          timeoutDuration = 120000; // 120s for SOC 2 (large framework) - increased for structured analysis
         } else if (controlCount <= 20) {
-          timeoutDuration = 45000; // 45s for small frameworks (≤20 controls)
+          timeoutDuration = 90000; // 90s for small frameworks (≤20 controls) - increased for structured analysis
         } else if (controlCount <= 40) {
-          timeoutDuration = 60000; // 60s for medium frameworks (21-40 controls)
+          timeoutDuration = 120000; // 120s for medium frameworks (21-40 controls) - increased for structured analysis
         } else {
-          timeoutDuration = 75000; // 75s for large frameworks (41+ controls)
+          timeoutDuration = 150000; // 150s for large frameworks (41+ controls) - increased for structured analysis
         }
         
         console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s for ${framework} framework (${controlCount} controls)`);
@@ -5586,6 +5587,28 @@ Return valid JSON with the exact control structure provided. Do not include gene
      
      // POST-PROCESSING: Normalize results based on structured evidence scoring
      console.log('=== POST-PROCESSING: Normalizing results using structured evidence scoring ===');
+     
+     // Check if AI returned structured evidence format
+     let structuredEvidenceCount = 0;
+     let controlsWithStructuredEvidence = 0;
+     
+     comprehensiveResults.categories.forEach(category => {
+       if (category.results) {
+         controlsWithStructuredEvidence += category.results.length;
+         category.results.forEach(control => {
+           if (control.totalEvidenceScore !== undefined && control.evidencePoints && control.evidenceScores) {
+             structuredEvidenceCount++;
+           }
+         });
+       }
+     });
+     
+     if (structuredEvidenceCount < controlsWithStructuredEvidence) {
+       console.warn(`⚠️ WARNING: AI only returned structured evidence for ${structuredEvidenceCount}/${controlsWithStructuredEvidence} controls. This may indicate a timeout or incomplete response.`);
+       console.warn(`⚠️ Controls missing structured evidence will use legacy scoring, which may result in inconsistent scores.`);
+     } else {
+       console.log(`✅ SUCCESS: AI returned structured evidence for all ${controlsWithStructuredEvidence} controls`);
+     }
      
      comprehensiveResults.categories.forEach(category => {
        if (category.results) {
