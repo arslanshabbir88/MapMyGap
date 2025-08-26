@@ -4767,6 +4767,13 @@ ANALYSIS MODE: Comprehensive
 SELECTED CATEGORIES TO ANALYZE (ONLY ANALYZE THESE):
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description} (${cat.results.length} controls)`).join('\n')}
 
+CRITICAL CATEGORY ENFORCEMENT: You MUST analyze ONLY the categories and controls specified in the JSON structure below. 
+- You are analyzing: ${filteredFrameworkData.categories.map(cat => cat.name).join(', ')}
+- Do NOT analyze any other categories
+- Do NOT omit any controls from the specified categories
+- Do NOT add controls from other categories
+- If you analyze wrong categories, the analysis will be rejected and you will be asked to retry
+
 MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls. Do NOT add any controls from other categories.
 
 STRUCTURED EVIDENCE ANALYSIS TEMPLATE:
@@ -5402,7 +5409,7 @@ Return valid JSON with the exact control structure provided. Do not include gene
       }
     });
     
-    // Validate that AI only analyzed the expected categories
+    // STRICT CATEGORY VALIDATION - AI must analyze ONLY the requested categories
     const expectedCategoryNames = filteredFrameworkData.categories.map(cat => cat.name);
     const actualCategoryNames = [];
     
@@ -5414,23 +5421,26 @@ Return valid JSON with the exact control structure provided. Do not include gene
       actualCategoryNames.push(parsedResponse.name);
     }
     
-    console.log(`=== CATEGORY VALIDATION ===`);
+    console.log(`=== STRICT CATEGORY VALIDATION ===`);
     console.log(`Expected categories: ${expectedCategoryNames.join(', ')}`);
     console.log(`Actual categories in response: ${actualCategoryNames.join(', ')}`);
     
-    // Check for unexpected categories
+    // CRITICAL: Reject responses that don't match expected categories exactly
     const unexpectedCategories = actualCategoryNames.filter(cat => !expectedCategoryNames.includes(cat));
-    if (unexpectedCategories.length > 0) {
-      console.warn(`⚠️ WARNING: AI analyzed unexpected categories: ${unexpectedCategories.join(', ')}`);
-      console.warn(`This indicates the AI did not follow instructions properly`);
+    const missingCategories = expectedCategoryNames.filter(cat => !actualCategoryNames.includes(cat));
+    
+    if (unexpectedCategories.length > 0 || missingCategories.length > 0) {
+      console.error(`❌ CRITICAL ERROR: AI analyzed wrong categories!`);
+      console.error(`Expected: ${expectedCategoryNames.join(', ')}`);
+      console.error(`Got: ${actualCategoryNames.join(', ')}`);
+      console.error(`Unexpected: ${unexpectedCategories.join(', ')}`);
+      console.error(`Missing: ${missingCategories.join(', ')}`);
+      
+      // Force AI to retry with correct categories
+      throw new Error(`AI analyzed wrong categories. Expected: ${expectedCategoryNames.join(', ')}, Got: ${actualCategoryNames.join(', ')}. Retrying...`);
     }
     
-    // Check for missing categories
-    const missingCategories = expectedCategoryNames.filter(cat => !actualCategoryNames.includes(cat));
-    if (missingCategories.length > 0) {
-      console.warn(`⚠️ WARNING: AI missed expected categories: ${missingCategories.join(', ')}`);
-      console.warn(`This indicates incomplete analysis`);
-    }
+    console.log(`✅ SUCCESS: AI analyzed exactly the expected categories: ${expectedCategoryNames.join(', ')}`);
     
     // Calculate actual controls in AI response
     if (parsedResponse.categories && Array.isArray(parsedResponse.categories)) {
@@ -6425,8 +6435,35 @@ export default async function handler(req, res) {
     console.log('Framework:', framework);
     console.log('Selected categories count:', selectedCategories ? selectedCategories.length : 'all');
 
-    // Use real AI analysis with comprehensive mode
-    const analysisResult = await analyzeWithAI(fileContent, framework, selectedCategories);
+    // Use real AI analysis with comprehensive mode and retry for category validation errors
+    let analysisResult;
+    let categoryValidationRetries = 0;
+    const maxCategoryValidationRetries = 3;
+    
+    while (categoryValidationRetries < maxCategoryValidationRetries) {
+      try {
+        analysisResult = await analyzeWithAI(fileContent, framework, selectedCategories);
+        break; // Success - exit retry loop
+      } catch (error) {
+        categoryValidationRetries++;
+        
+        if (error.message.includes('AI analyzed wrong categories') && categoryValidationRetries < maxCategoryValidationRetries) {
+          console.log(`🔄 Category validation failed (attempt ${categoryValidationRetries}/${maxCategoryValidationRetries}). Retrying...`);
+          console.log(`Error: ${error.message}`);
+          
+          // Wait before retry with exponential backoff
+          const delay = Math.pow(2, categoryValidationRetries) * 1000;
+          console.log(`⏳ Waiting ${delay/1000} seconds before retry...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          
+          continue; // Try again
+        } else {
+          // Either max retries reached or non-category validation error
+          console.error(`❌ Analysis failed after ${categoryValidationRetries} attempts:`, error.message);
+          throw error; // Re-throw the error
+        }
+      }
+    }
 
     // Return in the expected format (comprehensive analysis results)
     res.status(200).json({
