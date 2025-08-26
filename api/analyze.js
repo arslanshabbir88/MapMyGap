@@ -4674,12 +4674,22 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     // NUCLEAR OPTION: Skip broken SDK, prepare for direct API calls
     console.log('🚀 NUCLEAR OPTION: Bypassing broken Vertex AI SDK');
-    console.log('🔑 DEBUG: Using GCP token for direct API calls, length:', authClient?.accessToken?.length || 0);
     
-    // Get the working GCP access token from our custom auth client
-    const gcpToken = authClient?.accessToken;
-    if (!gcpToken) {
-      throw new Error('No GCP access token available for direct API calls');
+    // Get the service account credentials from environment variable
+    const serviceAccountKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceAccountKey) {
+      throw new Error('No GCP service account key available for direct API calls');
+    }
+    
+    // Parse the base64-encoded service account key
+    let credentials;
+    try {
+      credentials = JSON.parse(
+        Buffer.from(serviceAccountKey, "base64").toString()
+      );
+      console.log('🔑 DEBUG: Service account key parsed successfully, client_email:', credentials.client_email);
+    } catch (error) {
+      throw new Error(`Failed to parse service account key: ${error.message}`);
     }
     
     const projectId = process.env.GCP_PROJECT_ID;
@@ -4691,25 +4701,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // DEBUG: Using enterprise-grade Gemini 2.5 Flash model
     console.log('🚀 ENTERPRISE: Using Gemini 2.5 Flash for professional compliance analysis');
     
-    // CRITICAL: The issue is that the service account doesn't have the right IAM role
-    // We need to add the 'Vertex AI User' role to the service account
-    
-    // DEBUG: Let's check what permissions we actually have
-    console.log('🔍 DEBUG: Checking service account permissions...');
-    console.log('🔍 DEBUG: Service Account:', process.env.GCP_SERVICE_ACCOUNT_EMAIL);
-    console.log('🔍 DEBUG: Project ID:', process.env.GCP_PROJECT_ID);
-    console.log('🔍 DEBUG: Location:', location);
-    console.log('🔍 DEBUG: Model:', model);
-    
-    // CRITICAL: The issue is that the service account doesn't have the right IAM role
-    // We need to add the 'Vertex AI User' role to the service account
-    
-    // DEBUG: Let's check what permissions we actually have
-    console.log('🔍 DEBUG: Checking service account permissions...');
-    console.log('🔍 DEBUG: Service Account:', process.env.GCP_SERVICE_ACCOUNT_EMAIL);
-    console.log('🔍 DEBUG: Project ID:', process.env.GCP_PROJECT_ID);
-    console.log('🔍 DEBUG: Location:', location);
-    console.log('🔍 DEBUG: Model:', model);
+    // Using service account key authentication for direct Vertex AI access
+    console.log('🔑 DEBUG: Using service account key authentication...');
+    console.log('🔑 DEBUG: Project ID:', process.env.GCP_PROJECT_ID);
+    console.log('🔑 DEBUG: Location:', location);
+    console.log('🔑 DEBUG: Model:', model);
     
     // Direct Vertex AI API endpoint - handle both global and regional locations
     let apiUrl;
@@ -4739,7 +4735,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     console.log('Document content length:', fileContent.length);
     console.log('Document content preview:', fileContent.substring(0, 200));
     console.log('Framework name:', frameworkName);
-            console.log('Analysis Mode: Comprehensive');
+    console.log('Analysis Mode: Comprehensive');
     console.log('Categories being sent to AI:', filteredFrameworkData.categories.map(c => c.name));
     console.log('Total controls being sent to AI:', filteredFrameworkData.categories.reduce((total, cat) => total + cat.results.length, 0));
     
@@ -4903,15 +4899,24 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         console.log('🔍 DEBUG: Request details:');
         console.log('🔍 DEBUG: - Method: POST');
         console.log('🔍 DEBUG: - URL:', apiUrl);
-        console.log('🔍 DEBUG: - Authorization: Bearer [TOKEN] (length:', gcpToken.length, ')');
+        console.log('🔍 DEBUG: - Using service account authentication');
         console.log('🔍 DEBUG: - X-Goog-User-Project:', projectId);
         console.log('🔍 DEBUG: - Content-Type: application/json');
         console.log('🔍 DEBUG: - Request body keys:', Object.keys(requestBody));
         
+        // Get access token using service account credentials
+        const { GoogleAuth } = require('google-auth-library');
+        const auth = new GoogleAuth({
+          credentials: credentials,
+          scopes: ['https://www.googleapis.com/auth/cloud-platform']
+        });
+        
+        const accessToken = await auth.getAccessToken();
+        
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${gcpToken}`,
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json',
             'X-Goog-User-Project': projectId
           },

@@ -21,65 +21,32 @@ try {
     return null;
   }
 
-  // CRITICAL: Implement explicit STS token exchange for Workload Identity Federation
-  async function getGcpAccessToken(vercelOidcToken) {
-    const stsUrl = "https://sts.googleapis.com/v1/token";
-    
-    const requestParams = {
-      grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-      audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
-      scope: "https://www.googleapis.com/auth/cloud-platform",
-      subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-      requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
-      subject_token: vercelOidcToken,
-    };
-    
-    console.log('🔑 DEBUG: STS Request Parameters:');
-    console.log('🔑 DEBUG: audience:', requestParams.audience);
-    console.log('🔑 DEBUG: scope:', requestParams.scope);
-    
-    try {
-      const resp = await fetch(stsUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams(requestParams),
-      });
-
-      if (!resp.ok) {
-        const errorText = await resp.text();
-        console.error('❌ STS token exchange failed:', resp.status, errorText);
-        throw new Error(`STS token exchange failed: ${resp.status} - ${errorText}`);
-      }
-
-      const tokenData = await resp.json();
-      console.log('✅ STS token exchange successful');
-      console.log('🔑 Access token length:', tokenData.access_token?.length || 0);
-      
-      return tokenData.access_token;
-    } catch (error) {
-      console.error('❌ Error in STS token exchange:', error);
-      throw error;
-    }
-  }
-
-  // Initialize VertexAI with Workload Identity
+  // Initialize VertexAI with service account key
   async function initializeVertexAI() {
     try {
-      // Get OIDC token from Vercel
-      const vercelOidcToken = getVercelOidcToken();
-      if (!vercelOidcToken) {
-        throw new Error('No Vercel OIDC token available');
+      // Get the service account credentials from environment variable
+      const serviceAccountKey = process.env.GCP_SERVICE_KEY;
+      if (!serviceAccountKey) {
+        throw new Error('No GCP service account key available');
       }
-
-      // Exchange for GCP access token
-      const gcpAccessToken = await getGcpAccessToken(vercelOidcToken);
       
-      // Initialize VertexAI with the access token
+      // Parse the base64-encoded service account key
+      let credentials;
+      try {
+        credentials = JSON.parse(
+          Buffer.from(serviceAccountKey, "base64").toString()
+        );
+        console.log('🔑 DEBUG: Service account key parsed successfully, client_email:', credentials.client_email);
+      } catch (error) {
+        throw new Error(`Failed to parse service account key: ${error.message}`);
+      }
+      
+      // Initialize VertexAI with service account credentials
       const vertex = new VertexAI({
         project: process.env.GCP_PROJECT_ID,
         location: process.env.GCP_LOCATION || 'us-central1',
         auth: {
-          accessToken: gcpAccessToken
+          credentials: credentials
         }
       });
 

@@ -2765,6 +2765,28 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     }
     
     // Use the filtered framework data for analysis
+    // Get framework data using service account key
+    const serviceAccountKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceAccountKey) {
+      throw new Error('No GCP service account key available');
+    }
+    
+    // Parse the base64-encoded service account key
+    let credentials;
+    try {
+      credentials = JSON.parse(
+        Buffer.from(serviceAccountKey, "base64").toString()
+      );
+    } catch (error) {
+      throw new Error(`Failed to parse service account key: ${error.message}`);
+    }
+    
+    // Initialize Google AI with service account credentials
+    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || 'dummy-key', {
+      credentials: credentials
+    });
+    
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     
     // Map framework IDs to display names
