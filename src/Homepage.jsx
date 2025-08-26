@@ -71,43 +71,46 @@ function Homepage({ onNavigate }) {
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
         {/* Header */}
         <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
-          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <h1 className="text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
-                <span className="text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+          <nav className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+              {/* Logo and Title - Stack on mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {user ? (
-                <>
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center space-x-2 text-slate-300">
-                      <UserIcon />
-                      <span className="text-sm font-medium">
-                        {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
-                      </span>
+              
+              {/* Navigation and User Actions - Stack on mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                {user ? (
+                  <>
+                    <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                      <div className="flex items-center space-x-2 text-slate-300">
+                        <UserIcon />
+                        <span className="text-xs sm:text-sm font-medium">
+                          {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                        </span>
+                      </div>
+                      <button
+                        onClick={handleLogout}
+                        className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+                      >
+                        <LogoutIcon />
+                        <span className="text-xs sm:text-sm">Logout</span>
+                      </button>
                     </div>
-                    <button
-                      onClick={handleLogout}
-                      className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
-                    >
-                      <LogoutIcon />
-                      <span className="text-sm">Logout</span>
-                    </button>
-                  </div>
-                  <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
-                    Go to Analyzer
-                  </a>
-                </>
-              ) : (
-                <>
-                  <a href="#" onClick={onNavigate} className="text-slate-300 hover:text-white transition-colors mr-6">Sign In</a>
-                  <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
-                    Get Started
-                  </a>
-                </>
-              )}
+                    <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
+                      Go to Analyzer
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    <a href="#" onClick={onNavigate} className="text-slate-300 hover:text-white transition-colors text-center sm:text-left">Sign In</a>
+                    <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
+                      Get Started
+                    </a>
+                  </>
+                )}
+              </div>
             </div>
           </nav>
         </header>

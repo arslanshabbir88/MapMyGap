@@ -1114,28 +1114,29 @@ function Analyzer({ onNavigateHome }) {
                           <DetailModal result={modalData} fileContent={fileContent} selectedFramework={selectedFramework} onClose={() => setModalData(null)} />
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
         <header className="sticky top-0 z-10 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <h1 className="text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
-                <span className="text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
+              {/* Logo and Title - Stack on mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
               </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              {user && (
-                <div className="flex items-center space-x-3">
+              
+              {/* User Info and Navigation - Stack on mobile */}
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                {user && (
                   <div className="flex items-center space-x-2 text-slate-300">
                     <UserIcon />
-                    <span className="text-sm font-medium">
+                    <span className="text-xs sm:text-sm font-medium">
                       {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                     </span>
                   </div>
-                </div>
-              )}
-            <button onClick={onNavigateHome} className="inline-flex items-center text-sm font-semibold text-slate-300 hover:text-white transition-colors">
-              <ArrowLeftIcon />
-              Back to Home
-            </button>
+                )}
+                <button onClick={onNavigateHome} className="inline-flex items-center text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+                  <ArrowLeftIcon />
+                  <span className="ml-1">Back to Home</span>
+                </button>
+              </div>
             </div>
           </div>
         </header>
@@ -1968,7 +1969,7 @@ function Analyzer({ onNavigateHome }) {
                               <div className="p-2 bg-blue-500/10 rounded border border-blue-500/20 -ml-3 pl-3 mt-2">
                                 <p className="text-xs text-blue-200">
                                   <span className="font-medium">ℹ️ Note:</span> This analysis uses deterministic AI mode for consistent, reproducible results. 
-                                  The same document will always produce the same compliance score.
+                                  While the same document should produce the same compliance score, slight variations may occasionally occur.
                                 </p>
                               </div>
                               
