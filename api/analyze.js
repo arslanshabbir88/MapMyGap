@@ -32,6 +32,7 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
+import { GoogleAuth } from 'google-auth-library';
 import crypto from 'crypto';
 
 // Simple service account authentication - no OIDC complexity
@@ -71,14 +72,20 @@ async function initializeVertexAI() {
       throw new Error(`Failed to parse service account key: ${parseError.message}`);
     }
     
-    // Create Vertex AI instance
+    // Create Google Auth client with service account credentials
+    const auth = new GoogleAuth({
+      credentials: credentials,
+      scopes: ['https://www.googleapis.com/auth/cloud-platform']
+    });
+    
+    // Create Vertex AI instance with the auth client
     vertexAI = new VertexAI({
       project: projectId,
       location: location,
-      credentials: credentials,
+      auth: auth,
     });
     
-    console.log('✅ Vertex AI initialized successfully');
+    console.log('✅ Vertex AI initialized successfully with Google Auth');
     return true;
   } catch (error) {
     console.log('❌ Failed to initialize Vertex AI:', error.message);
@@ -114,6 +121,22 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       categoryPrompt = '\n\nAnalyze all relevant categories found in the document.';
     }
 
+    // Add comprehensive framework-specific instructions
+    let frameworkPrompt = '';
+    if (framework === 'NIST_CSF') {
+      frameworkPrompt = `\n\nFor NIST CSF v2.0, analyze ALL controls in the selected functions (IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER, GOVERN). Include detailed analysis of asset management, access control, awareness training, and all relevant controls.`;
+    } else if (framework === 'NIST_800_53') {
+      frameworkPrompt = `\n\nFor NIST SP 800-53, analyze ALL controls in the selected families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, SR). Provide comprehensive coverage of all controls within selected families.`;
+    } else if (framework === 'NIST_800_63B') {
+      frameworkPrompt = `\n\nFor NIST SP 800-63B, analyze ALL controls in the selected categories (IAL, AAL, FAL, ILM, AM, SM, PSC, IP, REG, AUTH, FED). Include detailed analysis of identity proofing, authentication, and federation controls.`;
+    } else if (framework === 'PCI_DSS') {
+      frameworkPrompt = `\n\nFor PCI DSS v4.0, analyze ALL requirements in the selected areas. Include comprehensive coverage of security controls, access management, and compliance requirements.`;
+    } else if (framework === 'ISO_27001') {
+      frameworkPrompt = `\n\nFor ISO 27001:2022, analyze ALL controls in the selected categories. Provide comprehensive coverage of information security management system controls.`;
+    } else if (framework === 'SOC_2') {
+      frameworkPrompt = `\n\nFor SOC 2 Type II, analyze ALL Trust Service Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) in the selected areas.`;
+    }
+
     // Create the prompt for the AI
     const prompt = `Analyze this document for ${framework} compliance and return a structured JSON response.
 
@@ -137,9 +160,13 @@ Please analyze the compliance status and provide a JSON response in this exact f
       ]
     }
   ]
-}${categoryPrompt}
+}${categoryPrompt}${frameworkPrompt}
 
-IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`;
+CRITICAL REQUIREMENTS:
+1. You MUST analyze EVERY SINGLE CONTROL in the selected categories - do NOT skip any controls
+2. Provide comprehensive coverage of all controls within selected areas
+3. Use ONLY these status values: "covered", "partial", "gap"
+4. Return ONLY valid JSON, no additional text or explanations`;
 
     // Get the generative model
     const model = vertexAI.preview.getGenerativeModel({
