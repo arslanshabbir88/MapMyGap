@@ -199,11 +199,15 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       frameworkPrompt = `\n\nFor SOC 2 Type II, analyze ALL Trust Service Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) in the selected areas.`;
     }
 
-    // Create the prompt for the AI
-    const prompt = `Analyze this document for ${framework} compliance and return a structured JSON response.
+                // Create the prompt for the AI
+            const prompt = `Analyze this document for ${framework} compliance and return a structured JSON response.
 
-Document Content:
-${fileContent.substring(0, 20000)}
+            Document Content:
+            ${fileContent}
+
+            // Log the actual prompt length being sent to AI
+            console.log('📝 Full prompt length being sent to AI:', prompt.length, 'characters');
+            console.log('📄 Document content length in prompt:', fileContent.length, 'characters');
 
 Please analyze the compliance status and provide a JSON response in this exact format:
 {
