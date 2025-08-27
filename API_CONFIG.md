@@ -8,7 +8,7 @@ This guide explains how to switch between local development and production Verce
 ```bash
 npm run dev
 ```
-This will proxy all `/api` requests to your Vercel deployment at `https://mapmygap.com`
+This will proxy all `/api` requests to your Vercel deployment at `https://aligniq.com`
 
 ### For Local Development
 ```bash
@@ -19,7 +19,7 @@ This will proxy all `/api` requests to your local server at `http://localhost:30
 ## Configuration
 
 ### Update Your Vercel URL
-Edit `vite.config.js` and replace `https://mapmygap.com` with your actual Vercel deployment URL.
+Edit `vite.config.js` and replace `https://aligniq.com` with your actual Vercel deployment URL.
 
 ### Current Settings
 - **Production Mode** (default): `npm run dev` → Vercel deployment

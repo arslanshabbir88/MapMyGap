@@ -1,5 +1,5 @@
 {
-  "name": "mapmygap-app",
+  "name": "aligniq-app",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,16 +10,13 @@
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "tailwind:init": "tailwindcss init -p",
-    "server": "node server.cjs",
+    "server": "node server.js",
     "dev:full": "concurrently \"npm run server\" \"npm run dev:local\""
   },
   "dependencies": {
-    "@ai-sdk/google-vertex": "^3.0.11",
     "@google-cloud/vertexai": "^1.10.0",
-    "@google/generative-ai": "^0.2.1",
     "@supabase/supabase-js": "^2.39.0",
     "@vercel/functions": "^2.2.12",
-    "ai": "^5.0.22",
     "busboy": "^1.6.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",

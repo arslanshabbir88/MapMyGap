@@ -1,12 +1,12 @@
 /**
- * MapMyGap - AI-Powered Compliance Analysis Platform
+ * AlignIQ - AI-Powered Compliance Analysis Platform
  * 
- * Copyright (c) 2024 MapMyGap. All rights reserved.
+ * Copyright (c) 2024 AlignIQ. All rights reserved.
  * 
  * This software is proprietary and confidential. Unauthorized copying, distribution,
  * or use is strictly prohibited.
  * 
- * For licensing inquiries, contact: legal@mapmygap.com
+ * For licensing inquiries, contact: legal@aligniq.com
  */
 
 /**
@@ -41,7 +41,7 @@ const validateEnvironment = () => {
     
     // Additional validation to prevent unauthorized use
     const domain = window.location.hostname;
-    if (!domain.includes('vercel.app') && !domain.includes('localhost') && !domain.includes('127.0.0.1') && !domain.includes('mapmygap.com')) {
+    if (!domain.includes('vercel.app') && !domain.includes('localhost') && !domain.includes('127.0.0.1') && !domain.includes('aligniq.com')) {
       console.warn('Unauthorized domain detected:', domain);
       // Don't block rendering, just log the warning
       return true;
@@ -1118,7 +1118,7 @@ function Analyzer({ onNavigateHome }) {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
               {/* Logo and Title - Stack on mobile */}
               <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">AlignIQ</h1>
                 <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
               </div>
               

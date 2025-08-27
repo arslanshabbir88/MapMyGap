@@ -1,8 +1,8 @@
-# MapMyGap - AI-Powered Compliance Analysis
+# AlignIQ - AI-Powered Compliance Analysis
 
 ## Overview
 
-MapMyGap is an intelligent compliance analysis platform that helps organizations assess their security posture against industry-standard frameworks like NIST 800-53, ISO 27001, and more.
+AlignIQ is an intelligent compliance analysis platform that helps organizations assess their security posture against industry-standard frameworks like NIST 800-53, ISO 27001, and more.
 
 ## ✨ Features
 
@@ -19,7 +19,7 @@ MapMyGap is an intelligent compliance analysis platform that helps organizations
 1. Clone the repository:
 ```bash
 git clone https://github.com/arslanshabbir88/MapMyGap.git
-cd MapMyGap
+cd aligniq-app
 ```
 
 ### 2. Set Up Supabase (Required for Authentication)

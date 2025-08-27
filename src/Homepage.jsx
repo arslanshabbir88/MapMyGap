@@ -75,7 +75,7 @@ function Homepage({ onNavigate }) {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
               {/* Logo and Title - Stack on mobile */}
               <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">AlignIQ</h1>
                 <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
               </div>
               
@@ -123,7 +123,7 @@ function Homepage({ onNavigate }) {
                 Map Your Compliance Gaps with AI
               </h1>
               <p className="mt-6 text-lg text-slate-400 max-w-2xl mx-auto">
-                MapMyGap uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
+                AlignIQ uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
               </p>
               <div className="mt-10">
                 <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
@@ -145,7 +145,7 @@ function Homepage({ onNavigate }) {
                   Upload your policy documents and let our AI instantly compare them against frameworks like NIST, PCI DSS, and ISO 27001 to pinpoint exact compliance gaps.
                 </FeatureCard>
                 <FeatureCard icon={<DocumentTextIcon className="w-8 h-8 text-purple-400" />} title="Automated Policy Generation">
-                  Don't just find problems—solve them. MapMyGap generates the exact policy language 
+                  Don't just find problems—solve them. AlignIQ generates the exact policy language 
                   you need to address each gap, saving you hours of research and writing.
                 </FeatureCard>
                 <FeatureCard icon={<ShieldCheckIcon className="w-8 h-8 text-green-400" />} title="Continuous Compliance">
@@ -163,7 +163,7 @@ function Homepage({ onNavigate }) {
                 </div>
                 <div className="space-y-12">
                   <HowItWorksStep number="1" title="Upload Your Document">
-                    Securely upload your internal standards or policy document. MapMyGap is ready to 
+                    Securely upload your internal standards or policy document. AlignIQ is ready to 
                     analyze and provide actionable insights.
                   </HowItWorksStep>
                   <HowItWorksStep number="2" title="Select a Framework & Analyze">
@@ -196,7 +196,7 @@ function Homepage({ onNavigate }) {
         <footer className="bg-slate-900/50 border-t border-slate-800 mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="text-center">
-              <p>&copy; 2025 MapMyGap. All rights reserved.</p>
+              <p>&copy; 2025 AlignIQ. All rights reserved.</p>
             </div>
           </div>
         </footer>

@@ -1,0 +1,20 @@
+[33mfef8182[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Implement strict category enforcement with retry mechanism for consistent analysis results
+[33mefb9571[m Fix AI analysis timeout by increasing timeout durations and adding structured evidence validation
+[33m5017646[m Implement structured evidence-based scoring system for consistent compliance analysis results
+[33mfdede65[m Implement evidence-based result normalization: 1) Add evidence strength scoring (1-10) based on specific evidence, technical details, and policy references 2) Automatically downgrade controls with weak evidence from 'covered' to 'partial' or 'gap' 3) Add evidence strength indicators (Strong/Moderate/Weak) to each control 4) Update frontend disclaimer to explain evidence-based normalization 5) Maintain detailed analysis while ensuring consistent scoring
+[33m2ef5f08[m Revert problematic changes: Remove restrictive responseSchema and caching system that was stripping analysis details. Keep only the timeout fix with Promise.race to prevent hanging API calls.
+[33m000fc07[m Implement robust deterministic AI analysis with caching: 1) Add comprehensive deterministic parameters including responseSchema for consistent JSON output 2) Implement memory-based caching for identical document/framework/categories combinations 3) Add cache cleanup to prevent memory bloat 4) Ensure consistent results across multiple runs of the same document
+[33me14b4c9[m Fix AI analysis timeout and improve category consistency: 1) Add Promise.race timeout protection to prevent hanging API calls 2) Enhance prompt instructions to ensure AI only analyzes specified categories 3) Add category validation to detect when AI analyzes unexpected categories 4) Improve logging for better debugging of score variability issues
+[33mbfb4369[m Fix mobile layout and refine deterministic mode disclaimer
+[33md3b4cef[m Implement deterministic mode: eliminate AI randomness for consistent compliance scores + add user disclaimer
+[33m65c2d8c[m Fix Vertex AI API request format: add required 'role: user' field to contents array
+[33m50e4b97[m Fix generate-control-text.js: replace broken VertexAI SDK with direct API calls using service account authentication
+[33mdd552e0[m Fix broken file structure in generate-control-text.js - restore proper function syntax and authentication
+[33m4c799e7[m CRITICAL FIX: Correct token limit from 65536 to 65535 (exclusive range) for Gemini 2.5 Flash-Lite
+[33m480947e[m Switch to Gemini 2.5 Flash-Lite for improved performance and cost efficiency across all API endpoints
+[33m226115e[m Fix authentication in generate-control-text.js: remove WIF references, use service account key auth consistently
+[33m4440fb4[m Fix syntax error: remove extra closing brace in generate-control-text.js
+[33m0b51eb0[m Fix ES module imports in generate-control-text.js - convert require to import
+[33me6b561b[m Fix token limit issue: limit maxOutputTokens to Gemini 2.5 Flash maximum of 65,536
+[33m36bd29f[m Fix ES module import issue: remove duplicate require statement for GoogleAuth
+[33md9b0468[m Switch from Workload Identity Federation to service account key authentication for direct Vertex AI access
