@@ -3111,347 +3111,343 @@ export const nist80053 = {
   ]
 };
 
-// NIST SP 800-63B Digital Identity Guidelines
+// NIST SP 800-63B-4 Digital Identity Guidelines (Current July 2025)
 export const nist80063b = {
-  name: "NIST SP 800-63B",
-  description: "Digital Identity Guidelines - Authentication and Lifecycle Management",
+  name: "NIST SP 800-63B-4",
+  description: "Digital Identity Guidelines - Authentication and Authenticator Management (Current July 2025)",
   categories: [
     {
-      name: "Identity Assurance Level (IAL)",
-      description: "How identity is established and verified",
+      name: "Authentication Assurance Level (AAL)",
+      description: "Technical requirements for each of the three authentication assurance levels",
       results: [
+        // AAL1 Controls
         {
-          id: "IAL-1",
-          control: "IAL1 - Self-asserted identity",
+          id: "AAL1.1",
+          control: "AAL1 - Permitted Authenticator Types",
           status: "gap",
-          details: "Self-asserted identity verification not implemented",
-          recommendation: "Implement self-asserted identity verification process for low-risk applications"
+          details: "AAL1 authenticator types not properly configured",
+          recommendation: "Implement AAL1 permitted authenticator types as specified in NIST SP 800-63B-4 Section 2.1.1"
         },
         {
-          id: "IAL-2",
-          control: "IAL2 - Remote or in-person identity proofing",
+          id: "AAL1.2",
+          control: "AAL1 - Authenticator and Verifier Requirements",
           status: "gap",
-          details: "Remote or in-person identity proofing not implemented",
-          recommendation: "Implement remote or in-person identity proofing with appropriate verification methods"
+          details: "AAL1 authenticator and verifier requirements not met",
+          recommendation: "Implement AAL1 authenticator and verifier requirements as specified in NIST SP 800-63B-4 Section 2.1.2"
         },
         {
-          id: "IAL-3",
-          control: "IAL3 - In-person identity proofing",
+          id: "AAL1.3",
+          control: "AAL1 - Reauthentication",
           status: "gap",
-          details: "In-person identity proofing not implemented",
-          recommendation: "Implement in-person identity proofing with trained personnel and verification processes"
+          details: "AAL1 reauthentication requirements not implemented",
+          recommendation: "Implement AAL1 reauthentication requirements as specified in NIST SP 800-63B-4 Section 2.1.3"
+        },
+        // AAL2 Controls
+        {
+          id: "AAL2.1",
+          control: "AAL2 - Permitted Authenticator Types",
+          status: "gap",
+          details: "AAL2 authenticator types not properly configured",
+          recommendation: "Implement AAL2 permitted authenticator types as specified in NIST SP 800-63B-4 Section 2.2.1"
+        },
+        {
+          id: "AAL2.2",
+          control: "AAL2 - Authenticator and Verifier Requirements",
+          status: "gap",
+          details: "AAL2 authenticator and verifier requirements not met",
+          recommendation: "Implement AAL2 authenticator and verifier requirements as specified in NIST SP 800-63B-4 Section 2.2.2"
+        },
+        {
+          id: "AAL2.3",
+          control: "AAL2 - Reauthentication",
+          status: "gap",
+          details: "AAL2 reauthentication requirements not implemented",
+          recommendation: "Implement AAL2 reauthentication requirements as specified in NIST SP 800-63B-4 Section 2.2.3"
+        },
+        // AAL3 Controls
+        {
+          id: "AAL3.1",
+          control: "AAL3 - Permitted Authenticator Types",
+          status: "gap",
+          details: "AAL3 authenticator types not properly configured",
+          recommendation: "Implement AAL3 permitted authenticator types as specified in NIST SP 800-63B-4 Section 2.3.1"
+        },
+        {
+          id: "AAL3.2",
+          control: "AAL3 - Authenticator and Verifier Requirements",
+          status: "gap",
+          details: "AAL3 authenticator and verifier requirements not met",
+          recommendation: "Implement AAL3 authenticator and verifier requirements as specified in NIST SP 800-63B-4 Section 2.3.2"
+        },
+        {
+          id: "AAL3.3",
+          control: "AAL3 - Reauthentication",
+          status: "gap",
+          details: "AAL3 reauthentication requirements not implemented",
+          recommendation: "Implement AAL3 reauthentication requirements as specified in NIST SP 800-63B-4 Section 2.3.3"
+        },
+        // General AAL Requirements
+        {
+          id: "AAL_GEN.1",
+          control: "General - Security Controls",
+          status: "gap",
+          details: "General security controls not implemented",
+          recommendation: "Implement general security controls as specified in NIST SP 800-63B-4 Section 2.4.1"
+        },
+        {
+          id: "AAL_GEN.2",
+          control: "General - Records Retention Policy",
+          status: "gap",
+          details: "Records retention policy not established",
+          recommendation: "Establish records retention policy as specified in NIST SP 800-63B-4 Section 2.4.2"
+        },
+        {
+          id: "AAL_GEN.3",
+          control: "General - Privacy Requirements",
+          status: "gap",
+          details: "Privacy requirements not implemented",
+          recommendation: "Implement privacy requirements as specified in NIST SP 800-63B-4 Section 2.4.3"
+        },
+        {
+          id: "AAL_GEN.4",
+          control: "General - Redress Requirements",
+          status: "gap",
+          details: "Redress requirements not implemented",
+          recommendation: "Implement redress requirements as specified in NIST SP 800-63B-4 Section 2.4.4"
         }
       ]
     },
     {
-      name: "Authenticator Assurance Level (AAL)",
-      description: "How authentication is performed and verified",
+      name: "Authenticator Type Requirements",
+      description: "Requirements by authenticator type as specified in Section 3.1",
       results: [
         {
-          id: "AAL-1",
-          control: "AAL1 - Single-factor authentication",
+          id: "AUTH_TYPE.1",
+          control: "Passwords",
           status: "gap",
-          details: "Single-factor authentication only implemented",
-          recommendation: "Implement multi-factor authentication for enhanced security"
+          details: "Password requirements not implemented",
+          recommendation: "Implement password requirements as specified in NIST SP 800-63B-4 Section 3.1.1"
         },
         {
-          id: "AAL-2",
-          control: "AAL2 - Multi-factor authentication",
+          id: "AUTH_TYPE.2",
+          control: "Look-Up Secrets",
           status: "gap",
-          details: "Multi-factor authentication not implemented",
-          recommendation: "Implement multi-factor authentication using two or more authentication factors"
+          details: "Look-up secret requirements not implemented",
+          recommendation: "Implement look-up secret requirements as specified in NIST SP 800-63B-4 Section 3.1.2"
         },
         {
-          id: "AAL-3",
-          control: "AAL3 - Hardware-based authenticator",
+          id: "AUTH_TYPE.3",
+          control: "Out-of-Band Devices",
           status: "gap",
-          details: "Hardware-based authenticators not implemented",
-          recommendation: "Implement hardware-based authenticators for high-security applications"
+          details: "Out-of-band device requirements not implemented",
+          recommendation: "Implement out-of-band device requirements as specified in NIST SP 800-63B-4 Section 3.1.3"
+        },
+        {
+          id: "AUTH_TYPE.4",
+          control: "Single-Factor OTP",
+          status: "gap",
+          details: "Single-factor OTP requirements not implemented",
+          recommendation: "Implement single-factor OTP requirements as specified in NIST SP 800-63B-4 Section 3.1.4"
+        },
+        {
+          id: "AUTH_TYPE.5",
+          control: "Multi-Factor OTPs",
+          status: "gap",
+          details: "Multi-factor OTP requirements not implemented",
+          recommendation: "Implement multi-factor OTP requirements as specified in NIST SP 800-63B-4 Section 3.1.5"
+        },
+        {
+          id: "AUTH_TYPE.6",
+          control: "Single-Factor Cryptographic Authentication",
+          status: "gap",
+          details: "Single-factor cryptographic authentication requirements not implemented",
+          recommendation: "Implement single-factor cryptographic authentication requirements as specified in NIST SP 800-63B-4 Section 3.1.6"
+        },
+        {
+          id: "AUTH_TYPE.7",
+          control: "Multi-Factor Cryptographic Authentication",
+          status: "gap",
+          details: "Multi-factor cryptographic authentication requirements not implemented",
+          recommendation: "Implement multi-factor cryptographic authentication requirements as specified in NIST SP 800-63B-4 Section 3.1.7"
         }
       ]
     },
     {
-      name: "Federation Assurance Level (FAL)",
-      description: "How federated identity and single sign-on work",
+      name: "Technical Requirements",
+      description: "Specific technical requirements as specified in Section 3.2",
       results: [
         {
-          id: "FAL-1",
-          control: "FAL1 - Basic federation",
+          id: "TECH.1",
+          control: "Replay Resistance",
           status: "gap",
-          details: "Basic federation not implemented",
-          recommendation: "Implement basic federation with identity providers and service providers"
+          details: "Replay resistance not implemented",
+          recommendation: "Implement replay resistance as specified in NIST SP 800-63B-4 Section 3.2.1"
         },
         {
-          id: "FAL-2",
-          control: "FAL2 - Advanced federation",
+          id: "TECH.2",
+          control: "Verifier-Impersonation Resistance",
           status: "gap",
-          details: "Advanced federation not implemented",
-          recommendation: "Implement advanced federation with enhanced security and privacy controls"
+          details: "Verifier-impersonation resistance not implemented",
+          recommendation: "Implement verifier-impersonation resistance as specified in NIST SP 800-63B-4 Section 3.2.2"
         },
         {
-          id: "FAL-3",
-          control: "FAL3 - High federation",
+          id: "TECH.3",
+          control: "Biometric Performance",
           status: "gap",
-          details: "High federation not implemented",
-          recommendation: "Implement high federation with cryptographic protections and advanced controls"
+          details: "Biometric performance requirements not met",
+          recommendation: "Implement biometric performance requirements as specified in NIST SP 800-63B-4 Section 3.2.3"
+        },
+        {
+          id: "TECH.4",
+          control: "Authenticator Binding",
+          status: "gap",
+          details: "Authenticator binding not implemented",
+          recommendation: "Implement authenticator binding as specified in NIST SP 800-63B-4 Section 3.2.4"
+        },
+        {
+          id: "TECH.5",
+          control: "Phishing Resistance",
+          status: "gap",
+          details: "Phishing resistance not implemented",
+          recommendation: "Implement phishing resistance as specified in NIST SP 800-63B-4 Section 3.2.5"
+        },
+        {
+          id: "TECH.6",
+          control: "Verifier Compromise Resistance",
+          status: "gap",
+          details: "Verifier compromise resistance not implemented",
+          recommendation: "Implement verifier compromise resistance as specified in NIST SP 800-63B-4 Section 3.2.6"
+        },
+        {
+          id: "TECH.7",
+          control: "Authenticator Compromise Resistance",
+          status: "gap",
+          details: "Authenticator compromise resistance not implemented",
+          recommendation: "Implement authenticator compromise resistance as specified in NIST SP 800-63B-4 Section 3.2.7"
+        },
+        {
+          id: "TECH.8",
+          control: "Authenticator Secret Strength",
+          status: "gap",
+          details: "Authenticator secret strength requirements not met",
+          recommendation: "Implement authenticator secret strength requirements as specified in NIST SP 800-63B-4 Section 3.2.8"
+        },
+        {
+          id: "TECH.9",
+          control: "Authenticator Secret Storage",
+          status: "gap",
+          details: "Authenticator secret storage requirements not met",
+          recommendation: "Implement authenticator secret storage requirements as specified in NIST SP 800-63B-4 Section 3.2.9"
+        },
+        {
+          id: "TECH.10",
+          control: "Activation Secrets",
+          status: "gap",
+          details: "Activation secret requirements not implemented",
+          recommendation: "Implement activation secret requirements as specified in NIST SP 800-63B-4 Section 3.2.10"
+        },
+        {
+          id: "TECH.11",
+          control: "Wireless Connection Security",
+          status: "gap",
+          details: "Wireless connection security requirements not implemented",
+          recommendation: "Implement wireless connection security requirements as specified in NIST SP 800-63B-4 Section 3.2.11"
+        },
+        {
+          id: "TECH.12",
+          control: "Random Value Generation",
+          status: "gap",
+          details: "Random value generation requirements not implemented",
+          recommendation: "Implement random value generation requirements as specified in NIST SP 800-63B-4 Section 3.2.12"
+        },
+        {
+          id: "TECH.13",
+          control: "Non-Exportability",
+          status: "gap",
+          details: "Non-exportability requirements not implemented",
+          recommendation: "Implement non-exportability requirements as specified in NIST SP 800-63B-4 Section 3.2.13"
         }
       ]
     },
     {
-      name: "Identity Lifecycle Management",
-      description: "Managing identity throughout its lifecycle",
+      name: "Authenticator Event Management",
+      description: "Authenticator event management as specified in Section 4",
       results: [
         {
-          id: "ILM-1",
-          control: "Identity establishment and enrollment",
+          id: "EVENT.1",
+          control: "Authenticator Binding",
           status: "gap",
-          details: "Identity establishment process not implemented",
-          recommendation: "Implement comprehensive identity establishment and enrollment procedures"
+          details: "Authenticator binding process not implemented",
+          recommendation: "Implement authenticator binding as specified in NIST SP 800-63B-4 Section 4.1"
         },
         {
-          id: "ILM-2",
-          control: "Identity proofing and verification",
+          id: "EVENT.2",
+          control: "Account Recovery",
           status: "gap",
-          details: "Identity proofing and verification not implemented",
-          recommendation: "Implement identity proofing and verification processes"
+          details: "Account recovery procedures not implemented",
+          recommendation: "Implement account recovery procedures as specified in NIST SP 800-63B-4 Section 4.2"
         },
         {
-          id: "ILM-3",
-          control: "Identity binding and authentication",
+          id: "EVENT.3",
+          control: "Authenticator Replacement",
           status: "gap",
-          details: "Identity binding and authentication not implemented",
-          recommendation: "Implement secure identity binding and authentication mechanisms"
+          details: "Authenticator replacement procedures not implemented",
+          recommendation: "Implement authenticator replacement procedures as specified in NIST SP 800-63B-4 Section 4.3"
         },
         {
-          id: "ILM-4",
-          control: "Identity lifecycle maintenance",
+          id: "EVENT.4",
+          control: "Authenticator Deactivation",
           status: "gap",
-          details: "Identity lifecycle maintenance not implemented",
-          recommendation: "Implement identity lifecycle maintenance procedures"
+          details: "Authenticator deactivation procedures not implemented",
+          recommendation: "Implement authenticator deactivation procedures as specified in NIST SP 800-63B-4 Section 4.4"
         },
         {
-          id: "ILM-5",
-          control: "Identity termination and deactivation",
+          id: "EVENT.5",
+          control: "Authenticator Reactivation",
           status: "gap",
-          details: "Identity termination procedures not implemented",
-          recommendation: "Implement secure identity termination and deactivation procedures"
-        }
-      ]
-    },
-    {
-      name: "Authenticator Management",
-      description: "Managing authenticators and their lifecycle",
-      results: [
-        {
-          id: "AM-1",
-          control: "Authenticator types and selection",
-          status: "gap",
-          details: "Authenticator types and selection not implemented",
-          recommendation: "Implement authenticator type selection based on security requirements"
+          details: "Authenticator reactivation procedures not implemented",
+          recommendation: "Implement authenticator reactivation procedures as specified in NIST SP 800-63B-4 Section 4.5"
         },
         {
-          id: "AM-2",
-          control: "Authenticator strength and requirements",
+          id: "EVENT.6",
+          control: "Subscriber Notifications",
           status: "gap",
-          details: "Authenticator strength requirements not defined",
-          recommendation: "Define authenticator strength requirements and validation processes"
-        },
-        {
-          id: "AM-3",
-          control: "Authenticator issuance and provisioning",
-          status: "gap",
-          details: "Authenticator issuance process not implemented",
-          recommendation: "Implement secure authenticator issuance and provisioning procedures"
-        },
-        {
-          id: "AM-4",
-          control: "Authenticator lifecycle management",
-          status: "gap",
-          details: "Authenticator lifecycle management not implemented",
-          recommendation: "Implement comprehensive authenticator lifecycle management"
-        },
-        {
-          id: "AM-5",
-          control: "Authenticator compromise and recovery",
-          status: "gap",
-          details: "Authenticator compromise response not implemented",
-          recommendation: "Implement authenticator compromise detection and recovery procedures"
+          details: "Subscriber notification procedures not implemented",
+          recommendation: "Implement subscriber notification procedures as specified in NIST SP 800-63B-4 Section 4.6"
         }
       ]
     },
     {
       name: "Session Management",
-      description: "Managing user sessions and access",
+      description: "Session management as specified in Section 5",
       results: [
         {
-          id: "SM-1",
-          control: "Session establishment and management",
+          id: "SESSION.1",
+          control: "Session Establishment",
           status: "gap",
-          details: "Session establishment and management not implemented",
-          recommendation: "Implement secure session establishment and management procedures"
+          details: "Session establishment procedures not implemented",
+          recommendation: "Implement session establishment procedures as specified in NIST SP 800-63B-4 Section 5.1"
         },
         {
-          id: "SM-2",
-          control: "Session timeout and termination",
+          id: "SESSION.2",
+          control: "Reauthentication",
           status: "gap",
-          details: "Session timeout and termination not implemented",
-          recommendation: "Implement session timeout and secure termination procedures"
+          details: "Reauthentication procedures not implemented",
+          recommendation: "Implement reauthentication procedures as specified in NIST SP 800-63B-4 Section 5.2"
         },
         {
-          id: "SM-3",
-          control: "Session monitoring and logging",
+          id: "SESSION.3",
+          control: "Session Monitoring",
           status: "gap",
-          details: "Session monitoring and logging not implemented",
-          recommendation: "Implement session monitoring and comprehensive logging"
+          details: "Session monitoring procedures not implemented",
+          recommendation: "Implement session monitoring procedures as specified in NIST SP 800-63B-4 Section 5.3"
         },
         {
-          id: "SM-4",
-          control: "Session hijacking protection",
+          id: "SESSION.4",
+          control: "Session Termination",
           status: "gap",
-          details: "Session hijacking protection not implemented",
-          recommendation: "Implement session hijacking protection mechanisms"
-        }
-      ]
-    },
-    {
-      name: "Privacy and Security Controls",
-      description: "Protecting privacy and ensuring security",
-      results: [
-        {
-          id: "PSC-1",
-          control: "Privacy protection and data minimization",
-          status: "gap",
-          details: "Privacy protection and data minimization not implemented",
-          recommendation: "Implement privacy protection and data minimization controls"
-        },
-        {
-          id: "PSC-2",
-          control: "Security controls and monitoring",
-          status: "gap",
-          details: "Security controls and monitoring not implemented",
-          recommendation: "Implement comprehensive security controls and monitoring"
-        },
-        {
-          id: "PSC-3",
-          control: "Audit and accountability",
-          status: "gap",
-          details: "Audit and accountability not implemented",
-          recommendation: "Implement audit and accountability controls"
-        },
-        {
-          id: "PSC-4",
-          control: "Incident response and recovery",
-          status: "gap",
-          details: "Incident response and recovery not implemented",
-          recommendation: "Implement incident response and recovery procedures"
-        }
-      ]
-    },
-    {
-      name: "Identity Proofing (IP)",
-      description: "Methods and processes for identity verification",
-      results: [
-        {
-          id: "IP-1",
-          control: "Identity proofing procedures are established",
-          status: "gap",
-          details: "Identity proofing procedures not established",
-          recommendation: "Establish comprehensive identity proofing procedures and requirements"
-        },
-        {
-          id: "IP-2",
-          control: "Identity proofing methods are validated",
-          status: "gap",
-          details: "Identity proofing methods not validated",
-          recommendation: "Validate identity proofing methods against security requirements"
-        },
-        {
-          id: "IP-3",
-          control: "Identity proofing documentation is maintained",
-          status: "gap",
-          details: "Identity proofing documentation not maintained",
-          recommendation: "Establish procedures to maintain identity proofing documentation"
-        }
-      ]
-    },
-    {
-      name: "Registration (REG)",
-      description: "Identity registration and enrollment processes",
-      results: [
-        {
-          id: "REG-1",
-          control: "Registration procedures are established",
-          status: "gap",
-          details: "Registration procedures not established",
-          recommendation: "Establish comprehensive registration procedures and requirements"
-        },
-        {
-          id: "REG-2",
-          control: "Registration validation is performed",
-          status: "gap",
-          details: "Registration validation not performed",
-          recommendation: "Implement registration validation procedures and controls"
-        },
-        {
-          id: "REG-3",
-          control: "Registration records are maintained",
-          status: "gap",
-          details: "Registration records not maintained",
-          recommendation: "Establish procedures to maintain registration records"
-        }
-      ]
-    },
-    {
-      name: "Authentication (AUTH)",
-      description: "Authentication mechanisms and processes",
-      results: [
-        {
-          id: "AUTH-1",
-          control: "Authentication procedures are established",
-          status: "gap",
-          details: "Authentication procedures not established",
-          recommendation: "Establish comprehensive authentication procedures and requirements"
-        },
-        {
-          id: "AUTH-2",
-          control: "Authentication methods are validated",
-          status: "gap",
-          details: "Authentication methods not validated",
-          recommendation: "Validate authentication methods against security requirements"
-        },
-        {
-          id: "AUTH-3",
-          control: "Authentication monitoring is implemented",
-          status: "gap",
-          details: "Authentication monitoring not implemented",
-          recommendation: "Implement authentication monitoring and alerting"
-        }
-      ]
-    },
-    {
-      name: "Federation (FED)",
-      description: "Federated identity and trust relationships",
-      results: [
-        {
-          id: "FED-1",
-          control: "Federation procedures are established",
-          status: "gap",
-          details: "Federation procedures not established",
-          recommendation: "Establish comprehensive federation procedures and requirements"
-        },
-        {
-          id: "FED-2",
-          control: "Trust relationships are managed",
-          status: "gap",
-          details: "Trust relationships not managed",
-          recommendation: "Establish procedures to manage federation trust relationships"
-        },
-        {
-          id: "FED-3",
-          control: "Federation monitoring is implemented",
-          status: "gap",
-          details: "Federation monitoring not implemented",
-          recommendation: "Implement federation monitoring and alerting"
+          details: "Session termination procedures not implemented",
+          recommendation: "Implement session termination procedures as specified in NIST SP 800-63B-4 Section 5.4"
         }
       ]
     }
