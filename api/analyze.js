@@ -207,6 +207,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
         // Filter framework data to only include selected categories
         let filteredCategories = frameworkData.categories;
         if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories:', selectedCategories);
+          console.log('🔍 Available framework categories:', frameworkData.categories.map(c => c.name));
+          
           // Map user-friendly category names to framework category names
           const categoryMapping = {
             'IAL': 'Identity Assurance Level (IAL)',
@@ -230,14 +233,19 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
           );
           
           console.log('🎯 Filtered categories for NIST 800-63B:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of categories being sent to AI:', filteredCategories.length);
         }
         
         // Use the filtered framework data to enforce consistent control structure
-        frameworkPrompt = `\n\nFor NIST SP 800-63B-4, you MUST analyze ALL controls in the following structure. Use EXACTLY these control IDs and names:
+        frameworkPrompt = `\n\nFor NIST SP 800-63B-4, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
 
 ${JSON.stringify(filteredCategories, null, 2)}
 
-CRITICAL: You MUST analyze EVERY SINGLE control listed above. Do NOT skip any controls or change the structure. Return results for ALL controls with the exact IDs shown.`;
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
       } else {
         frameworkPrompt = `\n\nFor NIST SP 800-63B-4, analyze ALL controls in the selected categories (AAL, Authenticator Type Requirements, Technical Requirements, Authenticator Event Management, Session Management). Include detailed analysis of authentication assurance levels, authenticator types, technical requirements, event management, and session management controls.`;
       }
@@ -258,6 +266,8 @@ CRITICAL: You MUST analyze EVERY SINGLE control listed above. Do NOT skip any co
             // Log the actual prompt length being sent to AI
             console.log('📝 Full prompt length being sent to AI:', prompt.length, 'characters');
             console.log('📄 Document content length in prompt:', fileContent.length, 'characters');
+
+CRITICAL INSTRUCTION: You are ONLY allowed to analyze the specific categories and controls that are explicitly provided to you. You MUST NOT create, add, or analyze any additional categories or controls beyond what is specified.
 
 Please analyze the compliance status and provide a JSON response in this exact format:
 {
