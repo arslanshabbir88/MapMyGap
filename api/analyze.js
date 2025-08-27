@@ -4752,7 +4752,6 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // - No randomness in compliance assessment
     // - Perfect for audit trails and reproducible compliance analysis
     const timestamp = Date.now();
-    const documentHash = crypto.createHash('md5').update(fileContent).digest('hex').substring(0, 8);
     
     // OPTIMIZATION: Reduced prompt complexity to prevent Vercel timeouts
     // - Original prompt was 200+ lines with detailed instructions
@@ -4801,6 +4800,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     // PHASE 2 IMPLEMENTATION: Sequential chunk analysis for 100% document coverage
     let allAnalysisResults = [];
+    let documentContent; // Declare documentContent variable
     
     if (useMultiChunkAnalysis && documentChunks.length > 1) {
       console.log(`🔄 PHASE 2: Starting sequential analysis of ${documentChunks.length} chunks for complete coverage...`);
