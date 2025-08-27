@@ -77,7 +77,7 @@ async function getAccessToken() {
 }
 
 // Direct call to Vertex AI API for control text generation
-async function generateControlText(prompt) {
+async function generateControlText(prompt, timeoutDuration) {
   try {
     const accessToken = await getAccessToken();
     const projectId = process.env.GCP_PROJECT_ID;
@@ -181,7 +181,7 @@ Return ONLY the implementation text, ready to copy. Make it comprehensive enough
     console.log('📊 Prompt length:', prompt.length, 'characters');
 
     // Generate the control text
-    const generatedText = await generateControlText(prompt);
+    const generatedText = await generateControlText(prompt, timeoutDuration);
     
     console.log('✅ Control text generation completed successfully');
     console.log('📊 Generated text length:', generatedText.length, 'characters');
