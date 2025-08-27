@@ -1,4 +1,131 @@
-import { VertexAI } from '@google-cloud/vertexai';
+import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+
+// Direct Vertex AI API integration for control text generation
+let accessToken = null;
+let tokenExpiry = 0;
+
+// Get access token from service account key
+async function getAccessToken() {
+  try {
+    // Check if we have a valid token
+    if (accessToken && Date.now() < tokenExpiry) {
+      return accessToken;
+    }
+
+    const serviceKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceKey) {
+      throw new Error('GCP_SERVICE_KEY environment variable not set');
+    }
+
+    // Parse the service account key JSON
+    let credentials;
+    try {
+      // Handle base64 encoded service key
+      let decodedKey = serviceKey;
+      if (serviceKey.length > 1000 && /^[A-Za-z0-9+/=]+$/.test(serviceKey)) {
+        decodedKey = Buffer.from(serviceKey, 'base64').toString('utf-8');
+      }
+      credentials = JSON.parse(decodedKey);
+    } catch (parseError) {
+      throw new Error(`Failed to parse service account key: ${parseError.message}`);
+    }
+
+    // Create JWT token using proper library
+    const now = Math.floor(Date.now() / 1000);
+    const payload = {
+      iss: credentials.client_email,
+      scope: 'https://www.googleapis.com/auth/cloud-platform',
+      aud: 'https://oauth2.googleapis.com/token',
+      exp: now + 3600, // 1 hour
+      iat: now
+    };
+
+    // Sign JWT with private key
+    const jwtToken = jwt.sign(payload, credentials.private_key, { 
+      algorithm: 'RS256',
+      header: { typ: 'JWT' }
+    });
+
+    // Exchange JWT for access token
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: jwtToken
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      throw new Error(`Token exchange failed: ${tokenResponse.status} ${errorText}`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    accessToken = tokenData.access_token;
+    tokenExpiry = Date.now() + (tokenData.expires_in * 1000) - 60000; // 1 minute buffer
+
+    console.log('✅ Access token obtained successfully for control text generation');
+    return accessToken;
+  } catch (error) {
+    console.log('❌ Failed to get access token for control text generation:', error.message);
+    throw error;
+  }
+}
+
+// Direct call to Vertex AI API for control text generation
+async function generateControlText(prompt) {
+  try {
+    const accessToken = await getAccessToken();
+    const projectId = process.env.GCP_PROJECT_ID;
+    const location = process.env.GCP_LOCATION || 'us-central1';
+
+    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash:generateContent`;
+
+    const requestBody = {
+      contents: [{
+        role: "user",
+        parts: [{
+          text: prompt
+        }]
+      }],
+      generationConfig: {
+        maxOutputTokens: 8192,
+        temperature: 0.1, // Low temperature for consistent, focused output
+        topP: 1.0,
+        topK: 1
+      }
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Vertex AI API call failed: ${response.status} ${errorText}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.candidates && result.candidates[0] && result.candidates[0].content) {
+      return result.candidates[0].content.parts[0].text;
+    } else {
+      throw new Error('Unexpected response format from Vertex AI');
+    }
+  } catch (error) {
+    console.log('❌ Vertex AI API call failed for control text generation:', error.message);
+    throw error;
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,241 +139,75 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required parameters: originalDocument, targetControl, or framework.' });
     }
 
-    console.log('Starting AI generation with Service Account Key authentication:', {
-      framework,
-      targetControl: targetControl.substring(0, 100) + '...',
-      documentLength: originalDocument.length
-    });
+    console.log('🚀 Starting control text generation for:', framework);
+    console.log('📄 Document length:', originalDocument.length, 'characters');
+    console.log('🎯 Target control:', targetControl.substring(0, 100) + '...');
 
-    // CRITICAL: Use direct API calls instead of broken VertexAI SDK
-    console.log('🚀 NUCLEAR OPTION: Using direct API calls to bypass broken VertexAI SDK');
-    
-    // Get the service account credentials from environment variable
-    const serviceAccountKey = process.env.GCP_SERVICE_KEY;
-    if (!serviceAccountKey) {
-      throw new Error('No GCP service account key available for direct API calls');
-    }
-    
-    // Parse the base64-encoded service account key
-    let credentials;
-    try {
-      credentials = JSON.parse(
-        Buffer.from(serviceAccountKey, "base64").toString()
-      );
-      console.log('🔑 DEBUG: Service account key parsed successfully, client_email:', credentials.client_email);
-    } catch (error) {
-      throw new Error(`Failed to parse service account key: ${error.message}`);
-    }
-    
-    const projectId = process.env.GCP_PROJECT_ID;
-    const location = process.env.GCP_LOCATION || 'us-central1';
-    const model = 'gemini-2.5-flash-lite';
-    
-    // Direct Vertex AI API endpoint
-    const apiUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
-    
-    console.log('🔗 DEBUG: Direct API URL:', apiUrl);
-    
-    const prompt = `You are a cybersecurity compliance expert specializing in creating COMPREHENSIVE implementation documents that achieve "covered" status.
+    // Create a highly specific prompt for generating control text
+    const prompt = `You are a cybersecurity compliance expert. Your mission is to generate SPECIFIC, ACTIONABLE text that will make a control achieve "covered" status.
 
-Original Document Content:
-${originalDocument.substring(0, 4000)}
+ORIGINAL DOCUMENT CONTENT (first 6000 characters):
+${originalDocument.substring(0, 6000)}
 
-Target Control to Implement:
+TARGET CONTROL TO IMPLEMENT:
 ${targetControl}
 
-Framework: ${framework}
+FRAMEWORK: ${framework}
 
-🎯 MISSION: Generate a COMPLETE implementation document that will instantly achieve "covered" status when analyzed.
+🎯 CRITICAL REQUIREMENT: Generate text that will make this control "covered" instead of "partial" or "gap".
 
-📋 REQUIRED SECTIONS (Include ALL of these):
+📋 WHAT TO GENERATE:
+Generate a COMPLETE, SPECIFIC implementation section that includes:
 
-1. **POLICY STATEMENT** - Clear, authoritative policy language
-2. **IMPLEMENTATION PROCEDURES** - Step-by-step operational procedures
-3. **TECHNICAL SPECIFICATIONS** - System requirements, configurations, tools
-4. **ROLES & RESPONSIBILITIES** - Who does what, when, and how
-5. **MONITORING & EVIDENCE** - How compliance is tracked and documented
-6. **INTEGRATION DETAILS** - How this control connects to other systems
-7. **COMPLIANCE VERIFICATION** - How to verify the control is working
+1. **EXPLICIT POLICY STATEMENTS** - Clear, unambiguous language about what is implemented
+2. **SPECIFIC TECHNICAL DETAILS** - Tools, systems, configurations, not generic statements
+3. **IMPLEMENTATION PROCEDURES** - Step-by-step processes that are actually being followed
+4. **MONITORING & EVIDENCE** - How compliance is tracked, logged, and verified
+5. **ROLES & RESPONSIBILITIES** - Who does what, when, and how often
+6. **INTEGRATION DETAILS** - How this control connects to existing systems
+7. **COMPLIANCE VERIFICATION** - Specific ways to verify the control is working
 
-🔍 ANALYSIS REQUIREMENTS:
-- Study the original document's writing style, tone, and format
-- Match the organization's naming conventions and terminology
-- Use the same document structure and formatting
-- Include specific, measurable, and actionable content
+🔍 KEY SUCCESS FACTORS:
+- Use SPECIFIC language, not generic statements
+- Include MEASURABLE actions and timeframes
+- Reference SPECIFIC tools, systems, or processes
+- Add MONITORING and EVIDENCE collection details
+- Match the document's existing style and format
+- Make it AUDIT-READY with clear evidence
 
-💡 IMPLEMENTATION GUIDANCE:
-- Provide REAL implementation details, not generic statements
-- Include specific tools, systems, and configurations
-- Add monitoring procedures and evidence collection
-- Specify roles, responsibilities, and timelines
-- Include integration with existing systems
+💡 EXAMPLE OF GOOD TEXT:
+❌ BAD: "We implement access controls"
+✅ GOOD: "Access controls are implemented using Active Directory with role-based permissions. All user access is reviewed quarterly by the IT Security Officer. Access logs are retained for 90 days and monitored daily for suspicious activity."
 
 📝 OUTPUT FORMAT:
-Return a COMPLETE, ready-to-use document section that includes all required elements. The document should be comprehensive enough that when analyzed, it immediately achieves "covered" status.
+Return ONLY the implementation text, ready to copy into the document. Make it comprehensive enough that an AI analysis would immediately mark it as "covered".
 
-Make it specific, professional, and implementation-ready. Include enough detail that an auditor would say "Yes, this is fully implemented."`;
+Focus on SPECIFICITY and ACTIONABILITY. The text should be detailed enough that someone could implement it exactly as written.`;
 
-    console.log('Sending prompt to Vertex AI with Service Account Key...');
-    console.log('Prompt length:', prompt.length);
+    console.log('📤 Sending prompt to Gemini 2.5 Flash for control text generation...');
+    console.log('📊 Prompt length:', prompt.length, 'characters');
 
-    // Add timeout to prevent hanging
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI generation timeout - taking too long')), 30000);
+    // Generate the control text
+    const generatedText = await generateControlText(prompt);
+    
+    console.log('✅ Control text generation completed successfully');
+    console.log('📊 Generated text length:', generatedText.length, 'characters');
+    console.log('🔍 Generated text preview:', generatedText.substring(0, 200) + '...');
+
+    // Return the generated control text
+    return res.status(200).json({
+      success: true,
+      generatedText: generatedText,
+      framework: framework,
+      targetControl: targetControl.substring(0, 100) + '...',
+      timestamp: new Date().toISOString()
     });
-    
-    // CRITICAL: Use GoogleAuth for direct API authentication
-    const { GoogleAuth } = await import('google-auth-library');
-    
-    try {
-      // Get access token using service account credentials
-      const auth = new GoogleAuth({
-        credentials: credentials,
-        scopes: ['https://www.googleapis.com/auth/cloud-platform']
-      });
-      
-      const accessToken = await auth.getAccessToken();
-      
-      // Prepare request body with proper token limits
-      const requestBody = {
-        contents: [{
-          role: "user",
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          maxOutputTokens: 8192,
-          temperature: 0.0,  // Deterministic mode - eliminates randomness
-          topP: 1.0,         // Use all available tokens
-          topK: 1            // Always pick top choice
-        },
-        safetySettings: [
-          {
-            category: "HARM_CATEGORY_HARASSMENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_HATE_SPEECH",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          },
-          {
-            category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-            threshold: "BLOCK_MEDIUM_AND_ABOVE"
-          }
-        ]
-      };
-      
-      // CRITICAL: Limit maxOutputTokens to Gemini 2.5 Flash-Lite maximum (exclusive range)
-      const limitedRequestBody = {
-        ...requestBody,
-        generationConfig: {
-          ...requestBody.generationConfig,
-          maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 8192, 8192)
-        }
-      };
-      
-      console.log('🔧 DEBUG: Limited maxOutputTokens to:', limitedRequestBody.generationConfig.maxOutputTokens);
-      
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-          'X-Goog-User-Project': projectId
-        },
-        body: JSON.stringify(limitedRequestBody)
-      });
-      
-      console.log('📥 DEBUG: Direct API response status:', response.status);
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`❌ Direct API error ${response.status}:`, errorText);
-        throw new Error(`Direct API error ${response.status}: ${errorText}`);
-      }
-      
-      const responseData = await response.json();
-      console.log('✅ Direct API call successful!');
-      
-      // Extract the generated text from Vertex AI response
-      let generatedText;
-      if (responseData.candidates && responseData.candidates[0] && responseData.candidates[0].content) {
-        generatedText = responseData.candidates[0].content.parts[0].text;
-        console.log('📝 AI response text extracted, length:', generatedText.length);
-      } else {
-        throw new Error('Direct API response missing generated content');
-      }
 
-      console.log('Successfully generated text with Service Account Key, length:', generatedText.length);
-
-      res.status(200).json({
-        generatedText: generatedText
-      });
-
-    } catch (error) {
-      console.error('Error in /generate-control-text:', error);
-      console.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
-        code: error.code,
-        status: error.status
-      });
-      
-      // Handle timeout errors specifically
-      if (error.message && error.message.includes('timeout')) {
-        return res.status(408).json({ 
-          error: 'AI generation timed out',
-          details: 'The comprehensive control text generation is taking too long. Please try again.',
-          suggestion: 'Try again with a shorter document or different control'
-        });
-      }
-      
-      // Handle authentication errors
-      if (error.message && (error.message.includes('authentication') || error.message.includes('unauthorized') || error.message.includes('403'))) {
-        return res.status(401).json({ 
-          error: 'Service account authentication failed',
-          details: 'Failed to authenticate with Google Cloud using service account key',
-          suggestion: 'Check your GCP_SERVICE_KEY environment variable and service account permissions'
-        });
-      }
-      
-      // Handle Vertex AI service errors
-      if (error.message && (error.message.includes('Vertex') || error.message.includes('AI') || error.message.includes('model') || error.message.includes('content'))) {
-        return res.status(500).json({ 
-          error: 'Vertex AI service error',
-          details: 'There was an issue with the Vertex AI service. Please try again later.',
-          suggestion: 'Check your GCP project configuration and try again.'
-        });
-      }
-      
-      // Handle network/connection errors
-      if (error.message && (error.message.includes('network') || error.message.includes('connection') || error.message.includes('fetch') || error.message.includes('timeout') || error.message.includes('ENOTFOUND'))) {
-        return res.status(503).json({ 
-          error: 'Service temporarily unavailable',
-          details: 'Unable to connect to the AI service. Please try again later.',
-          suggestion: 'Check your internet connection and try again'
-        });
-      }
-      
-      // Generic error fallback
-      res.status(500).json({ 
-        error: 'Server error', 
-        details: error.message || 'An unexpected error occurred',
-        suggestion: 'Please try again later or contact support'
-      });
-    }
   } catch (error) {
-    console.error('Error in /generate-control-text:', error);
-    res.status(500).json({ 
-      error: 'Server error', 
-      details: error.message || 'An unexpected error occurred',
-      suggestion: 'Please try again later or contact support'
+    console.log('❌ Control text generation failed:', error.message);
+    return res.status(500).json({ 
+      error: 'Control text generation failed', 
+      details: error.message 
     });
   }
 }
