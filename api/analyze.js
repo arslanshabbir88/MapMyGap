@@ -116,7 +116,7 @@ async function callVertexAI(prompt) {
     const projectId = process.env.GCP_PROJECT_ID;
     const location = process.env.GCP_LOCATION || 'us-central1';
 
-    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-1.5-flash:generateContent`;
+    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash:generateContent`;
 
     const requestBody = {
       contents: [{
@@ -165,10 +165,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
   // Generate deterministic hash for logging
   const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework).digest('hex');
   
-  console.log('🚀 Starting AI analysis with direct Vertex AI API');
-  console.log('📄 Document length:', fileContent.length, 'characters');
-  console.log('🔍 Framework:', framework);
-  console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
+       console.log('🚀 Starting AI analysis with Gemini 2.5 Flash via direct Vertex AI API');
+     console.log('📄 Document length:', fileContent.length, 'characters');
+     console.log('🔍 Framework:', framework);
+     console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
   
   try {
     // Build category-specific prompt based on selectedCategories
