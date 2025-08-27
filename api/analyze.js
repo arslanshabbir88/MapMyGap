@@ -239,12 +239,31 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
        contents: [{
          role: "user",
          parts: [{
-           text: `Analyze this document for ${framework} compliance.
- 
- Document Content:
- ${fileContent.substring(0, 20000)}
- 
- Analyze the compliance status and provide recommendations.`
+           text: `Analyze this document for ${framework} compliance and return a structured JSON response.
+
+Document Content:
+${fileContent.substring(0, 20000)}
+
+Please analyze the compliance status and provide a JSON response in this exact format:
+{
+  "categories": [
+    {
+      "name": "Category Name",
+      "description": "Category description",
+      "results": [
+        {
+          "id": "Control ID",
+          "control": "Control description",
+          "status": "covered|partial|gap",
+          "details": "Specific details about compliance status",
+          "recommendation": "Actionable recommendation"
+        }
+      ]
+    }
+  ]
+}
+
+IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`
          }]
        }],
        generationConfig: {
@@ -274,10 +293,53 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
     console.log('✅ AI analysis completed successfully via HTTP');
     console.log('📊 Response length:', analysis.length, 'characters');
+    console.log('🔍 Raw AI response preview:', analysis.substring(0, 500) + '...');
+    
+    // Parse the AI response to extract structured JSON
+    let parsedAnalysis;
+    try {
+      // Clean the response - remove any markdown formatting or extra text
+      let cleanResponse = analysis.trim();
+      
+      // Find JSON content (look for { at start or extract JSON from response)
+      if (cleanResponse.startsWith('{')) {
+        parsedAnalysis = JSON.parse(cleanResponse);
+      } else {
+        // Try to extract JSON from the response
+        const jsonMatch = cleanResponse.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          parsedAnalysis = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error('No valid JSON found in AI response');
+        }
+      }
+      
+      console.log('✅ Successfully parsed AI response to structured format');
+      console.log('📊 Parsed structure keys:', Object.keys(parsedAnalysis));
+      
+    } catch (parseError) {
+      console.log('❌ Failed to parse AI response as JSON:', parseError.message);
+      console.log('❌ Raw response that failed to parse:', analysis);
+      
+      // Fallback: return the raw text wrapped in the expected structure
+      parsedAnalysis = {
+        categories: [{
+          name: "Compliance Analysis",
+          description: "AI-generated compliance assessment",
+          results: [{
+            id: "ANALYSIS_001",
+            control: "Document Compliance Review",
+            status: "partial",
+            details: "AI analysis completed but response format was unexpected",
+            recommendation: "Review the generated analysis and consider re-running for structured output"
+          }]
+        }]
+      };
+    }
     
     return {
       success: true,
-      analysis: analysis,
+      analysis: parsedAnalysis,
       documentHash: documentHash.substring(0, 16)
     };
     
@@ -316,10 +378,10 @@ export default async function handler(req, res) {
     // Perform AI analysis
     const result = await analyzeWithAI(fileContent, framework, selectedCategories);
     
-    // Return results
+    // Return results in the format the frontend expects
     return res.status(200).json({
       success: true,
-      result: result.analysis,
+      result: JSON.stringify(result.analysis), // Convert structured object back to JSON string
       documentHash: result.documentHash,
       framework: framework,
       timestamp: new Date().toISOString()
