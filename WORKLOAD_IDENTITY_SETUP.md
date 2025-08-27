@@ -124,3 +124,4 @@ If you still encounter issues:
 2. Verify all environment variables are set correctly
 3. Ensure GCP Workload Identity is properly configured
 4. Test with the `/api/test-google-ai` endpoint first
+

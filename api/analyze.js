@@ -162,8 +162,12 @@ async function callVertexAI(prompt) {
 
 // Main analysis function using direct Vertex AI API
 async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
-  // Generate deterministic hash for logging
-  const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework).digest('hex');
+  // Generate deterministic hash for logging - use beginning and end of document
+  const documentHash = crypto.createHash('sha256').update(
+    fileContent.substring(0, 100) + 
+    fileContent.substring(Math.max(0, fileContent.length - 100)) + 
+    framework
+  ).digest('hex');
   
        console.log('🚀 Starting AI analysis with Gemini 2.5 Flash via direct Vertex AI API');
      console.log('📄 Document length:', fileContent.length, 'characters');
@@ -289,6 +293,11 @@ CRITICAL REQUIREMENTS:
 
 // Main handler function
 export default async function handler(req, res) {
+  // Set aggressive cache control headers to prevent any caching
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -302,6 +311,10 @@ export default async function handler(req, res) {
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+    
+    // Generate unique request identifier to prevent caching
+    const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    console.log('🆔 Unique request ID:', requestId);
     
     // Perform AI analysis
     const result = await analyzeWithAI(fileContent, framework, selectedCategories);
@@ -318,7 +331,8 @@ export default async function handler(req, res) {
       }],
       documentHash: result.documentHash,
       framework: framework,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      requestId: requestId
     });
     
   } catch (error) {

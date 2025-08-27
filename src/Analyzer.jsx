@@ -813,14 +813,15 @@ function Analyzer({ onNavigateHome }) {
           framework: selectedFramework,
           selectedCategories: selectedCategories,
           timestamp: Date.now(),
-          documentHash: btoa(fileContent.substring(0, 100)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 8)
+          documentHash: btoa(fileContent.substring(0, 100) + fileContent.substring(Math.max(0, fileContent.length - 100))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16)
         };
         console.log('Request body being sent:', requestBody);
         
-        // Add cache-busting query parameter for analysis
+        // Add aggressive cache-busting to ensure fresh analysis
         const cacheBuster = Date.now();
-        const apiUrl = `/api/analyze?cb=${cacheBuster}`;
-        console.log('🚀 Analysis cache buster:', cacheBuster, 'API URL:', apiUrl);
+        const documentHash = btoa(fileContent.substring(0, 100) + fileContent.substring(Math.max(0, fileContent.length - 100))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+        const apiUrl = `/api/analyze?cb=${cacheBuster}&hash=${documentHash}&ts=${Date.now()}`;
+        console.log('🚀 Analysis cache buster:', cacheBuster, 'Document hash:', documentHash, 'API URL:', apiUrl);
         
         const response = await fetch(apiUrl, {
         method: 'POST',
@@ -896,7 +897,7 @@ function Analyzer({ onNavigateHome }) {
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
             'X-Cache-Buster': cacheBuster.toString(),
-            'X-Request-ID': `${cacheBuster}-${btoa(fileContent.substring(0, 50)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 6)}`
+            'X-Request-ID': `${cacheBuster}-${btoa(fileContent.substring(0, 50) + fileContent.substring(Math.max(0, fileContent.length - 50))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}`
           }
         });
         if (!response.ok) {
