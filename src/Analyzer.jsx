@@ -223,7 +223,7 @@ function Analyzer({ onNavigateHome }) {
         setGeneratedText('');
         setIsGenerating(true);
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout (increased from 20s to align with Vercel's 30s limit)
         
         const resp = await fetch('/api/generate-control-text', {
           method: 'POST',

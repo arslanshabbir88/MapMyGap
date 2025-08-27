@@ -100,7 +100,12 @@ async function generateControlText(prompt) {
       }
     };
 
-    const response = await fetch(url, {
+    // Add timeout wrapper to prevent hanging
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('AI response timeout after 20 seconds')), 20000);
+    });
+
+    const fetchPromise = fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
@@ -108,6 +113,9 @@ async function generateControlText(prompt) {
       },
       body: JSON.stringify(requestBody)
     });
+
+    // Race between fetch and timeout
+    const response = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (!response.ok) {
       const errorText = await response.text();
