@@ -1,4 +1,4 @@
-# Code Protection Strategy for AlignIQ
+# Code Protection Strategy for MapMyGap
 
 ## 🛡️ What We've Implemented
 
