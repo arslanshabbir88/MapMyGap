@@ -4743,91 +4743,22 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // Generate a unique prompt with cache buster and timestamp
     const timestamp = Date.now();
     const randomSeed = Math.random().toString(36).substring(7);
-    const prompt = `Analyze this document against ${frameworkName} framework for compliance assessment.
+    
+    // OPTIMIZED: Much shorter, focused prompt for faster processing
+    const prompt = `Analyze document against ${frameworkName} framework.
 
-TIMESTAMP: ${timestamp}
-RANDOM SEED: ${randomSeed}
-CACHE BUSTER: ${Math.random().toString(36).substring(7)}
+Document: ${fileContent.substring(0, 20000)}${fileContent.length > 20000 ? '...' : ''}
 
-This ensures a fresh analysis every time.
+Analyze ONLY these categories:
+${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
 
-Document Content (Full document for comprehensive analysis):
-${fileContent}
-
-Framework: ${frameworkName}
-Analysis Mode: Comprehensive
-
-CRITICAL REQUIREMENT: You MUST analyze ONLY the controls in the selected categories below. Do NOT analyze any other categories.
-
-ANALYSIS MODE: Comprehensive
-- "covered": Full implementation with evidence
-- "partial": Partial implementation  
-- "gap": Not implemented
-
-SELECTED CATEGORIES TO ANALYZE (ONLY ANALYZE THESE):
-${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description} (${cat.results.length} controls)`).join('\n')}
-
-CRITICAL CATEGORY ENFORCEMENT: You MUST analyze ONLY the categories and controls specified in the JSON structure below. 
-- You are analyzing: ${filteredFrameworkData.categories.map(cat => cat.name).join(', ')}
-- Do NOT analyze any other categories
-- Do NOT omit any controls from the specified categories
-- Do NOT add controls from other categories
-- If you analyze wrong categories, the analysis will be rejected and you will be asked to retry
-
-MANDATORY: You MUST analyze EVERY SINGLE control listed in the JSON structure below. Do NOT omit any controls. Do NOT add any controls from other categories.
-
-STRUCTURED EVIDENCE ANALYSIS TEMPLATE:
-For each control, you MUST follow this EXACT format:
-
-1. EVIDENCE EXTRACTION: Extract specific evidence points from the document
-   - Direct quotes from the document (use quotation marks)
-   - Specific policy names, procedure references, or document sections
-   - Technical implementation details (tool names, system names, etc.)
-   - Page numbers or section references if available
-
-2. EVIDENCE SCORING: For each evidence point, assign a score (1-10):
-   - 10: Direct, explicit implementation statement
-   - 8-9: Strong supporting evidence with specific details
-   - 6-7: Moderate evidence with some specifics
-   - 4-5: Weak evidence, mostly general statements
-   - 1-3: Very weak or no evidence
-
-3. STATUS DETERMINATION: Use evidence scores to determine status:
-   - "covered": Evidence score ≥ 7 AND specific implementation details found
-   - "partial": Evidence score 4-6 OR some evidence but incomplete
-   - "gap": Evidence score ≤ 3 OR no evidence found
-
-4. REQUIRED FIELDS FOR EACH CONTROL:
-   - evidencePoints: [array of specific evidence found]
-   - evidenceScores: [array of scores for each evidence point]
-   - totalEvidenceScore: sum of all evidence scores
-   - status: determined by evidence score
-   - details: summary of evidence and reasoning
-   - recommendation: specific action items if gap/partial
-
-EXAMPLE CONTROL ANALYSIS:
-{
-  "id": "DE.AE-1",
-  "control": "DE.AE-1 - Baseline network operations and data flows are established and managed",
-  "evidencePoints": [
-    "Section 3.2: 'Network monitoring tools are deployed across all critical systems'",
-    "Policy document: 'Network Security Policy v2.1'",
-    "Procedure: 'Daily network traffic analysis and reporting'"
-  ],
-  "evidenceScores": [8, 7, 6],
-  "totalEvidenceScore": 21,
-  "status": "covered",
-  "details": "Strong evidence of network monitoring implementation with documented policies and procedures",
-  "recommendation": "Continue current implementation"
-}
-
-CRITICAL INSTRUCTIONS:
-- Extract ONLY factual evidence from the document
-- Do NOT make assumptions or interpretations
-- If evidence is ambiguous, default to "partial" with explanation
-- Use consistent scoring criteria across all controls
-- Provide specific quotes and references when possible
-- If no evidence is found, mark as "gap" with "No evidence found in document"
+For each control, provide:
+- evidencePoints: [specific evidence from document]
+- evidenceScores: [1-10 scores for each evidence]
+- totalEvidenceScore: sum of scores
+- status: "covered" (score≥7), "partial" (score 4-6), "gap" (score≤3)
+- details: brief summary
+- recommendation: action item if needed
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -4850,25 +4781,12 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
       console.log('Prompt preview (last 500 chars):', prompt.substring(prompt.length - 500));
     }
 
-            // Add timeout to prevent hanging - dynamic timeout based on framework size
-        // Calculate timeout based on number of controls and framework complexity
-        // INCREASED timeouts for structured evidence analysis which requires more processing time
-        let timeoutDuration;
-        const controlCount = filteredFrameworkData.categories.reduce((sum, cat) => sum + (cat.results?.length || 0), 0);
+            // OPTIMIZED: Reduced timeout to match Vercel's 60-second function limit
+        const timeoutDuration = 55000; // 55s to stay well under Vercel's 60s limit
         
-        if (framework === 'SOC_2') {
-          timeoutDuration = 120000; // 120s for SOC 2 (large framework) - increased for structured analysis
-        } else if (controlCount <= 20) {
-          timeoutDuration = 90000; // 90s for small frameworks (≤20 controls) - increased for structured analysis
-        } else if (controlCount <= 40) {
-          timeoutDuration = 120000; // 120s for medium frameworks (21-40 controls) - increased for structured analysis
-        } else {
-          timeoutDuration = 150000; // 150s for large frameworks (41+ controls) - increased for structured analysis
-        }
-        
-        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s for ${framework} framework (${controlCount} controls)`);
+        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s (optimized for Vercel)`);
         const timeoutPromise = new Promise((_, reject) => {
-          setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), timeoutDuration);
+          setTimeout(() => reject(new Error('AI analysis timeout - Vercel function limit reached')), timeoutDuration);
         });
     
     console.log('🚀 CRITICAL DEBUG: About to start AI analysis with Vertex AI...');
@@ -4952,12 +4870,12 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
         
         const accessToken = await auth.getAccessToken();
         
-        // CRITICAL: Limit output tokens to stay within Gemini 2.5 Flash limits
+        // OPTIMIZED: Reduce output tokens for faster processing and to prevent Vercel timeouts
         const limitedRequestBody = {
           ...requestBody,
           generationConfig: {
             ...requestBody.generationConfig,
-            maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 65535, 65535)
+            maxOutputTokens: Math.min(requestBody.generationConfig.maxOutputTokens || 65535, 32768) // Reduced to 32K tokens for speed
           }
         };
         
@@ -4974,6 +4892,7 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
           body: JSON.stringify(limitedRequestBody)
         });
         
+        // OPTIMIZED: Use shorter timeout for fetch to prevent Vercel timeouts
         const response = await Promise.race([fetchPromise, timeoutPromise]);
         
         console.log('📥 DEBUG: Direct API response status:', response.status);
