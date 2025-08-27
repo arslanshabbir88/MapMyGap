@@ -237,6 +237,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
          const requestBody = {
        contents: [{
+         role: "user",
          parts: [{
            text: `Analyze this document for ${framework} compliance.
  
