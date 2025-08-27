@@ -235,24 +235,104 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
          const vertexAIUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash-lite:generateContent`;
     
-                  // Build category-specific prompt based on selectedCategories
+                           // Build framework-specific prompt based on framework type
+         let frameworkPrompt = '';
          let categoryPrompt = '';
+         
          if (selectedCategories && selectedCategories.length > 0) {
-           categoryPrompt = `\n\nIMPORTANT: Only analyze the following specific categories: ${selectedCategories.join(', ')}. Do NOT analyze any other categories.`;
+           categoryPrompt = `\n\nIMPORTANT: Only analyze the following specific categories/families/functions: ${selectedCategories.join(', ')}. Do NOT analyze any other categories.`;
          } else {
-           categoryPrompt = '\n\nAnalyze all relevant categories found in the document.';
+           categoryPrompt = '\n\nAnalyze all relevant categories/families/functions found in the document.';
          }
 
-         const requestBody = {
-       contents: [{
-         role: "user",
-         parts: [{
-           text: `Analyze this document for ${framework} compliance and return a structured JSON response.
-
- Document Content:
- ${fileContent.substring(0, 20000)}
-
- Please analyze the compliance status and provide a JSON response in this exact format:
+         // Framework-specific structure and examples
+         switch (framework) {
+           case 'NIST_CSF':
+             frameworkPrompt = `\n\nUse this exact JSON structure for NIST CSF v2.0:
+ {
+   "categories": [
+     {
+       "name": "Identify (ID)",
+       "description": "Develop organizational understanding to manage cybersecurity risk",
+       "results": [
+         {
+           "id": "ID.AM-1",
+           "control": "Physical devices and systems within the organization are inventoried",
+           "status": "covered|partial|gap",
+           "details": "Specific details about compliance status",
+           "recommendation": "Actionable recommendation"
+         }
+       ]
+     }
+   ]
+ }`;
+             break;
+             
+           case 'NIST_800_53':
+             frameworkPrompt = `\n\nUse this exact JSON structure for NIST SP 800-53:
+ {
+   "families": [
+     {
+       "name": "Access Control (AC)",
+       "description": "Control access to information systems",
+       "controls": [
+         {
+           "id": "AC-1",
+           "control": "Access Control Policy and Procedures",
+           "status": "covered|partial|gap",
+           "details": "Specific details about compliance status",
+           "recommendation": "Actionable recommendation"
+         }
+       ]
+     }
+   ]
+ }`;
+             break;
+             
+           case 'PCI_DSS':
+             frameworkPrompt = `\n\nUse this exact JSON structure for PCI DSS v4.0:
+ {
+   "requirements": [
+     {
+       "name": "Req 1: Install and maintain a firewall",
+       "description": "Firewall and router configuration standards",
+       "sub_requirements": [
+         {
+           "id": "1.1",
+           "control": "Establish and implement firewall and router configuration standards",
+           "status": "covered|partial|gap",
+           "details": "Specific details about compliance status",
+           "recommendation": "Actionable recommendation"
+         }
+       ]
+     }
+   ]
+ }`;
+             break;
+             
+           case 'ISO_27001':
+             frameworkPrompt = `\n\nUse this exact JSON structure for ISO 27001:2022:
+ {
+   "clauses": [
+     {
+       "name": "Clause 5: Leadership",
+       "description": "Leadership and commitment to information security",
+       "controls": [
+         {
+           "id": "5.1",
+           "control": "Leadership and commitment",
+           "status": "covered|partial|gap",
+           "details": "Specific details about compliance status",
+           "recommendation": "Actionable recommendation"
+         }
+       ]
+     }
+   ]
+ }`;
+             break;
+             
+           default:
+             frameworkPrompt = `\n\nUse this generic JSON structure:
  {
    "categories": [
      {
@@ -269,11 +349,23 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
        ]
      }
    ]
- }${categoryPrompt}
+ }`;
+         }
+
+          const requestBody = {
+        contents: [{
+          role: "user",
+          parts: [{
+            text: `Analyze this document for ${framework} compliance and return a structured JSON response.
+
+ Document Content:
+ ${fileContent.substring(0, 20000)}
+
+ Please analyze the compliance status and provide a JSON response in this exact format:${frameworkPrompt}${categoryPrompt}
 
  IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`
-         }]
-       }],
+          }]
+        }],
        generationConfig: {
          maxOutputTokens: 32768,
          temperature: 0.0,
