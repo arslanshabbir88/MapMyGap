@@ -273,11 +273,29 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
 
  CRITICAL REQUIREMENTS:
  1. You MUST analyze EVERY SINGLE CONTROL in the selected categories - do NOT skip any controls
- 2. For NIST 800-53 Access Control (AC): Include ALL controls AC-1 through AC-25+ 
- 3. For NIST CSF: Include ALL controls in the selected function (DE, PR, RS, etc.)
- 4. Do NOT be selective - analyze ALL controls comprehensively
- 5. If you're unsure about a control, analyze it as "gap" with appropriate details
- 6. Return ONLY valid JSON, no additional text or explanations`
+ 2. For NIST 800-53: Include ALL controls in ALL selected families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, SR)
+ 3. For NIST 800-53 Access Control (AC): Include ALL controls AC-1 through AC-25+
+ 4. For NIST 800-53 Awareness & Training (AT): Include ALL controls AT-1 through AT-3+
+ 5. For NIST 800-53 Audit & Accountability (AU): Include ALL controls AU-1 through AU-14+
+ 6. For NIST 800-53 Assessment (CA): Include ALL controls CA-1 through CA-9+
+ 7. For NIST 800-53 Configuration Management (CM): Include ALL controls CM-1 through CM-11+
+ 8. For NIST 800-53 Contingency Planning (CP): Include ALL controls CP-1 through CP-13+
+ 9. For NIST 800-53 Identification & Authentication (IA): Include ALL controls IA-1 through IA-12+
+ 10. For NIST 800-53 Incident Response (IR): Include ALL controls IR-1 through IR-8+
+ 11. For NIST 800-53 Maintenance (MA): Include ALL controls MA-1 through MA-6+
+ 12. For NIST 800-53 Media Protection (MP): Include ALL controls MP-1 through MP-8+
+ 13. For NIST 800-53 Physical Protection (PE): Include ALL controls PE-1 through PE-18+
+ 14. For NIST 800-53 Planning (PL): Include ALL controls PL-1 through PL-9+
+ 15. For NIST 800-53 Personnel Security (PS): Include ALL controls PS-1 through PS-9+
+ 16. For NIST 800-53 Risk Assessment (RA): Include ALL controls RA-1 through RA-11+
+ 17. For NIST 800-53 System & Services Acquisition (SA): Include ALL controls SA-1 through SA-22+
+ 18. For NIST 800-53 System & Communications Protection (SC): Include ALL controls SC-1 through SC-43+
+ 19. For NIST 800-53 System & Information Integrity (SI): Include ALL controls SI-1 through SI-25+
+ 20. For NIST 800-53 Supply Chain Risk Management (SR): Include ALL controls SR-1 through SR-15+
+ 21. For NIST CSF: Include ALL controls in the selected function (DE, PR, RS, etc.)
+ 22. Do NOT be selective - analyze ALL controls comprehensively
+ 23. If you're unsure about a control, analyze it as "gap" with appropriate details
+ 24. Return ONLY valid JSON, no additional text or explanations`
          }]
        }],
        generationConfig: {
