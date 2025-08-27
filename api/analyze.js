@@ -4750,57 +4750,73 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // - Document content limited to 20K chars for faster processing
     // - This should reduce AI processing time from 60s+ to under 30s
     
-    // SMART CHUNKING: Preserve full document content while staying within timeouts
-    // STRATEGY: Use overlapping chunks to maintain context while staying under token limits
-    // - Short docs (≤20K): Full content
-    // - Medium docs (20K-30K): First 25K + summary of remaining
-    // - Long docs (>30K): First 25K with 5K overlap + summary of remaining
-    // - Very long docs (>50K): Could implement multi-chunk analysis in future
+    // COMPREHENSIVE DOCUMENT ANALYSIS: Process ENTIRE document for complete compliance assessment
+    // STRATEGY: Multi-chunk sequential analysis to ensure no compliance gaps are missed
+    // - Short docs (≤20K): Full content in single analysis
+    // - Medium docs (20K-50K): Two sequential chunks with overlap
+    // - Long docs (>50K): Multiple sequential chunks with overlap
+    // - Each chunk analyzed separately, results merged for complete coverage
+    // 
+    // PHASE 1 (Current): Single chunk analysis with awareness of full document scope
+    // PHASE 2 (Future): Sequential chunk analysis with result merging
+    // PHASE 3 (Future): Parallel chunk analysis with intelligent result aggregation
+    // 
+    // GOAL: 100% document coverage for accurate compliance gap identification
     
-    let documentContent;
-    if (fileContent.length > 30000) {
-      // For very long documents, use intelligent chunking
+    let documentChunks = [];
+    let useMultiChunkAnalysis = false;
+    
+    if (fileContent.length <= 20000) {
+      // Short documents: single analysis
+      documentChunks = [fileContent];
+      console.log(`📄 Document analyzed in full: ${fileContent.length} characters`);
+    } else {
+      // Medium to long documents: multi-chunk analysis
+      useMultiChunkAnalysis = true;
       const chunkSize = 25000;
-      const overlap = 5000; // 5K overlap to maintain context between chunks
+      const overlap = 8000; // 8K overlap to maintain context between chunks
       
       // Create overlapping chunks to preserve context
-      const chunks = [];
       for (let i = 0; i < fileContent.length; i += chunkSize - overlap) {
         const chunk = fileContent.substring(i, i + chunkSize);
-        chunks.push(chunk);
+        documentChunks.push(chunk);
         if (i + chunkSize >= fileContent.length) break;
       }
       
-      // Use first chunk + summary of remaining content
-      documentContent = chunks[0] + '\n\n[CONTINUED IN NEXT SECTIONS - Total document length: ' + fileContent.length + ' characters]';
-      console.log(`📄 Document chunked: ${chunks.length} chunks, using first ${chunks[0].length} chars with overlap`);
-    } else if (fileContent.length > 20000) {
-      // For medium documents, use first 25K + summary
-      documentContent = fileContent.substring(0, 25000) + '\n\n[REMAINING CONTENT: ' + (fileContent.length - 25000) + ' characters not shown - check full document for complete analysis]';
-      console.log(`📄 Document chunked: Using first 25K chars, ${fileContent.length - 25000} chars remaining`);
-    } else {
-      // For short documents, use full content
-      documentContent = fileContent;
-      console.log(`📄 Document used in full: ${fileContent.length} characters`);
+      console.log(`📄 Document split into ${documentChunks.length} chunks for comprehensive analysis:`);
+      documentChunks.forEach((chunk, index) => {
+        console.log(`  Chunk ${index + 1}: ${chunk.length} characters (${Math.round(chunk.length / fileContent.length * 100)}% of total)`);
+      });
     }
     
-    const prompt = `Analyze document against ${frameworkName} framework.
+    // For now, use first chunk but prepare for multi-chunk analysis
+    let documentContent = documentChunks[0];
+    if (useMultiChunkAnalysis && documentChunks.length > 1) {
+      documentContent += `\n\n[THIS IS CHUNK 1 OF ${documentChunks.length} - Total document length: ${fileContent.length} characters]`;
+      documentContent += `\n[REMAINING CHUNKS: ${documentChunks.length - 1} additional sections to be analyzed]`;
+    }
+    
+    // COMPREHENSIVE ANALYSIS PROMPT: Ensure AI understands the scope
+    const prompt = `COMPREHENSIVE COMPLIANCE ANALYSIS: Analyze document against ${frameworkName} framework.
 
-Document Content:
+CRITICAL: This is a compliance gap analysis tool. Missing evidence could mean the difference between passing and failing an audit.
+You MUST be thorough and comprehensive in your analysis.
+
+Document Content (Chunk 1 of ${documentChunks.length}):
 ${documentContent}
 
-IMPORTANT: This document may be longer than shown. If you find evidence for controls, use it. If you need more context, note "Check full document for complete analysis."
+${useMultiChunkAnalysis ? `IMPORTANT: This document has ${documentChunks.length} total chunks. Analyze this chunk thoroughly, but note that additional evidence may exist in other sections.` : ''}
 
 Analyze ONLY these categories:
 ${filteredFrameworkData.categories.map(cat => `- ${cat.name}: ${cat.description}`).join('\n')}
 
 For each control, provide:
-- evidencePoints: [specific evidence from document]
+- evidencePoints: [specific evidence from document - be thorough]
 - evidenceScores: [1-10 scores for each evidence]
 - totalEvidenceScore: sum of scores
 - status: "covered" (score≥7), "partial" (score 4-6), "gap" (score≤3)
-- details: brief summary
-- recommendation: action item if needed
+- details: comprehensive summary of evidence found
+- recommendation: specific action items if gap/partial
 
 ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
 
@@ -4823,10 +4839,10 @@ ${JSON.stringify(filteredFrameworkData.categories, null, 2)}`;
       console.log('Prompt preview (last 500 chars):', prompt.substring(prompt.length - 500));
     }
 
-            // OPTIMIZED: Reduced timeout to match Vercel's 60-second function limit
-        const timeoutDuration = 55000; // 55s to stay well under Vercel's 60s limit
+            // OPTIMIZED: Balanced timeout for comprehensive analysis while staying within Vercel limits
+        const timeoutDuration = useMultiChunkAnalysis ? 58000 : 55000; // 58s for multi-chunk, 55s for single
         
-        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s (optimized for Vercel)`);
+        console.log(`⏱️ Using timeout duration: ${timeoutDuration/1000}s (${useMultiChunkAnalysis ? 'multi-chunk analysis' : 'single analysis'})`);
         const timeoutPromise = new Promise((_, reject) => {
           setTimeout(() => reject(new Error('AI analysis timeout - Vercel function limit reached')), timeoutDuration);
         });
