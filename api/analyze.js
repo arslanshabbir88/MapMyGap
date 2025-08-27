@@ -233,24 +233,26 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     const projectId = process.env.GCP_PROJECT_ID;
     const location = process.env.GCP_LOCATION || 'us-central1';
     
-    const vertexAIUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash-lite:predict`;
+         const vertexAIUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash-lite:generateContent`;
     
-    const requestBody = {
-      instances: [{
-        prompt: `Analyze this document for ${framework} compliance.
-
-Document Content:
-${fileContent.substring(0, 20000)}
-
-Analyze the compliance status and provide recommendations.`
-      }],
-      parameters: {
-        maxOutputTokens: 32768,
-        temperature: 0.0,
-        topP: 1.0,
-        topK: 1
-      }
-    };
+         const requestBody = {
+       contents: [{
+         parts: [{
+           text: `Analyze this document for ${framework} compliance.
+ 
+ Document Content:
+ ${fileContent.substring(0, 20000)}
+ 
+ Analyze the compliance status and provide recommendations.`
+         }]
+       }],
+       generationConfig: {
+         maxOutputTokens: 32768,
+         temperature: 0.0,
+         topP: 1.0,
+         topK: 1
+       }
+     };
     
     const response = await fetch(vertexAIUrl, {
       method: 'POST',
@@ -266,8 +268,8 @@ Analyze the compliance status and provide recommendations.`
       throw new Error(`Vertex AI request failed: ${response.status} ${errorText}`);
     }
     
-    const result = await response.json();
-    const analysis = result.predictions[0].content;
+         const result = await response.json();
+     const analysis = result.candidates[0].content.parts[0].text;
     
     console.log('✅ AI analysis completed successfully via HTTP');
     console.log('📊 Response length:', analysis.length, 'characters');
