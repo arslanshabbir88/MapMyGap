@@ -223,7 +223,7 @@ function Analyzer({ onNavigateHome }) {
         setGeneratedText('');
         setIsGenerating(true);
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 50000); // 50 second timeout (increased to align with 45s backend timeout)
+        const timeoutId = setTimeout(() => controller.abort(), 28000); // 28 second timeout (aligned with 25s backend timeout + buffer)
         
         const resp = await fetch('/api/generate-control-text', {
           method: 'POST',
