@@ -204,10 +204,38 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       frameworkPrompt = `\n\nFor NIST SP 800-53, analyze ALL controls in the selected families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, SR). Provide comprehensive coverage of all controls within selected families.`;
     } else if (framework === 'NIST_800_63B') {
       if (frameworkData) {
-        // Use the comprehensive framework data to enforce consistent control structure
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          // Map user-friendly category names to framework category names
+          const categoryMapping = {
+            'IAL': 'Identity Assurance Level (IAL)',
+            'AAL': 'Authentication Assurance Level (AAL)',
+            'FAL': 'Federation Assurance Level (FAL)',
+            'ILM': 'Identity Lifecycle Management (ILM)',
+            'AM': 'Account Management (AM)',
+            'SM': 'Session Management (SM)',
+            'PSC': 'Privacy and Security Controls (PSC)',
+            'IP': 'Identity Proofing (IP)',
+            'REG': 'Registration (REG)',
+            'AUTH': 'Authentication (AUTH)',
+            'FED': 'Federation (FED)'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for NIST 800-63B:', filteredCategories.map(c => c.name));
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
         frameworkPrompt = `\n\nFor NIST SP 800-63B-4, you MUST analyze ALL controls in the following structure. Use EXACTLY these control IDs and names:
 
-${JSON.stringify(frameworkData.categories, null, 2)}
+${JSON.stringify(filteredCategories, null, 2)}
 
 CRITICAL: You MUST analyze EVERY SINGLE control listed above. Do NOT skip any controls or change the structure. Return results for ALL controls with the exact IDs shown.`;
       } else {
