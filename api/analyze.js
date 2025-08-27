@@ -179,13 +179,55 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     let frameworkData;
     try {
       if (framework === 'NIST_800_63B') {
-        // Import the comprehensive NIST 800-63B-4 framework data
-        const { nist80063b } = require('../src/frameworks/compliance-frameworks.js');
-        frameworkData = nist80063b;
+        // Inline the essential NIST 800-63B-4 category structure to avoid import issues
+        frameworkData = {
+          categories: [
+            {
+              name: "Identity Assurance Level (IAL)",
+              description: "Identity proofing and verification requirements",
+              results: [
+                { id: "IAL1.1", control: "IAL1 - Identity Proofing Requirements", status: "gap" },
+                { id: "IAL1.2", control: "IAL1 - Identity Verification", status: "gap" },
+                { id: "IAL1.3", control: "IAL1 - Identity Resolution", status: "gap" },
+                { id: "IAL2.1", control: "IAL2 - Enhanced Identity Proofing", status: "gap" },
+                { id: "IAL2.2", control: "IAL2 - Enhanced Identity Verification", status: "gap" },
+                { id: "IAL2.3", control: "IAL2 - Enhanced Identity Resolution", status: "gap" },
+                { id: "IAL3.1", control: "IAL3 - Superior Identity Proofing", status: "gap" },
+                { id: "IAL3.2", control: "IAL3 - Superior Identity Verification", status: "gap" },
+                { id: "IAL3.3", control: "IAL3 - Superior Identity Resolution", status: "gap" }
+              ]
+            },
+            {
+              name: "Authentication Assurance Level (AAL)",
+              description: "Authentication strength and security requirements",
+              results: [
+                { id: "AAL1.1", control: "AAL1 - Single-Factor Authentication", status: "gap" },
+                { id: "AAL1.2", control: "AAL1 - Replay Resistance", status: "gap" },
+                { id: "AAL1.3", control: "AAL1 - Authenticator Requirements", status: "gap" },
+                { id: "AAL2.1", control: "AAL2 - Multi-Factor Authentication", status: "gap" },
+                { id: "AAL2.2", control: "AAL2 - Enhanced Security", status: "gap" },
+                { id: "AAL2.3", control: "AAL2 - Authenticator Requirements", status: "gap" },
+                { id: "AAL3.1", control: "AAL3 - Cryptographic Authentication", status: "gap" },
+                { id: "AAL3.2", control: "AAL3 - Highest Security", status: "gap" },
+                { id: "AAL3.3", control: "AAL3 - Authenticator Requirements", status: "gap" }
+              ]
+            },
+            {
+              name: "Federation Assurance Level (FAL)",
+              description: "Federation and trust requirements",
+              results: [
+                { id: "FAL1.1", control: "FAL1 - Basic Federation", status: "gap" },
+                { id: "FAL2.1", control: "FAL2 - Enhanced Federation", status: "gap" },
+                { id: "FAL3.1", control: "FAL3 - Advanced Federation", status: "gap" }
+              ]
+            }
+          ]
+        };
+        console.log('✅ Successfully loaded inline NIST 800-63B framework data');
       }
       // Add other frameworks as needed
     } catch (importError) {
-      console.log('⚠️ Could not import framework data, proceeding with standard analysis');
+      console.log('⚠️ Could not load framework data, proceeding with standard analysis');
     }
 
     // Build category-specific prompt based on selectedCategories
