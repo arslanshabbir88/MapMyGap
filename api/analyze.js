@@ -34,6 +34,7 @@
 import { VertexAI } from '@google-cloud/vertexai';
 import { GoogleAuth } from 'google-auth-library';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 
 // Simple service account authentication - no OIDC complexity
 let vertexAI = null;
@@ -190,10 +191,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
       throw new Error(`Failed to parse service account key: ${parseError.message}`);
     }
     
-    // Create JWT token for authentication
-    console.log('🔑 DEBUG: Creating JWT token...');
-    const jwt = require('jsonwebtoken');
-    const now = Math.floor(Date.now() / 1000);
+         // Create JWT token for authentication
+     console.log('🔑 DEBUG: Creating JWT token...');
+     const now = Math.floor(Date.now() / 1000);
     
     const payload = {
       iss: credentials.client_email,
