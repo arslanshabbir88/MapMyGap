@@ -378,10 +378,16 @@ export default async function handler(req, res) {
     // Perform AI analysis
     const result = await analyzeWithAI(fileContent, framework, selectedCategories);
     
-    // Return results in the format the frontend expects
+    // Return results in the format the frontend expects (matching the old Vertex AI structure)
     return res.status(200).json({
       success: true,
-      result: JSON.stringify(result.analysis), // Convert structured object back to JSON string
+      candidates: [{
+        content: {
+          parts: [{
+            text: JSON.stringify(result.analysis) // The structured analysis as a JSON string
+          }]
+        }
+      }],
       documentHash: result.documentHash,
       framework: framework,
       timestamp: new Date().toISOString()
