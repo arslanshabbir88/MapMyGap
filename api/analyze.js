@@ -47,31 +47,48 @@ async function initializeAuthentication(req) {
 console.log('🔍 DEBUG: Environment variables check:');
 console.log('🔍 DEBUG: GCP_PROJECT_ID:', process.env.GCP_PROJECT_ID ? 'SET' : 'NOT SET');
 console.log('🔍 DEBUG: GCP_LOCATION:', process.env.GCP_LOCATION ? 'SET' : 'NOT SET');
-console.log('🔍 DEBUG: GOOGLE_APPLICATION_CREDENTIALS:', process.env.GOOGLE_APPLICATION_CREDENTIALS ? 'SET' : 'NOT SET');
+console.log('🔍 DEBUG: GCP_SERVICE_KEY:', process.env.GCP_SERVICE_KEY ? 'SET' : 'NOT SET');
 
-// Initialize Vertex AI with service account authentication
-try {
-  const projectId = process.env.GCP_PROJECT_ID;
-  const location = process.env.GCP_LOCATION || 'us-central1';
-  
-  console.log('🔑 DEBUG: Initializing Vertex AI with service account...');
-  console.log('🔑 DEBUG: Project ID:', projectId);
-  console.log('🔑 DEBUG: Location:', location);
-  
-  vertexAI = new VertexAI({
-    project: projectId,
-    location: location,
-  });
-  
-  console.log('🔑 DEBUG: Vertex AI initialized successfully');
-  console.log('🔑 DEBUG: vertexAI exists:', !!vertexAI);
-  console.log('🔑 DEBUG: vertexAI type:', typeof vertexAI);
-  console.log('🔑 DEBUG: vertexAI.preview exists:', !!vertexAI?.preview);
-  console.log('🔑 DEBUG: vertexAI.preview.getGenerativeModel exists:', !!vertexAI?.preview?.getGenerativeModel);
-  
-} catch (error) {
-  console.log('❌ Failed to initialize Vertex AI:', error.message);
-  vertexAI = null;
+// Initialize Vertex AI function - called when needed
+async function initializeVertexAI() {
+  try {
+    const projectId = process.env.GCP_PROJECT_ID;
+    const location = process.env.GCP_LOCATION || 'us-central1';
+    const serviceKey = process.env.GCP_SERVICE_KEY;
+    
+    console.log('🔑 DEBUG: Initializing Vertex AI with service account...');
+    console.log('🔑 DEBUG: Project ID:', projectId);
+    console.log('🔑 DEBUG: Location:', location);
+    console.log('🔑 DEBUG: GCP_SERVICE_KEY:', serviceKey ? 'SET' : 'NOT SET');
+    
+    if (!projectId) {
+      throw new Error('GCP_PROJECT_ID environment variable not set');
+    }
+    
+    if (!serviceKey) {
+      throw new Error('GCP_SERVICE_KEY environment variable not set');
+    }
+    
+    // Set the service account key for Google Auth
+    process.env.GOOGLE_APPLICATION_CREDENTIALS = serviceKey;
+    
+    vertexAI = new VertexAI({
+      project: projectId,
+      location: location,
+    });
+    
+    console.log('🔑 DEBUG: Vertex AI initialized successfully');
+    console.log('🔑 DEBUG: vertexAI exists:', !!vertexAI);
+    console.log('🔑 DEBUG: vertexAI type:', typeof vertexAI);
+    console.log('🔑 DEBUG: vertexAI.preview exists:', !!vertexAI?.preview);
+    console.log('🔑 DEBUG: vertexAI.preview.getGenerativeModel exists:', !!vertexAI?.preview?.getGenerativeModel);
+    
+    return true;
+  } catch (error) {
+    console.log('❌ Failed to initialize Vertex AI:', error.message);
+    vertexAI = null;
+    return false;
+  }
 }
 
 // Compliance frameworks data structure
@@ -118,6 +135,15 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
   console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
   
   try {
+    // Initialize Vertex AI if not already done
+    if (!vertexAI || !vertexAI.preview || !vertexAI.preview.getGenerativeModel) {
+      console.log('🔑 Vertex AI not initialized, initializing now...');
+      const initSuccess = await initializeVertexAI();
+      if (!initSuccess) {
+        throw new Error('Failed to initialize Vertex AI');
+      }
+    }
+    
     // Check if Vertex AI is available
     if (!vertexAI || !vertexAI.preview || !vertexAI.preview.getGenerativeModel) {
       throw new Error('Vertex AI not properly initialized');
