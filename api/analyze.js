@@ -69,12 +69,20 @@ async function initializeVertexAI() {
       throw new Error('GCP_SERVICE_KEY environment variable not set');
     }
     
-    // Set the service account key for Google Auth
-    process.env.GOOGLE_APPLICATION_CREDENTIALS = serviceKey;
+    // Parse the service account key JSON
+    let credentials;
+    try {
+      credentials = JSON.parse(serviceKey);
+      console.log('🔑 DEBUG: Service account key parsed successfully');
+    } catch (parseError) {
+      throw new Error(`Failed to parse GCP_SERVICE_KEY JSON: ${parseError.message}`);
+    }
     
+    // Create Vertex AI with explicit credentials
     vertexAI = new VertexAI({
       project: projectId,
       location: location,
+      credentials: credentials,
     });
     
     console.log('🔑 DEBUG: Vertex AI initialized successfully');
