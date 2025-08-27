@@ -70,11 +70,29 @@ async function initializeVertexAI() {
       throw new Error('GCP_SERVICE_KEY environment variable not set');
     }
     
-    // Parse the service account key JSON
+    // Parse the service account key JSON (handle both encoded and plain JSON)
     let credentials;
     try {
-      console.log('🔑 DEBUG: Attempting to parse service account key JSON...');
-      credentials = JSON.parse(serviceKey);
+      console.log('🔑 DEBUG: Attempting to parse service account key...');
+      
+      // First, try to decode if it's base64 encoded
+      let decodedKey = serviceKey;
+      try {
+        // Check if it looks like base64 (contains only base64 chars and is longer than typical JSON)
+        if (serviceKey.length > 1000 && /^[A-Za-z0-9+/=]+$/.test(serviceKey)) {
+          console.log('🔑 DEBUG: Service key appears to be base64 encoded, decoding...');
+          decodedKey = Buffer.from(serviceKey, 'base64').toString('utf-8');
+          console.log('🔑 DEBUG: Base64 decoded successfully, length:', decodedKey.length);
+        } else {
+          console.log('🔑 DEBUG: Service key appears to be plain JSON');
+        }
+      } catch (decodeError) {
+        console.log('🔑 DEBUG: Base64 decode failed, treating as plain JSON:', decodeError.message);
+        decodedKey = serviceKey;
+      }
+      
+      // Now parse the decoded/plain JSON
+      credentials = JSON.parse(decodedKey);
       console.log('🔑 DEBUG: Service account key parsed successfully');
       console.log('🔑 DEBUG: Credentials keys:', Object.keys(credentials));
     } catch (parseError) {
