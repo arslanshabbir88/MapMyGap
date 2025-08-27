@@ -235,16 +235,35 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     // Use the comprehensive framework data to build the prompt - filter by selected categories
     let frameworkPrompt;
     if (selectedCategories && selectedCategories.length > 0) {
-      // Filter framework data to only include selected categories
+      // Filter framework data to only include selected categories - more robust matching
       const filteredFramework = {
         ...frameworkData,
         categories: frameworkData.categories.filter(cat => 
-          selectedCategories.some(selected => 
-            cat.name.toLowerCase().includes(selected.toLowerCase()) ||
-            cat.id?.toLowerCase().includes(selected.toLowerCase())
-          )
+          selectedCategories.some(selected => {
+            const selectedUpper = selected.toUpperCase();
+            const catNameUpper = cat.name.toUpperCase();
+            const catIdUpper = cat.id?.toUpperCase() || '';
+            
+            // Match by category abbreviation (e.g., 'PR' matches 'PROTECT (PR)')
+            if (catNameUpper.includes(`(${selectedUpper})`)) return true;
+            
+            // Match by category name (e.g., 'PROTECT' matches 'PROTECT (PR)')
+            if (catNameUpper.includes(selectedUpper)) return true;
+            
+            // Match by category ID prefix
+            if (catIdUpper.startsWith(selectedUpper + '.')) return true;
+            
+            return false;
+          })
         )
       };
+      
+      console.log('🔍 DEBUG: Category filtering results:');
+      console.log('🔍 DEBUG: Selected categories:', selectedCategories);
+      console.log('🔍 DEBUG: Available categories:', frameworkData.categories.map(c => c.name));
+      console.log('🔍 DEBUG: Filtered categories:', filteredFramework.categories.map(c => c.name));
+      console.log('🔍 DEBUG: Total controls in filtered framework:', filteredFramework.categories.reduce((sum, cat) => sum + (cat.results ? cat.results.length : 0), 0));
+      
       frameworkPrompt = `\n\nUse this exact JSON structure for ${frameworkData.name} (selected categories only):
 ${JSON.stringify(filteredFramework, null, 2)}`;
     } else {
@@ -269,7 +288,8 @@ CRITICAL REQUIREMENTS:
 2. If no categories selected: analyze ALL categories comprehensively
 3. Do NOT waste tokens analyzing unselected categories
 4. Provide detailed analysis for selected areas (recommendations, priority scoring, action items)
-5. Return ONLY valid JSON, no additional text or explanations`
+5. Use ONLY these status values: "covered", "partial", "gap" (NOT "not_implemented" or other values)
+6. Return ONLY valid JSON, no additional text or explanations`
         }]
       }],
       generationConfig: {
