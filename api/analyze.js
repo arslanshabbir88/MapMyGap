@@ -216,17 +216,42 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     console.log('📊 Total categories:', frameworkData.categories.length);
     console.log('📊 Total controls:', frameworkData.categories.reduce((sum, cat) => sum + (cat.results ? cat.results.length : 0), 0));
     
-    // Build category-specific prompt
+    // Build category-specific prompt - Only analyze selected categories
     let categoryPrompt = '';
     if (selectedCategories && selectedCategories.length > 0) {
-      categoryPrompt = `\n\nIMPORTANT: Only analyze the following specific categories/families/functions: ${selectedCategories.join(', ')}. Do NOT analyze any other categories.`;
+      categoryPrompt = `\n\nANALYSIS SCOPE: 
+1. ONLY analyze the selected categories: ${selectedCategories.join(', ')}
+2. Do NOT analyze any other categories or controls
+3. Provide comprehensive analysis for the selected categories with:
+   - Detailed recommendations
+   - Priority scoring (HIGH/MEDIUM/LOW)
+   - Specific action items
+   - Risk assessment
+4. Focus all analysis effort on the selected areas only`;
     } else {
-      categoryPrompt = '\n\nAnalyze all relevant categories/families/functions found in the document.';
+      categoryPrompt = '\n\nAnalyze ALL categories and controls comprehensively since no specific categories were selected.';
     }
     
-    // Use the comprehensive framework data to build the prompt
-    const frameworkPrompt = `\n\nUse this exact JSON structure for ${frameworkData.name}:
+    // Use the comprehensive framework data to build the prompt - filter by selected categories
+    let frameworkPrompt;
+    if (selectedCategories && selectedCategories.length > 0) {
+      // Filter framework data to only include selected categories
+      const filteredFramework = {
+        ...frameworkData,
+        categories: frameworkData.categories.filter(cat => 
+          selectedCategories.some(selected => 
+            cat.name.toLowerCase().includes(selected.toLowerCase()) ||
+            cat.id?.toLowerCase().includes(selected.toLowerCase())
+          )
+        )
+      };
+      frameworkPrompt = `\n\nUse this exact JSON structure for ${frameworkData.name} (selected categories only):
+${JSON.stringify(filteredFramework, null, 2)}`;
+    } else {
+      // Use full framework when no categories selected
+      frameworkPrompt = `\n\nUse this exact JSON structure for ${frameworkData.name}:
 ${JSON.stringify(frameworkData, null, 2)}`;
+    }
     
     const requestBody = {
       contents: [{
@@ -239,7 +264,12 @@ ${fileContent.substring(0, 20000)}
 
 Please analyze the compliance status and provide a JSON response in this exact format:${frameworkPrompt}${categoryPrompt}
 
-IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`
+CRITICAL REQUIREMENTS:
+1. If categories are selected: ONLY analyze and return the selected categories with detailed analysis
+2. If no categories selected: analyze ALL categories comprehensively
+3. Do NOT waste tokens analyzing unselected categories
+4. Provide detailed analysis for selected areas (recommendations, priority scoring, action items)
+5. Return ONLY valid JSON, no additional text or explanations`
         }]
       }],
       generationConfig: {
