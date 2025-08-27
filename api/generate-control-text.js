@@ -102,7 +102,7 @@ async function generateControlText(prompt) {
 
     // Add timeout wrapper to prevent hanging
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI response timeout after 25 seconds')), 25000);
+      setTimeout(() => reject(new Error('AI response timeout after 28 seconds')), 28000);
     });
 
     const fetchPromise = fetch(url, {
@@ -151,46 +151,21 @@ export default async function handler(req, res) {
     console.log('📄 Document length:', originalDocument.length, 'characters');
     console.log('🎯 Target control:', targetControl.substring(0, 100) + '...');
 
-    // Create a highly specific prompt for generating control text
-    const prompt = `You are a cybersecurity compliance expert. Your mission is to generate SPECIFIC, ACTIONABLE text that will make a control achieve "covered" status.
+    // Create a concise prompt for generating control text
+    const prompt = `Generate SPECIFIC, ACTIONABLE implementation text to make this control "covered":
 
-ORIGINAL DOCUMENT CONTENT (first 6000 characters):
-${originalDocument.substring(0, 6000)}
-
-TARGET CONTROL TO IMPLEMENT:
-${targetControl}
-
+DOCUMENT: ${originalDocument.substring(0, 4000)}
+CONTROL: ${targetControl}
 FRAMEWORK: ${framework}
 
-🎯 CRITICAL REQUIREMENT: Generate text that will make this control "covered" instead of "partial" or "gap".
+Requirements:
+- Specific technical details (tools, systems, configurations)
+- Implementation procedures with measurable actions
+- Monitoring and evidence collection
+- Roles and responsibilities
+- Integration with existing systems
 
-📋 WHAT TO GENERATE:
-Generate a COMPLETE, SPECIFIC implementation section that includes:
-
-1. **EXPLICIT POLICY STATEMENTS** - Clear, unambiguous language about what is implemented
-2. **SPECIFIC TECHNICAL DETAILS** - Tools, systems, configurations, not generic statements
-3. **IMPLEMENTATION PROCEDURES** - Step-by-step processes that are actually being followed
-4. **MONITORING & EVIDENCE** - How compliance is tracked, logged, and verified
-5. **ROLES & RESPONSIBILITIES** - Who does what, when, and how often
-6. **INTEGRATION DETAILS** - How this control connects to existing systems
-7. **COMPLIANCE VERIFICATION** - Specific ways to verify the control is working
-
-🔍 KEY SUCCESS FACTORS:
-- Use SPECIFIC language, not generic statements
-- Include MEASURABLE actions and timeframes
-- Reference SPECIFIC tools, systems, or processes
-- Add MONITORING and EVIDENCE collection details
-- Match the document's existing style and format
-- Make it AUDIT-READY with clear evidence
-
-💡 EXAMPLE OF GOOD TEXT:
-❌ BAD: "We implement access controls"
-✅ GOOD: "Access controls are implemented using Active Directory with role-based permissions. All user access is reviewed quarterly by the IT Security Officer. Access logs are retained for 90 days and monitored daily for suspicious activity."
-
-📝 OUTPUT FORMAT:
-Return ONLY the implementation text, ready to copy into the document. Make it comprehensive enough that an AI analysis would immediately mark it as "covered".
-
-Focus on SPECIFICITY and ACTIONABILITY. The text should be detailed enough that someone could implement it exactly as written.`;
+Return ONLY the implementation text, ready to copy. Make it comprehensive enough for "covered" status.`;
 
     console.log('📤 Sending prompt to Gemini 2.5 Flash for control text generation...');
     console.log('📊 Prompt length:', prompt.length, 'characters');

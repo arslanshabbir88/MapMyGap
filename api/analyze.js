@@ -133,10 +133,10 @@ async function callVertexAI(prompt) {
       }
     };
 
-    // Add timeout wrapper to prevent hanging
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI response timeout after 25 seconds')), 25000);
-    });
+                      // Add timeout wrapper to prevent hanging
+                  const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error('AI response timeout after 28 seconds')), 28000);
+                  });
 
     const fetchPromise = fetch(url, {
       method: 'POST',
