@@ -238,9 +238,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
                   // Build category-specific prompt based on selectedCategories
          let categoryPrompt = '';
          if (selectedCategories && selectedCategories.length > 0) {
-           categoryPrompt = `\n\nIMPORTANT: Only analyze the following specific categories: ${selectedCategories.join(', ')}. Do NOT analyze any other categories.`;
+           categoryPrompt = `\n\nANALYZE THESE CATEGORIES: ${selectedCategories.join(', ')}. You MUST analyze EVERY SINGLE CONTROL within these categories - do NOT skip any controls. Provide comprehensive coverage of all controls in the selected categories.`;
          } else {
-           categoryPrompt = '\n\nAnalyze all relevant categories found in the document.';
+           categoryPrompt = '\n\nAnalyze ALL categories and controls comprehensively found in the document.';
          }
 
          const requestBody = {
@@ -271,7 +271,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
    ]
  }${categoryPrompt}
 
- IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`
+ CRITICAL REQUIREMENTS:
+ 1. You MUST analyze EVERY SINGLE CONTROL in the selected categories - do NOT skip any controls
+ 2. For NIST 800-53 Access Control (AC): Include ALL controls AC-1 through AC-25+ 
+ 3. For NIST CSF: Include ALL controls in the selected function (DE, PR, RS, etc.)
+ 4. Do NOT be selective - analyze ALL controls comprehensively
+ 5. If you're unsure about a control, analyze it as "gap" with appropriate details
+ 6. Return ONLY valid JSON, no additional text or explanations`
          }]
        }],
        generationConfig: {
