@@ -158,66 +158,123 @@ const allFrameworks = {
   // ... more frameworks would be here
 };
 
-// Main analysis function using fast Vertex AI SDK
+// Main analysis function using direct HTTP to Vertex AI
 async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
   // Generate deterministic hash for logging
   const documentHash = crypto.createHash('sha256').update(fileContent.substring(0, 100) + framework).digest('hex');
   
-  console.log('🚀 Starting AI analysis with Vertex AI SDK');
+  console.log('🚀 Starting AI analysis with direct HTTP to Vertex AI');
   console.log('📄 Document length:', fileContent.length, 'characters');
   console.log('🔍 Framework:', framework);
   console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
   
   try {
-    // Initialize Vertex AI if not already done
-    if (!vertexAI || !vertexAI.preview || !vertexAI.preview.getGenerativeModel) {
-      console.log('🔑 Vertex AI not initialized, initializing now...');
-      const initSuccess = await initializeVertexAI();
-      if (!initSuccess) {
-        throw new Error('Failed to initialize Vertex AI');
-      }
+    // Get credentials for authentication
+    const serviceKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceKey) {
+      throw new Error('GCP_SERVICE_KEY environment variable not set');
     }
     
-    // Check if Vertex AI is available
-    if (!vertexAI || !vertexAI.preview || !vertexAI.preview.getGenerativeModel) {
-      throw new Error('Vertex AI not properly initialized');
+    // Parse credentials
+    let credentials;
+    try {
+      // Handle base64 encoded service key
+      let decodedKey = serviceKey;
+      if (serviceKey.length > 1000 && /^[A-Za-z0-9+/=]+$/.test(serviceKey)) {
+        console.log('🔑 DEBUG: Decoding base64 service key...');
+        decodedKey = Buffer.from(serviceKey, 'base64').toString('utf-8');
+      }
+      credentials = JSON.parse(decodedKey);
+      console.log('🔑 DEBUG: Service account key parsed successfully');
+    } catch (parseError) {
+      throw new Error(`Failed to parse service account key: ${parseError.message}`);
     }
     
-    // Get the model
-    const model = vertexAI.preview.getGenerativeModel({
-      model: 'gemini-2.5-flash-lite',
-      generation_config: {
-        max_output_tokens: 32768,
-        temperature: 0.0,
-        top_p: 1.0,
-        top_k: 1
-      }
+    // Create JWT token for authentication
+    console.log('🔑 DEBUG: Creating JWT token...');
+    const jwt = require('jsonwebtoken');
+    const now = Math.floor(Date.now() / 1000);
+    
+    const payload = {
+      iss: credentials.client_email,
+      sub: credentials.client_email,
+      aud: 'https://oauth2.googleapis.com/token',
+      iat: now,
+      exp: now + 3600,
+      scope: 'https://www.googleapis.com/auth/cloud-platform'
+    };
+    
+    const token = jwt.sign(payload, credentials.private_key, { algorithm: 'RS256' });
+    
+    // Exchange JWT for access token
+    console.log('🔑 DEBUG: Exchanging JWT for access token...');
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: token,
+      }),
     });
     
-    // Create prompt
-    const prompt = `Analyze this document for ${framework} compliance.
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      throw new Error(`Token exchange failed: ${tokenResponse.status} ${errorText}`);
+    }
+    
+    const tokenData = await tokenResponse.json();
+    const accessToken = tokenData.access_token;
+    console.log('🔑 DEBUG: Access token obtained successfully');
+    
+    // Make direct HTTP request to Vertex AI
+    console.log('📤 Sending request to Vertex AI via HTTP...');
+    const projectId = process.env.GCP_PROJECT_ID;
+    const location = process.env.GCP_LOCATION || 'us-central1';
+    
+    const vertexAIUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash-lite:predict`;
+    
+    const requestBody = {
+      instances: [{
+        prompt: `Analyze this document for ${framework} compliance.
 
 Document Content:
 ${fileContent.substring(0, 20000)}
 
-Analyze the compliance status and provide recommendations.`;
+Analyze the compliance status and provide recommendations.`
+      }],
+      parameters: {
+        maxOutputTokens: 32768,
+        temperature: 0.0,
+        topP: 1.0,
+        topK: 1
+      }
+    };
     
-    console.log('📤 Sending request to Vertex AI...');
-    
-    // Use the fast SDK approach
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }]
+    const response = await fetch(vertexAIUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
     });
     
-    const response = await result.response;
-    const text = response.text();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Vertex AI request failed: ${response.status} ${errorText}`);
+    }
     
-    console.log('✅ AI analysis completed successfully');
-    console.log('📊 Response length:', text.length, 'characters');
+    const result = await response.json();
+    const analysis = result.predictions[0].content;
+    
+    console.log('✅ AI analysis completed successfully via HTTP');
+    console.log('📊 Response length:', analysis.length, 'characters');
     
     return {
       success: true,
-      analysis: text,
+      analysis: analysis,
       documentHash: documentHash.substring(0, 16)
     };
     
