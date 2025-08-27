@@ -179,7 +179,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     let frameworkData;
     try {
       if (framework === 'NIST_800_63B') {
-        // Inline the essential NIST 800-63B-4 category structure to avoid import issues
+        // Inline the comprehensive NIST 800-63B-4 category structure to avoid import issues
         frameworkData = {
           categories: [
             {
@@ -199,17 +199,25 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
             },
             {
               name: "Authentication Assurance Level (AAL)",
-              description: "Authentication strength and security requirements",
+              description: "Technical requirements for each of the three authentication assurance levels",
               results: [
-                { id: "AAL1.1", control: "AAL1 - Single-Factor Authentication", status: "gap" },
-                { id: "AAL1.2", control: "AAL1 - Replay Resistance", status: "gap" },
-                { id: "AAL1.3", control: "AAL1 - Authenticator Requirements", status: "gap" },
-                { id: "AAL2.1", control: "AAL2 - Multi-Factor Authentication", status: "gap" },
-                { id: "AAL2.2", control: "AAL2 - Enhanced Security", status: "gap" },
-                { id: "AAL2.3", control: "AAL2 - Authenticator Requirements", status: "gap" },
-                { id: "AAL3.1", control: "AAL3 - Cryptographic Authentication", status: "gap" },
-                { id: "AAL3.2", control: "AAL3 - Highest Security", status: "gap" },
-                { id: "AAL3.3", control: "AAL3 - Authenticator Requirements", status: "gap" }
+                // AAL1 Controls
+                { id: "AAL1.1", control: "AAL1 - Permitted Authenticator Types", status: "gap" },
+                { id: "AAL1.2", control: "AAL1 - Authenticator and Verifier Requirements", status: "gap" },
+                { id: "AAL1.3", control: "AAL1 - Reauthentication", status: "gap" },
+                // AAL2 Controls
+                { id: "AAL2.1", control: "AAL2 - Permitted Authenticator Types", status: "gap" },
+                { id: "AAL2.2", control: "AAL2 - Authenticator and Verifier Requirements", status: "gap" },
+                { id: "AAL2.3", control: "AAL2 - Reauthentication", status: "gap" },
+                // AAL3 Controls
+                { id: "AAL3.1", control: "AAL3 - Permitted Authenticator Types", status: "gap" },
+                { id: "AAL3.2", control: "AAL3 - Authenticator and Verifier Requirements", status: "gap" },
+                { id: "AAL3.3", control: "AAL3 - Reauthentication", status: "gap" },
+                // General AAL Requirements
+                { id: "AAL_GEN.1", control: "General - Security Controls", status: "gap" },
+                { id: "AAL_GEN.2", control: "General - Records Retention Policy", status: "gap" },
+                { id: "AAL_GEN.3", control: "General - Privacy Requirements", status: "gap" },
+                { id: "AAL_GEN.4", control: "General - Redress Requirements", status: "gap" }
               ]
             },
             {
@@ -219,6 +227,60 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
                 { id: "FAL1.1", control: "FAL1 - Basic Federation", status: "gap" },
                 { id: "FAL2.1", control: "FAL2 - Enhanced Federation", status: "gap" },
                 { id: "FAL3.1", control: "FAL3 - Advanced Federation", status: "gap" }
+              ]
+            },
+            {
+              name: "Authenticator Type Requirements",
+              description: "Requirements by authenticator type as specified in Section 3.1",
+              results: [
+                { id: "AUTH_TYPE.1", control: "Passwords", status: "gap" },
+                { id: "AUTH_TYPE.2", control: "Look-Up Secrets", status: "gap" },
+                { id: "AUTH_TYPE.3", control: "Out-of-Band Devices", status: "gap" },
+                { id: "AUTH_TYPE.4", control: "Single-Factor OTP", status: "gap" },
+                { id: "AUTH_TYPE.5", control: "Multi-Factor OTPs", status: "gap" },
+                { id: "AUTH_TYPE.6", control: "Single-Factor Cryptographic Authentication", status: "gap" },
+                { id: "AUTH_TYPE.7", control: "Multi-Factor Cryptographic Authentication", status: "gap" }
+              ]
+            },
+            {
+              name: "Technical Requirements",
+              description: "Specific technical requirements as specified in Section 3.2",
+              results: [
+                { id: "TECH.1", control: "Replay Resistance", status: "gap" },
+                { id: "TECH.2", control: "Verifier-Impersonation Resistance", status: "gap" },
+                { id: "TECH.3", control: "Biometric Performance", status: "gap" },
+                { id: "TECH.4", control: "Authenticator Binding", status: "gap" },
+                { id: "TECH.5", control: "Phishing Resistance", status: "gap" },
+                { id: "TECH.6", control: "Verifier Compromise Resistance", status: "gap" },
+                { id: "TECH.7", control: "Authenticator Compromise Resistance", status: "gap" },
+                { id: "TECH.8", control: "Authenticator Secret Strength", status: "gap" },
+                { id: "TECH.9", control: "Authenticator Secret Storage", status: "gap" },
+                { id: "TECH.10", control: "Activation Secrets", status: "gap" },
+                { id: "TECH.11", control: "Wireless Connection Security", status: "gap" },
+                { id: "TECH.12", control: "Random Value Generation", status: "gap" },
+                { id: "TECH.13", control: "Non-Exportability", status: "gap" }
+              ]
+            },
+            {
+              name: "Authenticator Event Management",
+              description: "Authenticator event management as specified in Section 4",
+              results: [
+                { id: "EVENT.1", control: "Authenticator Binding", status: "gap" },
+                { id: "EVENT.2", control: "Account Recovery", status: "gap" },
+                { id: "EVENT.3", control: "Authenticator Replacement", status: "gap" },
+                { id: "EVENT.4", control: "Authenticator Deactivation", status: "gap" },
+                { id: "EVENT.5", control: "Authenticator Reactivation", status: "gap" },
+                { id: "EVENT.6", control: "Subscriber Notifications", status: "gap" }
+              ]
+            },
+            {
+              name: "Session Management",
+              description: "Session management as specified in Section 5",
+              results: [
+                { id: "SESSION.1", control: "Session Establishment", status: "gap" },
+                { id: "SESSION.2", control: "Reauthentication", status: "gap" },
+                { id: "SESSION.3", control: "Session Monitoring", status: "gap" },
+                { id: "SESSION.4", control: "Session Termination", status: "gap" }
               ]
             }
           ]
