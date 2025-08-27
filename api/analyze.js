@@ -235,35 +235,43 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     
          const vertexAIUrl = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash-lite:generateContent`;
     
+                  // Build category-specific prompt based on selectedCategories
+         let categoryPrompt = '';
+         if (selectedCategories && selectedCategories.length > 0) {
+           categoryPrompt = `\n\nIMPORTANT: Only analyze the following specific categories: ${selectedCategories.join(', ')}. Do NOT analyze any other categories.`;
+         } else {
+           categoryPrompt = '\n\nAnalyze all relevant categories found in the document.';
+         }
+
          const requestBody = {
        contents: [{
          role: "user",
          parts: [{
            text: `Analyze this document for ${framework} compliance and return a structured JSON response.
 
-Document Content:
-${fileContent.substring(0, 20000)}
+ Document Content:
+ ${fileContent.substring(0, 20000)}
 
-Please analyze the compliance status and provide a JSON response in this exact format:
-{
-  "categories": [
-    {
-      "name": "Category Name",
-      "description": "Category description",
-      "results": [
-        {
-          "id": "Control ID",
-          "control": "Control description",
-          "status": "covered|partial|gap",
-          "details": "Specific details about compliance status",
-          "recommendation": "Actionable recommendation"
-        }
-      ]
-    }
-  ]
-}
+ Please analyze the compliance status and provide a JSON response in this exact format:
+ {
+   "categories": [
+     {
+       "name": "Category Name",
+       "description": "Category description",
+       "results": [
+         {
+           "id": "Control ID",
+           "control": "Control description",
+           "status": "covered|partial|gap",
+           "details": "Specific details about compliance status",
+           "recommendation": "Actionable recommendation"
+         }
+       ]
+     }
+   ]
+ }${categoryPrompt}
 
-IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`
+ IMPORTANT: Return ONLY valid JSON, no additional text or explanations.`
          }]
        }],
        generationConfig: {
