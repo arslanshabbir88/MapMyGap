@@ -100,9 +100,9 @@ async function generateControlText(prompt) {
       }
     };
 
-    // Add timeout wrapper to prevent hanging
+    // Add adaptive timeout wrapper based on document size
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI response timeout after 28 seconds')), 28000);
+      setTimeout(() => reject(new Error(`AI response timeout after ${timeoutDuration/1000} seconds`)), timeoutDuration);
     });
 
     const fetchPromise = fetch(url, {
@@ -150,6 +150,16 @@ export default async function handler(req, res) {
     console.log('🚀 Starting control text generation for:', framework);
     console.log('📄 Document length:', originalDocument.length, 'characters');
     console.log('🎯 Target control:', targetControl.substring(0, 100) + '...');
+
+    // Add adaptive timeout wrapper based on document size
+    const getTimeoutDuration = (docLength) => {
+      if (docLength < 3000) return 20000;      // Small docs: 20 seconds
+      if (docLength < 5000) return 25000;      // Medium docs: 25 seconds
+      return 28000;                            // Large docs: 28 seconds (max under Vercel's 30s limit)
+    };
+
+    const timeoutDuration = getTimeoutDuration(originalDocument.length);
+    console.log('⏱️ Using adaptive timeout:', timeoutDuration/1000, 'seconds for document size:', originalDocument.length, 'characters');
 
     // Create a concise prompt for generating control text
     const prompt = `Generate SPECIFIC, ACTIONABLE implementation text to make this control "covered":
