@@ -32,6 +32,7 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
+import { GoogleAuth } from 'google-auth-library';
 import crypto from 'crypto';
 
 // Simple service account authentication - no OIDC complexity
@@ -101,12 +102,19 @@ async function initializeVertexAI() {
       throw new Error(`Failed to parse GCP_SERVICE_KEY JSON: ${parseError.message}`);
     }
     
-    // Create Vertex AI with explicit credentials
+    // Create Google Auth client with the service account credentials
+    console.log('🔑 DEBUG: Creating Google Auth client...');
+    const auth = new GoogleAuth({
+      credentials: credentials,
+      scopes: ['https://www.googleapis.com/auth/cloud-platform']
+    });
+    
+    // Create Vertex AI with the authenticated client
     console.log('🔑 DEBUG: Creating Vertex AI instance...');
     vertexAI = new VertexAI({
       project: projectId,
       location: location,
-      credentials: credentials,
+      auth: auth,
     });
     
     console.log('🔑 DEBUG: Vertex AI initialized successfully');
