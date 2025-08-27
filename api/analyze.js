@@ -319,14 +319,10 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
             'IAL': 'Identity Assurance Level (IAL)',
             'AAL': 'Authentication Assurance Level (AAL)',
             'FAL': 'Federation Assurance Level (FAL)',
-            'ILM': 'Identity Lifecycle Management (ILM)',
-            'AM': 'Account Management (AM)',
-            'SM': 'Session Management (SM)',
-            'PSC': 'Privacy and Security Controls (PSC)',
-            'IP': 'Identity Proofing (IP)',
-            'REG': 'Registration (REG)',
-            'AUTH': 'Authentication (AUTH)',
-            'FED': 'Federation (FED)'
+            'AUTH_TYPE': 'Authenticator Type Requirements',
+            'TECH': 'Technical Requirements',
+            'EVENT': 'Authenticator Event Management',
+            'SESSION': 'Session Management'
           };
           
           // Filter to only selected categories

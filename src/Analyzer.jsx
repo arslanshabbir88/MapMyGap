@@ -1335,16 +1335,12 @@ function Analyzer({ onNavigateHome }) {
                   <div className="space-y-2">
                     {[
                       { code: 'IAL', name: 'Identity Assurance Level', description: 'How identity is established and verified' },
-                      { code: 'AAL', name: 'Authenticator Assurance Level', description: 'How authentication is performed and verified' },
+                      { code: 'AAL', name: 'Authentication Assurance Level', description: 'How authentication is performed and verified' },
                       { code: 'FAL', name: 'Federation Assurance Level', description: 'How federated identity and single sign-on work' },
-                      { code: 'ILM', name: 'Identity Lifecycle Management', description: 'Managing identity throughout its lifecycle' },
-                      { code: 'AM', name: 'Authenticator Management', description: 'Managing authenticators and their lifecycle' },
-                      { code: 'SM', name: 'Session Management', description: 'Managing user sessions and access' },
-                      { code: 'PSC', name: 'Privacy and Security Controls', description: 'Protecting privacy and ensuring security' },
-                      { code: 'IP', name: 'Identity Proofing', description: 'Methods and processes for identity verification' },
-                      { code: 'REG', name: 'Registration', description: 'Identity registration and enrollment processes' },
-                      { code: 'AUTH', name: 'Authentication', description: 'Authentication mechanisms and processes' },
-                      { code: 'FED', name: 'Federation', description: 'Federated identity and trust relationships' }
+                      { code: 'AUTH_TYPE', name: 'Authenticator Type Requirements', description: 'Requirements for different types of authenticators' },
+                      { code: 'TECH', name: 'Technical Requirements', description: 'Specific technical security requirements' },
+                      { code: 'EVENT', name: 'Authenticator Event Management', description: 'Managing authenticator lifecycle events' },
+                      { code: 'SESSION', name: 'Session Management', description: 'Managing user sessions and access' }
                     ].map(category => (
                       <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                         <input
@@ -1369,12 +1365,12 @@ function Analyzer({ onNavigateHome }) {
                     ))}
                   </div>
                   
-                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC', 'IP', 'REG', 'AUTH', 'FED'].includes(cat)).length === 0 && (
+                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'AUTH_TYPE', 'TECH', 'EVENT', 'SESSION'].includes(cat)).length === 0 && (
                     <div className="mt-2 text-sm text-red-400">
                       Please select one category to analyze.
                     </div>
                   )}
-                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'ILM', 'AM', 'SM', 'PSC', 'IP', 'REG', 'AUTH', 'FED'].includes(cat)).length > 1 && (
+                  {selectedCategories.filter(cat => ['IAL', 'AAL', 'FAL', 'AUTH_TYPE', 'TECH', 'EVENT', 'SESSION'].includes(cat)).length > 1 && (
                     <div className="mt-2 text-sm text-yellow-400">
                       Only one category can be selected at a time.
                     </div>
