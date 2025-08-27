@@ -32,119 +32,22 @@
  */
 
 import { VertexAI } from '@google-cloud/vertexai';
-import { GoogleAuth } from 'google-auth-library';
-import { getVercelOidcToken } from '@vercel/functions/oidc';
 import crypto from 'crypto';
 
-// CRITICAL: Debug function to inspect Vercel OIDC headers
-function inspectVercelOidcHeaders(req) {
-  console.log('🔍 DEBUG: Inspecting Vercel OIDC headers...');
-  
-  // Check for x-vercel-oidc-token header
-  const oidcTokenHeader = req.headers['x-vercel-oidc-token'];
-  if (oidcTokenHeader) {
-    console.log('✅ x-vercel-oidc-token header found!');
-    console.log('🔑 Header length:', oidcTokenHeader.length);
-    console.log('🔑 Header preview (first 100 chars):', oidcTokenHeader.substring(0, 100));
-    console.log('🔑 Header preview (last 100 chars):', oidcTokenHeader.substring(oidcTokenHeader.length - 100));
-    
-    // Try to decode the JWT to see the payload
-    try {
-      const tokenParts = oidcTokenHeader.split('.');
-      if (tokenParts.length === 3) {
-        const payload = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString());
-        console.log('🔑 DEBUG: OIDC Token Payload from header:', JSON.stringify(payload, null, 2));
-        console.log('🔑 DEBUG: OIDC Token Subject (sub):', payload.sub);
-        console.log('🔑 DEBUG: OIDC Token Issuer (iss):', payload.iss);
-        console.log('🔑 DEBUG: OIDC Token Audience (aud):', payload.aud);
-        return oidcTokenHeader; // Return the token from header
-      }
-    } catch (decodeError) {
-      console.log('🔑 DEBUG: Could not decode OIDC token from header:', decodeError.message);
-    }
-  } else {
-    console.log('❌ x-vercel-oidc-token header NOT found');
-    console.log('🔍 Available headers:', Object.keys(req.headers));
-    console.log('🔍 All headers:', JSON.stringify(req.headers, null, 2));
-  }
-  
-  return null;
-}
 
-// CRITICAL: Implement explicit STS token exchange for Workload Identity Federation
-async function getGcpAccessToken(vercelOidcToken) {
-  const stsUrl = "https://sts.googleapis.com/v1/token";
-  
-  // CRITICAL: Debug the STS request parameters
-  const requestParams = {
-    grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
-    audience: `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`,
-    scope: "https://www.googleapis.com/auth/cloud-platform",
-    subject_token_type: "urn:ietf:params:oauth:token-type:jwt",
-    requested_token_type: "urn:ietf:params:oauth:token-type:access_token",
-    subject_token: vercelOidcToken,
-  };
-  
-  console.log('🔑 DEBUG: STS Request Parameters:');
-  console.log('🔑 DEBUG: grant_type:', requestParams.grant_type);
-  console.log('🔑 DEBUG: audience:', requestParams.audience);
-  console.log('🔑 DEBUG: scope:', requestParams.scope);
-  console.log('🔑 DEBUG: subject_token_type:', requestParams.subject_token_type);
-  console.log('🔑 DEBUG: requested_token_type:', requestParams.requested_token_type);
-  console.log('🔑 DEBUG: subject_token length:', requestParams.subject_token.length);
-  console.log('🔑 DEBUG: subject_token preview:', requestParams.subject_token.substring(0, 100));
-  
-  try {
-    const resp = await fetch(stsUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(requestParams),
-    });
 
-    if (!resp.ok) {
-      // CRITICAL: Get detailed error response
-      const errorText = await resp.text();
-      console.log('❌ STS Error Response Status:', resp.status);
-      console.log('❌ STS Error Response Headers:', Object.fromEntries(resp.headers.entries()));
-      console.log('❌ STS Error Response Body:', errorText);
-      throw new Error(`STS request failed: ${resp.status} ${resp.statusText} - ${errorText}`);
-    }
 
-    const data = await resp.json();
-    console.log('🔑 DEBUG: STS token exchange successful');
-    console.log('🔑 DEBUG: GCP Access Token length:', data.access_token?.length || 0);
-    return data.access_token;
-  } catch (error) {
-    console.log('❌ STS token exchange failed:', error.message);
-    throw error;
-  }
-}
 
-// Initialize authentication for Workload Identity Federation
-let gcpAccessToken = null;
-let authClient = null;
+// Simple service account authentication - no OIDC complexity
+let vertexAI = null;
 
-// CRITICAL: Check if we have access to the request object for header inspection
-// This will be called from the main handler function
+// Simple service account authentication function
 async function initializeAuthentication(req) {
-  try {
-    // CRITICAL: First, inspect Vercel OIDC headers
-    const headerToken = inspectVercelOidcHeaders(req);
-    
-    if (headerToken) {
-      console.log('🔑 Using OIDC token from request header');
-      // Build ExternalAccountClient that performs STS under the hood using Vercel OIDC subject token
-      try {
-        const requiredEnvOk = !!process.env.GCP_PROJECT_NUMBER && !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID && !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID && !!process.env.GCP_SERVICE_ACCOUNT_EMAIL;
-        if (!requiredEnvOk) {
-          console.log('❌ Missing required env vars for WIF. Vars present:', {
-            GCP_PROJECT_NUMBER: !!process.env.GCP_PROJECT_NUMBER,
-            GCP_WORKLOAD_IDENTITY_POOL_ID: !!process.env.GCP_WORKLOAD_IDENTITY_POOL_ID,
-            GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID: !!process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID,
-            GCP_SERVICE_ACCOUNT_EMAIL: !!process.env.GCP_SERVICE_ACCOUNT_EMAIL,
-          });
-          return false;
-        }
+  // No OIDC complexity - just use service account keys
+  console.log('🔑 Using service account key authentication');
+  return { success: true, client: null };
+}
+
 
         const audience = `//iam.googleapis.com/projects/${process.env.GCP_PROJECT_NUMBER}/locations/global/workloadIdentityPools/${process.env.GCP_WORKLOAD_IDENTITY_POOL_ID}/providers/${process.env.GCP_WORKLOAD_IDENTITY_POOL_PROVIDER_ID}`;
         console.log('🔑 DEBUG: Computed audience:', audience);
@@ -376,8 +279,7 @@ async function initializeAuthentication(req) {
   }
 }
 
-// CRITICAL: Vertex AI will be initialized dynamically after authentication
-let vertexAI = null;
+
 
 // Debug environment variables for Workload Identity Federation
 console.log('🔑 DEBUG: Vercel OIDC Federation Configuration:');
