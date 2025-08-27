@@ -59,7 +59,8 @@ async function initializeVertexAI() {
     console.log('🔑 DEBUG: Initializing Vertex AI with service account...');
     console.log('🔑 DEBUG: Project ID:', projectId);
     console.log('🔑 DEBUG: Location:', location);
-    console.log('🔑 DEBUG: GCP_SERVICE_KEY:', serviceKey ? 'SET' : 'NOT SET');
+    console.log('🔑 DEBUG: GCP_SERVICE_KEY length:', serviceKey ? serviceKey.length : 'NOT SET');
+    console.log('🔑 DEBUG: GCP_SERVICE_KEY preview:', serviceKey ? serviceKey.substring(0, 100) + '...' : 'NOT SET');
     
     if (!projectId) {
       throw new Error('GCP_PROJECT_ID environment variable not set');
@@ -72,13 +73,18 @@ async function initializeVertexAI() {
     // Parse the service account key JSON
     let credentials;
     try {
+      console.log('🔑 DEBUG: Attempting to parse service account key JSON...');
       credentials = JSON.parse(serviceKey);
       console.log('🔑 DEBUG: Service account key parsed successfully');
+      console.log('🔑 DEBUG: Credentials keys:', Object.keys(credentials));
     } catch (parseError) {
+      console.log('❌ DEBUG: JSON parse error details:', parseError.message);
+      console.log('❌ DEBUG: JSON parse error stack:', parseError.stack);
       throw new Error(`Failed to parse GCP_SERVICE_KEY JSON: ${parseError.message}`);
     }
     
     // Create Vertex AI with explicit credentials
+    console.log('🔑 DEBUG: Creating Vertex AI instance...');
     vertexAI = new VertexAI({
       project: projectId,
       location: location,
@@ -94,6 +100,7 @@ async function initializeVertexAI() {
     return true;
   } catch (error) {
     console.log('❌ Failed to initialize Vertex AI:', error.message);
+    console.log('❌ Error stack:', error.stack);
     vertexAI = null;
     return false;
   }
@@ -209,6 +216,10 @@ export default async function handler(req, res) {
   
   try {
     console.log('🚀 Starting compliance analysis request');
+    console.log('🔍 DEBUG: Environment check at handler start:');
+    console.log('🔍 DEBUG: GCP_PROJECT_ID:', process.env.GCP_PROJECT_ID ? 'SET' : 'NOT SET');
+    console.log('🔍 DEBUG: GCP_LOCATION:', process.env.GCP_LOCATION ? 'SET' : 'NOT SET');
+    console.log('🔍 DEBUG: GCP_SERVICE_KEY:', process.env.GCP_SERVICE_KEY ? 'SET' : 'NOT SET');
     
     // Initialize authentication
     const authResult = await initializeAuthentication(req);
@@ -237,6 +248,7 @@ export default async function handler(req, res) {
     
   } catch (error) {
     console.log('❌ Handler error:', error.message);
+    console.log('❌ Handler error stack:', error.stack);
     return res.status(500).json({ 
       error: 'Analysis failed', 
       details: error.message 
