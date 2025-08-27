@@ -813,7 +813,7 @@ function Analyzer({ onNavigateHome }) {
           framework: selectedFramework,
           selectedCategories: selectedCategories,
           timestamp: Date.now(),
-          random: Math.random().toString()
+          documentHash: btoa(fileContent.substring(0, 100)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 8)
         };
         console.log('Request body being sent:', requestBody);
         
@@ -896,7 +896,7 @@ function Analyzer({ onNavigateHome }) {
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
             'Pragma': 'no-cache',
             'X-Cache-Buster': cacheBuster.toString(),
-            'X-Request-ID': `${cacheBuster}-${Math.random().toString(36).substr(2, 9)}`
+            'X-Request-ID': `${cacheBuster}-${btoa(fileContent.substring(0, 50)).replace(/[^a-zA-Z0-9]/g, '').substring(0, 6)}`
           }
         });
         if (!response.ok) {
