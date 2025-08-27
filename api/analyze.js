@@ -175,6 +175,19 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
      console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
   
   try {
+    // Import framework data to enforce consistent control structure
+    let frameworkData;
+    try {
+      if (framework === 'NIST_800_63B') {
+        // Import the comprehensive NIST 800-63B-4 framework data
+        const { nist80063b } = require('../src/frameworks/compliance-frameworks.js');
+        frameworkData = nist80063b;
+      }
+      // Add other frameworks as needed
+    } catch (importError) {
+      console.log('⚠️ Could not import framework data, proceeding with standard analysis');
+    }
+
     // Build category-specific prompt based on selectedCategories
     let categoryPrompt = '';
     if (selectedCategories && selectedCategories.length > 0) {
@@ -190,7 +203,16 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     } else if (framework === 'NIST_800_53') {
       frameworkPrompt = `\n\nFor NIST SP 800-53, analyze ALL controls in the selected families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, SR). Provide comprehensive coverage of all controls within selected families.`;
     } else if (framework === 'NIST_800_63B') {
-      frameworkPrompt = `\n\nFor NIST SP 800-63B, analyze ALL controls in the selected categories (IAL, AAL, FAL, ILM, AM, SM, PSC, IP, REG, AUTH, FED). Include detailed analysis of identity proofing, authentication, and federation controls.`;
+      if (frameworkData) {
+        // Use the comprehensive framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor NIST SP 800-63B-4, you MUST analyze ALL controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(frameworkData.categories, null, 2)}
+
+CRITICAL: You MUST analyze EVERY SINGLE control listed above. Do NOT skip any controls or change the structure. Return results for ALL controls with the exact IDs shown.`;
+      } else {
+        frameworkPrompt = `\n\nFor NIST SP 800-63B-4, analyze ALL controls in the selected categories (AAL, Authenticator Type Requirements, Technical Requirements, Authenticator Event Management, Session Management). Include detailed analysis of authentication assurance levels, authenticator types, technical requirements, event management, and session management controls.`;
+      }
     } else if (framework === 'PCI_DSS') {
       frameworkPrompt = `\n\nFor PCI DSS v4.0, analyze ALL requirements in the selected areas. Include comprehensive coverage of security controls, access management, and compliance requirements.`;
     } else if (framework === 'ISO_27001') {
