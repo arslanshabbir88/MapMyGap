@@ -133,9 +133,16 @@ async function callVertexAI(prompt) {
       }
     };
 
-                      // Add timeout wrapper to prevent hanging
+                  // Add adaptive timeout wrapper based on document size
+                  const getTimeoutDuration = (docLength) => {
+                    if (docLength < 3000) return 20000;      // Small docs: 20 seconds
+                    if (docLength < 5000) return 25000;      // Medium docs: 25 seconds
+                    return 28000;                            // Large docs: 28 seconds (max under Vercel's 30s limit)
+                  };
+
+                  const timeoutDuration = getTimeoutDuration(prompt.length);
                   const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error('AI response timeout after 28 seconds')), 28000);
+                    setTimeout(() => reject(new Error(`AI response timeout after ${timeoutDuration/1000} seconds`)), timeoutDuration);
                   });
 
     const fetchPromise = fetch(url, {
