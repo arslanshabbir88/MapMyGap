@@ -4,9 +4,58 @@ import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
 const Frameworks = () => {
-  const [selectedFramework, setSelectedFramework] = useState('nist-800-53');
+  const [selectedFramework, setSelectedFramework] = useState('nist-csf');
 
   const frameworks = {
+    'nist-csf': {
+      name: "NIST CSF",
+      fullName: "NIST Cybersecurity Framework",
+      version: "Version 2.0",
+      description: "A voluntary framework for managing and reducing cybersecurity risk.",
+      overview: "The NIST Cybersecurity Framework provides a common language for understanding, managing, and expressing cybersecurity risk both internally and externally. It can be used to help identify and prioritize actions for reducing cybersecurity risk.",
+      icon: "🔄",
+      color: "from-green-600 to-green-700",
+      categories: [
+        {
+          name: "Identify (ID)",
+          description: "Develop an organizational understanding to manage cybersecurity risk",
+          controls: ["ID.AM", "ID.BE", "ID.GV", "ID.RA", "ID.RM", "ID.SC", "ID.SE"]
+        },
+        {
+          name: "Protect (PR)",
+          description: "Develop and implement appropriate safeguards",
+          controls: ["PR.AC", "PR.AT", "PR.DS", "PR.IP", "PR.MA", "PR.PT"]
+        },
+        {
+          name: "Detect (DE)",
+          description: "Develop and implement appropriate activities to identify cybersecurity events",
+          controls: ["DE.AE", "DE.CM", "DE.DP"]
+        },
+        {
+          name: "Respond (RS)",
+          description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events",
+          controls: ["RS.RP", "RS.CO", "RS.AN", "RS.MI", "RS.IM"]
+        },
+        {
+          name: "Recover (RC)",
+          description: "Develop and implement appropriate activities to maintain plans for resilience",
+          controls: ["RC.RP", "RC.IM", "RC.CO"]
+        },
+        {
+          name: "Govern (GV)",
+          description: "Establish and monitor cybersecurity risk management strategy, expectations, and policy",
+          controls: ["GV.OC", "GV.RO", "GV.IR", "GV.RE", "GV.AC", "GV.SC", "GV.IM", "GV.AS", "GV.RM", "GV.PO", "GV.PR", "GV.ED", "GV.TA", "GV.ST"]
+        }
+      ],
+      useCases: [
+        "Small to medium businesses",
+        "Critical infrastructure",
+        "State and local governments",
+        "Educational institutions",
+        "Manufacturing companies",
+        "Any organization seeking cybersecurity improvement"
+      ]
+    },
     'nist-800-53': {
       name: "NIST SP 800-53",
       fullName: "NIST Special Publication 800-53",
@@ -100,56 +149,7 @@ const Frameworks = () => {
         "Critical infrastructure",
         "Cloud service providers"
       ]
-    },
-    'nist-csf': {
-      name: "NIST CSF",
-      fullName: "NIST Cybersecurity Framework",
-      version: "Version 2.0",
-      description: "A voluntary framework for managing and reducing cybersecurity risk.",
-      overview: "The NIST Cybersecurity Framework provides a common language for understanding, managing, and expressing cybersecurity risk both internally and externally. It can be used to help identify and prioritize actions for reducing cybersecurity risk.",
-      icon: "🔄",
-      color: "from-green-600 to-green-700",
-      categories: [
-        {
-          name: "Identify (ID)",
-          description: "Develop an organizational understanding to manage cybersecurity risk",
-          controls: ["ID.AM", "ID.BE", "ID.GV", "ID.RA", "ID.RM", "ID.SC", "ID.SE"]
-        },
-        {
-          name: "Protect (PR)",
-          description: "Develop and implement appropriate safeguards",
-          controls: ["PR.AC", "PR.AT", "PR.DS", "PR.IP", "PR.MA", "PR.PT"]
-        },
-        {
-          name: "Detect (DE)",
-          description: "Develop and implement appropriate activities to identify cybersecurity events",
-          controls: ["DE.AE", "DE.CM", "DE.DP"]
-        },
-        {
-          name: "Respond (RS)",
-          description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events",
-          controls: ["RS.RP", "RS.CO", "RS.AN", "RS.MI", "RS.IM"]
-        },
-        {
-          name: "Recover (RC)",
-          description: "Develop and implement appropriate activities to maintain plans for resilience",
-          controls: ["RC.RP", "RC.IM", "RC.CO"]
-        },
-        {
-          name: "Govern (GV)",
-          description: "Establish and monitor cybersecurity risk management strategy, expectations, and policy",
-          controls: ["GV.OC", "GV.RO", "GV.IR", "GV.RE", "GV.AC", "GV.SC", "GV.IM", "GV.AS", "GV.RM", "GV.PO", "GV.PR", "GV.ED", "GV.TA", "GV.ST"]
-        }
-      ],
-      useCases: [
-        "Small to medium businesses",
-        "Critical infrastructure",
-        "State and local governments",
-        "Educational institutions",
-        "Manufacturing companies",
-        "Any organization seeking cybersecurity improvement"
-      ]
-    },
+
     'iso-27001': {
       name: "ISO 27001",
       fullName: "ISO/IEC 27001 Information Security Management",
@@ -280,6 +280,55 @@ const Frameworks = () => {
         "Financial institutions",
         "Healthcare providers",
         "Any organization processing payments"
+      ]
+    },
+    'nist-800-63': {
+      name: "NIST 800-63",
+      fullName: "NIST Special Publication 800-63",
+      version: "Digital Identity Guidelines",
+      description: "Guidelines for digital identity services and authentication systems.",
+      overview: "NIST SP 800-63 provides guidelines for digital identity services, including identity proofing, registration, authenticators, management processes, authentication protocols, and related assertions. It's essential for organizations implementing digital identity systems.",
+      icon: "🔐",
+      color: "from-indigo-600 to-indigo-700",
+      categories: [
+        {
+          name: "Identity Assurance Levels (IAL)",
+          description: "Identity proofing and registration requirements",
+          controls: ["IAL1", "IAL2", "IAL3"]
+        },
+        {
+          name: "Authenticator Assurance Levels (AAL)",
+          description: "Authentication mechanism requirements",
+          controls: ["AAL1", "AAL2", "AAL3"]
+        },
+        {
+          name: "Federation Assurance Levels (FAL)",
+          description: "Federation and assertion requirements",
+          controls: ["FAL1", "FAL2", "FAL3"]
+        },
+        {
+          name: "Identity Proofing",
+          description: "Processes for verifying identity",
+          controls: ["IP1", "IP2", "IP3", "IP4", "IP5", "IP6", "IP7"]
+        },
+        {
+          name: "Registration",
+          description: "Identity registration processes",
+          controls: ["REG1", "REG2", "REG3", "REG4", "REG5", "REG6", "REG7"]
+        },
+        {
+          name: "Authentication",
+          description: "Authentication mechanisms and protocols",
+          controls: ["AUTH1", "AUTH2", "AUTH3", "AUTH4", "AUTH5", "AUTH6"]
+        }
+      ],
+      useCases: [
+        "Government agencies",
+        "Financial institutions",
+        "Healthcare organizations",
+        "Educational institutions",
+        "Cloud service providers",
+        "Any organization with digital identity systems"
       ]
     }
   };

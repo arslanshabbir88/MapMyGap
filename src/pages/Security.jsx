@@ -128,16 +128,16 @@ const Security = () => {
       <SharedNavigation />
       
       <main>
-        {/* Hero Section */}
-        <section className="py-24 sm:py-32 text-center bg-slate-800/50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-5xl font-bold mb-6">Security & Trust</h1>
-            <p className="text-xl text-blue-100 max-w-3xl mx-auto">
-              Your data security is our top priority. We implement enterprise-grade security measures 
-              and maintain compliance with industry-leading standards to protect your information.
-            </p>
-          </div>
-        </section>
+                 {/* Hero Section */}
+         <section className="py-24 sm:py-32 text-center bg-slate-800">
+           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+             <h1 className="text-5xl font-bold mb-6 text-white">Security & Trust</h1>
+             <p className="text-xl text-white max-w-3xl mx-auto">
+               Your data security is our top priority. We implement enterprise-grade security measures 
+               and maintain compliance with industry-leading standards to protect your information.
+             </p>
+           </div>
+         </section>
 
       {/* Security Features */}
       <div className="py-20">
@@ -159,7 +159,7 @@ const Security = () => {
                 <ul className="space-y-2">
                   {feature.details.map((detail, detailIndex) => (
                     <li key={detailIndex} className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
                       <span className="text-sm text-slate-200">{detail}</span>
                     </li>
                   ))}
@@ -293,62 +293,62 @@ const Security = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="bg-slate-700 border border-slate-600 rounded-lg p-8 hover:border-slate-500">
               <h3 className="text-2xl font-bold text-white mb-6">Development & Deployment</h3>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Secure Development Lifecycle:</strong> All code undergoes security review and testing
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Automated Security Testing:</strong> Continuous security scanning and vulnerability assessment
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Secure Deployment:</strong> Automated deployment with security checks and rollback capabilities
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Regular Updates:</strong> Security patches and updates applied promptly
-                  </div>
-                </li>
-              </ul>
+                              <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Secure Development Lifecycle:</strong> All code undergoes security review and testing
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Automated Security Testing:</strong> Continuous security scanning and vulnerability assessment
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Secure Deployment:</strong> Automated deployment with security checks and rollback capabilities
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Regular Updates:</strong> Security patches and updates applied promptly
+                    </div>
+                  </li>
+                </ul>
             </div>
 
             <div className="bg-slate-700 border border-slate-600 rounded-lg p-8 hover:border-slate-500">
               <h3 className="text-2xl font-bold text-white mb-6">Monitoring & Response</h3>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>24/7 Monitoring:</strong> Continuous security monitoring and threat detection
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Incident Response:</strong> Rapid response team with defined escalation procedures
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Security Analytics:</strong> Advanced analytics for threat detection and response
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div className="text-slate-100">
-                    <strong>Regular Assessments:</strong> Penetration testing and security assessments
-                  </div>
-                </li>
-              </ul>
+                              <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>24/7 Monitoring:</strong> Continuous security monitoring and threat detection
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Incident Response:</strong> Rapid response team with defined escalation procedures
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Security Analytics:</strong> Advanced analytics for threat detection and response
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Regular Assessments:</strong> Penetration testing and security assessments
+                    </div>
+                  </li>
+                </ul>
             </div>
           </div>
         </div>
@@ -399,30 +399,30 @@ const Security = () => {
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div className="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">Ready to Experience Secure Compliance?</h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join thousands of organizations that trust MapMyGap with their sensitive compliance data. 
-            Start your secure analysis today.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/"
-              className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 transition-colors duration-200"
-            >
-              Start Free Analysis
-            </Link>
-            <Link
-              to="/privacy"
-              className="inline-flex items-center px-8 py-4 border border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
-            >
-              View Privacy Policy
-            </Link>
-          </div>
-        </div>
-      </div>
+             {/* CTA Section */}
+       <div className="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
+         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+           <h2 className="text-4xl font-bold text-white mb-6">Ready to Experience Secure Compliance?</h2>
+           <p className="text-xl text-white mb-8">
+             Join thousands of organizations that trust MapMyGap with their sensitive compliance data. 
+             Start your secure analysis today.
+           </p>
+           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+             <Link
+               to="/"
+               className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-lg"
+             >
+               Start Free Analysis
+             </Link>
+             <Link
+               to="/privacy"
+               className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
+             >
+               View Privacy Policy
+             </Link>
+           </div>
+         </div>
+       </div>
 
       {/* Navigation */}
       <div className="py-8 bg-slate-800">
