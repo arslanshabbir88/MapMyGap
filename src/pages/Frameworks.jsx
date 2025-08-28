@@ -150,44 +150,53 @@ const Frameworks = () => {
         "Cloud service providers"
       ]
     },
-
-    'iso-27001': {
-      name: "ISO 27001",
-      fullName: "ISO/IEC 27001 Information Security Management",
-      version: "2022",
-      description: "International standard for information security management systems.",
-      overview: "ISO 27001 is the international standard for information security management systems (ISMS). It provides a framework for managing and protecting information assets through risk management and security controls.",
-      icon: "🌍",
-      color: "from-purple-600 to-purple-700",
+    'nist-800-63': {
+      name: "NIST SP 800-63",
+      fullName: "NIST Special Publication 800-63",
+      version: "Digital Identity Guidelines",
+      description: "Guidelines for digital identity services and authentication systems.",
+      overview: "NIST SP 800-63 provides guidelines for digital identity services, including identity proofing, registration, authenticators, management processes, authentication protocols, and related assertions. It's essential for organizations implementing digital identity systems.",
+      icon: "🔐",
+      color: "from-indigo-600 to-indigo-700",
       categories: [
         {
-          name: "Organizational Controls",
-          description: "Controls related to organizational structure and policies",
-          controls: ["5.1", "5.2", "5.3", "6.1", "6.2", "6.3", "7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7", "7.8", "7.9", "7.10", "7.11", "7.12", "7.13", "7.14", "7.15", "7.16", "7.17", "7.18", "7.19", "7.20", "7.21", "7.22", "7.23", "7.24", "7.25", "7.26", "7.27", "7.28", "7.29", "7.30", "7.31", "7.32", "7.33", "7.34", "7.35", "7.36", "7.37"]
+          name: "Identity Assurance Levels (IAL)",
+          description: "Identity proofing and registration requirements",
+          controls: ["IAL1", "IAL2", "IAL3"]
         },
         {
-          name: "People Controls",
-          description: "Controls related to human resources and personnel",
-          controls: ["6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10", "6.11", "6.12", "6.13", "6.14", "6.15", "6.16", "6.17", "6.18", "6.19", "6.20", "6.21", "6.22", "6.23", "6.24", "6.25", "6.26", "6.27", "6.28", "6.29", "6.30", "6.31", "6.32", "6.33", "6.34", "6.35", "6.36", "6.37", "6.38", "6.39", "6.40", "6.41", "6.42", "6.43", "6.44", "6.45", "6.46", "6.47", "6.48", "6.49", "6.50", "6.51", "6.52", "6.53", "6.54", "6.55", "6.56", "6.57", "6.58", "6.59", "6.60", "6.61", "6.62", "6.63", "6.64", "6.65", "6.66", "6.67", "6.68", "6.69", "6.70", "6.71", "6.72", "6.73", "6.74", "6.75", "6.76", "6.77", "6.78", "6.79", "6.80", "6.81", "6.82", "6.83", "6.84", "6.85", "6.86", "6.87", "6.88", "6.89", "6.90", "6.91", "6.92", "6.93"]
+          name: "Authenticator Assurance Levels (AAL)",
+          description: "Authentication mechanism requirements",
+          controls: ["AAL1", "AAL2", "AAL3"]
         },
         {
-          name: "Physical Controls",
-          description: "Controls related to physical security and environment",
-          controls: ["7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7", "7.8", "7.9", "7.10", "7.11", "7.12", "7.13", "7.14", "7.15", "7.16", "7.17", "7.18", "7.19", "7.20", "7.21", "7.22", "7.23", "7.24", "7.25", "7.26", "7.27", "7.28", "7.29", "7.30", "7.31", "7.32", "7.33", "7.34", "7.35", "7.36", "7.37"]
+          name: "Federation Assurance Levels (FAL)",
+          description: "Federation and assertion requirements",
+          controls: ["FAL1", "FAL2", "FAL3"]
         },
         {
-          name: "Technological Controls",
-          description: "Controls related to technology and systems",
-          controls: ["8.1", "8.2", "8.3", "8.4", "8.5", "8.6", "8.7", "8.8", "8.9", "8.10", "8.11", "8.12", "8.13", "8.14", "8.15", "8.16", "8.17", "8.18", "8.19", "8.20", "8.21", "8.22", "8.23", "8.24", "8.25", "8.26", "8.27", "8.28", "8.29", "8.30", "8.31", "8.32", "8.33", "8.34", "8.35", "8.36", "8.37", "8.38", "8.39", "8.40", "8.41", "8.42", "8.43", "8.44", "8.45", "8.46", "8.47", "8.48", "8.49", "8.50", "8.51", "8.52", "8.53", "8.54", "8.55", "8.56", "8.57", "8.58", "8.59", "8.60", "8.61", "8.62", "8.63", "8.64", "8.65", "8.66", "8.67", "8.68", "8.69", "8.70", "8.71", "8.72", "8.73", "8.74", "8.75", "8.76", "8.77", "8.78", "8.79", "8.80", "8.81", "8.82", "8.83", "8.84", "8.85", "8.86", "8.87", "8.88", "8.89", "8.90", "8.91", "8.92", "8.93"]
+          name: "Identity Proofing",
+          description: "Processes for verifying identity",
+          controls: ["IP1", "IP2", "IP3", "IP4", "IP5", "IP6", "IP7"]
+        },
+        {
+          name: "Registration",
+          description: "Identity registration processes",
+          controls: ["REG1", "REG2", "REG3", "REG4", "REG5", "REG6", "REG7"]
+        },
+        {
+          name: "Authentication",
+          description: "Authentication mechanisms and protocols",
+          controls: ["AUTH1", "AUTH2", "AUTH3", "AUTH4", "AUTH5", "AUTH6"]
         }
       ],
       useCases: [
-        "International organizations",
-        "European companies (GDPR)",
-        "Technology companies",
-        "Financial services",
+        "Government agencies",
+        "Financial institutions",
         "Healthcare organizations",
-        "Government agencies"
+        "Educational institutions",
+        "Cloud service providers",
+        "Any organization with digital identity systems"
       ]
     },
     'soc2': {
@@ -232,6 +241,45 @@ const Frameworks = () => {
         "Managed service providers",
         "Technology companies",
         "Financial services"
+      ]
+    },
+    'iso-27001': {
+      name: "ISO 27001",
+      fullName: "ISO/IEC 27001 Information Security Management",
+      version: "2022",
+      description: "International standard for information security management systems.",
+      overview: "ISO 27001 is the international standard for information security management systems (ISMS). It provides a framework for managing and protecting information assets through risk management and security controls.",
+      icon: "🌍",
+      color: "from-purple-600 to-purple-700",
+      categories: [
+        {
+          name: "Organizational Controls",
+          description: "Controls related to organizational structure and policies",
+          controls: ["5.1", "5.2", "5.3", "6.1", "6.2", "6.3", "7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7", "7.8", "7.9", "7.10", "7.11", "7.12", "7.13", "7.14", "7.15", "7.16", "7.17", "7.18", "7.19", "7.20", "7.21", "7.22", "7.23", "7.24", "7.25", "7.26", "7.27", "7.28", "7.29", "7.30", "7.31", "7.32", "7.33", "7.34", "7.35", "7.36", "7.37"]
+        },
+        {
+          name: "People Controls",
+          description: "Controls related to human resources and personnel",
+          controls: ["6.1", "6.2", "6.3", "6.4", "6.5", "6.6", "6.7", "6.8", "6.9", "6.10", "6.11", "6.12", "6.13", "6.14", "6.15", "6.16", "6.17", "6.18", "6.19", "6.20", "6.21", "6.22", "6.23", "6.24", "6.25", "6.26", "6.27", "6.28", "6.29", "6.30", "6.31", "6.32", "6.33", "6.34", "6.35", "6.36", "6.37", "6.38", "6.39", "6.40", "6.41", "6.42", "6.43", "6.44", "6.45", "6.46", "6.47", "6.48", "6.49", "6.50", "6.51", "6.52", "6.53", "6.54", "6.55", "6.56", "6.57", "6.58", "6.59", "6.60", "6.61", "6.62", "6.63", "6.64", "6.65", "6.66", "6.67", "6.68", "6.69", "6.70", "6.71", "6.72", "6.73", "6.74", "6.75", "6.76", "6.77", "6.78", "6.79", "6.80", "6.81", "6.82", "6.83", "6.84", "6.85", "6.86", "6.87", "6.88", "6.89", "6.90", "6.91", "6.92", "6.93"]
+        },
+        {
+          name: "Physical Controls",
+          description: "Controls related to physical security and environment",
+          controls: ["7.1", "7.2", "7.3", "7.4", "7.5", "7.6", "7.7", "7.8", "7.9", "7.10", "7.11", "7.12", "7.13", "7.14", "7.15", "7.16", "7.17", "7.18", "7.19", "7.20", "7.21", "7.22", "7.23", "7.24", "7.25", "7.26", "7.27", "7.28", "7.29", "7.30", "7.31", "7.32", "7.33", "7.34", "7.35", "7.36", "7.37"]
+        },
+        {
+          name: "Technological Controls",
+          description: "Controls related to technology and systems",
+          controls: ["8.1", "8.2", "8.3", "8.4", "8.5", "8.6", "8.7", "8.8", "8.9", "8.10", "8.11", "8.12", "8.13", "8.14", "8.15", "8.16", "8.17", "8.18", "8.19", "8.20", "8.21", "8.22", "8.23", "8.24", "8.25", "8.26", "8.27", "8.28", "8.29", "8.30", "8.31", "8.32", "8.33", "8.34", "8.35", "8.36", "8.37", "8.38", "8.39", "8.40", "8.41", "8.42", "8.43", "8.44", "8.45", "8.46", "8.47", "8.48", "8.49", "8.50", "8.51", "8.52", "8.53", "8.54", "8.55", "8.56", "8.57", "8.58", "8.59", "8.60", "8.61", "8.62", "8.63", "8.64", "8.65", "8.66", "8.67", "8.68", "8.69", "8.70", "8.71", "8.72", "8.73", "8.74", "8.75", "8.76", "8.77", "8.78", "8.79", "8.80", "8.81", "8.82", "8.83", "8.84", "8.85", "8.86", "8.87", "8.88", "8.89", "8.90", "8.91", "8.92", "8.93"]
+        }
+      ],
+      useCases: [
+        "International organizations",
+        "European companies (GDPR)",
+        "Technology companies",
+        "Financial services",
+        "Healthcare organizations",
+        "Government agencies"
       ]
     },
     'pci-dss': {
@@ -281,55 +329,6 @@ const Frameworks = () => {
         "Financial institutions",
         "Healthcare providers",
         "Any organization processing payments"
-      ]
-    },
-    'nist-800-63': {
-      name: "NIST 800-63",
-      fullName: "NIST Special Publication 800-63",
-      version: "Digital Identity Guidelines",
-      description: "Guidelines for digital identity services and authentication systems.",
-      overview: "NIST SP 800-63 provides guidelines for digital identity services, including identity proofing, registration, authenticators, management processes, authentication protocols, and related assertions. It's essential for organizations implementing digital identity systems.",
-      icon: "🔐",
-      color: "from-indigo-600 to-indigo-700",
-      categories: [
-        {
-          name: "Identity Assurance Levels (IAL)",
-          description: "Identity proofing and registration requirements",
-          controls: ["IAL1", "IAL2", "IAL3"]
-        },
-        {
-          name: "Authenticator Assurance Levels (AAL)",
-          description: "Authentication mechanism requirements",
-          controls: ["AAL1", "AAL2", "AAL3"]
-        },
-        {
-          name: "Federation Assurance Levels (FAL)",
-          description: "Federation and assertion requirements",
-          controls: ["FAL1", "FAL2", "FAL3"]
-        },
-        {
-          name: "Identity Proofing",
-          description: "Processes for verifying identity",
-          controls: ["IP1", "IP2", "IP3", "IP4", "IP5", "IP6", "IP7"]
-        },
-        {
-          name: "Registration",
-          description: "Identity registration processes",
-          controls: ["REG1", "REG2", "REG3", "REG4", "REG5", "REG6", "REG7"]
-        },
-        {
-          name: "Authentication",
-          description: "Authentication mechanisms and protocols",
-          controls: ["AUTH1", "AUTH2", "AUTH3", "AUTH4", "AUTH5", "AUTH6"]
-        }
-      ],
-      useCases: [
-        "Government agencies",
-        "Financial institutions",
-        "Healthcare organizations",
-        "Educational institutions",
-        "Cloud service providers",
-        "Any organization with digital identity systems"
       ]
     }
   };
