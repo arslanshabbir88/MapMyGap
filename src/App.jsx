@@ -32,9 +32,7 @@ function AppContent() {
     <Router>
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/analyzer" element={
-          user ? <Analyzer /> : <Navigate to="/" replace />
-        } />
+        <Route path="/analyzer" element={<Analyzer />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/faq" element={<FAQ />} />

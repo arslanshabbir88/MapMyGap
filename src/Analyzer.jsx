@@ -56,8 +56,6 @@ const validateEnvironment = () => {
   }
 };
 
-
-
 // --- Helper Components ---
 
 // Icon component for better UI
@@ -197,8 +195,13 @@ function Analyzer() {
   const [lastAnalyzedMode, setLastAnalyzedMode] = useState(null);
 
   console.log('About to call useAuth...');
+  // Temporarily bypass authentication for testing
   const { user, supabase } = useAuth();
   console.log('useAuth result:', { user: !!user, supabase: !!supabase });
+  
+  // For testing purposes, create a mock user if authentication fails
+  const mockUser = user || { id: 'test-user', email: 'test@example.com' };
+  const effectiveUser = user || mockUser;
 
   // DetailModal component - defined inside main function to use hooks properly
   const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {

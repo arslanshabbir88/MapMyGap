@@ -35,10 +35,11 @@ function Homepage() {
   };
 
   const navigateToAnalyzer = () => {
-    if (!user) {
-      // Show login modal or redirect to login
-      return;
-    }
+    // Temporarily allow access to Analyzer for testing
+    // if (!user) {
+    //   // Show login modal or redirect to login
+    //   return;
+    // }
     navigate('/analyzer');
   };
 
