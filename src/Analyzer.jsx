@@ -20,6 +20,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './App.css';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -164,7 +165,8 @@ const convertToCSV = (data) => {
 
 // --- Main App Component ---
 
-function Analyzer({ onNavigateHome }) {
+function Analyzer() {
+  const navigate = useNavigate();
   console.log('Analyzer component mounting...');
   
   // Environment validation - prevents unauthorized use
@@ -1133,7 +1135,7 @@ function Analyzer({ onNavigateHome }) {
                     </span>
                   </div>
                 )}
-                <button onClick={onNavigateHome} className="inline-flex items-center text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors">
+                <button onClick={() => navigate('/')} className="inline-flex items-center text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors">
                   <ArrowLeftIcon />
                   <span className="ml-1">Back to Home</span>
                 </button>

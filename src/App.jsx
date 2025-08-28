@@ -1,27 +1,22 @@
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
 import Homepage from './Homepage.jsx';
 import Analyzer from './Analyzer.jsx';
 import LoginModal from './LoginModal.jsx';
+import TermsOfService from './pages/TermsOfService.jsx';
+import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
+import FAQ from './pages/FAQ.jsx';
+import HowItWorks from './pages/HowItWorks.jsx';
+import Frameworks from './pages/Frameworks.jsx';
+import Security from './pages/Security.jsx';
+import Pricing from './pages/Pricing.jsx';
+import Support from './pages/Support.jsx';
+import About from './pages/About.jsx';
 
 function AppContent() {
-  const [page, setPage] = useState('homepage');
   const [showLoginModal, setShowLoginModal] = useState(false);
   const { user, loading } = useAuth();
-
-  const navigateToAnalyzer = (e) => {
-    e.preventDefault();
-    if (!user) {
-      setShowLoginModal(true);
-      return;
-    }
-    setPage('analyzer');
-  };
-
-  const navigateToHome = (e) => {
-    e.preventDefault();
-    setPage('homepage');
-  };
 
   if (loading) {
     return (
@@ -34,19 +29,31 @@ function AppContent() {
     );
   }
 
-  if (page === 'analyzer') {
-    return <Analyzer onNavigateHome={navigateToHome} />;
-  }
-
   return (
-    <>
-      <Homepage onNavigate={navigateToAnalyzer} />
+    <Router>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/analyzer" element={
+          user ? <Analyzer /> : <Navigate to="/" replace />
+        } />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/faq" element={<FAQ />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/frameworks" element={<Frameworks />} />
+        <Route path="/security" element={<Security />} />
+        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/support" element={<Support />} />
+        <Route path="/about" element={<About />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+      
       <LoginModal 
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)}
         onSwitchToSignup={() => setShowLoginModal(false)}
       />
-    </>
+    </Router>
   );
 }
 

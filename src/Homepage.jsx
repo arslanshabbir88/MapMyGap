@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 
 // --- Helper Components ---
@@ -15,11 +16,15 @@ const ShieldCheckIcon = () => <Icon path="M9 12.75L11.25 15 15 9.75m-3-7.036A11.
 const DocumentTextIcon = () => <Icon path="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />;
 const UserIcon = () => <Icon path="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />;
 const LogoutIcon = () => <Icon path="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />;
+const MenuIcon = () => <Icon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />;
+const XMarkIcon = () => <Icon path="M6 18L18 6M6 6l12 12" />;
 
 // --- Main Homepage Component ---
 
-function Homepage({ onNavigate }) {
+function Homepage() {
   const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -27,6 +32,14 @@ function Homepage({ onNavigate }) {
     } catch (error) {
       console.error('Logout error:', error);
     }
+  };
+
+  const navigateToAnalyzer = () => {
+    if (!user) {
+      // Show login modal or redirect to login
+      return;
+    }
+    navigate('/analyzer');
   };
 
   const FeatureCard = ({ icon, title, children }) => (
@@ -75,8 +88,19 @@ function Homepage({ onNavigate }) {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
               {/* Logo and Title - Stack on mobile */}
               <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
-                <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+                <Link to="/" className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
+                  <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+                  <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+                </Link>
+              </div>
+              
+              {/* Desktop Navigation */}
+              <div className="hidden lg:flex items-center space-x-8">
+                <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors">How It Works</Link>
+                <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors">Frameworks</Link>
+                <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</Link>
+                <Link to="/about" className="text-slate-300 hover:text-white transition-colors">About</Link>
+                <Link to="/support" className="text-slate-300 hover:text-white transition-colors">Support</Link>
               </div>
               
               {/* Navigation and User Actions - Stack on mobile */}
@@ -98,20 +122,53 @@ function Homepage({ onNavigate }) {
                         <span className="text-xs sm:text-sm">Logout</span>
                       </button>
                     </div>
-                    <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
+                    <button
+                      onClick={navigateToAnalyzer}
+                      className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
+                    >
                       Go to Analyzer
-                    </a>
+                    </button>
                   </>
                 ) : (
                   <>
-                    <a href="#" onClick={onNavigate} className="text-slate-300 hover:text-white transition-colors text-center sm:text-left">Sign In</a>
-                    <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300">
+                    <button
+                      onClick={navigateToAnalyzer}
+                      className="text-slate-300 hover:text-white transition-colors text-center sm:text-left"
+                    >
+                      Sign In
+                    </button>
+                    <button
+                      onClick={navigateToAnalyzer}
+                      className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
+                    >
                       Get Started
-                    </a>
+                    </button>
                   </>
                 )}
+                
+                {/* Mobile menu button */}
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="lg:hidden p-2 text-slate-300 hover:text-white transition-colors"
+                >
+                  {isMobileMenuOpen ? <XMarkIcon /> : <MenuIcon />}
+                </button>
               </div>
             </div>
+            
+            {/* Mobile Navigation Menu */}
+            {isMobileMenuOpen && (
+              <div className="lg:hidden mt-4 pb-4 border-t border-slate-800">
+                <div className="flex flex-col space-y-3 pt-4">
+                  <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors">How It Works</Link>
+                  <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors">Frameworks</Link>
+                  <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</Link>
+                  <Link to="/about" className="text-slate-300 hover:text-white transition-colors">About</Link>
+                  <Link to="/support" className="text-slate-300 hover:text-white transition-colors">Support</Link>
+                  <Link to="/faq" className="text-slate-300 hover:text-white transition-colors">FAQ</Link>
+                </div>
+              </div>
+            )}
           </nav>
         </header>
         
@@ -126,9 +183,12 @@ function Homepage({ onNavigate }) {
                 MapMyGap uses AI to analyze your internal standards against industry frameworks, instantly identifying gaps and generating the policy text you need to fix them.
               </p>
               <div className="mt-10">
-                <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
+                <button
+                  onClick={navigateToAnalyzer}
+                  className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105"
+                >
                   {user ? 'Go to Analyzer' : 'Start Your First Analysis'}
-                </a>
+                </button>
               </div>
             </div>
           </section>
@@ -173,6 +233,14 @@ function Homepage({ onNavigate }) {
                     Receive an interactive report detailing your compliance score, gaps, and partials. Click any gap to generate the exact text needed to become compliant.
                   </HowItWorksStep>
                 </div>
+                <div className="text-center mt-12">
+                  <Link
+                    to="/how-it-works"
+                    className="inline-flex items-center px-6 py-3 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-500 transition-colors rounded-lg"
+                  >
+                    Learn More About How It Works →
+                  </Link>
+                </div>
              </div>
           </section>
 
@@ -184,9 +252,12 @@ function Homepage({ onNavigate }) {
                 Stop spending weeks on manual reviews. Start closing gaps in minutes. {user ? 'Use your existing account to continue.' : 'Create your account and get your first analysis report for free.'}
               </p>
               <div className="mt-10">
-                <a href="#" onClick={onNavigate} className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105">
+                <button
+                  onClick={navigateToAnalyzer}
+                  className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105"
+                >
                   {user ? 'Go to Analyzer' : 'Sign Up for Free'}
-                </a>
+                </button>
               </div>
             </div>
           </section>
@@ -194,9 +265,45 @@ function Homepage({ onNavigate }) {
 
         {/* Footer */}
         <footer className="bg-slate-900/50 border-t border-slate-800 mt-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center">
-              <p>&copy; 2025 MapMyGap. All rights reserved.</p>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              {/* Company Info */}
+              <div className="col-span-1 md:col-span-2">
+                <h3 className="text-lg font-bold text-white mb-4">MapMyGap</h3>
+                <p className="text-slate-400 mb-4">
+                  AI-powered compliance gap analysis that helps organizations identify and fix 
+                  compliance gaps in minutes, not months.
+                </p>
+                <div className="flex space-x-4">
+                  <Link to="/about" className="text-slate-400 hover:text-white transition-colors">About</Link>
+                  <Link to="/security" className="text-slate-400 hover:text-white transition-colors">Security</Link>
+                  <Link to="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
+                </div>
+              </div>
+              
+              {/* Product */}
+              <div>
+                <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Product</h4>
+                <ul className="space-y-2">
+                  <li><Link to="/how-it-works" className="text-slate-400 hover:text-white transition-colors">How It Works</Link></li>
+                  <li><Link to="/frameworks" className="text-slate-400 hover:text-white transition-colors">Frameworks</Link></li>
+                  <li><Link to="/support" className="text-slate-400 hover:text-white transition-colors">Support</Link></li>
+                  <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors">FAQ</Link></li>
+                </ul>
+              </div>
+              
+              {/* Legal */}
+              <div>
+                <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Legal</h4>
+                <ul className="space-y-2">
+                  <li><Link to="/terms" className="text-slate-400 hover:text-white transition-colors">Terms of Service</Link></li>
+                  <li><Link to="/privacy" className="text-slate-400 hover:text-white transition-colors">Privacy Policy</Link></li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="border-t border-slate-800 mt-8 pt-8 text-center">
+              <p className="text-slate-400">&copy; 2025 MapMyGap. All rights reserved.</p>
             </div>
           </div>
         </footer>

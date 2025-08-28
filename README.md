@@ -1,201 +1,176 @@
-# MapMyGap - AI-Powered Compliance Analysis
+# MapMyGap - AI-Powered Compliance Analysis Platform
 
 ## Overview
 
-MapMyGap is an intelligent compliance analysis platform that helps organizations assess their security posture against industry-standard frameworks like NIST 800-53, ISO 27001, and more.
+MapMyGap is an AI-powered compliance gap analysis platform that helps organizations assess their compliance with cybersecurity frameworks like NIST 800-53, ISO 27001, SOC 2, and PCI DSS. The platform analyzes compliance documents and identifies gaps, providing actionable recommendations for achieving compliance.
 
-## ✨ Features
+## Features
 
-- **AI-Powered Gap Analysis**: Upload policy documents and get instant compliance gap analysis
-- **Multiple Framework Support**: NIST CSF, NIST 800-53, PCI DSS, ISO 27001, and more
-- **Automated Policy Generation**: Generate ready-to-use policy text for identified gaps
-- **User Authentication**: Secure login with Google OAuth and email/password
-- **Analysis History**: Save and review your compliance assessments over time
-- **Export Options**: Download reports in JSON or CSV format
-- **Copy to Clipboard**: Easy copying of generated text and control details
+- **AI-Powered Analysis**: Advanced AI models analyze compliance documents against industry frameworks
+- **Multiple Framework Support**: NIST 800-53, NIST CSF, ISO 27001, SOC 2, PCI DSS
+- **Gap Identification**: Automatic identification of compliance gaps and partial implementations
+- **Implementation Text Generation**: AI-generated specific, actionable implementation guidance
+- **Real-time Processing**: Documents are processed in real-time with no permanent storage
+- **Export Capabilities**: Multiple export formats including PDF, Excel, and JSON
+
+## New Website Pages
+
+### Legal & Compliance
+- **Terms of Service** (`/terms`) - Comprehensive terms with AI disclaimers and legal protection
+- **Privacy Policy** (`/privacy`) - GDPR-compliant privacy policy with data handling details
+
+### Information & Support
+- **FAQ** (`/faq`) - Comprehensive FAQ section covering all aspects of the service
+- **How It Works** (`/how-it-works`) - Step-by-step process explanation with visual guides
+- **Supported Frameworks** (`/frameworks`) - Detailed information about all supported compliance frameworks
+- **Security** (`/security`) - Security practices, certifications, and data protection measures
+- **Pricing** (`/pricing`) - Transparent pricing with tiered plans and feature comparison
+- **Support** (`/support`) - Help documentation, contact methods, and support resources
+- **About** (`/about`) - Company story, team information, mission, and values
+
+## Technical Architecture
+
+### Frontend
+- **React 18** with modern hooks and functional components
+- **React Router** for client-side routing and navigation
+- **Tailwind CSS** for responsive, modern UI design
+- **Component-based architecture** for maintainable code
+
+### Backend
+- **Vercel Serverless Functions** for API endpoints
+- **Google Vertex AI** (Gemini 2.5 Flash) for AI analysis
+- **Supabase** for authentication and user management
+- **Adaptive timeout system** for optimal performance
+
+### Security Features
+- **End-to-end encryption** (TLS 1.3 + AES-256)
+- **No permanent document storage** (30-day temporary retention)
+- **Enterprise-grade security** with SOC 2 and ISO 27001 compliance
+- **GDPR and CCPA compliance** for data protection
 
 ## Getting Started
 
-1. Clone the repository:
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn package manager
+
+### Installation
 ```bash
-git clone https://github.com/arslanshabbir88/MapMyGap.git
-cd mapmygap-app
-```
+# Clone the repository
+git clone [repository-url]
+cd aligniq-app
 
-### 2. Set Up Supabase (Required for Authentication)
+# Install dependencies
+npm install
 
-1. **Create a Supabase Project**
-   - Go to [supabase.com](https://supabase.com)
-   - Sign up and create a new project
-   - Note your project URL and anon key
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your configuration
 
-2. **Configure Environment Variables**
-   ```bash
-   cp env.example .env
-   ```
-   
-   Edit `.env` with your Supabase credentials:
-   ```env
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-3. **Set Up Google OAuth**
-   - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing
-   - Enable Google+ API
-   - Go to "Credentials" → "Create Credentials" → "OAuth 2.0 Client IDs"
-   - Set application type to "Web application"
-   - Add authorized redirect URIs:
-     - `https://your-project.supabase.co/auth/v1/callback`
-     - `http://localhost:3000/auth/callback` (for local development)
-   - Copy Client ID and Client Secret
-
-4. **Configure Supabase OAuth**
-   - In your Supabase dashboard, go to "Authentication" → "Providers"
-   - Enable Google provider
-   - Enter your Google Client ID and Client Secret
-   - Set redirect URL to: `https://your-project.supabase.co/auth/v1/callback`
-
-5. **Create Database Tables**
-   ```sql
-   -- Create analysis history table
-   CREATE TABLE analysis_history (
-     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-     user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-     framework TEXT NOT NULL,
-     filename TEXT NOT NULL,
-     strictness TEXT NOT NULL DEFAULT 'balanced',
-     results JSONB NOT NULL,
-     summary JSONB NOT NULL,
-     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-   );
-
-   -- Enable RLS (Row Level Security)
-   ALTER TABLE analysis_history ENABLE ROW LEVEL SECURITY;
-
-   -- If you have an existing analysis_history table, add the strictness column:
-   -- ALTER TABLE analysis_history ADD COLUMN strictness TEXT NOT NULL DEFAULT 'balanced';
-
-   -- Create policy for users to see only their own history
-   CREATE POLICY "Users can view own analysis history" ON analysis_history
-     FOR SELECT USING (auth.uid() = user_id);
-
-   -- Create policy for users to insert their own analysis
-   CREATE POLICY "Users can insert own analysis" ON analysis_history
-     FOR INSERT WITH CHECK (auth.uid() = user_id);
-   ```
-
-### 3. Start Development Server
-
-```bash
-# Terminal 1: Start the API server
-npm run server
-
-# Terminal 2: Start the frontend
+# Start development server
 npm run dev
 ```
 
-Visit `http://localhost:5173` (or the port shown in your terminal)
-
-## 🔐 Authentication Features
-
-### Google OAuth
-- One-click sign-in with Google account
-- No password required
-- Automatic profile creation
-
-### Email/Password
-- Traditional signup and login
-- Password reset functionality
-- Email verification
-
-### User Management
-- Profile information storage
-- Analysis history per user
-- Secure session handling
-
-## 📁 Supported File Types
-
-- **Text Files**: `.txt`
-- **Word Documents**: `.docx`
-- **PDFs**: `.pdf`
-- **Excel Spreadsheets**: `.xlsx`, `.xls`
-
-## 🏗️ Architecture
-
-- **Frontend**: React + Vite + Tailwind CSS
-- **Backend**: Node.js + Express
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth with OAuth
-- **AI Analysis**: Google Gemini API
-- **File Processing**: Mammoth (DOCX), PDF-parse, XLSX
-
-## 🔧 Configuration
-
 ### Environment Variables
+```bash
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+GCP_PROJECT_ID=your_gcp_project_id
+GCP_PRIVATE_KEY=your_gcp_private_key
+GCP_CLIENT_EMAIL=your_gcp_client_email
+```
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `VITE_SUPABASE_URL` | Your Supabase project URL | Yes |
-| `VITE_SUPABASE_ANON_KEY` | Your Supabase anonymous key | Yes |
+## Usage
 
-### API Endpoints
+### Basic Workflow
+1. **Upload Document**: Upload your compliance document (PDF, DOCX, TXT)
+2. **Select Framework**: Choose the compliance framework to analyze against
+3. **AI Analysis**: Platform analyzes document and identifies gaps
+4. **Review Results**: Interactive dashboard shows compliance scores and gaps
+5. **Generate Implementation**: AI generates specific implementation text for gaps
+6. **Export Report**: Download comprehensive compliance analysis report
 
-- `POST /api/analyze` - Analyze text content
-- `POST /api/upload-analyze` - Analyze uploaded files
-- `POST /api/generate-control-text` - Generate policy text for gaps
+### Supported File Types
+- PDF documents
+- Microsoft Word (.docx)
+- Plain text files (.txt)
 
-## 🚀 Deployment
+### Framework Support
+- **NIST SP 800-53** (Revision 5) - Federal security controls
+- **NIST CSF** (Version 2.0) - Cybersecurity framework
+- **ISO 27001:2022** - Information security management
+- **SOC 2 Type II** - Service organization controls
+- **PCI DSS v4.0** - Payment card industry standards
 
-### Vercel (Recommended)
+## Deployment
 
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Add environment variables in Vercel dashboard
-4. Deploy!
+### Vercel Deployment
+```bash
+# Install Vercel CLI
+npm i -g vercel
 
-### Other Platforms
+# Deploy to Vercel
+vercel --prod
+```
 
-The app can be deployed to any platform that supports Node.js:
-- Netlify
-- Heroku
-- DigitalOcean App Platform
-- AWS Amplify
+### Environment Configuration
+- Set all required environment variables in Vercel dashboard
+- Configure function timeout limits (up to 60 seconds for Hobby plan)
+- Set up custom domains if needed
 
-## 🤝 Contributing
+## Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### Development Guidelines
+- Follow React best practices and hooks patterns
+- Use Tailwind CSS for styling
+- Maintain component reusability
+- Write clear, documented code
+- Test thoroughly before submitting changes
 
-## 📄 License
+### Code Structure
+```
+src/
+├── components/          # Reusable UI components
+├── pages/              # Page components for routing
+├── AuthContext.jsx     # Authentication context
+├── App.jsx            # Main app with routing
+└── Homepage.jsx       # Landing page
+```
 
-This project is licensed under the MIT License.
+## Support
 
-## 🆘 Support
+### Documentation
+- **FAQ Page**: Comprehensive answers to common questions
+- **Support Page**: Contact methods and help resources
+- **How It Works**: Step-by-step process explanation
 
-If you encounter any issues:
+### Contact Information
+- **Email Support**: support@mapmygap.com
+- **Live Chat**: Available on website during business hours
+- **Phone Support**: Available for Professional+ plans
 
-1. Check the [Supabase documentation](https://supabase.com/docs)
-2. Verify your environment variables
-3. Check the browser console for errors
-4. Open an issue in this repository
+## License
 
-## 🔒 Security Notes
+This software is proprietary and confidential. Unauthorized copying, distribution, or use is strictly prohibited.
 
-- All authentication is handled securely by Supabase
-- User data is isolated with Row Level Security
-- API keys are stored securely in environment variables
-- File uploads are processed securely on the server
+For licensing inquiries, contact: legal@mapmygap.com
 
-## 🎯 Roadmap
+## Roadmap
 
-- [ ] Team collaboration features
-- [ ] Advanced reporting and analytics
-- [ ] Integration with compliance management tools
-- [ ] Mobile app
-- [ ] API rate limiting and usage tracking
-- [ ] Multi-language support
+### Upcoming Features
+- Additional compliance frameworks
+- Advanced reporting and analytics
+- Team collaboration features
+- API access for enterprise customers
+- Mobile application
+- Integration with popular GRC tools
+
+### Framework Expansion
+- HIPAA compliance framework
+- SOX compliance requirements
+- FedRAMP controls
+- Industry-specific frameworks
+
+---
+
+**MapMyGap** - Transforming compliance from chaos to clarity with AI-powered analysis.
