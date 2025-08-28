@@ -144,7 +144,7 @@ const Security = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Enterprise-Grade Security</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
               We've built MapMyGap with security at its core, implementing multiple layers of protection 
               to ensure your data remains secure and confidential.
             </p>
@@ -152,15 +152,15 @@ const Security = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {securityFeatures.map((feature, index) => (
-              <div key={index} className="bg-slate-800/50 border border-slate-700 rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300">
+              <div key={index} className="bg-slate-800 border border-slate-600 rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 hover:border-slate-500">
                 <div className="text-5xl mb-4">{feature.icon}</div>
                 <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-300 mb-4 leading-relaxed">{feature.description}</p>
+                <p className="text-slate-100 mb-4 leading-relaxed">{feature.description}</p>
                 <ul className="space-y-2">
                   {feature.details.map((detail, detailIndex) => (
                     <li key={detailIndex} className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-sm text-slate-300">{detail}</span>
+                      <span className="text-sm text-slate-200">{detail}</span>
                     </li>
                   ))}
                 </ul>
@@ -171,11 +171,11 @@ const Security = () => {
       </div>
 
       {/* Compliance & Certifications */}
-      <div className="py-20 bg-slate-800/50">
+      <div className="py-20 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Compliance & Certifications</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
               We maintain compliance with industry-leading security standards and undergo regular 
               third-party audits to ensure our security practices meet the highest standards.
             </p>
@@ -183,17 +183,17 @@ const Security = () => {
 
           <div className="grid md:grid-cols-2 gap-8">
             {securityStandards.map((standard, index) => (
-              <div key={index} className="border border-slate-600 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 bg-slate-700/50">
+              <div key={index} className="border border-slate-600 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 bg-slate-700 hover:border-slate-500">
                 <div className="flex items-center gap-4 mb-4">
                   <div className="text-4xl">{standard.icon}</div>
                   <div>
                     <h3 className="text-xl font-bold text-white">{standard.name}</h3>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-900/50 text-green-200">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-700 text-green-100">
                       {standard.status}
                     </span>
                   </div>
                 </div>
-                <p className="text-slate-300 leading-relaxed">{standard.description}</p>
+                <p className="text-slate-100 leading-relaxed">{standard.description}</p>
               </div>
             ))}
           </div>
@@ -201,11 +201,11 @@ const Security = () => {
       </div>
 
       {/* Data Protection */}
-      <div className="py-20 bg-slate-800/50">
+      <div className="py-20 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Data Protection Principles</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
               We follow strict data protection principles to ensure your information is handled 
               securely and in compliance with privacy regulations.
             </p>
@@ -213,10 +213,10 @@ const Security = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {dataProtection.map((principle, index) => (
-              <div key={index} className="bg-slate-700/50 border border-slate-600 rounded-lg p-6 text-center hover:shadow-lg transition-shadow duration-300">
+              <div key={index} className="bg-slate-700 border border-slate-600 rounded-lg p-6 text-center hover:shadow-lg transition-shadow duration-300 hover:border-slate-500">
                 <div className="text-4xl mb-4">{principle.icon}</div>
                 <h3 className="text-lg font-semibold text-white mb-3">{principle.title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{principle.description}</p>
+                <p className="text-slate-100 text-sm leading-relaxed">{principle.description}</p>
               </div>
             ))}
           </div>
@@ -224,24 +224,24 @@ const Security = () => {
       </div>
 
       {/* Security Architecture */}
-      <div className="py-20 bg-slate-800/50">
+      <div className="py-20 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Security Architecture</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
               Our multi-layered security architecture provides comprehensive protection 
               at every level of our platform.
             </p>
           </div>
 
-          <div className="bg-gray-50 rounded-lg p-8">
+          <div className="bg-slate-700 border border-slate-600 rounded-lg p-8">
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="bg-blue-100 text-blue-600 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                <div className="bg-blue-700 text-blue-100 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                   🌐
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Network Layer</h3>
-                <ul className="text-sm text-gray-600 space-y-2 text-left">
+                <h3 className="text-xl font-bold text-white mb-3">Network Layer</h3>
+                <ul className="text-sm text-slate-200 space-y-2 text-left">
                   <li>• DDoS protection</li>
                   <li>• Web Application Firewall</li>
                   <li>• SSL/TLS encryption</li>
@@ -250,11 +250,11 @@ const Security = () => {
               </div>
 
               <div className="text-center">
-                <div className="bg-green-100 text-green-600 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                <div className="bg-green-700 text-green-100 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                   🏗️
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Application Layer</h3>
-                <ul className="text-sm text-gray-600 space-y-2 text-left">
+                <h3 className="text-xl font-bold text-white mb-3">Application Layer</h3>
+                <ul className="text-sm text-slate-200 space-y-2 text-left">
                   <li>• Input validation</li>
                   <li>• Authentication & authorization</li>
                   <li>• Session management</li>
@@ -263,11 +263,11 @@ const Security = () => {
               </div>
 
               <div className="text-center">
-                <div className="bg-purple-100 text-purple-600 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                <div className="bg-purple-700 text-purple-100 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
                   🖥️
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-3">Infrastructure Layer</h3>
-                <ul className="text-sm text-gray-600 space-y-2 text-left">
+                <h3 className="text-xl font-bold text-white mb-3">Infrastructure Layer</h3>
+                <ul className="text-sm text-slate-200 space-y-2 text-left">
                   <li>• Secure cloud infrastructure</li>
                   <li>• Access controls</li>
                   <li>• Monitoring & logging</li>
@@ -280,71 +280,71 @@ const Security = () => {
       </div>
 
       {/* Security Practices */}
-      <div className="py-20 bg-gray-100">
+      <div className="py-20 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Security Practices</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h2 className="text-4xl font-bold text-white mb-4">Security Practices</h2>
+            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
               We follow industry best practices and maintain rigorous security protocols 
               to protect your data and maintain trust.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-lg p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Development & Deployment</h3>
+            <div className="bg-slate-700 border border-slate-600 rounded-lg p-8 hover:border-slate-500">
+              <h3 className="text-2xl font-bold text-white mb-6">Development & Deployment</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Secure Development Lifecycle:</strong> All code undergoes security review and testing
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Automated Security Testing:</strong> Continuous security scanning and vulnerability assessment
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Secure Deployment:</strong> Automated deployment with security checks and rollback capabilities
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Regular Updates:</strong> Security patches and updates applied promptly
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="bg-white rounded-lg p-8">
-              <h3 className="text-2xl font-bold text-gray-900 mb-6">Monitoring & Response</h3>
+            <div className="bg-slate-700 border border-slate-600 rounded-lg p-8 hover:border-slate-500">
+              <h3 className="text-2xl font-bold text-white mb-6">Monitoring & Response</h3>
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>24/7 Monitoring:</strong> Continuous security monitoring and threat detection
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Incident Response:</strong> Rapid response team with defined escalation procedures
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Security Analytics:</strong> Advanced analytics for threat detection and response
                   </div>
                 </li>
                 <li className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
-                  <div>
+                  <div className="text-slate-100">
                     <strong>Regular Assessments:</strong> Penetration testing and security assessments
                   </div>
                 </li>
@@ -355,11 +355,11 @@ const Security = () => {
       </div>
 
       {/* Trust Indicators */}
-      <div className="py-20 bg-slate-800/50">
+      <div className="py-20 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-white mb-4">Why Trust MapMyGap?</h2>
-            <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
               We've earned the trust of organizations worldwide through our commitment 
               to security, transparency, and excellence.
             </p>
@@ -367,31 +367,31 @@ const Security = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="bg-blue-900/50 text-blue-300 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+              <div className="bg-blue-700 text-blue-100 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
                 🏆
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Proven Track Record</h3>
-              <p className="text-slate-300">
+              <p className="text-slate-100">
                 Years of successful operation with zero security breaches and 99.9% uptime.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="bg-green-900/50 text-green-300 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+              <div className="bg-green-700 text-green-100 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
                 🔍
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Transparent Practices</h3>
-              <p className="text-slate-300">
+              <p className="text-slate-100">
                 Open about our security practices and regular third-party audits.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="bg-purple-900/50 text-purple-300 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
+              <div className="bg-purple-700 text-purple-100 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
                 🤝
               </div>
               <h3 className="text-xl font-bold text-white mb-3">Customer Commitment</h3>
-              <p className="text-slate-300">
+              <p className="text-slate-100">
                 Dedicated to protecting your data and maintaining your trust.
               </p>
             </div>
@@ -425,14 +425,14 @@ const Security = () => {
       </div>
 
       {/* Navigation */}
-      <div className="py-8 bg-slate-800/50">
+      <div className="py-8 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <Link to="/" className="text-blue-400 hover:text-blue-300 font-medium">
+            <Link to="/" className="text-blue-300 hover:text-blue-200 font-medium">
               ← Back to Home
             </Link>
             <div className="flex gap-4">
-              <Link to="/privacy" className="text-blue-400 hover:text-blue-300 font-medium">
+              <Link to="/privacy" className="text-blue-300 hover:text-blue-200 font-medium">
                 Privacy Policy →
               </Link>
             </div>
