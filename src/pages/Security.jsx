@@ -4,122 +4,73 @@ import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
 const Security = () => {
-  const securityFeatures = [
+  const implementedSecurityFeatures = [
     {
       icon: "🔐",
-      title: "End-to-End Encryption",
-      description: "All data is encrypted in transit using TLS 1.3 and at rest using AES-256 encryption. Your documents and analysis results are protected with military-grade encryption standards.",
+      title: "Secure Data Processing",
+      description: "Your documents are processed securely in memory and are never permanently stored. We use industry-standard TLS encryption for data transmission.",
       details: [
-        "TLS 1.3 for data in transit",
-        "AES-256 for data at rest",
-        "256-bit encryption keys",
-        "Perfect Forward Secrecy"
+        "TLS encryption for data in transit",
+        "No permanent document storage",
+        "Documents processed in-memory only",
+        "Automatic cleanup after processing"
       ]
     },
     {
       icon: "🛡️",
-      title: "Multi-Layer Security",
-      description: "Our security architecture includes multiple layers of protection including network security, application security, and infrastructure security to ensure comprehensive protection.",
+      title: "Authentication & Access",
+      description: "Secure user authentication through Google OAuth integration, ensuring only authorized users can access the platform.",
       details: [
-        "Network firewalls and DDoS protection",
-        "Web Application Firewall (WAF)",
-        "Intrusion Detection Systems (IDS)",
-        "Real-time threat monitoring"
-      ]
-    },
-    {
-      icon: "🔑",
-      title: "Access Control & Authentication",
-      description: "Strict access controls ensure only authorized personnel can access systems and data, with multi-factor authentication and role-based access controls.",
-      details: [
-        "Multi-factor authentication (MFA)",
-        "Role-based access control (RBAC)",
-        "Privileged access management",
-        "Session management and timeouts"
+        "Google OAuth authentication",
+        "Secure session management",
+        "Protected API endpoints",
+        "User data isolation"
       ]
     },
     {
       icon: "📊",
-      title: "Compliance & Certifications",
-      description: "We maintain compliance with industry-leading security standards and undergo regular third-party audits to ensure our security practices meet the highest standards.",
+      title: "Privacy-First Design",
+      description: "Built with privacy as a core principle - we minimize data collection and ensure your sensitive compliance documents remain confidential.",
       details: [
-        "SOC 2 Type II compliance",
-        "ISO 27001 certification",
-        "GDPR compliance",
-        "Regular security audits"
+        "Minimal data collection",
+        "No document content logging",
+        "Temporary processing only",
+        "User privacy protection"
       ]
     },
     {
-      icon: "🚨",
-      title: "Incident Response",
-      description: "Our comprehensive incident response plan ensures rapid detection, containment, and resolution of security incidents with 24/7 monitoring and response capabilities.",
+      icon: "🔒",
+      title: "Infrastructure Security",
+      description: "Hosted on Vercel's secure infrastructure with built-in DDoS protection, SSL/TLS, and security headers.",
       details: [
-        "24/7 security monitoring",
-        "Automated threat detection",
-        "Incident response team",
-        "Business continuity planning"
+        "Vercel infrastructure security",
+        "DDoS protection",
+        "Security headers enabled",
+        "Regular security updates"
       ]
-    },
-    {
-      icon: "🔍",
-      title: "Continuous Monitoring",
-      description: "Real-time monitoring and logging of all system activities, with automated alerts and comprehensive audit trails for complete visibility and compliance.",
-      details: [
-        "Real-time security monitoring",
-        "Comprehensive logging",
-        "Automated alerting",
-        "Security analytics and reporting"
-      ]
-    }
-  ];
-
-  const securityStandards = [
-    {
-      name: "SOC 2 Type II",
-      description: "Service Organization Control 2 Type II certification demonstrates our commitment to security, availability, processing integrity, confidentiality, and privacy.",
-      icon: "📋",
-      status: "Certified"
-    },
-    {
-      name: "ISO 27001",
-      description: "International standard for information security management systems, ensuring systematic approach to managing sensitive company information.",
-      icon: "🌍",
-      status: "Certified"
-    },
-    {
-      name: "GDPR Compliance",
-      description: "Full compliance with European data protection regulations, ensuring user privacy and data rights are protected.",
-      icon: "🇪🇺",
-      status: "Compliant"
-    },
-    {
-      name: "CCPA Compliance",
-      description: "California Consumer Privacy Act compliance, protecting the privacy rights of California residents.",
-      icon: "🇺🇸",
-      status: "Compliant"
     }
   ];
 
   const dataProtection = [
     {
       title: "Data Minimization",
-      description: "We only collect and process the minimum amount of data necessary to provide our services.",
+      description: "We only collect the minimum amount of data necessary to provide our services.",
       icon: "📉"
     },
     {
-      title: "Secure Processing",
-      description: "All data processing is performed in secure, isolated environments with strict access controls.",
-      icon: "🔒"
+      title: "No Document Storage",
+      description: "Documents are processed in memory and automatically deleted after analysis. We never store your sensitive compliance documents.",
+      icon: "🚫"
     },
     {
-      title: "Temporary Storage",
-      description: "Documents are stored temporarily (30 days) and automatically deleted after processing.",
-      icon: "⏰"
+      title: "Secure Processing",
+      description: "All data processing is performed in secure, isolated environments with no persistent storage.",
+      icon: "🔒"
     },
     {
       title: "No Third-Party Sharing",
       description: "We never share your data with third parties without explicit consent.",
-      icon: "🚫"
+      icon: "🤝"
     }
   ];
 
@@ -128,317 +79,187 @@ const Security = () => {
       <SharedNavigation />
       
       <main>
-                 {/* Hero Section */}
-         <section className="py-24 sm:py-32 text-center bg-slate-800">
-           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-             <h1 className="text-5xl font-bold mb-6 text-white">Security & Trust</h1>
-             <p className="text-xl text-white max-w-3xl mx-auto">
-               Your data security is our top priority. We implement enterprise-grade security measures 
-               and maintain compliance with industry-leading standards to protect your information.
-             </p>
-           </div>
-         </section>
-
-      {/* Security Features */}
-      <div className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Enterprise-Grade Security</h2>
-            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-              We've built MapMyGap with security at its core, implementing multiple layers of protection 
-              to ensure your data remains secure and confidential.
+        {/* Hero Section */}
+        <section className="py-24 sm:py-32 text-center bg-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-5xl font-bold mb-6 text-white">Security & Privacy</h1>
+            <p className="text-xl text-white max-w-3xl mx-auto">
+              We're committed to protecting your data through honest, transparent security practices. 
+              Here's exactly what we implement to keep your information secure.
             </p>
           </div>
+        </section>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {securityFeatures.map((feature, index) => (
-              <div key={index} className="bg-slate-800 border border-slate-600 rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 hover:border-slate-500">
-                <div className="text-5xl mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                <p className="text-slate-100 mb-4 leading-relaxed">{feature.description}</p>
-                <ul className="space-y-2">
-                  {feature.details.map((detail, detailIndex) => (
-                    <li key={detailIndex} className="flex items-start gap-3">
+        {/* Implemented Security Features */}
+        <div className="py-20">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-white mb-4">Our Security Approach</h2>
+              <p className="text-xl text-slate-100 max-w-3xl mx-auto">
+                We believe in transparency about our security measures. Below are the specific 
+                security features we have implemented and actively maintain.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
+              {implementedSecurityFeatures.map((feature, index) => (
+                <div key={index} className="bg-slate-800 border border-slate-600 rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300 hover:border-slate-500">
+                  <div className="text-5xl mb-4">{feature.icon}</div>
+                  <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                  <p className="text-slate-100 mb-4 leading-relaxed">{feature.description}</p>
+                  <ul className="space-y-2">
+                    {feature.details.map((detail, detailIndex) => (
+                      <li key={detailIndex} className="flex items-start gap-3">
+                        <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                        <span className="text-sm text-slate-200">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Data Protection Principles */}
+        <div className="py-20 bg-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-white mb-4">Data Protection Principles</h2>
+              <p className="text-xl text-slate-100 max-w-3xl mx-auto">
+                We follow these core principles to ensure your information is handled 
+                securely and responsibly.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {dataProtection.map((principle, index) => (
+                <div key={index} className="bg-slate-700 border border-slate-600 rounded-lg p-6 text-center hover:shadow-lg transition-shadow duration-300 hover:border-slate-500">
+                  <div className="text-4xl mb-4">{principle.icon}</div>
+                  <h3 className="text-lg font-semibold text-white mb-3">{principle.title}</h3>
+                  <p className="text-slate-100 text-sm leading-relaxed">{principle.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Honest Assessment */}
+        <div className="py-20 bg-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-white mb-4">Our Commitment to Honesty</h2>
+              <p className="text-xl text-slate-100 max-w-3xl mx-auto">
+                We believe trust is built through transparency, not through overstated claims.
+              </p>
+            </div>
+
+            <div className="bg-slate-700 border border-slate-600 rounded-lg p-8">
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-6">What We Have Implemented</h3>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-sm text-slate-200">{detail}</span>
+                      <div className="text-slate-100">
+                        <strong>Secure Authentication:</strong> Google OAuth integration for user login
+                      </div>
                     </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Compliance & Certifications */}
-      <div className="py-20 bg-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Compliance & Certifications</h2>
-            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-              We maintain compliance with industry-leading security standards and undergo regular 
-              third-party audits to ensure our security practices meet the highest standards.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            {securityStandards.map((standard, index) => (
-              <div key={index} className="border border-slate-600 rounded-lg p-6 hover:shadow-lg transition-shadow duration-300 bg-slate-700 hover:border-slate-500">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="text-4xl">{standard.icon}</div>
-                  <div>
-                    <h3 className="text-xl font-bold text-white">{standard.name}</h3>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-700 text-green-100">
-                      {standard.status}
-                    </span>
-                  </div>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-100">
+                        <strong>Data Privacy:</strong> No permanent storage of your documents
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-100">
+                        <strong>Infrastructure:</strong> Hosted on Vercel's secure platform
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-100">
+                        <strong>Processing:</strong> Secure in-memory document analysis
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-                <p className="text-slate-100 leading-relaxed">{standard.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
-      {/* Data Protection */}
-      <div className="py-20 bg-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Data Protection Principles</h2>
-            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-              We follow strict data protection principles to ensure your information is handled 
-              securely and in compliance with privacy regulations.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {dataProtection.map((principle, index) => (
-              <div key={index} className="bg-slate-700 border border-slate-600 rounded-lg p-6 text-center hover:shadow-lg transition-shadow duration-300 hover:border-slate-500">
-                <div className="text-4xl mb-4">{principle.icon}</div>
-                <h3 className="text-lg font-semibold text-white mb-3">{principle.title}</h3>
-                <p className="text-slate-100 text-sm leading-relaxed">{principle.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Security Architecture */}
-      <div className="py-20 bg-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Security Architecture</h2>
-            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-              Our multi-layered security architecture provides comprehensive protection 
-              at every level of our platform.
-            </p>
-          </div>
-
-          <div className="bg-slate-700 border border-slate-600 rounded-lg p-8">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="bg-blue-700 text-blue-100 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                  🌐
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-6">What We're Working Toward</h3>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-300">
+                        <strong>Enhanced Authentication:</strong> Multi-factor authentication (MFA)
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-300">
+                        <strong>Advanced Monitoring:</strong> Security monitoring and alerting
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-300">
+                        <strong>Compliance:</strong> Industry certifications and audits
+                      </div>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="text-slate-300">
+                        <strong>Incident Response:</strong> Formal security incident procedures
+                      </div>
+                    </li>
+                  </ul>
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">Network Layer</h3>
-                <ul className="text-sm text-slate-200 space-y-2 text-left">
-                  <li>• DDoS protection</li>
-                  <li>• Web Application Firewall</li>
-                  <li>• SSL/TLS encryption</li>
-                  <li>• Network segmentation</li>
-                </ul>
-              </div>
-
-              <div className="text-center">
-                <div className="bg-green-700 text-green-100 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                  🏗️
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Application Layer</h3>
-                <ul className="text-sm text-slate-200 space-y-2 text-left">
-                  <li>• Input validation</li>
-                  <li>• Authentication & authorization</li>
-                  <li>• Session management</li>
-                  <li>• Secure coding practices</li>
-                </ul>
-              </div>
-
-              <div className="text-center">
-                <div className="bg-purple-700 text-purple-100 text-4xl rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                  🖥️
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">Infrastructure Layer</h3>
-                <ul className="text-sm text-slate-200 space-y-2 text-left">
-                  <li>• Secure cloud infrastructure</li>
-                  <li>• Access controls</li>
-                  <li>• Monitoring & logging</li>
-                  <li>• Disaster recovery</li>
-                </ul>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Security Practices */}
-      <div className="py-20 bg-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Security Practices</h2>
-            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-              We follow industry best practices and maintain rigorous security protocols 
-              to protect your data and maintain trust.
+        {/* CTA Section */}
+        <div className="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-4xl font-bold text-white mb-6">Questions About Our Security?</h2>
+            <p className="text-xl text-white mb-8">
+              We're committed to transparency. If you have specific questions about our security 
+              practices or want to know more about our implementation, please reach out.
             </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-slate-700 border border-slate-600 rounded-lg p-8 hover:border-slate-500">
-              <h3 className="text-2xl font-bold text-white mb-6">Development & Deployment</h3>
-                              <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Secure Development Lifecycle:</strong> All code undergoes security review and testing
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Automated Security Testing:</strong> Continuous security scanning and vulnerability assessment
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Secure Deployment:</strong> Automated deployment with security checks and rollback capabilities
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Regular Updates:</strong> Security patches and updates applied promptly
-                    </div>
-                  </li>
-                </ul>
-            </div>
-
-            <div className="bg-slate-700 border border-slate-600 rounded-lg p-8 hover:border-slate-500">
-              <h3 className="text-2xl font-bold text-white mb-6">Monitoring & Response</h3>
-                              <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>24/7 Monitoring:</strong> Continuous security monitoring and threat detection
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Incident Response:</strong> Rapid response team with defined escalation procedures
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Security Analytics:</strong> Advanced analytics for threat detection and response
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-100">
-                      <strong>Regular Assessments:</strong> Penetration testing and security assessments
-                    </div>
-                  </li>
-                </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Trust Indicators */}
-      <div className="py-20 bg-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Why Trust MapMyGap?</h2>
-            <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-              We've earned the trust of organizations worldwide through our commitment 
-              to security, transparency, and excellence.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-blue-700 text-blue-100 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                🏆
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Proven Track Record</h3>
-              <p className="text-slate-100">
-                Years of successful operation with zero security breaches and 99.9% uptime.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-green-700 text-green-100 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                🔍
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Transparent Practices</h3>
-              <p className="text-slate-100">
-                Open about our security practices and regular third-party audits.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="bg-purple-700 text-purple-100 text-5xl rounded-full w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                🤝
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3">Customer Commitment</h3>
-              <p className="text-slate-100">
-                Dedicated to protecting your data and maintaining your trust.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-             {/* CTA Section */}
-       <div className="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
-         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-           <h2 className="text-4xl font-bold text-white mb-6">Ready to Experience Secure Compliance?</h2>
-           <p className="text-xl text-white mb-8">
-             Join thousands of organizations that trust MapMyGap with their sensitive compliance data. 
-             Start your secure analysis today.
-           </p>
-           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-             <Link
-               to="/"
-               className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-lg"
-             >
-               Start Free Analysis
-             </Link>
-             <Link
-               to="/privacy"
-               className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
-             >
-               View Privacy Policy
-             </Link>
-           </div>
-         </div>
-       </div>
-
-      {/* Navigation */}
-      <div className="py-8 bg-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <Link to="/" className="text-blue-300 hover:text-blue-200 font-medium">
-              ← Back to Home
-            </Link>
-            <div className="flex gap-4">
-              <Link to="/privacy" className="text-blue-300 hover:text-blue-200 font-medium">
-                Privacy Policy →
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/faq"
+                className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-lg"
+              >
+                View FAQ
               </Link>
+              <a
+                href="mailto:support@mapmygap.com"
+                className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
+              >
+                Contact Support
+              </a>
             </div>
           </div>
         </div>
-      </div>
+
+        {/* Navigation */}
+        <div className="py-8 bg-slate-800">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <Link to="/" className="text-blue-300 hover:text-blue-200 font-medium">
+                ← Back to Home
+              </Link>
+              <div className="flex gap-4">
+                <Link to="/privacy" className="text-blue-300 hover:text-blue-200 font-medium">
+                  Privacy Policy →
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
 
       <SharedFooter />
