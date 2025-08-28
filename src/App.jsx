@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './AuthContext';
 import Homepage from './Homepage.jsx';
 import Analyzer from './Analyzer.jsx';
+import TestAnalyzer from './TestAnalyzer.jsx';
 import LoginModal from './LoginModal.jsx';
 import TermsOfService from './pages/TermsOfService.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
@@ -33,6 +34,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/analyzer" element={<Analyzer />} />
+        <Route path="/test-analyzer" element={<TestAnalyzer />} />
         <Route path="/terms" element={<TermsOfService />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/faq" element={<FAQ />} />
