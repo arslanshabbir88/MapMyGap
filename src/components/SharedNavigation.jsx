@@ -36,7 +36,7 @@ const SharedNavigation = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
+    <header className="lg:sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
       <nav className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2 sm:py-3 lg:py-4">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
           {/* Logo and Title - More compact on mobile */}
