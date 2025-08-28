@@ -21,7 +21,7 @@ const XMarkIcon = () => <Icon path="M6 18L18 6M6 6l12 12" />;
 
 // --- Main Homepage Component ---
 
-function Homepage() {
+function Homepage({ onShowLogin }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -35,11 +35,13 @@ function Homepage() {
   };
 
   const navigateToAnalyzer = () => {
-    // Temporarily allow access to Analyzer for testing
-    // if (!user) {
-    //   // Show login modal or redirect to login
-    //   return;
-    // }
+    if (!user) {
+      // Show login modal
+      if (onShowLogin) {
+        onShowLogin();
+      }
+      return;
+    }
     navigate('/analyzer');
   };
 
