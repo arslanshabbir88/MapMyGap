@@ -149,6 +149,7 @@ const Frameworks = () => {
         "Critical infrastructure",
         "Cloud service providers"
       ]
+    },
 
     'iso-27001': {
       name: "ISO 27001",
