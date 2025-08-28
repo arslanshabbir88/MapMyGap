@@ -37,13 +37,13 @@ const SharedNavigation = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
-      <nav className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
-          {/* Logo and Title - Stack on mobile */}
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-            <Link to="/" className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-4">
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
-              <span className="text-xs sm:text-sm text-slate-400">AI-Powered Compliance Analysis</span>
+      <nav className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2 sm:py-3 lg:py-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
+          {/* Logo and Title - More compact on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-0.5 sm:space-y-0 sm:space-x-4">
+            <Link to="/" className="flex flex-col sm:flex-row sm:items-center space-y-0.5 sm:space-y-0 sm:space-x-4">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-tight">MapMyGap</h1>
+              <span className="text-xs text-slate-400 hidden sm:block">AI-Powered Compliance Analysis</span>
             </Link>
           </div>
           
@@ -56,14 +56,14 @@ const SharedNavigation = () => {
             <Link to="/faq" className="text-slate-300 hover:text-white transition-colors">FAQ</Link>
           </div>
           
-          {/* Navigation and User Actions - Stack on mobile */}
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+          {/* Navigation and User Actions - More compact on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             {user ? (
               <>
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-1.5 sm:space-y-0 sm:space-x-3">
                   <div className="flex items-center space-x-2 text-slate-300">
-                    <UserIcon />
-                    <span className="text-xs sm:text-sm font-medium">
+                    <UserIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span className="text-xs font-medium">
                       {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                     </span>
                   </div>
@@ -71,13 +71,13 @@ const SharedNavigation = () => {
                     onClick={handleLogout}
                     className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
                   >
-                    <LogoutIcon />
-                    <span className="text-xs sm:text-sm">Logout</span>
+                    <LogoutIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+                    <span className="text-xs">Logout</span>
                   </button>
                 </div>
                 <button
                   onClick={navigateToAnalyzer}
-                  className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
+                  className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
                 >
                   Go to Analyzer
                 </button>
@@ -86,13 +86,13 @@ const SharedNavigation = () => {
               <>
                 <button
                   onClick={navigateToAnalyzer}
-                  className="text-slate-300 hover:text-white transition-colors text-center sm:text-left"
+                  className="text-slate-300 hover:text-white transition-colors text-center sm:text-left text-xs sm:text-sm"
                 >
                   Sign In
                 </button>
                 <button
                   onClick={navigateToAnalyzer}
-                  className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
+                  className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
                 >
                   Get Started
                 </button>
@@ -102,22 +102,22 @@ const SharedNavigation = () => {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-slate-300 hover:text-white transition-colors"
+              className="lg:hidden p-1.5 sm:p-2 text-slate-300 hover:text-white transition-colors"
             >
-              {isMobileMenuOpen ? <XMarkIcon /> : <MenuIcon />}
+              {isMobileMenuOpen ? <XMarkIcon className="w-5 h-5" /> : <MenuIcon className="w-5 h-5" />}
             </button>
           </div>
         </div>
         
-        {/* Mobile Navigation Menu */}
+        {/* Mobile Navigation Menu - More compact */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden mt-4 pb-4 border-t border-slate-800">
-            <div className="flex flex-col space-y-3 pt-4">
-              <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors">How It Works</Link>
-              <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors">Frameworks</Link>
-              <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</Link>
-              <Link to="/about" className="text-slate-300 hover:text-white transition-colors">About</Link>
-              <Link to="/faq" className="text-slate-300 hover:text-white transition-colors">FAQ</Link>
+          <div className="lg:hidden mt-3 pb-3 border-t border-slate-800">
+            <div className="flex flex-col space-y-2 pt-3">
+              <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors text-sm">How It Works</Link>
+              <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors text-sm">Frameworks</Link>
+              <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm">Pricing</Link>
+              <Link to="/about" className="text-slate-300 hover:text-white transition-colors text-sm">About</Link>
+              <Link to="/faq" className="text-slate-300 hover:text-white transition-colors text-sm">FAQ</Link>
             </div>
           </div>
         )}
