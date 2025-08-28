@@ -1,11 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import SharedNavigation from '../components/SharedNavigation';
+import SharedFooter from '../components/SharedFooter';
 
 const TermsOfService = () => {
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-lg rounded-lg p-8">
+    <div className="min-h-screen bg-slate-900 text-slate-300">
+      <SharedNavigation />
+      
+      <main>
+        <section className="py-24 sm:py-32 text-center bg-slate-800/50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-6">
+              Terms of Service
+            </h1>
+            <p className="text-xl text-slate-400">Last updated: {new Date().toLocaleDateString()}</p>
+          </div>
+        </section>
+
+        <section className="py-24">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Terms of Service</h1>
             <p className="text-gray-600">Last updated: {new Date().toLocaleDateString()}</p>
@@ -120,12 +135,15 @@ const TermsOfService = () => {
           </div>
 
           <div className="mt-8 text-center">
-            <Link to="/" className="text-blue-600 hover:text-blue-800 font-medium">
+            <Link to="/" className="text-slate-400 hover:text-white transition-colors">
               ← Back to Home
             </Link>
           </div>
         </div>
-      </div>
+      </section>
+      </main>
+
+      <SharedFooter />
     </div>
   );
 };

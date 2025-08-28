@@ -100,7 +100,7 @@ function Homepage() {
                 <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors">Frameworks</Link>
                 <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</Link>
                 <Link to="/about" className="text-slate-300 hover:text-white transition-colors">About</Link>
-                <Link to="/support" className="text-slate-300 hover:text-white transition-colors">Support</Link>
+                <Link to="/faq" className="text-slate-300 hover:text-white transition-colors">FAQ</Link>
               </div>
               
               {/* Navigation and User Actions - Stack on mobile */}
@@ -164,7 +164,6 @@ function Homepage() {
                   <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors">Frameworks</Link>
                   <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</Link>
                   <Link to="/about" className="text-slate-300 hover:text-white transition-colors">About</Link>
-                  <Link to="/support" className="text-slate-300 hover:text-white transition-colors">Support</Link>
                   <Link to="/faq" className="text-slate-300 hover:text-white transition-colors">FAQ</Link>
                 </div>
               </div>
@@ -287,7 +286,6 @@ function Homepage() {
                 <ul className="space-y-2">
                   <li><Link to="/how-it-works" className="text-slate-400 hover:text-white transition-colors">How It Works</Link></li>
                   <li><Link to="/frameworks" className="text-slate-400 hover:text-white transition-colors">Frameworks</Link></li>
-                  <li><Link to="/support" className="text-slate-400 hover:text-white transition-colors">Support</Link></li>
                   <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors">FAQ</Link></li>
                 </ul>
               </div>

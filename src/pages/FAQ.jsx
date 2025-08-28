@@ -1,231 +1,197 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import SharedNavigation from '../components/SharedNavigation';
+import SharedFooter from '../components/SharedFooter';
 
 const FAQ = () => {
-  const [openSections, setOpenSections] = useState({});
-
-  const toggleSection = (sectionId) => {
-    setOpenSections(prev => ({
-      ...prev,
-      [sectionId]: !prev[sectionId]
-    }));
-  };
+  const [openCategory, setOpenCategory] = useState('general');
 
   const faqData = {
-    general: {
-      title: "General Questions",
-      icon: "🏠",
-      questions: [
-        {
-          q: "What is MapMyGap?",
-          a: "MapMyGap is an AI-powered compliance gap analysis platform that helps organizations assess their compliance with cybersecurity frameworks like NIST 800-53, ISO 27001, SOC 2, and PCI DSS. It analyzes your documents and identifies gaps in your compliance posture."
-        },
-        {
-          q: "How does MapMyGap work?",
-          a: "You upload your compliance documents (policies, procedures, etc.), select the framework you want to analyze against, and our AI analyzes the content to identify which controls are covered, partially implemented, or have gaps. You get a detailed report with actionable recommendations."
-        },
-        {
-          q: "What types of documents can I upload?",
-          a: "We support PDF, DOCX, and TXT files. You can upload policies, procedures, standards, guidelines, and any other compliance-related documentation. The AI will analyze the content to understand your current compliance posture."
-        },
-        {
-          q: "Is MapMyGap a replacement for professional auditors?",
-          a: "No, MapMyGap is a tool to assist with compliance analysis, not a replacement for professional auditors. It helps you identify gaps and prepare for audits, but you should still work with qualified compliance professionals for final validation and implementation."
-        }
-      ]
-    },
-    technical: {
-      title: "Technical Questions",
-      icon: "⚙️",
-      questions: [
-        {
-          q: "How accurate is the AI analysis?",
-          a: "Our AI is trained on extensive compliance frameworks and provides highly accurate analysis. However, accuracy depends on the quality and clarity of your uploaded documents. We recommend reviewing all AI outputs with qualified professionals."
-        },
-        {
-          q: "What frameworks do you support?",
-          a: "We currently support NIST 800-53, NIST CSF, ISO 27001:2022, SOC 2 Type II, and PCI DSS v4.0. We're continuously adding new frameworks based on user demand."
-        },
-        {
-          q: "How do you handle sensitive documents?",
-          a: "Documents are processed securely in real-time and not permanently stored. We use enterprise-grade encryption and security measures. Documents are automatically deleted after 30 days, and we never share your content with third parties."
-        },
-        {
-          q: "Can I export my analysis results?",
-          a: "Yes, you can export your analysis results in multiple formats including PDF reports, Excel spreadsheets, and JSON data for integration with other tools."
-        },
-        {
-          q: "What if the AI makes a mistake?",
-          a: "While our AI is highly accurate, it's designed to assist, not replace human judgment. All outputs should be reviewed by qualified professionals. We provide detailed explanations for each analysis to help you understand the reasoning."
-        }
-      ]
-    },
-    compliance: {
-      title: "Compliance Questions",
-      icon: "📋",
-      questions: [
-        {
-          q: "What's the difference between 'covered', 'partial', and 'gap'?",
-          a: "'Covered' means the control is fully implemented and documented. 'Partial' means some aspects are implemented but may need enhancement. 'Gap' means the control is not implemented or documented."
-        },
-        {
-          q: "How do I validate the AI recommendations?",
-          a: "Review each recommendation against your actual implementation, consult with your compliance team, and cross-reference with official framework documentation. The AI provides guidance, but final decisions should be made by qualified professionals."
-        },
-        {
-          q: "Can I use this for audit preparation?",
-          a: "Yes, MapMyGap is excellent for audit preparation. It helps you identify gaps before audits, understand your compliance posture, and prioritize remediation efforts. Many users run analysis before external audits."
-        },
-        {
-          q: "What industries do you support?",
-          a: "We support all industries that need cybersecurity compliance, including healthcare, finance, technology, manufacturing, government, and more. Our frameworks are industry-agnostic and widely applicable."
-        }
-      ]
-    },
-    business: {
-      title: "Business Questions",
-      icon: "💼",
-      questions: [
-        {
-          q: "How much does MapMyGap cost?",
-          a: "We offer flexible pricing plans starting with a free tier for basic analysis. Professional and enterprise plans include advanced features, priority support, and higher usage limits. Contact us for custom enterprise pricing."
-        },
-        {
-          q: "Do you offer enterprise support?",
-          a: "Yes, we provide dedicated enterprise support including account management, custom integrations, training, and priority technical support. Enterprise customers also get advanced security features and compliance reporting."
-        },
-        {
-          q: "Can I integrate MapMyGap with existing tools?",
-          a: "Yes, we offer API access and integrations with popular GRC tools, project management platforms, and compliance management systems. Contact us to discuss your specific integration needs."
-        },
-        {
-          q: "Do you offer training and onboarding?",
-          a: "Yes, we provide comprehensive training for teams, including best practices for compliance analysis, how to interpret results, and how to integrate findings into your compliance program."
-        }
-      ]
-    },
-    security: {
-      title: "Security & Privacy",
-      icon: "🔒",
-      questions: [
-        {
-          q: "How secure is my data?",
-          a: "We implement enterprise-grade security including encryption in transit and at rest, strict access controls, regular security audits, and compliance with industry standards. Your data security is our top priority."
-        },
-        {
-          q: "Do you store my documents permanently?",
-          a: "No, documents are processed in real-time and temporarily stored for 30 days for your convenience. They are then automatically and securely deleted. We never permanently store your content."
-        },
-        {
-          q: "Who can access my data?",
-          a: "Only authorized MapMyGap personnel with a legitimate business need can access your data, and only under strict security protocols. We never share your data with third parties without your explicit consent."
-        },
-        {
-          q: "Are you compliant with data protection regulations?",
-          a: "Yes, we comply with GDPR, CCPA, and other relevant data protection regulations. We provide data processing agreements and support data subject rights requests."
-        }
-      ]
-    },
-    support: {
-      title: "Support & Troubleshooting",
-      icon: "🆘",
-      questions: [
-        {
-          q: "How do I get help if I have issues?",
-          a: "We offer multiple support channels including email support, live chat, comprehensive documentation, and video tutorials. Enterprise customers get dedicated support representatives."
-        },
-        {
-          q: "What if my analysis fails or times out?",
-          a: "Large documents may take longer to process. If you experience timeouts, try breaking documents into smaller sections or contact support for assistance. We're continuously optimizing performance."
-        },
-        {
-          q: "Can I provide feedback to improve the service?",
-          a: "Absolutely! We welcome feedback on analysis accuracy, feature requests, and general improvements. Your input helps us make MapMyGap better for everyone."
-        },
-        {
-          q: "How often do you update the AI models?",
-          a: "We regularly update our AI models with new compliance information, framework updates, and user feedback. Updates are deployed seamlessly without service interruption."
-        }
-      ]
-    }
+    general: [
+      {
+        question: "What is MapMyGap?",
+        answer: "MapMyGap is an AI-powered compliance gap analysis platform that helps organizations identify compliance gaps by analyzing their internal documents against industry frameworks like NIST 800-53, ISO 27001, SOC 2, and PCI DSS."
+      },
+      {
+        question: "How does MapMyGap work?",
+        answer: "You upload your compliance documents, select a framework and categories to analyze, and our AI performs a comprehensive gap analysis. The platform identifies covered controls, partial implementations, and gaps, then generates actionable recommendations and implementation text."
+      },
+      {
+        question: "What document formats do you support?",
+        answer: "We support PDF, DOCX, and TXT files. Our AI can read and analyze text content from these formats to perform compliance analysis."
+      },
+      {
+        question: "Is my data secure?",
+        answer: "Yes, we take data security seriously. We use enterprise-grade encryption, don't permanently store your documents, and implement strict access controls. Your compliance data is protected with bank-level security measures."
+      }
+    ],
+    technical: [
+      {
+        question: "What AI technology does MapMyGap use?",
+        answer: "We use advanced natural language processing and machine learning models trained specifically on compliance frameworks and security standards. Our AI continuously learns and improves to provide more accurate analysis."
+      },
+      {
+        question: "How accurate is the AI analysis?",
+        answer: "Our AI provides professional-grade analysis accuracy, but we recommend human review for critical compliance decisions. The AI is trained on extensive compliance data and continuously improved with user feedback."
+      },
+      {
+        question: "Can I customize the analysis?",
+        answer: "Yes, you can select specific control categories or families to focus your analysis. This allows you to target areas of particular concern or interest for your organization."
+      },
+      {
+        question: "Do you support custom frameworks?",
+        answer: "Currently we support major industry frameworks. Custom framework support is available for enterprise customers. Contact us to discuss your specific needs."
+      }
+    ],
+    compliance: [
+      {
+        question: "Which compliance frameworks do you support?",
+        answer: "We support NIST 800-53, NIST CSF, ISO 27001, SOC 2, PCI DSS, HIPAA, GDPR, and many others. Our framework library is continuously expanding based on industry demand."
+      },
+      {
+        question: "Can MapMyGap help with audit preparation?",
+        answer: "Absolutely! MapMyGap is excellent for audit preparation. It helps you identify gaps before external audits, understand your compliance posture, and prioritize remediation efforts."
+      },
+      {
+        question: "How often should I run compliance analysis?",
+        answer: "We recommend running analysis quarterly or whenever you make significant changes to policies or controls. Regular analysis helps maintain ongoing compliance and tracks improvements over time."
+      },
+      {
+        question: "Can I export my analysis results?",
+        answer: "Yes, you can export results in multiple formats including PDF reports for stakeholders, Excel spreadsheets for tracking, and JSON data for integrations with other tools."
+      }
+    ],
+    pricing: [
+      {
+        question: "How much does MapMyGap cost?",
+        answer: "We're currently finalizing our pricing structure to ensure it provides the best value for organizations of all sizes. We're offering early access to select organizations. Contact us to learn more about our pilot program."
+      },
+      {
+        question: "Is there a free trial?",
+        answer: "We're working on offering a free tier for small organizations. In the meantime, we're providing early access to select organizations to demonstrate the platform's value."
+      },
+      {
+        question: "Do you offer discounts for nonprofits?",
+        answer: "Yes, we plan to offer special pricing for educational institutions, nonprofits, and government agencies. Contact us for details once our pricing structure is finalized."
+      },
+      {
+        question: "Can I change plans later?",
+        answer: "Yes, our goal is to provide flexible plans that grow with your organization. You'll be able to upgrade, downgrade, or cancel your plan as needed."
+      }
+    ],
+    support: [
+      {
+        question: "What support options are available?",
+        answer: "We provide comprehensive support including documentation, video tutorials, and direct support channels. Enterprise customers will have access to dedicated account managers and priority support."
+      },
+      {
+        question: "Do you provide training?",
+        answer: "Yes, we offer comprehensive training and onboarding to help your team get the most out of MapMyGap. This includes best practices for compliance analysis and platform optimization."
+      },
+      {
+        question: "Can you help with implementation?",
+        answer: "Yes, our team can help you implement the recommendations generated by our platform. We provide guidance on control implementation and can assist with policy development."
+      },
+      {
+        question: "What if I need help with a specific framework?",
+        answer: "Our team has deep expertise in all supported frameworks. We can provide guidance on framework-specific requirements and help you interpret analysis results."
+      }
+    ]
   };
 
+  const categories = [
+    { id: 'general', name: 'General Questions', icon: '❓' },
+    { id: 'technical', name: 'Technical Details', icon: '⚙️' },
+    { id: 'compliance', name: 'Compliance & Auditing', icon: '📋' },
+    { id: 'pricing', name: 'Pricing & Plans', icon: '💰' },
+    { id: 'support', name: 'Support & Training', icon: '🎓' }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Find answers to common questions about MapMyGap, our AI-powered compliance analysis platform, and how it can help your organization.
-          </p>
-        </div>
-
-        <div className="space-y-8">
-          {Object.entries(faqData).map(([sectionId, section]) => (
-            <div key={sectionId} className="bg-white shadow-lg rounded-lg overflow-hidden">
-              <button
-                onClick={() => toggleSection(sectionId)}
-                className="w-full px-6 py-4 text-left bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <span className="text-2xl mr-3">{section.icon}</span>
-                    <h2 className="text-xl font-semibold">{section.title}</h2>
-                  </div>
-                  <svg
-                    className={`w-6 h-6 transform transition-transform duration-200 ${
-                      openSections[sectionId] ? 'rotate-180' : ''
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </div>
-              </button>
-
-              {openSections[sectionId] && (
-                <div className="px-6 py-4">
-                  <div className="space-y-6">
-                    {section.questions.map((item, index) => (
-                      <div key={index} className="border-b border-gray-200 pb-4 last:border-b-0">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                          {item.q}
-                        </h3>
-                        <p className="text-gray-700 leading-relaxed">
-                          {item.a}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 bg-white shadow-lg rounded-lg p-8 text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Still Have Questions?</h2>
-          <p className="text-gray-600 mb-6">
-            Can't find what you're looking for? Our support team is here to help.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              to="/support"
-              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
-            >
-              Contact Support
-            </Link>
-            <Link
-              to="/"
-              className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200"
-            >
-              Back to Home
-            </Link>
+    <div className="min-h-screen bg-slate-900 text-slate-300">
+      <SharedNavigation />
+      
+      <main>
+        {/* Hero Section */}
+        <section className="py-24 sm:py-32 text-center bg-slate-800/50">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight mb-6">
+              Frequently Asked Questions
+            </h1>
+            <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+              Find answers to common questions about MapMyGap, our AI-powered compliance 
+              analysis platform, and how it can help your organization.
+            </p>
           </div>
-        </div>
-      </div>
+        </section>
+
+        {/* FAQ Categories and Questions */}
+        <section className="py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Category Navigation */}
+            <div className="flex flex-wrap justify-center gap-4 mb-16">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => setOpenCategory(category.id)}
+                  className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-all duration-300 ${
+                    openCategory === category.id
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white'
+                  }`}
+                >
+                  <span className="text-lg">{category.icon}</span>
+                  <span>{category.name}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Questions for Selected Category */}
+            <div className="max-w-4xl mx-auto">
+              <div className="space-y-6">
+                {faqData[openCategory].map((item, index) => (
+                  <div key={index} className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-slate-600 transition-all duration-300">
+                    <h3 className="text-lg font-semibold text-white mb-3">
+                      {item.question}
+                    </h3>
+                    <p className="text-slate-400 leading-relaxed">
+                      {item.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Still Have Questions Section */}
+        <section className="py-24 bg-slate-800/50">
+          <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+            <h2 className="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-6">
+              Still Have Questions?
+            </h2>
+            <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+              Can't find the answer you're looking for? Our team is here to help. 
+              Reach out and we'll get back to you as soon as possible.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="mailto:support@mapmygap.com"
+                className="inline-flex items-center px-8 py-4 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-500 transition-colors rounded-lg text-lg font-semibold"
+              >
+                Email Support
+              </a>
+              <a
+                href="mailto:sales@mapmygap.com"
+                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-lg font-semibold hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+              >
+                Contact Sales
+              </a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <SharedFooter />
     </div>
   );
 };

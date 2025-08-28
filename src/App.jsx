@@ -11,7 +11,6 @@ import HowItWorks from './pages/HowItWorks.jsx';
 import Frameworks from './pages/Frameworks.jsx';
 import Security from './pages/Security.jsx';
 import Pricing from './pages/Pricing.jsx';
-import Support from './pages/Support.jsx';
 import About from './pages/About.jsx';
 
 function AppContent() {
@@ -43,7 +42,6 @@ function AppContent() {
         <Route path="/frameworks" element={<Frameworks />} />
         <Route path="/security" element={<Security />} />
         <Route path="/pricing" element={<Pricing />} />
-        <Route path="/support" element={<Support />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

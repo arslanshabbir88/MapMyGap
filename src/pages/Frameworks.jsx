@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SharedNavigation from '../components/SharedNavigation';
+import SharedFooter from '../components/SharedFooter';
 
 const Frameworks = () => {
   const [selectedFramework, setSelectedFramework] = useState('nist-800-53');
@@ -285,9 +287,12 @@ const Frameworks = () => {
   const selectedFrameworkData = frameworks[selectedFramework];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white py-20">
+    <div className="min-h-screen bg-slate-900 text-slate-300">
+      <SharedNavigation />
+      
+      <main>
+        {/* Hero Section */}
+        <section className="py-24 sm:py-32 text-center bg-slate-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl font-bold mb-6">Supported Compliance Frameworks</h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto">
@@ -457,7 +462,10 @@ const Frameworks = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
+      </main>
+
+      <SharedFooter />
     </div>
   );
 };
