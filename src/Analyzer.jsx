@@ -836,7 +836,7 @@ function Analyzer() {
         console.log('🚀 Analysis cache buster:', cacheBuster, 'Document hash:', documentHash, 'API URL:', apiUrl);
         
         const response = await fetch(apiUrl, {
-        method: 'POST',
+          method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
@@ -845,8 +845,9 @@ function Analyzer() {
           },
           body: JSON.stringify(requestBody),
         });
-      if (!response.ok) {
-        const errorText = await response.text();
+        
+        if (!response.ok) {
+          const errorText = await response.text();
           
           // Try to parse as JSON for better error handling
           try {
@@ -871,14 +872,10 @@ function Analyzer() {
             throw new Error(errorText);
           }
         }
-        result = await response.json();
-      }
-    } else {
-      // Handle case where file is not a supported type
-      throw new Error('Unsupported file type. Please upload a text file, DOCX, or PDF.');
-    }
         
-      if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+        result = await response.json();
+        
+        if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
           console.log('Raw AI response:', rawJson);
           console.log('Raw response length:', rawJson.length);
@@ -966,8 +963,12 @@ function Analyzer() {
           if (user) {
             await saveAnalysisToHistory(results, uploadedFile.name);
           }
-      } else {
+        } else {
           throw new Error("Invalid response structure from API.");
+        }
+      } else {
+        // Handle case where file is not a supported type
+        throw new Error('Unsupported file type. Please upload a text file, DOCX, or PDF.');
       }
     } catch (e) {
       console.error(e);
