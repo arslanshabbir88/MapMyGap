@@ -872,55 +872,11 @@ function Analyzer() {
           }
         }
         result = await response.json();
-      } else {
-        // SECURITY: Send file content as JSON to secure /api/analyze endpoint
-        const requestBody = {
-          fileContent: fileContent,
-          framework: selectedFramework,
-          selectedCategories: selectedCategories.length > 0 ? selectedCategories : null
-        };
-
-        // Add cache-busting query parameter to prevent any caching
-        const cacheBuster = Date.now();
-        const apiUrl = `/api/analyze?cb=${cacheBuster}`;
-        console.log('🚀 Frontend cache buster:', cacheBuster, 'API URL:', apiUrl);
-        
-        // Clear browser cache for this request
-        if ('caches' in window) {
-          try {
-            caches.keys().then(names => {
-              names.forEach(name => {
-                if (name.includes('analyze') || name.includes('api')) {
-                  caches.delete(name);
-                  console.log('🧹 Cleared browser cache:', name);
-                }
-              });
-            });
-        } catch (e) {
-            console.log('Browser cache clearing failed:', e);
-          }
-        }
-        
-        const response = await fetch(apiUrl, { 
-          method: 'POST', 
-          body: JSON.stringify(requestBody),
-          headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-            'Pragma': 'no-cache',
-            'X-Cache-Buster': cacheBuster.toString(),
-            'X-Request-ID': `${cacheBuster}-${btoa(fileContent.substring(0, 50) + fileContent.substring(Math.max(0, fileContent.length - 50))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 12)}`
-          }
-        });
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText);
-        }
-        result = await response.json();
-        if (result.extractedText) {
-          setFileContent(result.extractedText);
-        }
       }
+    } else {
+      // Handle case where file is not a supported type
+      throw new Error('Unsupported file type. Please upload a text file, DOCX, or PDF.');
+    }
         
       if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
