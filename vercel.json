@@ -1,9 +1,6 @@
 {
   "version": 2,
   "functions": {
-    "api/upload-analyze.js": {
-      "maxDuration": 60
-    },
     "api/analyze.js": {
       "maxDuration": 60
     },
