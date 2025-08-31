@@ -58,12 +58,20 @@ export default async function handler(req, res) {
         const session = event.data.object;
         console.log('Checkout completed:', session.id);
         
-        // Store subscription data in Supabase
-        if (session.metadata?.userId && session.subscription) {
-          try {
-            // Get subscription details
-            const subscription = await stripe.subscriptions.retrieve(session.subscription);
-            const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
+                 // Store subscription data in Supabase
+         if (session.metadata?.userId && session.subscription) {
+           try {
+             // Get subscription details
+             const subscription = await stripe.subscriptions.retrieve(session.subscription);
+             const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
+             
+             console.log('📊 Subscription details:', {
+               subscriptionId: subscription.id,
+               status: subscription.status,
+               currentPeriodEnd: subscription.current_period_end,
+               currentPeriodEndType: typeof subscription.current_period_end,
+               customerId: session.customer
+             });
             
             // Determine plan type
             let planType = 'Unknown';
@@ -72,20 +80,20 @@ export default async function handler(req, res) {
             else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
             else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
             
-            // Store in Supabase
-            const { error } = await supabase
-              .from('subscriptions')
-              .upsert({
-                user_id: session.metadata.userId,
-                stripe_subscription_id: subscription.id,
-                stripe_customer_id: session.customer,
-                plan_type: planType,
-                status: subscription.status,
-                current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-                created_at: new Date().toISOString()
-              }, {
-                onConflict: 'user_id'
-              });
+                         // Store in Supabase
+             const { error } = await supabase
+               .from('subscriptions')
+               .upsert({
+                 user_id: session.metadata.userId,
+                 stripe_subscription_id: subscription.id,
+                 stripe_customer_id: session.customer,
+                 plan_type: planType,
+                 status: subscription.status,
+                 current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                 created_at: new Date().toISOString()
+               }, {
+                 onConflict: 'user_id'
+               });
             
             if (error) {
               console.error('Error storing subscription in Supabase:', error);
