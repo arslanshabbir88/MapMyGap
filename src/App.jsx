@@ -39,7 +39,7 @@ function AppContent() {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/frameworks" element={<Frameworks />} />
         <Route path="/security" element={<Security />} />
-        <Route path="/pricing" element={<Pricing />} />
+        <Route path="/pricing" element={<Pricing onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/about" element={<About />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

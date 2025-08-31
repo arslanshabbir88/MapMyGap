@@ -4,24 +4,24 @@ import SharedFooter from '../components/SharedFooter';
 import StripeCheckout from '../components/StripeCheckout';
 import { STRIPE_CONFIG } from '../config/stripe';
 
-const Pricing = () => {
+const Pricing = ({ onShowLogin }) => {
   const plans = [
     {
       name: 'Trial',
       price: '$0',
       period: '/month',
-      description: 'Unlock the complete MapMyGap experience with our comprehensive 14-day free trial. Get full access to all features including our advanced AI-powered compliance analysis and control text generation capabilities.',
-      features: [
-        'Unlimited AI Analysis - Analyze unlimited documents during your trial period',
-        'Control Text Generation - Generate custom control text with AI assistance',
-        'All Framework Support - Access to all compliance frameworks',
-        'Real-time Insights - Get instant compliance gap analysis and recommendations'
-      ],
+             description: 'Start with our 14-day free trial. Get full access to all features with no commitment.',
+             features: [
+         'Unlimited AI Analysis',
+         'Control Text Generation',
+         'All Framework Support',
+         'Real-time Insights'
+       ],
              limitations: [
-         'Upload Cap: 1,000 characters per document upload',
-         'Generation Cap: 1,000 characters of control text generation',
-         'Analysis Limit: 3 total analyses',
-         'Duration: 14 days from signup'
+         '1,000 character upload limit',
+         '1,000 character generation limit',
+         '3 total analyses',
+         '14-day duration'
        ],
       priceId: STRIPE_CONFIG.prices.trial,
       buttonText: 'Start Free Trial',
@@ -32,13 +32,13 @@ const Pricing = () => {
       name: 'Starter',
       price: '$49',
       period: '/month',
-      description: 'AI-powered compliance analysis with 5 analyses per month. Access to all frameworks and control families.',
-      features: [
-        '5 AI-powered compliance analyses per month',
-        'Access to ALL compliance frameworks',
-        'Single control/family analysis (choose specific areas to analyze)',
-        'AI-generated gap identification (covered/partial/gap status)'
-      ],
+             description: 'Perfect for small teams and individual consultants.',
+             features: [
+         '5 Analyses per Month',
+         'All Frameworks',
+         'Gap Analysis',
+         'Control Text Generation'
+       ],
       priceId: STRIPE_CONFIG.prices.starter,
       buttonText: 'Subscribe to Starter',
       popular: false
@@ -47,12 +47,12 @@ const Pricing = () => {
       name: 'Professional',
       price: '$149',
       period: '/month',
-      description: 'AI-powered compliance analysis with 25 analyses per month. Access to all frameworks and control families. Perfect for consultants and growing businesses who need comprehensive compliance analysis with actionable implementation guidance.',
-      features: [
-        'Everything in Starter, PLUS:',
-        '✅ 25 AI-powered compliance analyses per month',
-        '✅ Implementation text generation for gaps'
-      ],
+             description: 'Ideal for growing businesses and compliance consultants.',
+             features: [
+         'Everything in Starter, PLUS:',
+         '25 Analyses per Month',
+         'Implementation Text Generation'
+       ],
       priceId: STRIPE_CONFIG.prices.professional,
       buttonText: 'Subscribe to Professional',
       popular: true
@@ -61,13 +61,13 @@ const Pricing = () => {
       name: 'Enterprise',
       price: '$499',
       period: '/month',
-      description: 'AI-powered compliance analysis with UNLIMITED analyses per month. Access to all frameworks and control families. For organizations requiring unlimited compliance analysis capacity with full implementation support for enterprise-scale compliance programs.',
-      features: [
-        'Everything in Professional, PLUS:',
-        '✅ Unlimited AI-powered compliance analyses',
-        '✅ Unlimited Implementation text generation for gaps',
-        '✅ Priority phone & email support'
-      ],
+             description: 'For enterprise organizations with unlimited compliance needs.',
+             features: [
+         'Everything in Professional, PLUS:',
+         'Unlimited Analyses',
+         'Unlimited Implementation Text',
+         'Priority Support'
+       ],
       priceId: STRIPE_CONFIG.prices.enterprise,
       buttonText: 'Subscribe to Enterprise',
       popular: false
@@ -76,7 +76,7 @@ const Pricing = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <SharedNavigation />
+      <SharedNavigation onShowLogin={onShowLogin} />
       
       <main className="pt-20 pb-16">
         {/* Header */}
@@ -120,45 +120,45 @@ const Pricing = () => {
                   </div>
                 )}
 
-                {/* Plan Header */}
-                <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                  <div className="mb-4">
-                    <span className="text-4xl font-bold">{plan.price}</span>
-                    <span className="text-gray-400">{plan.period}</span>
-                  </div>
-                  <p className="text-gray-300 text-sm leading-relaxed">
-                    {plan.description}
-                  </p>
-                </div>
+                                 {/* Plan Header */}
+                 <div className="text-center mb-6">
+                   <h3 className="text-2xl font-bold mb-2 text-white">{plan.name}</h3>
+                   <div className="mb-4">
+                     <span className="text-4xl font-bold text-white">{plan.price}</span>
+                     <span className="text-gray-400">{plan.period}</span>
+                   </div>
+                   <p className="text-gray-200 text-sm leading-relaxed font-medium">
+                     {plan.description}
+                   </p>
+                 </div>
 
-                {/* Features */}
-                <div className="mb-6">
-                  <h4 className="font-semibold text-blue-400 mb-3">What's Included:</h4>
-                  <ul className="space-y-2">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="text-sm text-gray-300 flex items-start">
-                        <span className="text-green-400 mr-2 mt-1">✓</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                                 {/* Features */}
+                 <div className="mb-6">
+                   <h4 className="font-semibold text-blue-400 mb-3 text-lg">What's Included:</h4>
+                   <ul className="space-y-3">
+                     {plan.features.map((feature, featureIndex) => (
+                       <li key={featureIndex} className="text-base text-gray-200 flex items-start font-medium">
+                         <span className="text-green-400 mr-3 mt-1 text-lg">✓</span>
+                         {feature}
+                       </li>
+                     ))}
+                   </ul>
+                 </div>
 
-                {/* Limitations (for Trial) */}
-                {plan.limitations && (
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-yellow-400 mb-3">Trial Limitations:</h4>
-                    <ul className="space-y-2">
-                      {plan.limitations.map((limitation, limitIndex) => (
-                        <li key={limitIndex} className="text-sm text-gray-300 flex items-start">
-                          <span className="text-yellow-400 mr-2 mt-1">⚠</span>
-                          {limitation}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                                 {/* Limitations (for Trial) */}
+                 {plan.limitations && (
+                   <div className="mb-6">
+                     <h4 className="font-semibold text-yellow-400 mb-3 text-lg">Trial Limitations:</h4>
+                     <ul className="space-y-3">
+                       {plan.limitations.map((limitation, limitIndex) => (
+                         <li key={limitIndex} className="text-base text-gray-200 flex items-start font-medium">
+                           <span className="text-yellow-400 mr-3 mt-1 text-lg">⚠</span>
+                           {limitation}
+                         </li>
+                       ))}
+                     </ul>
+                   </div>
+                 )}
 
                 {/* Checkout Button */}
                 <div className="mt-auto">

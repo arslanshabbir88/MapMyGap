@@ -14,7 +14,7 @@ const LogoutIcon = () => <Icon path="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 
 const MenuIcon = () => <Icon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />;
 const XMarkIcon = () => <Icon path="M6 18L18 6M6 6l12 12" />;
 
-const SharedNavigation = () => {
+const SharedNavigation = ({ onShowLogin }) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -29,7 +29,10 @@ const SharedNavigation = () => {
 
   const navigateToAnalyzer = () => {
     if (!user) {
-      // Show login modal or redirect to login
+      // Show login modal
+      if (onShowLogin) {
+        onShowLogin();
+      }
       return;
     }
     navigate('/analyzer');
