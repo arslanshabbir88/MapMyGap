@@ -46,6 +46,16 @@ export default async function handler(req, res) {
     res.status(200).json({ sessionId: session.id });
   } catch (error) {
     console.error('Error creating checkout session:', error);
-    res.status(500).json({ error: 'Failed to create checkout session' });
+    console.error('Request body:', req.body);
+    console.error('Error details:', {
+      message: error.message,
+      type: error.type,
+      code: error.code,
+      param: error.param
+    });
+    res.status(500).json({ 
+      error: 'Failed to create checkout session',
+      details: error.message 
+    });
   }
 }
