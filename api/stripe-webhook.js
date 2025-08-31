@@ -18,10 +18,14 @@ export default async function handler(req, res) {
   let event;
 
   try {
-    // Verify webhook signature
-    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    // For Vercel, we need to handle the parsed body
+    // Convert the parsed JSON back to a string for signature verification
+    const rawBody = JSON.stringify(req.body);
+    event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
+    console.error('Request body type:', typeof req.body);
+    console.error('Request body keys:', Object.keys(req.body || {}));
     return res.status(400).json({ error: 'Webhook signature verification failed' });
   }
 

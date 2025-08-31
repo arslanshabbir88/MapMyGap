@@ -16,8 +16,7 @@
       "maxDuration": 30
     },
     "api/stripe-webhook.js": {
-      "maxDuration": 30,
-      "rawBody": true
+      "maxDuration": 30
     },
     "api/check-subscription.js": {
       "maxDuration": 30
