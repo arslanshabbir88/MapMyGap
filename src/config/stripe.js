@@ -10,9 +10,9 @@ export const STRIPE_CONFIG = {
   
   // Price IDs from your Stripe dashboard (NOT Product IDs!)
   prices: {
-    trial: 'price_trial_id_here', // Replace with actual PRICE ID (starts with price_)
-    starter: 'price_starter_id_here', // Replace with actual PRICE ID (starts with price_)
-    professional: 'price_professional_id_here', // Replace with actual PRICE ID (starts with price_)
-    enterprise: 'price_enterprise_id_here' // Replace with actual PRICE ID (starts with price_)
+    trial: 'price_1S1q8O2LOmx0fW2YpttvoaCs', // Replace with actual PRICE ID (starts with price_)
+    starter: 'price_1S1gdB2LOmx0fW2YClgvwNTc', // Replace with actual PRICE ID (starts with price_)
+    professional: 'price_1S1ghh2LOmx0fW2YWE0mjvJ0', // Replace with actual PRICE ID (starts with price_)
+    enterprise: 'price_1S1gjU2LOmx0fW2YkA4x8uKK' // Replace with actual PRICE ID (starts with price_)
   }
 };
