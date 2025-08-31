@@ -1,6 +1,6 @@
 import React from 'react';
-import { SharedNavigation } from '../components/SharedNavigation';
-import { SharedFooter } from '../components/SharedFooter';
+import SharedNavigation from '../components/SharedNavigation';
+import SharedFooter from '../components/SharedFooter';
 import StripeCheckout from '../components/StripeCheckout';
 import { STRIPE_CONFIG } from '../config/stripe';
 
