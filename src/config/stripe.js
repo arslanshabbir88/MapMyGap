@@ -1,7 +1,14 @@
 import { loadStripe } from '@stripe/stripe-js';
 
+// Debug: Log the environment variable
+console.log('STRIPE_PUBLISHABLE_KEY from env:', import.meta.env.STRIPE_PUBLISHABLE_KEY);
+
 // Load Stripe with your publishable key
-export const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLISHABLE_KEY);
+const publishableKey = import.meta.env.STRIPE_PUBLISHABLE_KEY;
+if (!publishableKey) {
+  console.error('STRIPE_PUBLISHABLE_KEY is not set in environment variables');
+}
+export const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
 
 // Stripe configuration
 export const STRIPE_CONFIG = {

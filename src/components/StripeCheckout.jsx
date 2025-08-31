@@ -15,6 +15,11 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
     setLoading(true);
     setError(null);
 
+    // Debug: Check if environment variables are loaded
+    console.log('Stripe Publishable Key:', import.meta.env.STRIPE_PUBLISHABLE_KEY);
+    console.log('User ID:', user.id);
+    console.log('Price ID:', priceId);
+
     try {
       // Create checkout session
       const response = await fetch('/api/create-checkout-session', {
@@ -38,13 +43,13 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
       }
 
       // Redirect to Stripe Checkout
-      const stripe = await import('../config/stripe').then(({ stripePromise }) => 
-        stripePromise
-      );
-
-      if (!stripe) {
-        throw new Error('Stripe failed to load. Please check your configuration.');
+      const { stripePromise } = await import('../config/stripe');
+      
+      if (!stripePromise) {
+        throw new Error('Stripe is not configured. Please check your environment variables.');
       }
+
+      const stripe = await stripePromise;
 
       const { error: stripeError } = await stripe.redirectToCheckout({
         sessionId: sessionId,
@@ -54,7 +59,9 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
         throw new Error(stripeError.message);
       }
     } catch (err) {
-      setError(err.message);
+      console.error('Stripe checkout error:', err);
+      console.error('Error stack:', err.stack);
+      setError(`Checkout error: ${err.message}`);
     } finally {
       setLoading(false);
     }
