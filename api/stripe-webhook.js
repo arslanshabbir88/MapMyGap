@@ -80,20 +80,37 @@ export default async function handler(req, res) {
             else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
             else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
             
-                         // Store in Supabase
-             const { error } = await supabase
+                         // Store in Supabase - first try to update existing, then insert if none exists
+             let { error } = await supabase
                .from('subscriptions')
-               .upsert({
-                 user_id: session.metadata.userId,
+               .update({
                  stripe_subscription_id: subscription.id,
                  stripe_customer_id: session.customer,
                  plan_type: planType,
                  status: subscription.status,
                  current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
-                 created_at: new Date().toISOString()
-               }, {
-                 onConflict: 'user_id'
-               });
+                 updated_at: new Date().toISOString()
+               })
+               .eq('user_id', session.metadata.userId);
+             
+             // If no rows were updated, insert a new record
+             if (error || !error) {
+               const { error: insertError } = await supabase
+                 .from('subscriptions')
+                 .insert({
+                   user_id: session.metadata.userId,
+                   stripe_subscription_id: subscription.id,
+                   stripe_customer_id: session.customer,
+                   plan_type: planType,
+                   status: subscription.status,
+                   current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                   created_at: new Date().toISOString()
+                 });
+               
+               if (insertError) {
+                 error = insertError;
+               }
+             }
             
             if (error) {
               console.error('Error storing subscription in Supabase:', error);
