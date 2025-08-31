@@ -81,43 +81,10 @@ export default async function handler(req, res) {
         const subscription = event.data.object;
         console.log('Subscription created:', subscription.id);
         
-        // Update subscription in Supabase
-        try {
-          const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
-          
-          let planType = 'Unknown';
-          if (price.id === 'price_1S1q8O2LOmx0fW2YpttvoaCs') planType = 'Trial';
-          else if (price.id === 'price_1S1gdB2LOmx0fW2YClgvwNTc') planType = 'Starter';
-          else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
-          else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
-          
-          // Get the existing subscription to preserve user_id
-          const { data: existingSub } = await supabase
-            .from('subscriptions')
-            .select('user_id')
-            .eq('stripe_subscription_id', subscription.id)
-            .single();
-          
-          const { error } = await supabase
-            .from('subscriptions')
-            .upsert({
-              user_id: existingSub?.user_id || null, // Preserve existing user_id
-              stripe_subscription_id: subscription.id,
-              stripe_customer_id: subscription.customer,
-              plan_type: planType,
-              status: subscription.status,
-              current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
-              updated_at: new Date().toISOString()
-            }, {
-              onConflict: 'stripe_subscription_id'
-            });
-          
-          if (error) {
-            console.error('Error updating subscription in Supabase:', error);
-          }
-        } catch (error) {
-          console.error('Error processing subscription created:', error);
-        }
+        // For new subscriptions, we don't need to do anything here
+        // The checkout.session.completed event already handled the initial creation
+        // This event is just a confirmation that Stripe created the subscription
+        console.log('Subscription created event received - no action needed');
         break;
 
       case 'customer.subscription.updated':
@@ -181,6 +148,8 @@ export default async function handler(req, res) {
     res.status(200).json({ received: true });
   } catch (error) {
     console.error('Error processing webhook:', error);
+    console.error('Webhook event type:', event?.type);
+    console.error('Webhook event ID:', event?.id);
     res.status(500).json({ error: 'Failed to process webhook' });
   }
 }
