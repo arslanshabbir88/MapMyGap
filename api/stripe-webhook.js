@@ -10,6 +10,13 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req, res) {
+  console.log('🔔 Webhook received:', {
+    method: req.method,
+    headers: Object.keys(req.headers),
+    bodyKeys: Object.keys(req.body || {}),
+    timestamp: new Date().toISOString()
+  });
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -32,11 +39,17 @@ export default async function handler(req, res) {
     console.warn('⚠️ TEMPORARILY SKIPPING SIGNATURE VERIFICATION FOR DEVELOPMENT');
     event = req.body; // Use the parsed body directly
     
-    // Verify this is a valid Stripe event structure
-    if (!event || !event.type || !event.data) {
-      return res.status(400).json({ error: 'Invalid webhook event structure' });
-    }
-  }
+         // Verify this is a valid Stripe event structure
+     if (!event || !event.type || !event.data) {
+       return res.status(400).json({ error: 'Invalid webhook event structure' });
+     }
+     
+     console.log('✅ Using fallback event (signature verification skipped):', {
+       type: event.type,
+       id: event.id,
+       timestamp: new Date().toISOString()
+     });
+   }
 
   try {
     // Handle the event
