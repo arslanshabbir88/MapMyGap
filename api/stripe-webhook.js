@@ -64,7 +64,12 @@ export default async function handler(req, res) {
             if (error) {
               console.error('Error storing subscription in Supabase:', error);
             } else {
-              console.log('Subscription stored in Supabase successfully');
+              console.log('Subscription stored in Supabase successfully:', {
+                userId: session.metadata.userId,
+                subscriptionId: subscription.id,
+                planType: planType,
+                status: subscription.status
+              });
             }
           } catch (error) {
             console.error('Error processing checkout session:', error);
@@ -86,9 +91,17 @@ export default async function handler(req, res) {
           else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
           else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
           
+          // Get the existing subscription to preserve user_id
+          const { data: existingSub } = await supabase
+            .from('subscriptions')
+            .select('user_id')
+            .eq('stripe_subscription_id', subscription.id)
+            .single();
+          
           const { error } = await supabase
             .from('subscriptions')
             .upsert({
+              user_id: existingSub?.user_id || null, // Preserve existing user_id
               stripe_subscription_id: subscription.id,
               stripe_customer_id: subscription.customer,
               plan_type: planType,
@@ -123,16 +136,13 @@ export default async function handler(req, res) {
           
           const { error } = await supabase
             .from('subscriptions')
-            .upsert({
-              stripe_subscription_id: updatedSubscription.id,
-              stripe_customer_id: updatedSubscription.customer,
+            .update({
               plan_type: planType,
               status: updatedSubscription.status,
               current_period_end: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
               updated_at: new Date().toISOString()
-            }, {
-              onConflict: 'stripe_subscription_id'
-            });
+            })
+            .eq('stripe_subscription_id', updatedSubscription.id);
           
           if (error) {
             console.error('Error updating subscription in Supabase:', error);
