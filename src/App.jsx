@@ -12,6 +12,7 @@ import Frameworks from './pages/Frameworks.jsx';
 import Security from './pages/Security.jsx';
 import Pricing from './pages/Pricing.jsx';
 import About from './pages/About.jsx';
+import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 
 function AppContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -41,6 +42,7 @@ function AppContent() {
         <Route path="/security" element={<Security />} />
         <Route path="/pricing" element={<Pricing onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/about" element={<About />} />
+        <Route path="/subscription-success" element={<SubscriptionSuccess onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
