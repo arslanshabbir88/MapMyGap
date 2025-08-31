@@ -17,11 +17,12 @@ const Pricing = () => {
         'All Framework Support - Access to all compliance frameworks',
         'Real-time Insights - Get instant compliance gap analysis and recommendations'
       ],
-      limitations: [
-        'Upload Cap: 1,000 characters per document upload',
-        'Generation Cap: 1,000 characters of control text generation',
-        'Duration: 14 days from signup'
-      ],
+             limitations: [
+         'Upload Cap: 1,000 characters per document upload',
+         'Generation Cap: 1,000 characters of control text generation',
+         'Analysis Limit: 3 total analyses',
+         'Duration: 14 days from signup'
+       ],
       priceId: STRIPE_CONFIG.prices.trial,
       buttonText: 'Start Free Trial',
       popular: false,
