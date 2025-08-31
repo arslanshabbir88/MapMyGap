@@ -38,18 +38,20 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
       }
 
       // Redirect to Stripe Checkout
-      const stripe = await import('@stripe/stripe-js').then(({ loadStripe }) => 
-        loadStripe(import.meta.env.STRIPE_PUBLISHABLE_KEY)
+      const stripe = await import('../config/stripe').then(({ stripePromise }) => 
+        stripePromise
       );
 
-      if (stripe) {
-        const { error: stripeError } = await stripe.redirectToCheckout({
-          sessionId: sessionId,
-        });
+      if (!stripe) {
+        throw new Error('Stripe failed to load. Please check your configuration.');
+      }
 
-        if (stripeError) {
-          throw new Error(stripeError.message);
-        }
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: sessionId,
+      });
+
+      if (stripeError) {
+        throw new Error(stripeError.message);
       }
     } catch (err) {
       setError(err.message);
