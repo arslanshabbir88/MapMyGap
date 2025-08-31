@@ -1,6 +1,9 @@
-import Stripe from 'stripe';
+import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Initialize Supabase client
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -14,46 +17,24 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing userId' });
     }
 
-    // Find customer by user ID
-    const customers = await stripe.customers.list({
-      limit: 100,
-    });
+    // Query Supabase for user's subscription
+    const { data: subscription, error } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .single();
 
-    const customer = customers.data.find(c => c.metadata?.userId === userId);
-
-    if (!customer) {
+    if (error || !subscription) {
       return res.status(200).json({ subscription: null });
     }
-
-    // Get active subscriptions for the customer
-    const subscriptions = await stripe.subscriptions.list({
-      customer: customer.id,
-      status: 'active',
-      limit: 1,
-    });
-
-    if (subscriptions.data.length === 0) {
-      return res.status(200).json({ subscription: null });
-    }
-
-    const subscription = subscriptions.data[0];
-    
-    // Get the price to determine plan type
-    const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
-    
-    // Determine plan type based on price ID
-    let planType = 'Unknown';
-    if (price.id === 'price_1S1q8O2LOmx0fW2YpttvoaCs') planType = 'Trial';
-    else if (price.id === 'price_1S1gdB2LOmx0fW2YClgvwNTc') planType = 'Starter';
-    else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
-    else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
 
     const subscriptionData = {
-      id: subscription.id,
+      id: subscription.stripe_subscription_id,
       status: subscription.status,
-      plan: planType,
+      plan: subscription.plan_type,
       currentPeriodEnd: subscription.current_period_end,
-      customerId: customer.id,
+      customerId: subscription.stripe_customer_id,
     };
 
     res.status(200).json({ subscription: subscriptionData });

@@ -3,3 +3,6 @@
 [33m283009a[m Add subscription success page to handle Stripe checkout redirects
 [33maba33de[m Fix environment variable names: use VITE_ prefix for frontend Stripe variables
 [33m872a879[m Add debugging and better error handling for Stripe configuration issues
+[33m8340068[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Fix Vercel build configuration for React Router
+[33m1bb5076[m Add Stripe integration: checkout components, API endpoints, and configuration
+[33m0cc437e[m Restore deleted files - they were actually being used for local development and API endpoints
