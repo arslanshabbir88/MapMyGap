@@ -14,6 +14,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Determine if this is a trial plan (free or one-time)
+    const isTrialPlan = plan.toLowerCase() === 'trial';
+    
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -23,7 +26,7 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      mode: 'subscription',
+      mode: isTrialPlan ? 'payment' : 'subscription', // Use 'payment' for trial, 'subscription' for others
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
@@ -35,12 +38,14 @@ export default async function handler(req, res) {
         plan: plan,
         userId: userId,
       },
-      subscription_data: {
-        metadata: {
-          plan: plan,
-          userId: userId,
+      ...(isTrialPlan ? {} : {
+        subscription_data: {
+          metadata: {
+            plan: plan,
+            userId: userId,
+          },
         },
-      },
+      }),
     });
 
     res.status(200).json({ sessionId: session.id });
