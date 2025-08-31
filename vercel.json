@@ -9,6 +9,12 @@
     },
     "api/generate-control-text.js": {
       "maxDuration": 60
+    },
+    "api/create-checkout-session.js": {
+      "maxDuration": 30
+    },
+    "api/stripe-webhook.js": {
+      "maxDuration": 30
     }
   },
   "rewrites": [
