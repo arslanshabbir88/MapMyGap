@@ -1,19 +1,19 @@
 import { loadStripe } from '@stripe/stripe-js';
 
 // Debug: Log the environment variable
-console.log('STRIPE_PUBLISHABLE_KEY from env:', import.meta.env.STRIPE_PUBLISHABLE_KEY);
+console.log('VITE_STRIPE_PUBLISHABLE_KEY from env:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 // Load Stripe with your publishable key
-const publishableKey = import.meta.env.STRIPE_PUBLISHABLE_KEY;
+const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 if (!publishableKey) {
-  console.error('STRIPE_PUBLISHABLE_KEY is not set in environment variables');
+  console.error('VITE_STRIPE_PUBLISHABLE_KEY is not set in environment variables');
 }
 export const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
 
 // Stripe configuration
 export const STRIPE_CONFIG = {
   // Your Stripe publishable key will be loaded from environment variables
-  publishableKey: import.meta.env.STRIPE_PUBLISHABLE_KEY,
+  publishableKey: import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY,
   
   // Price IDs from your Stripe dashboard (NOT Product IDs!)
   prices: {

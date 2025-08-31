@@ -16,7 +16,7 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
     setError(null);
 
     // Debug: Check if environment variables are loaded
-    console.log('Stripe Publishable Key:', import.meta.env.STRIPE_PUBLISHABLE_KEY);
+    console.log('Stripe Publishable Key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
     console.log('User ID:', user.id);
     console.log('Price ID:', priceId);
 
