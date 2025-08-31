@@ -51,11 +51,5 @@
       ]
     }
   ],
-  "redirects": [
-    {
-      "source": "/www/(.*)",
-      "destination": "/$1",
-      "permanent": true
-    }
-  ]
+  "redirects": []
 }
