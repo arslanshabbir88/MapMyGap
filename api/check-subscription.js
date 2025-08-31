@@ -30,17 +30,19 @@ export default async function handler(req, res) {
     }
 
     // Query Supabase for user's subscription
-    const { data: subscription, error } = await supabase
+    const { data: subscriptions, error } = await supabase
       .from('subscriptions')
       .select('*')
       .eq('user_id', userId)
-      .eq('status', 'active')
-      .single();
+      .eq('status', 'active');
 
     if (error) {
       console.error('Supabase query error:', error);
       return res.status(200).json({ subscription: null });
     }
+
+    // Get the first active subscription (if any)
+    const subscription = subscriptions && subscriptions.length > 0 ? subscriptions[0] : null;
 
     if (!subscription) {
       console.log('No subscription found for user:', userId);
