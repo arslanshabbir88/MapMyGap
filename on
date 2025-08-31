@@ -1,0 +1,5 @@
+[33m08d8f21[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Force Stripe checkout session mode and add debugging parameters
+[33m5e03c07[m Add debugging for Stripe success URL to troubleshoot 404 error
+[33m283009a[m Add subscription success page to handle Stripe checkout redirects
+[33maba33de[m Fix environment variable names: use VITE_ prefix for frontend Stripe variables
+[33m872a879[m Add debugging and better error handling for Stripe configuration issues

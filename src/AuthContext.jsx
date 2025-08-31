@@ -20,6 +20,8 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
+  const [subscription, setSubscription] = useState(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
 
   useEffect(() => {
     // Get initial session
@@ -43,6 +45,15 @@ export const AuthProvider = ({ children }) => {
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Check subscription status when user changes
+  useEffect(() => {
+    if (user) {
+      checkSubscriptionStatus();
+    } else {
+      setSubscription(null);
+    }
+  }, [user]);
 
   const signInWithGoogle = async () => {
     try {
@@ -120,10 +131,46 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const checkSubscriptionStatus = async () => {
+    if (!user) {
+      setSubscription(null);
+      return;
+    }
+
+    setSubscriptionLoading(true);
+    try {
+      // Check if user has an active subscription
+      const response = await fetch('/api/check-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSubscription(data.subscription);
+      } else {
+        setSubscription(null);
+      }
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      setSubscription(null);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
+
   const value = {
     user,
     session,
     loading,
+    subscription,
+    subscriptionLoading,
+    checkSubscriptionStatus,
     signInWithGoogle,
     signInWithEmail,
     signUpWithEmail,

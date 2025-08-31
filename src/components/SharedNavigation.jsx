@@ -15,7 +15,7 @@ const MenuIcon = () => <Icon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
 const XMarkIcon = () => <Icon path="M6 18L18 6M6 6l12 12" />;
 
 const SharedNavigation = ({ onShowLogin }) => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, subscription, subscriptionLoading } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -35,6 +35,13 @@ const SharedNavigation = ({ onShowLogin }) => {
       }
       return;
     }
+    
+    // Check if user has subscription
+    if (!subscription) {
+      navigate('/pricing');
+      return;
+    }
+    
     navigate('/analyzer');
   };
 
@@ -70,6 +77,13 @@ const SharedNavigation = ({ onShowLogin }) => {
                       {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                     </span>
                   </div>
+                  {subscription && (
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-blue-400 font-medium">
+                        {subscription.plan}
+                      </span>
+                    </div>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
