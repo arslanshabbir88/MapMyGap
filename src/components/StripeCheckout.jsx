@@ -19,6 +19,8 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
     console.log('Stripe Publishable Key:', import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
     console.log('User ID:', user.id);
     console.log('Price ID:', priceId);
+    console.log('Window location origin:', window.location.origin);
+    console.log('Success URL:', `${window.location.origin}/subscription-success`);
 
     try {
       // Create checkout session
