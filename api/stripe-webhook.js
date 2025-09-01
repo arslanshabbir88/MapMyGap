@@ -142,7 +142,7 @@ export default async function handler(req, res) {
                 .from('subscriptions')
                 .update({
                   stripe_subscription_id: `trial_${session.id}`, // Use session ID as trial identifier
-                  stripe_customer_id: session.customer,
+                  stripe_customer_id: session.customer || `trial_customer_${session.id}`, // Use fallback for trial
                   plan_type: session.metadata.plan,
                   status: 'active', // Trial is active
                   current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
@@ -157,7 +157,7 @@ export default async function handler(req, res) {
                   .insert({
                     user_id: session.metadata.userId,
                     stripe_subscription_id: `trial_${session.id}`,
-                    stripe_customer_id: session.customer,
+                    stripe_customer_id: session.customer || `trial_customer_${session.id}`, // Use fallback for trial
                     plan_type: session.metadata.plan,
                     status: 'active',
                     current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
