@@ -202,6 +202,7 @@ function Analyzer() {
   useEffect(() => {
     const handleVisibilityChange = () => {
       const isVisible = !document.hidden;
+      console.log('🔍 Page visibility changed:', { isVisible, isAnalyzing, wasVisible: isPageVisible });
       setIsPageVisible(isVisible);
       
       // Warn user if they switch away during analysis
@@ -212,7 +213,7 @@ function Analyzer() {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [isAnalyzing]);
+  }, [isAnalyzing, isPageVisible]);
 
   // Ensure user is authenticated
   if (!user) {
@@ -823,6 +824,7 @@ function Analyzer() {
       }
     }
     
+    console.log('🚀 Starting analysis with states:', { isAnalyzing: false, isPageVisible, analysisStartTime: null });
     setIsAnalyzing(true);
 
     try {
@@ -855,6 +857,18 @@ function Analyzer() {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout for the request
         
+        // Add a more aggressive approach to prevent browser throttling
+        let requestCompleted = false;
+        const preventThrottling = () => {
+          if (!requestCompleted && !document.hidden) {
+            // Keep the page active by simulating user activity
+            console.log('🔄 Keeping page active to prevent throttling...');
+          }
+        };
+        
+        // Set up periodic activity to prevent throttling
+        const activityInterval = setInterval(preventThrottling, 5000); // Every 5 seconds
+        
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 
@@ -864,10 +878,13 @@ function Analyzer() {
             'X-Cache-Buster': cacheBuster.toString()
           },
           body: JSON.stringify(requestBody),
-          signal: controller.signal
+          signal: controller.signal,
+          keepalive: true // Prevent browser from cancelling the request when tab is inactive
         });
         
         clearTimeout(timeoutId);
+        clearInterval(activityInterval);
+        requestCompleted = true;
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -1015,6 +1032,11 @@ function Analyzer() {
         setError(`An error occurred during analysis: ${e.message}`);
       }
     } finally {
+      console.log('🏁 Analysis ended, setting isAnalyzing to false');
+      // Clean up any remaining intervals
+      if (typeof activityInterval !== 'undefined') {
+        clearInterval(activityInterval);
+      }
       setIsAnalyzing(false);
     }
   };
@@ -1630,16 +1652,20 @@ function Analyzer() {
               </button>
               
               {/* Tab Switching Warning */}
-              {isAnalyzing && !isPageVisible && (
-                <div className="mt-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg animate-pulse">
-                  <div className="flex items-center space-x-2 text-sm text-orange-400">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <span>⚠️ Keep this tab active during analysis to prevent timeouts</span>
+              {(() => {
+                const shouldShowWarning = isAnalyzing && !isPageVisible;
+                console.log('🔍 Tab warning evaluation:', { isAnalyzing, isPageVisible, shouldShowWarning });
+                return shouldShowWarning ? (
+                  <div className="mt-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg animate-pulse">
+                    <div className="flex items-center space-x-2 text-sm text-orange-400">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                      <span>⚠️ Keep this tab active during analysis to prevent timeouts</span>
+                    </div>
                   </div>
-                </div>
-              )}
+                ) : null;
+              })()}
               
               {/* General Analysis Warning */}
               {isAnalyzing && (
