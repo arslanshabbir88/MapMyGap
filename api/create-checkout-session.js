@@ -45,15 +45,17 @@ export default async function handler(req, res) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
-      // Force checkout session mode
-      payment_method_collection: 'always',
       allow_promotion_codes: false,
       billing_address_collection: 'auto',
       metadata: {
         plan: plan,
         userId: userId,
       },
-      ...(isTrialPlan ? {} : {
+      ...(isTrialPlan ? {
+        // For trial (one-time payment), don't set payment_method_collection
+      } : {
+        // For subscriptions, set payment_method_collection
+        payment_method_collection: 'always',
         subscription_data: {
           metadata: {
             plan: plan,
