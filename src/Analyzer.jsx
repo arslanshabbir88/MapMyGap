@@ -18,7 +18,7 @@
  * ✅ Enterprise-grade data protection for sensitive internal standards
  */
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
@@ -827,6 +827,9 @@ function Analyzer() {
     console.log('🚀 Starting analysis with states:', { isAnalyzing: false, isPageVisible, analysisStartTime: null });
     setIsAnalyzing(true);
 
+    // Declare activityInterval outside try block so it's accessible in finally block
+    let activityInterval;
+
     try {
       let result;
       if (fileContent && (isTextFile(uploadedFile) || getFileExt(uploadedFile.name) === 'docx' || getFileExt(uploadedFile.name) === 'pdf')) {
@@ -867,7 +870,7 @@ function Analyzer() {
         };
         
         // Set up periodic activity to prevent throttling
-        const activityInterval = setInterval(preventThrottling, 5000); // Every 5 seconds
+        activityInterval = setInterval(preventThrottling, 5000); // Every 5 seconds
         
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -1034,7 +1037,7 @@ function Analyzer() {
     } finally {
       console.log('🏁 Analysis ended, setting isAnalyzing to false');
       // Clean up any remaining intervals
-      if (typeof activityInterval !== 'undefined') {
+      if (activityInterval) {
         clearInterval(activityInterval);
       }
       setIsAnalyzing(false);
