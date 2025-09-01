@@ -10,12 +10,27 @@ export default async function handler(req, res) {
   try {
     const { priceId, plan, userId, successUrl, cancelUrl } = req.body;
 
+    console.log('🔍 Create checkout session request:', {
+      priceId,
+      plan,
+      userId,
+      successUrl,
+      cancelUrl,
+      hasStripeKey: !!process.env.STRIPE_SECRET_KEY
+    });
+
     if (!priceId || !plan || !userId) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
     // Determine if this is a trial plan (free or one-time)
     const isTrialPlan = plan.toLowerCase() === 'trial';
+    
+    console.log('📊 Plan analysis:', {
+      plan,
+      isTrialPlan,
+      mode: isTrialPlan ? 'payment' : 'subscription'
+    });
     
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
