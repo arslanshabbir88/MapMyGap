@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
-import { frameworks } from './frameworks/frameworks';
+
 
 // Configure PDF.js worker to use local worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
