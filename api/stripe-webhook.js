@@ -54,9 +54,9 @@ export default async function handler(req, res) {
   try {
     // Handle the event
     switch (event.type) {
-             case 'checkout.session.completed':
-         const session = event.data.object;
-         console.log('Checkout completed:', session.id);
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        console.log('Checkout completed:', session.id);
          
          // Handle both subscription and one-time payment (trial) checkouts
          if (session.metadata?.userId) {
