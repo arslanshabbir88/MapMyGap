@@ -14,6 +14,19 @@
 
       gtag('config', 'G-613K4Q3WKK');
     </script>
+    <script>
+      // Suppress MutationObserver errors from external scripts (browser extensions)
+      const originalConsoleError = console.error;
+      console.error = function(...args) {
+        const errorMessage = args.join(' ');
+        if (errorMessage.includes('MutationObserver') && errorMessage.includes('parameter 1 is not of type \'Node\'')) {
+          // Suppress this specific error from external scripts
+          return;
+        }
+        // Log all other errors normally
+        originalConsoleError.apply(console, args);
+      };
+    </script>
     <style>
       body {
         margin: 0;

@@ -192,8 +192,28 @@ function Analyzer() {
   // Removed strictness levels - now using comprehensive analysis mode
   const [lastAnalyzedMode, setLastAnalyzedMode] = useState(null);
 
+  // Add page visibility tracking
+  const [isPageVisible, setIsPageVisible] = useState(true);
+  const [analysisStartTime, setAnalysisStartTime] = useState(null);
+
   const { user, supabase } = useAuth();
   
+  // Track page visibility to warn users about tab switching
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      const isVisible = !document.hidden;
+      setIsPageVisible(isVisible);
+      
+      // Warn user if they switch away during analysis
+      if (!isVisible && isAnalyzing) {
+        console.warn('⚠️ Tab switched away during analysis - this may cause the analysis to timeout');
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [isAnalyzing]);
+
   // Ensure user is authenticated
   if (!user) {
     return (
@@ -831,6 +851,10 @@ function Analyzer() {
         const apiUrl = `/api/analyze?cb=${cacheBuster}&hash=${documentHash}&ts=${Date.now()}`;
         console.log('🚀 Analysis cache buster:', cacheBuster, 'Document hash:', documentHash, 'API URL:', apiUrl);
         
+        // Create AbortController for request cancellation
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout for the request
+        
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 
@@ -840,7 +864,10 @@ function Analyzer() {
             'X-Cache-Buster': cacheBuster.toString()
           },
           body: JSON.stringify(requestBody),
+          signal: controller.signal
         });
+        
+        clearTimeout(timeoutId);
         
         if (!response.ok) {
           const errorText = await response.text();
@@ -966,11 +993,13 @@ function Analyzer() {
         // Handle case where file is not a supported type
         throw new Error('Unsupported file type. Please upload a text file, DOCX, or PDF.');
       }
-    } catch (e) {
+        } catch (e) {
       console.error(e);
       
-      // Check if this is a Google server error that should be handled specially
-      if (e.message && e.message.includes('GOOGLE_SERVER_OVERLOAD')) {
+      // Check if this is a request timeout or abort
+      if (e.name === 'AbortError' || e.message.includes('aborted')) {
+        setError('⏰ Analysis request timed out. This may happen if you switched browser tabs. Please keep this tab active and try again.');
+      } else if (e.message && e.message.includes('GOOGLE_SERVER_OVERLOAD')) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
       } else if (e.message && e.message.includes('GOOGLE_TIMEOUT')) {
         setError('⏰ The AI analysis is taking longer than expected. Please try again in a few minutes.');
@@ -983,7 +1012,7 @@ function Analyzer() {
       } else if (e.message && e.message.includes('overloaded')) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again.');
       } else {
-      setError(`An error occurred during analysis: ${e.message}`);
+        setError(`An error occurred during analysis: ${e.message}`);
       }
     } finally {
       setIsAnalyzing(false);
@@ -1600,7 +1629,31 @@ function Analyzer() {
                 )}
               </button>
               
-                             {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
+              {/* Tab Switching Warning */}
+              {isAnalyzing && !isPageVisible && (
+                <div className="mt-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg animate-pulse">
+                  <div className="flex items-center space-x-2 text-sm text-orange-400">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span>⚠️ Keep this tab active during analysis to prevent timeouts</span>
+                  </div>
+                </div>
+              )}
+              
+              {/* General Analysis Warning */}
+              {isAnalyzing && (
+                <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                  <div className="flex items-center space-x-2 text-sm text-blue-400">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                    <span>💡 Analysis typically takes 30-60 seconds. Please keep this tab active.</span>
+                  </div>
+                </div>
+              )}
+              
+              {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
                  <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                    <div className="flex items-center space-x-2 text-sm text-yellow-400">
                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
