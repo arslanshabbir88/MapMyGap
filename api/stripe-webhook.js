@@ -31,25 +31,8 @@ export default async function handler(req, res) {
     event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
   } catch (err) {
     console.error('Webhook signature verification failed:', err.message);
-    console.error('Request body type:', typeof req.body);
-    console.error('Request body keys:', Object.keys(req.body || {}));
-    
-    // TEMPORARY: Skip signature verification for development
-    // TODO: Fix signature verification later
-    console.warn('⚠️ TEMPORARILY SKIPPING SIGNATURE VERIFICATION FOR DEVELOPMENT');
-    event = req.body; // Use the parsed body directly
-    
-         // Verify this is a valid Stripe event structure
-     if (!event || !event.type || !event.data) {
-       return res.status(400).json({ error: 'Invalid webhook event structure' });
-     }
-     
-     console.log('✅ Using fallback event (signature verification skipped):', {
-       type: event.type,
-       id: event.id,
-       timestamp: new Date().toISOString()
-     });
-   }
+    return res.status(400).json({ error: 'Webhook signature verification failed' });
+  }
 
   try {
     // Handle the event
@@ -145,7 +128,7 @@ export default async function handler(req, res) {
                 stripe_customer_id: session.customer,
                 plan_type: session.metadata.plan,
                 status: 'active', // Trial is active
-                current_period_end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+                                 current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
                 updated_at: new Date().toISOString()
               })
               .eq('user_id', session.metadata.userId);
@@ -160,7 +143,7 @@ export default async function handler(req, res) {
                   stripe_customer_id: session.customer,
                   plan_type: session.metadata.plan,
                   status: 'active',
-                  current_period_end: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+                  current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
                   created_at: new Date().toISOString()
                 });
               
