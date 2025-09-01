@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       cancel_url: cancelUrl,
       client_reference_id: userId,
       allow_promotion_codes: false,
-      billing_address_collection: isTrialPlan ? 'none' : 'auto', // No billing for trial
+      billing_address_collection: 'auto', // Always auto for both trial and subscriptions
       metadata: {
         plan: plan,
         userId: userId,
