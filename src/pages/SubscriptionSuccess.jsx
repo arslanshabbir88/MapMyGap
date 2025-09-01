@@ -1,20 +1,69 @@
 import React, { useEffect, useState } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../AuthContext';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
 const SubscriptionSuccess = ({ onShowLogin }) => {
   const [searchParams] = useSearchParams();
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user, checkSubscriptionStatus } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Get session_id from URL if available
-    const sessionId = searchParams.get('session_id');
-    if (sessionId) {
-      console.log('Stripe session ID:', sessionId);
-      // You could fetch subscription details here if needed
-    }
-  }, [searchParams]);
+    const initializeSubscription = async () => {
+      try {
+        // Get session_id from URL if available
+        const sessionId = searchParams.get('session_id');
+        if (sessionId) {
+          console.log('Stripe session ID:', sessionId);
+        }
+
+        // Wait a moment for webhook to process
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Check subscription status
+        if (user) {
+          console.log('Checking subscription status for user:', user.id);
+          await checkSubscriptionStatus();
+          
+          // Wait a bit more and check again
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          await checkSubscriptionStatus();
+        }
+        
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error initializing subscription:', error);
+        setIsLoading(false);
+      }
+    };
+
+    initializeSubscription();
+  }, [searchParams, user, checkSubscriptionStatus]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-900 text-white">
+        <SharedNavigation onShowLogin={onShowLogin} />
+        <main className="pt-20 pb-16">
+          <div className="max-w-4xl mx-auto px-4 text-center">
+            <div className="mb-8">
+              <div className="mx-auto w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
+                <svg className="w-12 h-12 text-white animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              </div>
+            </div>
+            <h1 className="text-3xl font-bold mb-4">Setting up your subscription...</h1>
+            <p className="text-gray-400">Please wait while we activate your account.</p>
+          </div>
+        </main>
+        <SharedFooter />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">

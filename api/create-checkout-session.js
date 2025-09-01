@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
+      payment_method_types: isTrialPlan ? [] : ['card'], // No payment method for trial
       line_items: [
         {
           price: priceId,
@@ -46,13 +46,14 @@ export default async function handler(req, res) {
       cancel_url: cancelUrl,
       client_reference_id: userId,
       allow_promotion_codes: false,
-      billing_address_collection: 'auto',
+      billing_address_collection: isTrialPlan ? 'none' : 'auto', // No billing for trial
       metadata: {
         plan: plan,
         userId: userId,
       },
       ...(isTrialPlan ? {
         // For trial (one-time payment), don't set payment_method_collection
+        submit_type: 'auto', // Auto-submit for trial
       } : {
         // For subscriptions, set payment_method_collection
         payment_method_collection: 'always',
