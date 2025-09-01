@@ -39,17 +39,17 @@ export default async function handler(req, res) {
     console.warn('⚠️ TEMPORARILY SKIPPING SIGNATURE VERIFICATION FOR DEVELOPMENT');
     event = req.body; // Use the parsed body directly
     
-         // Verify this is a valid Stripe event structure
-     if (!event || !event.type || !event.data) {
-       return res.status(400).json({ error: 'Invalid webhook event structure' });
-     }
-     
-     console.log('✅ Using fallback event (signature verification skipped):', {
-       type: event.type,
-       id: event.id,
-       timestamp: new Date().toISOString()
-     });
-   }
+    // Verify this is a valid Stripe event structure
+    if (!event || !event.type || !event.data) {
+      return res.status(400).json({ error: 'Invalid webhook event structure' });
+    }
+    
+    console.log('✅ Using fallback event (signature verification skipped):', {
+      type: event.type,
+      id: event.id,
+      timestamp: new Date().toISOString()
+    });
+  }
 
   try {
     // Handle the event
@@ -57,129 +57,130 @@ export default async function handler(req, res) {
       case 'checkout.session.completed':
         const session = event.data.object;
         console.log('Checkout completed:', session.id);
-         
-         // Handle both subscription and one-time payment (trial) checkouts
-         if (session.metadata?.userId) {
-           if (session.subscription) {
-             // This is a subscription checkout
-           try {
-             // Get subscription details
-             const subscription = await stripe.subscriptions.retrieve(session.subscription);
-             const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
-             
-             console.log('📊 Subscription details:', {
-               subscriptionId: subscription.id,
-               status: subscription.status,
-               currentPeriodEnd: subscription.current_period_end,
-               currentPeriodEndType: typeof subscription.current_period_end,
-               customerId: session.customer
-             });
-            
-            // Determine plan type
-            let planType = 'Unknown';
-            if (price.id === 'price_1S1q8O2LOmx0fW2YpttvoaCs') planType = 'Trial';
-            else if (price.id === 'price_1S1gdB2LOmx0fW2YClgvwNTc') planType = 'Starter';
-            else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
-            else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
-            
-                         // Store in Supabase - first try to update existing, then insert if none exists
-             let { error } = await supabase
-               .from('subscriptions')
-               .update({
-                 stripe_subscription_id: subscription.id,
-                 stripe_customer_id: session.customer,
-                 plan_type: planType,
-                 status: subscription.status,
-                 current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
-                 updated_at: new Date().toISOString()
-               })
-               .eq('user_id', session.metadata.userId);
-             
-             // If no rows were updated, insert a new record
-             if (error || !error) {
-               const { error: insertError } = await supabase
-                 .from('subscriptions')
-                 .insert({
-                   user_id: session.metadata.userId,
-                   stripe_subscription_id: subscription.id,
-                   stripe_customer_id: session.customer,
-                   plan_type: planType,
-                   status: subscription.status,
-                   current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
-                   created_at: new Date().toISOString()
-                 });
-               
-               if (insertError) {
-                 error = insertError;
-               }
-             }
-            
-            if (error) {
-              console.error('Error storing subscription in Supabase:', error);
-            } else {
-              console.log('Subscription stored in Supabase successfully:', {
-                userId: session.metadata.userId,
+        
+        // Handle both subscription and one-time payment (trial) checkouts
+        if (session.metadata?.userId) {
+          if (session.subscription) {
+            // This is a subscription checkout
+            try {
+              // Get subscription details
+              const subscription = await stripe.subscriptions.retrieve(session.subscription);
+              const price = await stripe.prices.retrieve(subscription.items.data[0].price.id);
+              
+              console.log('📊 Subscription details:', {
                 subscriptionId: subscription.id,
-                planType: planType,
-                status: subscription.status
+                status: subscription.status,
+                currentPeriodEnd: subscription.current_period_end,
+                currentPeriodEndType: typeof subscription.current_period_end,
+                customerId: session.customer
               });
-            }
-          } catch (error) {
-            console.error('Error processing subscription checkout session:', error);
-          }
-        } else {
-          // This is a one-time payment checkout (trial)
-          try {
-            console.log('Processing trial checkout:', {
-              sessionId: session.id,
-              userId: session.metadata.userId,
-              plan: session.metadata.plan,
-              amount: session.amount_total
-            });
-            
-            // Store trial data in Supabase (treat as a subscription with trial status)
-            let { error } = await supabase
-              .from('subscriptions')
-              .update({
-                stripe_subscription_id: `trial_${session.id}`, // Use session ID as trial identifier
-                stripe_customer_id: session.customer,
-                plan_type: session.metadata.plan,
-                status: 'active', // Trial is active
-                                 current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
-                updated_at: new Date().toISOString()
-              })
-              .eq('user_id', session.metadata.userId);
-            
-            // If no rows were updated, insert a new record
-            if (error || !error) {
-              const { error: insertError } = await supabase
+              
+              // Determine plan type
+              let planType = 'Unknown';
+              if (price.id === 'price_1S1q8O2LOmx0fW2YpttvoaCs') planType = 'Trial';
+              else if (price.id === 'price_1S1gdB2LOmx0fW2YClgvwNTc') planType = 'Starter';
+              else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
+              else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
+              
+              // Store in Supabase - first try to update existing, then insert if none exists
+              let { error } = await supabase
                 .from('subscriptions')
-                .insert({
-                  user_id: session.metadata.userId,
-                  stripe_subscription_id: `trial_${session.id}`,
+                .update({
+                  stripe_subscription_id: subscription.id,
+                  stripe_customer_id: session.customer,
+                  plan_type: planType,
+                  status: subscription.status,
+                  current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                  updated_at: new Date().toISOString()
+                })
+                .eq('user_id', session.metadata.userId);
+              
+              // If no rows were updated, insert a new record
+              if (error || !error) {
+                const { error: insertError } = await supabase
+                  .from('subscriptions')
+                  .insert({
+                    user_id: session.metadata.userId,
+                    stripe_subscription_id: subscription.id,
+                    stripe_customer_id: session.customer,
+                    plan_type: planType,
+                    status: subscription.status,
+                    current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                    created_at: new Date().toISOString()
+                  });
+                
+                if (insertError) {
+                  error = insertError;
+                }
+              }
+              
+              if (error) {
+                console.error('Error storing subscription in Supabase:', error);
+              } else {
+                console.log('Subscription stored in Supabase successfully:', {
+                  userId: session.metadata.userId,
+                  subscriptionId: subscription.id,
+                  planType: planType,
+                  status: subscription.status
+                });
+              }
+            } catch (error) {
+              console.error('Error processing subscription checkout session:', error);
+            }
+          } else {
+            // This is a one-time payment checkout (trial)
+            try {
+              console.log('Processing trial checkout:', {
+                sessionId: session.id,
+                userId: session.metadata.userId,
+                plan: session.metadata.plan,
+                amount: session.amount_total
+              });
+              
+              // Store trial data in Supabase (treat as a subscription with trial status)
+              let { error } = await supabase
+                .from('subscriptions')
+                .update({
+                  stripe_subscription_id: `trial_${session.id}`, // Use session ID as trial identifier
                   stripe_customer_id: session.customer,
                   plan_type: session.metadata.plan,
-                  status: 'active',
+                  status: 'active', // Trial is active
                   current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
-                  created_at: new Date().toISOString()
-                });
+                  updated_at: new Date().toISOString()
+                })
+                .eq('user_id', session.metadata.userId);
               
-              if (insertError) {
-                error = insertError;
+              // If no rows were updated, insert a new record
+              if (error || !error) {
+                const { error: insertError } = await supabase
+                  .from('subscriptions')
+                  .insert({
+                    user_id: session.metadata.userId,
+                    stripe_subscription_id: `trial_${session.id}`,
+                    stripe_customer_id: session.customer,
+                    plan_type: session.metadata.plan,
+                    status: 'active',
+                    current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
+                    created_at: new Date().toISOString()
+                  });
+                
+                if (insertError) {
+                  error = insertError;
+                }
               }
+              
+              if (error) {
+                console.error('Error storing trial in Supabase:', error);
+              } else {
+                console.log('Trial stored in Supabase successfully:', {
+                  userId: session.metadata.userId,
+                  sessionId: session.id,
+                  plan: session.metadata.plan
+                });
+              }
+            } catch (error) {
+              console.error('Error processing trial checkout session:', error);
             }
-            
-            if (error) {
-              console.error('Error storing trial in Supabase:', error);
-            } else {
-              console.log('Trial stored in Supabase successfully:', {
-                userId: session.metadata.userId,
-                sessionId: session.id,
-                plan: session.metadata.plan
-              });
-            }
-          } catch (error) {
-            console.error('Error processing trial checkout session:', error);
           }
         }
         break;
