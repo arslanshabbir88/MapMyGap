@@ -18,12 +18,13 @@
  * ✅ Enterprise-grade data protection for sensitive internal standards
  */
 
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from './AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './App.css';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
+import { frameworks } from './frameworks/frameworks';
 
 // Configure PDF.js worker to use local worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
@@ -179,7 +180,7 @@ function Analyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
-  const [selectedCategories, setSelectedCategories] = useState(['AC']); // Default to first NIST family
+  const [selectedCategories, setSelectedCategories] = useState(['ID']);
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -192,28 +193,9 @@ function Analyzer() {
   // Removed strictness levels - now using comprehensive analysis mode
   const [lastAnalyzedMode, setLastAnalyzedMode] = useState(null);
 
-  // Add page visibility tracking
-  const [isPageVisible, setIsPageVisible] = useState(true);
-  const [analysisStartTime, setAnalysisStartTime] = useState(null);
-
   const { user, supabase } = useAuth();
   
-  // Track page visibility to warn users about tab switching
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      const isVisible = !document.hidden;
-      console.log('🔍 Page visibility changed:', { isVisible, isAnalyzing, wasVisible: isPageVisible });
-      setIsPageVisible(isVisible);
-      
-      // Warn user if they switch away during analysis
-      if (!isVisible && isAnalyzing) {
-        console.warn('⚠️ Tab switched away during analysis - this may cause the analysis to timeout');
-      }
-    };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [isAnalyzing, isPageVisible]);
 
   // Ensure user is authenticated
   if (!user) {
@@ -806,29 +788,34 @@ function Analyzer() {
   };
 
   const handleAnalyze = async () => {
-    if (!uploadedFile) return;
-    
-    // Force clear any existing results and cache
-    setAnalysisResults(null);
-    setError(null);
-    
-    // Force refresh the page cache
-    if (window.location.reload) {
-      try {
-        // Clear any stored data
-        sessionStorage.clear();
-        localStorage.removeItem('analysis-cache');
-        console.log('🧹 Cleared session storage and local storage');
-      } catch (e) {
-        console.log('Storage clearing failed:', e);
-      }
+    if (!uploadedFile) {
+      setError('Please upload a file first.');
+      return;
     }
-    
-    console.log('🚀 Starting analysis with states:', { isAnalyzing: false, isPageVisible, analysisStartTime: null });
-    setIsAnalyzing(true);
 
-    // Declare activityInterval outside try block so it's accessible in finally block
-    let activityInterval;
+    if (!selectedFramework) {
+      setError('Please select a framework.');
+      return;
+    }
+
+    if (selectedCategories.length === 0) {
+      setError('Please select at least one category.');
+      return;
+    }
+
+    setError('');
+    setAnalysisResults(null);
+
+    // Clear any previous analysis data from storage
+    try {
+      sessionStorage.removeItem('analysisResults');
+      localStorage.removeItem('analysisResults');
+    } catch (e) {
+      console.log('Storage clearing failed:', e);
+    }
+
+    console.log('🚀 Starting analysis');
+    setIsAnalyzing(true);
 
     try {
       let result;
@@ -850,81 +837,23 @@ function Analyzer() {
         };
         console.log('Request body being sent:', requestBody);
         
-        // Validate request body
-        if (!fileContent || fileContent.length === 0) {
-          throw new Error('File content is empty or undefined');
-        }
-        
-        if (!selectedFramework) {
-          throw new Error('No framework selected');
-        }
-        
-        if (!selectedCategories || selectedCategories.length === 0) {
-          throw new Error('No categories selected');
-        }
-        
         // Add aggressive cache-busting to ensure fresh analysis
         const cacheBuster = Date.now();
         const documentHash = btoa(fileContent.substring(0, 100) + fileContent.substring(Math.max(0, fileContent.length - 100))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
         const apiUrl = `/api/analyze?cb=${cacheBuster}&hash=${documentHash}&ts=${Date.now()}`;
         console.log('🚀 Analysis cache buster:', cacheBuster, 'Document hash:', documentHash, 'API URL:', apiUrl);
         
-        // Validate API URL
-        if (!apiUrl || apiUrl.length === 0) {
-          throw new Error('API URL is empty or undefined');
-        }
-        
-        // Check if we're in a valid environment
-        if (typeof window === 'undefined') {
-          throw new Error('Not running in browser environment');
-        }
-        
-        // Create AbortController for request cancellation
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout for the request
-        
-        // Add a more aggressive approach to prevent browser throttling
-        let requestCompleted = false;
-        const preventThrottling = () => {
-          if (!requestCompleted && !document.hidden) {
-            // Keep the page active by simulating user activity
-            console.log('🔄 Keeping page active to prevent throttling...');
-          }
-        };
-        
-        // Set up periodic activity to prevent throttling
-        activityInterval = setInterval(preventThrottling, 5000); // Every 5 seconds
-        
-        console.log('🌐 Attempting fetch to:', apiUrl);
-        console.log('📤 Request body size:', JSON.stringify(requestBody).length, 'bytes');
-        
-        try {
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: { 
-              'Content-Type': 'application/json',
-              'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-              'Pragma': 'no-cache',
-              'X-Cache-Buster': cacheBuster.toString()
-            },
-            body: JSON.stringify(requestBody),
-            signal: controller.signal,
-            keepalive: true // Prevent browser from cancelling the request when tab is inactive
-          });
-          
-          console.log('✅ Fetch completed successfully');
-        } catch (fetchError) {
-          console.error('❌ Fetch failed with error:', fetchError);
-          console.error('❌ Error name:', fetchError.name);
-          console.error('❌ Error message:', fetchError.message);
-          console.error('❌ Error stack:', fetchError.stack);
-          throw fetchError;
-        }
-        
-        clearTimeout(timeoutId);
-        clearInterval(activityInterval);
-        requestCompleted = true;
-        
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+            'Pragma': 'no-cache',
+            'X-Cache-Buster': cacheBuster.toString()
+          },
+          body: JSON.stringify(requestBody)
+        });
+
         if (!response.ok) {
           const errorText = await response.text();
           
@@ -1049,13 +978,10 @@ function Analyzer() {
         // Handle case where file is not a supported type
         throw new Error('Unsupported file type. Please upload a text file, DOCX, or PDF.');
       }
-        } catch (e) {
+    } catch (e) {
       console.error(e);
       
-      // Check if this is a request timeout or abort
-      if (e.name === 'AbortError' || e.message.includes('aborted')) {
-        setError('⏰ Analysis request timed out. This may happen if you switched browser tabs. Please keep this tab active and try again.');
-      } else if (e.message && e.message.includes('GOOGLE_SERVER_OVERLOAD')) {
+      if (e.message && e.message.includes('GOOGLE_SERVER_OVERLOAD')) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
       } else if (e.message && e.message.includes('GOOGLE_TIMEOUT')) {
         setError('⏰ The AI analysis is taking longer than expected. Please try again in a few minutes.');
@@ -1072,10 +998,6 @@ function Analyzer() {
       }
     } finally {
       console.log('🏁 Analysis ended, setting isAnalyzing to false');
-      // Clean up any remaining intervals
-      if (activityInterval) {
-        clearInterval(activityInterval);
-      }
       setIsAnalyzing(false);
     }
   };
@@ -1669,55 +1591,35 @@ function Analyzer() {
 
               <button
                 onClick={handleAnalyze}
-                                 disabled={!uploadedFile || isAnalyzing || (selectedFramework === 'NIST_800_53' && selectedCategories.length === 0) || (selectedFramework === 'NIST_CSF' && selectedCategories.length === 0) || (selectedFramework === 'SOC_2' && selectedCategories.length === 0) || (selectedFramework === 'NIST_800_63B' && selectedCategories.length === 0)}
-                className="w-full inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-blue-500 disabled:from-slate-600 disabled:to-slate-600 disabled:shadow-none disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                disabled={isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0}
+                className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
+                  isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
+                }`}
               >
                 {isAnalyzing ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Analyzing with AI...</span>
-                  </>
+                  <div className="flex items-center justify-center space-x-2">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Analyzing...</span>
+                  </div>
                 ) : (
-                  <>
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                    </svg>
-                    <span>Analyze for Compliance Gaps</span>
-                  </>
+                  'Analyze Document'
                 )}
               </button>
               
-              {/* Tab Switching Warning */}
-              {(() => {
-                const shouldShowWarning = isAnalyzing && !isPageVisible;
-                console.log('🔍 Tab warning evaluation:', { isAnalyzing, isPageVisible, shouldShowWarning });
-                return shouldShowWarning ? (
-                  <div className="mt-3 p-3 bg-orange-500/10 border border-orange-500/20 rounded-lg animate-pulse">
-                    <div className="flex items-center space-x-2 text-sm text-orange-400">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                      </svg>
-                      <span>⚠️ Keep this tab active during analysis to prevent timeouts</span>
-                    </div>
-                  </div>
-                ) : null;
-              })()}
-              
-              {/* General Analysis Warning */}
+              {/* Simple Analysis Warning */}
               {isAnalyzing && (
                 <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
                   <div className="flex items-center space-x-2 text-sm text-blue-400">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                     </svg>
-                    <span>💡 Analysis typically takes 30-60 seconds. Please keep this tab active.</span>
+                    <span>💡 Analysis typically takes 30-60 seconds. Please don't leave this page while analysis is running.</span>
                   </div>
                 </div>
               )}
-              
+
               {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
                  <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                    <div className="flex items-center space-x-2 text-sm text-yellow-400">
