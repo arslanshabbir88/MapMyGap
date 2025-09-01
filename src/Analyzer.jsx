@@ -850,11 +850,34 @@ function Analyzer() {
         };
         console.log('Request body being sent:', requestBody);
         
+        // Validate request body
+        if (!fileContent || fileContent.length === 0) {
+          throw new Error('File content is empty or undefined');
+        }
+        
+        if (!selectedFramework) {
+          throw new Error('No framework selected');
+        }
+        
+        if (!selectedCategories || selectedCategories.length === 0) {
+          throw new Error('No categories selected');
+        }
+        
         // Add aggressive cache-busting to ensure fresh analysis
         const cacheBuster = Date.now();
         const documentHash = btoa(fileContent.substring(0, 100) + fileContent.substring(Math.max(0, fileContent.length - 100))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
         const apiUrl = `/api/analyze?cb=${cacheBuster}&hash=${documentHash}&ts=${Date.now()}`;
         console.log('🚀 Analysis cache buster:', cacheBuster, 'Document hash:', documentHash, 'API URL:', apiUrl);
+        
+        // Validate API URL
+        if (!apiUrl || apiUrl.length === 0) {
+          throw new Error('API URL is empty or undefined');
+        }
+        
+        // Check if we're in a valid environment
+        if (typeof window === 'undefined') {
+          throw new Error('Not running in browser environment');
+        }
         
         // Create AbortController for request cancellation
         const controller = new AbortController();
@@ -872,18 +895,31 @@ function Analyzer() {
         // Set up periodic activity to prevent throttling
         activityInterval = setInterval(preventThrottling, 5000); // Every 5 seconds
         
-        const response = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-            'Pragma': 'no-cache',
-            'X-Cache-Buster': cacheBuster.toString()
-          },
-          body: JSON.stringify(requestBody),
-          signal: controller.signal,
-          keepalive: true // Prevent browser from cancelling the request when tab is inactive
-        });
+        console.log('🌐 Attempting fetch to:', apiUrl);
+        console.log('📤 Request body size:', JSON.stringify(requestBody).length, 'bytes');
+        
+        try {
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+              'Pragma': 'no-cache',
+              'X-Cache-Buster': cacheBuster.toString()
+            },
+            body: JSON.stringify(requestBody),
+            signal: controller.signal,
+            keepalive: true // Prevent browser from cancelling the request when tab is inactive
+          });
+          
+          console.log('✅ Fetch completed successfully');
+        } catch (fetchError) {
+          console.error('❌ Fetch failed with error:', fetchError);
+          console.error('❌ Error name:', fetchError.name);
+          console.error('❌ Error message:', fetchError.message);
+          console.error('❌ Error stack:', fetchError.stack);
+          throw fetchError;
+        }
         
         clearTimeout(timeoutId);
         clearInterval(activityInterval);
