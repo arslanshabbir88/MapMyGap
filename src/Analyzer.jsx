@@ -165,11 +165,9 @@ const convertToCSV = (data) => {
 
 function Analyzer() {
   const navigate = useNavigate();
-  console.log('Analyzer component mounting...');
   
   // Environment validation - prevents unauthorized use
   useEffect(() => {
-    console.log('Analyzer useEffect running...');
     if (!validateEnvironment()) {
       console.error('Environment validation failed - application may not function correctly');
       // You could add additional protection here like redirecting or disabling features
@@ -194,9 +192,7 @@ function Analyzer() {
   // Removed strictness levels - now using comprehensive analysis mode
   const [lastAnalyzedMode, setLastAnalyzedMode] = useState(null);
 
-  console.log('About to call useAuth...');
   const { user, supabase } = useAuth();
-  console.log('useAuth result:', { user: !!user, supabase: !!supabase });
   
   // Ensure user is authenticated
   if (!user) {
@@ -1004,8 +1000,6 @@ function Analyzer() {
     { id: 'FFIEC_CAT', name: 'FFIEC Cybersecurity Assessment Tool', enabled: false },
     { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: false },
   ];
-  
-  console.log('Analyzer component rendering JSX...');
   
   return (
     <>

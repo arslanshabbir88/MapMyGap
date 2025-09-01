@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const checkSubscriptionStatus = async () => {
+  const checkSubscriptionStatus = useCallback(async () => {
     if (!user) {
       setSubscription(null);
       return;
@@ -162,7 +162,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setSubscriptionLoading(false);
     }
-  };
+  }, [user]);
 
   const value = {
     user,
