@@ -83,28 +83,20 @@ async function enhanceAnalysisWithAI(analysisResults) {
     const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash:generateContent`;
 
     const prompt = `
-You are a compliance implementation expert. Given the following compliance analysis results, enhance each control with implementation guidance.
+You are a compliance implementation expert. Enhance the following compliance analysis with implementation guidance.
 
 ANALYSIS RESULTS:
 ${JSON.stringify(analysisResults, null, 2)}
 
-For each control in the results, add the following enhancement fields:
+For each control, add these fields:
+- implementationSteps: Array of 3-4 concise, actionable steps
+- difficulty: "Easy", "Medium", or "Hard"
+- businessImpact: "High", "Medium", or "Low"
+- timeline: "Short-term" or "Long-term"
+- resources: Brief resource description
+- sequence: "Foundation", "Core", or "Advanced"
 
-1. implementationSteps: Array of 3-5 specific, actionable steps to implement this control
-2. difficulty: "Easy", "Medium", or "Hard" based on implementation complexity
-3. businessImpact: "High", "Medium", or "Low" based on business risk if not implemented
-4. timeline: "Short-term" (1-3 months) or "Long-term" (3-12 months)
-5. resources: Brief description of required resources (staff, tools, budget)
-6. sequence: "Foundation" (basic controls), "Core" (essential controls), or "Advanced" (enhanced controls)
-
-GUIDELINES:
-- For "covered" controls: Focus on maintenance and improvement steps
-- For "partial" controls: Focus on completing implementation
-- For "gap" controls: Focus on full implementation from scratch
-- Be practical and realistic about timelines and resources
-- Consider the control's importance to overall compliance
-
-Return the exact same JSON structure with the enhancement fields added to each result object.
+Keep responses concise. Return valid JSON only.
 `;
 
     const requestBody = {
@@ -115,7 +107,7 @@ Return the exact same JSON structure with the enhancement fields added to each r
         }]
       }],
       generationConfig: {
-        maxOutputTokens: 8192,
+        maxOutputTokens: 16384,
         temperature: 0.3,
         topP: 0.8,
         topK: 40
@@ -152,12 +144,27 @@ Return the exact same JSON structure with the enhancement fields added to each r
           cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
         }
         
+        // Check if response appears truncated (doesn't end with proper JSON structure)
+        if (!cleanedText.endsWith('}') && !cleanedText.endsWith(']')) {
+          console.log('⚠️ Response appears truncated, attempting to fix...');
+          // Try to find the last complete object/array and truncate there
+          const lastCompleteBrace = cleanedText.lastIndexOf('}');
+          const lastCompleteBracket = cleanedText.lastIndexOf(']');
+          const lastComplete = Math.max(lastCompleteBrace, lastCompleteBracket);
+          
+          if (lastComplete > cleanedText.length * 0.8) { // Only if we have most of the response
+            cleanedText = cleanedText.substring(0, lastComplete + 1);
+            console.log('🔧 Truncated response to last complete structure');
+          }
+        }
+        
         const enhancedResults = JSON.parse(cleanedText);
         console.log('✅ Successfully parsed enhanced results');
         return enhancedResults;
       } catch (parseError) {
         console.log('❌ Failed to parse enhanced results:', parseError.message);
-        console.log('❌ Raw enhanced text:', enhancedText);
+        console.log('❌ Raw enhanced text length:', enhancedText.length);
+        console.log('❌ Raw enhanced text preview:', enhancedText.substring(0, 500));
         // Return original results if parsing fails
         return analysisResults;
       }
