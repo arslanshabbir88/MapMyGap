@@ -29,6 +29,9 @@ import * as pdfjsLib from 'pdfjs-dist';
 // Configure PDF.js worker to use local worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
 
+// Feature flag for enhanced gap details
+const ENABLE_ENHANCED_DETAILS = true; // Set to true to enable enhanced implementation guidance
+
 // Environment validation - makes it harder for copycats
 const validateEnvironment = () => {
   try {
@@ -340,7 +343,7 @@ function Analyzer() {
                     </div>
                     
                     {/* Enhanced Implementation Guidance */}
-                    {(result.status === 'gap' || result.status === 'partial') && (
+                    {ENABLE_ENHANCED_DETAILS && (result.status === 'gap' || result.status === 'partial') && (
                       <>
                         {/* Implementation Steps */}
                         {result.implementationSteps && result.implementationSteps.length > 0 && (
@@ -964,7 +967,38 @@ function Analyzer() {
           console.log('Score Calculation:', `((${covered} + ${partial}*0.5) / ${total}) * 100 = ${score}%`);
           
           const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
-          setAnalysisResults(results);
+          
+          // Enhancement: Add implementation guidance if feature flag is enabled
+          if (ENABLE_ENHANCED_DETAILS) {
+            try {
+              console.log('🚀 Starting analysis enhancement...');
+              const enhancementResponse = await fetch('/api/enhance-analysis', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ analysisResults: results })
+              });
+              
+              if (enhancementResponse.ok) {
+                const enhancedData = await enhancementResponse.json();
+                if (enhancedData.success && enhancedData.results) {
+                  console.log('✅ Analysis enhancement completed');
+                  setAnalysisResults(enhancedData.results);
+                } else {
+                  console.log('⚠️ Enhancement failed, using original results');
+                  setAnalysisResults(results);
+                }
+              } else {
+                console.log('⚠️ Enhancement API error, using original results');
+                setAnalysisResults(results);
+              }
+            } catch (enhancementError) {
+              console.log('⚠️ Enhancement error, using original results:', enhancementError.message);
+              setAnalysisResults(results);
+            }
+          } else {
+            setAnalysisResults(results);
+          }
+          
           setLastAnalyzedMode('comprehensive');
           
           // Save to history for authenticated users
@@ -1976,6 +2010,7 @@ function Analyzer() {
                               </div>
                               
                               {/* Quick Stats Grid */}
+                              {ENABLE_ENHANCED_DETAILS && (
                               <div className="grid grid-cols-3 gap-3 mt-4 -ml-3 pl-3">
                                 <div className="text-center p-3 bg-red-500/10 rounded-lg border border-red-500/20">
                                   <div className="text-lg font-bold text-red-400">
@@ -2008,8 +2043,10 @@ function Analyzer() {
                                   <div className="text-xs text-green-300">Low Priority</div>
                                 </div>
                               </div>
+                              )}
                               
                               {/* Timeline Overview */}
+                              {ENABLE_ENHANCED_DETAILS && (
                               <div className="mt-4 p-3 bg-slate-700/30 rounded-lg border border-slate-600 -ml-3 pl-3">
                                 <h4 className="font-medium text-slate-300 mb-3 flex items-center">
                                   <Icon path="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" className="w-4 h-4 text-indigo-400 mr-2" />
@@ -2048,8 +2085,10 @@ function Analyzer() {
                                   </div>
                                 </div>
                               </div>
+                              )}
                               
                               {/* Progress Bars */}
+                              {ENABLE_ENHANCED_DETAILS && (
                               <div className="mt-4 space-y-2 -ml-3 pl-3">
                                 <div>
                                   <div className="flex justify-between text-xs text-slate-400 mb-1">
@@ -2123,11 +2162,14 @@ function Analyzer() {
                                   </div>
                                 </div>
                               </div>
+                              )}
                               
                               {/* Pro Tip */}
+                              {ENABLE_ENHANCED_DETAILS && (
                               <div className="p-2 bg-slate-700/30 rounded text-xs -ml-3 pl-3">
                                 <p><strong>💡 Pro Tip:</strong> Focus on high-impact controls first, then work through medium and low-priority items based on your implementation timeline.</p>
                               </div>
+                              )}
                             </>
                           ) : (
                             <div className="text-center py-4 text-slate-400">
