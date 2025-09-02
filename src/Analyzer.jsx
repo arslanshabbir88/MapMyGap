@@ -973,10 +973,27 @@ function Analyzer() {
           if (ENABLE_ENHANCED_DETAILS) {
             try {
               console.log('🚀 Starting analysis enhancement...');
+              
+              // Filter to only enhance gaps and partials for efficiency
+              const filteredResults = {
+                ...results,
+                categories: results.categories.map(category => ({
+                  ...category,
+                  results: category.results.filter(result => 
+                    result.status === 'gap' || result.status === 'partial'
+                  )
+                })).filter(category => category.results.length > 0) // Remove empty categories
+              };
+              
+              console.log('🔍 Filtered results for enhancement:', {
+                totalControls: results.categories.reduce((sum, cat) => sum + cat.results.length, 0),
+                controlsToEnhance: filteredResults.categories.reduce((sum, cat) => sum + cat.results.length, 0)
+              });
+              
               const enhancementResponse = await fetch('/api/enhance-analysis', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ analysisResults: results })
+                body: JSON.stringify({ analysisResults: filteredResults })
               });
               
               if (enhancementResponse.ok) {
@@ -984,9 +1001,33 @@ function Analyzer() {
                 console.log('🔍 Enhancement response:', enhancedData);
                 if (enhancedData.success && enhancedData.results) {
                   console.log('✅ Analysis enhancement completed');
-                  console.log('🔍 Enhanced results sample:', JSON.stringify(enhancedData.results.categories[0].results[0], null, 2));
-                  finalResults = enhancedData.results; // Use enhanced results
-                  setAnalysisResults(enhancedData.results);
+                  
+                  // Merge enhanced results back with original results
+                  const mergedResults = {
+                    ...results,
+                    categories: results.categories.map(originalCategory => {
+                      const enhancedCategory = enhancedData.results.categories.find(
+                        cat => cat.name === originalCategory.name
+                      );
+                      
+                      if (enhancedCategory) {
+                        return {
+                          ...originalCategory,
+                          results: originalCategory.results.map(originalResult => {
+                            const enhancedResult = enhancedCategory.results.find(
+                              res => res.id === originalResult.id
+                            );
+                            return enhancedResult || originalResult;
+                          })
+                        };
+                      }
+                      return originalCategory;
+                    })
+                  };
+                  
+                  console.log('🔍 Enhanced results sample:', JSON.stringify(mergedResults.categories[0].results[0], null, 2));
+                  finalResults = mergedResults; // Use merged results
+                  setAnalysisResults(mergedResults);
                 } else {
                   console.log('⚠️ Enhancement failed, using original results');
                   setAnalysisResults(results);

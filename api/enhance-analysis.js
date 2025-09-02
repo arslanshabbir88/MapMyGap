@@ -85,7 +85,7 @@ async function enhanceAnalysisWithAI(analysisResults) {
     const prompt = `
 You are a compliance implementation expert. Enhance the following compliance analysis with implementation guidance.
 
-ANALYSIS RESULTS:
+ANALYSIS RESULTS (gaps and partials only):
 ${JSON.stringify(analysisResults, null, 2)}
 
 For each control, add these fields:
