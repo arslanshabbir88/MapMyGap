@@ -111,17 +111,21 @@ Return the exact same JSON structure with the enhancement fields added to each r
     
     if (result.candidates && result.candidates[0] && result.candidates[0].content) {
       const enhancedText = result.candidates[0].content.parts[0].text;
+      console.log('🔍 Enhanced AI response:', enhancedText.substring(0, 500));
       
       // Try to parse the JSON response
       try {
         const enhancedResults = JSON.parse(enhancedText);
+        console.log('✅ Successfully parsed enhanced results');
         return enhancedResults;
       } catch (parseError) {
         console.log('❌ Failed to parse enhanced results:', parseError.message);
+        console.log('❌ Raw enhanced text:', enhancedText);
         // Return original results if parsing fails
         return analysisResults;
       }
     } else {
+      console.log('❌ Unexpected response format from Vertex AI:', result);
       throw new Error('Unexpected response format from Vertex AI');
     }
   } catch (error) {

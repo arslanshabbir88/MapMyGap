@@ -980,8 +980,10 @@ function Analyzer() {
               
               if (enhancementResponse.ok) {
                 const enhancedData = await enhancementResponse.json();
+                console.log('🔍 Enhancement response:', enhancedData);
                 if (enhancedData.success && enhancedData.results) {
                   console.log('✅ Analysis enhancement completed');
+                  console.log('🔍 Enhanced results sample:', JSON.stringify(enhancedData.results.categories[0].results[0], null, 2));
                   setAnalysisResults(enhancedData.results);
                 } else {
                   console.log('⚠️ Enhancement failed, using original results');
