@@ -967,6 +967,7 @@ function Analyzer() {
           console.log('Score Calculation:', `((${covered} + ${partial}*0.5) / ${total}) * 100 = ${score}%`);
           
           const results = { summary: { total, covered, partial, gaps, score }, categories: parsedJson };
+          let finalResults = results; // Track the final results to save
           
           // Enhancement: Add implementation guidance if feature flag is enabled
           if (ENABLE_ENHANCED_DETAILS) {
@@ -984,6 +985,7 @@ function Analyzer() {
                 if (enhancedData.success && enhancedData.results) {
                   console.log('✅ Analysis enhancement completed');
                   console.log('🔍 Enhanced results sample:', JSON.stringify(enhancedData.results.categories[0].results[0], null, 2));
+                  finalResults = enhancedData.results; // Use enhanced results
                   setAnalysisResults(enhancedData.results);
                 } else {
                   console.log('⚠️ Enhancement failed, using original results');
@@ -1005,7 +1007,7 @@ function Analyzer() {
           
           // Save to history for authenticated users
           if (user) {
-            await saveAnalysisToHistory(results, uploadedFile.name);
+            await saveAnalysisToHistory(finalResults, uploadedFile.name);
           }
         } else {
           throw new Error("Invalid response structure from API.");
