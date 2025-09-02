@@ -144,7 +144,15 @@ Return the exact same JSON structure with the enhancement fields added to each r
       
       // Try to parse the JSON response
       try {
-        const enhancedResults = JSON.parse(enhancedText);
+        // Clean the response - remove markdown code blocks if present
+        let cleanedText = enhancedText.trim();
+        if (cleanedText.startsWith('```json')) {
+          cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        } else if (cleanedText.startsWith('```')) {
+          cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+        }
+        
+        const enhancedResults = JSON.parse(cleanedText);
         console.log('✅ Successfully parsed enhanced results');
         return enhancedResults;
       } catch (parseError) {
