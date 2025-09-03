@@ -5,8 +5,8 @@ import { useAuth } from '../AuthContext';
 const SubscriptionGuard = ({ children }) => {
   const { user, subscription, subscriptionLoading } = useAuth();
 
-  // Show loading while checking subscription
-  if (subscriptionLoading) {
+  // Show loading while checking subscription OR if user exists but subscription is still loading
+  if (subscriptionLoading || (user && subscription === null)) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
@@ -17,8 +17,8 @@ const SubscriptionGuard = ({ children }) => {
     );
   }
 
-  // If no subscription, redirect to pricing
-  if (!subscription) {
+  // If user exists but no subscription after loading is complete, redirect to pricing
+  if (user && !subscription) {
     return <Navigate to="/pricing" replace />;
   }
 
