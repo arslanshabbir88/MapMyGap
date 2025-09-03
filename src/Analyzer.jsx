@@ -260,16 +260,8 @@ function Analyzer() {
     const handleGenerateText = async () => {
       if (!result) return;
       
-      // Check if we have file content available (either current or from history)
-      const availableContent = fileContent || result.document_content;
-      console.log('🔍 Control text generation check:', {
-        hasFileContent: !!fileContent,
-        hasDocumentContent: !!result.document_content,
-        availableContent: !!availableContent,
-        plan: subscription?.plan_type?.toLowerCase()
-      });
-      
-      if (!availableContent || availableContent.trim() === '') {
+      // Check if we have current file content available
+      if (!fileContent || fileContent.trim() === '') {
         setGenerationError('Cannot generate control text from historical analysis. Please upload a new document to generate control text.');
         return;
       }
@@ -285,7 +277,7 @@ function Analyzer() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            originalDocument: availableContent,
+            originalDocument: fileContent,
             targetControl: result.control,
             framework: selectedFramework,
             userId: user?.id
@@ -512,14 +504,40 @@ function Analyzer() {
                     )}
                     {(result.status === 'gap' || result.status === 'partial') && (
                         <div>
-                                                        <button
-                                onClick={handleGenerateText}
-                                disabled={isGenerating || (!fileContent && !result.document_content)}
-                                className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
-                            >
-                                <SparklesIcon />
-                                {isGenerating ? 'Generating...' : 'Generate Complete Implementation'}
-                </button>
+                            {/* Only show control text generation button for Professional/Enterprise users */}
+                            {subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise') && (
+                                <button
+                                    onClick={handleGenerateText}
+                                    disabled={isGenerating || !fileContent}
+                                    className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
+                                >
+                                    <SparklesIcon />
+                                    {isGenerating ? 'Generating...' : 'Generate Complete Implementation'}
+                                </button>
+                            )}
+                            
+                            {/* Show upgrade prompt for Trial/Starter users */}
+                            {(!subscription || (subscription.plan_type?.toLowerCase() !== 'professional' && subscription.plan_type?.toLowerCase() !== 'enterprise')) && (
+                                <div className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg">
+                                    <div className="flex items-center space-x-3">
+                                        <div className="flex-shrink-0">
+                                            <SparklesIcon className="h-5 w-5 text-blue-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h4 className="text-sm font-medium text-white">Generate Complete Implementation</h4>
+                                            <p className="text-xs text-slate-400 mt-1">
+                                                Upgrade to Professional or Enterprise to generate complete implementation text for gaps and partial controls.
+                                            </p>
+                                        </div>
+                                        <button
+                                            onClick={() => window.location.href = '/pricing'}
+                                            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
+                                        >
+                                            Upgrade
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                 {generationError && (
                   <p className="mt-3 text-sm text-red-400">{generationError}</p>
                 )}
@@ -681,9 +699,6 @@ function Analyzer() {
       // Ensure we have a proper filename
       const displayName = filename || uploadedFile?.name || 'Untitled Document';
       
-      // Check if user has a paid plan to store document content
-      const isPaidPlan = subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise');
-      
       // Ensure results and summary are properly structured
       const dataToSave = {
         user_id: user.id,
@@ -698,14 +713,6 @@ function Analyzer() {
           gaps: 0
         }
       };
-      
-      // Store document content for paid plans only
-      if (isPaidPlan && fileContent) {
-        dataToSave.document_content = fileContent;
-        console.log('💾 Storing document content for paid plan:', subscription.plan_type?.toLowerCase());
-      } else {
-        console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
-      }
       
       console.log('💾 Saving analysis to history:', {
         userId: user.id,
