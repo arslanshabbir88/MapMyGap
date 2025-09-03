@@ -844,16 +844,34 @@ function Analyzer() {
       console.log('Storage clearing failed:', e);
     }
 
-    // Check usage limits before starting analysis
-    if (user && usage) {
-      if (usage.runs_remaining === 0) {
-        setError('Analysis limit reached. Please upgrade your plan to continue.');
-        return;
-      }
-      
-      if (usage.character_limit !== -1 && fileContent.length > usage.character_limit) {
-        setError(`Document exceeds ${usage.character_limit} character limit for your plan. Please upgrade or reduce document size.`);
-        return;
+    // Refresh usage data before starting analysis to ensure it's current
+    if (user) {
+      try {
+        setUsageLoading(true);
+        const response = await fetch(`/api/check-usage?user_id=${user.id}`);
+        const data = await response.json();
+        
+        if (data.success && data.usage) {
+          setUsage(data.usage);
+          
+          // Check limits with fresh data
+          if (data.usage.runs_remaining === 0) {
+            setError('Analysis limit reached. Please upgrade your plan to continue.');
+            setUsageLoading(false);
+            return;
+          }
+          
+          if (data.usage.character_limit !== -1 && fileContent.length > data.usage.character_limit) {
+            setError(`Document exceeds ${data.usage.character_limit} character limit for your plan. Please upgrade or reduce document size.`);
+            setUsageLoading(false);
+            return;
+          }
+        }
+      } catch (error) {
+        console.error('Failed to refresh usage before analysis:', error);
+        // Continue with analysis even if usage refresh fails
+      } finally {
+        setUsageLoading(false);
       }
     }
 
@@ -1630,11 +1648,7 @@ function Analyzer() {
                       Please select one CSF function to analyze.
                     </div>
                   )}
-                  {selectedCategories.filter(cat => ['ID', 'PR', 'DE', 'RS', 'RC', 'GV'].includes(cat)).length > 1 && (
-                    <div className="mt-2 text-sm text-yellow-400">
-                      Only one CSF function can be selected at a time.
-                    </div>
-                  )}
+
                 </div>
               )}
               
