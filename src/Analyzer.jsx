@@ -178,13 +178,6 @@ function Analyzer() {
     }
   }, []);
 
-  // Fetch usage when user changes
-  useEffect(() => {
-    if (user) {
-      fetchUsage();
-    }
-  }, [user]);
-
   const [uploadedFile, setUploadedFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -209,25 +202,24 @@ function Analyzer() {
 
   const { user, supabase } = useAuth();
   
-  // Fetch usage information
-  const fetchUsage = async () => {
-    try {
-      setUsageLoading(true);
-      const response = await fetch(`/api/check-usage?user_id=${user.id}`);
-      const data = await response.json();
-      
-      if (data.success) {
-        setUsage(data.usage);
-      }
-    } catch (error) {
-      console.error('Failed to fetch usage:', error);
-    } finally {
-      setUsageLoading(false);
-    }
-  };
-
   // Fetch usage when user changes
   useEffect(() => {
+    const fetchUsage = async () => {
+      try {
+        setUsageLoading(true);
+        const response = await fetch(`/api/check-usage?user_id=${user.id}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          setUsage(data.usage);
+        }
+      } catch (error) {
+        console.error('Failed to fetch usage:', error);
+      } finally {
+        setUsageLoading(false);
+      }
+    };
+
     if (user) {
       fetchUsage();
     }
@@ -1099,7 +1091,15 @@ function Analyzer() {
           if (user) {
             await saveAnalysisToHistory(finalResults, uploadedFile.name);
             // Refresh usage after successful analysis
-            await fetchUsage();
+            try {
+              const response = await fetch(`/api/check-usage?user_id=${user.id}`);
+              const data = await response.json();
+              if (data.success) {
+                setUsage(data.usage);
+              }
+            } catch (error) {
+              console.error('Failed to refresh usage:', error);
+            }
           }
         } else {
           throw new Error("Invalid response structure from API.");
