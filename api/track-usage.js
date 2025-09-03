@@ -79,8 +79,7 @@ export default async function handler(req, res) {
 
     // Update usage
     const updates = {
-      runs_used: subscription.runs_used + 1,
-      last_used: new Date().toISOString()
+      runs_used: subscription.runs_used + 1
     };
 
     if (controlTextLength > 0) {
