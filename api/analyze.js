@@ -44,15 +44,15 @@ const supabase = createClient(
 let accessToken = null;
 let tokenExpiry = 0;
 
-// Internal usage tracking function (no HTTP calls needed)
-async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
+// Internal usage checking function (no tracking, just validation)
+async function checkUsageLimits(userId, documentSize, controlTextSize = 0) {
   try {
     if (!userId) {
-      console.log('⚠️ No user ID provided, skipping usage tracking');
+      console.log('⚠️ No user ID provided, skipping usage check');
       return { success: true, usage: null };
     }
 
-    console.log('🔍 Checking usage internally for user:', userId);
+    console.log('🔍 Checking usage limits for user:', userId);
     
     // Get current subscription and usage
     const dbStartTime = Date.now();
@@ -65,7 +65,7 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
     console.log(`⏱️ Database query time: ${dbTime}ms`);
 
     if (subError || !subscription) {
-      console.log('⚠️ No subscription found, skipping usage tracking');
+      console.log('⚠️ No subscription found, skipping usage check');
       return { success: true, usage: null };
     }
 
@@ -120,21 +120,52 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
 
     // Check if user has runs remaining
     if (usage.runs_remaining === 0) {
-      throw new Error('Analysis limit reached. Please upgrade your plan.');
+      return { success: false, error: 'Analysis limit reached. Please upgrade your plan.' };
     }
     
     // Check document size limit (skip if unlimited)
     if (usage.character_limit !== -1 && documentSize > usage.character_limit) {
-      throw new Error(`Document exceeds ${usage.character_limit} character limit for your plan.`);
+      return { success: false, error: `Document exceeds ${usage.character_limit} character limit for your plan.` };
     }
 
     // Check control text generation limit
     if (controlTextSize > 0 && !usage.control_text_enabled) {
-      throw new Error('Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise.');
+      return { success: false, error: 'Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise.' };
     }
     
     if (controlTextSize > 0 && usage.control_text_remaining === 0) {
-      throw new Error('Control text generation limit reached. Please upgrade your plan.');
+      return { success: false, error: 'Control text generation limit reached. Please upgrade your plan.' };
+    }
+
+    console.log('✅ Usage limits check passed');
+    return { success: true, usage };
+    
+  } catch (error) {
+    console.error('Usage limits check error:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Internal usage tracking function (tracks after successful analysis)
+async function trackUsageAfterAnalysis(userId, documentSize, controlTextSize = 0) {
+  try {
+    if (!userId) {
+      console.log('⚠️ No user ID provided, skipping usage tracking');
+      return { success: true, usage: null };
+    }
+
+    console.log('📊 Tracking usage after successful analysis for user:', userId);
+    
+    // Get current subscription
+    const { data: subscription, error: subError } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (subError || !subscription) {
+      console.log('⚠️ No subscription found, skipping usage tracking');
+      return { success: true, usage: null };
     }
 
     // Track this analysis
@@ -165,12 +196,13 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
     const updateTime = Date.now() - updateStartTime;
     console.log(`⏱️ Subscription update time: ${updateTime}ms`);
 
-    console.log('✅ Usage tracked successfully');
-    return { success: true, usage };
+    console.log('✅ Usage tracked successfully after analysis completion');
+    return { success: true };
     
   } catch (error) {
     console.error('Usage tracking error:', error);
-    throw error;
+    // Don't throw here - we don't want to fail the analysis if tracking fails
+    return { success: false, error: error.message };
   }
 }
 
@@ -626,11 +658,15 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Check and track usage before starting analysis
+    // Check usage limits before starting analysis (but don't track yet)
     const usageStartTime = Date.now();
-    await checkAndTrackUsage(userId, fileContent.length, 0);
+    const usageCheck = await checkUsageLimits(userId, fileContent.length, 0);
     const usageTime = Date.now() - usageStartTime;
-    console.log(`⏱️ Usage tracking completed in ${usageTime}ms`);
+    console.log(`⏱️ Usage check completed in ${usageTime}ms`);
+    
+    if (!usageCheck.success) {
+      throw new Error(usageCheck.error);
+    }
     
     // Generate unique request identifier to prevent caching
     const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
@@ -641,6 +677,12 @@ export default async function handler(req, res) {
     const result = await analyzeWithAI(fileContent, framework, selectedCategories);
     const aiTime = Date.now() - aiStartTime;
     console.log(`⏱️ AI analysis completed in ${aiTime}ms`);
+    
+    // Track usage only after successful analysis
+    const trackingStartTime = Date.now();
+    await trackUsageAfterAnalysis(userId, fileContent.length, 0);
+    const trackingTime = Date.now() - trackingStartTime;
+    console.log(`⏱️ Usage tracking completed in ${trackingTime}ms`);
     
     const totalTime = Date.now() - startTime;
     console.log(`⏱️ Total function time: ${totalTime}ms`);

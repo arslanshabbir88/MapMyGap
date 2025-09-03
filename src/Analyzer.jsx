@@ -887,6 +887,19 @@ function Analyzer() {
         const apiUrl = `/api/analyze?cb=${cacheBuster}&hash=${documentHash}&ts=${Date.now()}`;
         console.log('🚀 Analysis cache buster:', cacheBuster, 'Document hash:', documentHash, 'API URL:', apiUrl);
         
+        // Create AbortController for request cancellation
+        const abortController = new AbortController();
+        
+        // Set up tab visibility change listener to cancel request
+        const handleVisibilityChange = () => {
+          if (document.hidden) {
+            console.log('🚫 Tab became hidden, cancelling analysis request');
+            abortController.abort();
+          }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
         const response = await fetch(apiUrl, {
           method: 'POST',
           headers: { 
@@ -895,8 +908,12 @@ function Analyzer() {
             'Pragma': 'no-cache',
             'X-Cache-Buster': cacheBuster.toString()
           },
-          body: JSON.stringify(requestBody)
+          body: JSON.stringify(requestBody),
+          signal: abortController.signal
         });
+        
+        // Remove the event listener after request completes
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -1110,6 +1127,13 @@ function Analyzer() {
       }
     } catch (e) {
       console.error(e);
+      
+      // Handle request cancellation (tab switching)
+      if (e.name === 'AbortError') {
+        console.log('🚫 Analysis request was cancelled (likely due to tab switching)');
+        setError('Analysis was cancelled. Please stay on this tab during analysis or try again.');
+        return;
+      }
       
       if (e.message && e.message.includes('GOOGLE_SERVER_OVERLOAD')) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again. This is a temporary issue on Google\'s end.');
