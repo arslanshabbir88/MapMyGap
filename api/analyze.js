@@ -700,17 +700,8 @@ export default async function handler(req, res) {
     const aiTime = Date.now() - aiStartTime;
     console.log(`⏱️ AI analysis completed in ${aiTime}ms`);
     
-    // Check for cancellation after AI analysis but before tracking
-    if (checkCancellation()) {
-      console.log('🚫 Request cancelled after AI analysis, skipping usage tracking');
-      return res.status(499).json({ error: 'Request cancelled by client' });
-    }
-    
-    // Track usage only after successful analysis and no cancellation
-    const trackingStartTime = Date.now();
-    await trackUsageAfterAnalysis(userId, fileContent.length, 0);
-    const trackingTime = Date.now() - trackingStartTime;
-    console.log(`⏱️ Usage tracking completed in ${trackingTime}ms`);
+    // NOTE: Usage tracking moved to frontend to handle cancellation properly
+    // Backend no longer tracks usage - frontend will handle this after successful response
     
     const totalTime = Date.now() - startTime;
     console.log(`⏱️ Total function time: ${totalTime}ms`);

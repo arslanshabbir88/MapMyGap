@@ -1125,15 +1125,32 @@ function Analyzer() {
           // Save to history for authenticated users
           if (user) {
             await saveAnalysisToHistory(finalResults, uploadedFile.name);
-            // Refresh usage after successful analysis
+            
+            // Track usage after successful analysis
             try {
-              const response = await fetch(`/api/check-usage?user_id=${user.id}`);
-              const data = await response.json();
-              if (data.success) {
-                setUsage(data.usage);
+              const trackResponse = await fetch('/api/track-usage', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  userId: user.id,
+                  documentLength: fileContent.length,
+                  controlTextLength: 0
+                })
+              });
+              
+              if (trackResponse.ok) {
+                const trackData = await trackResponse.json();
+                if (trackData.success && trackData.usage) {
+                  setUsage(trackData.usage);
+                  console.log('✅ Usage tracked successfully');
+                }
+              } else {
+                console.error('❌ Failed to track usage:', await trackResponse.text());
               }
             } catch (error) {
-              console.error('Failed to refresh usage:', error);
+              console.error('❌ Error tracking usage:', error);
             }
           }
         } else {
