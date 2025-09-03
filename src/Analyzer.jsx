@@ -1289,11 +1289,11 @@ function Analyzer() {
           </div>
         </header>
         
-        {/* Usage Display - Integrated Header with Progress */}
+        {/* Usage Display - Centered and Clean */}
         {usage && !usageLoading && usage.plan && (
           <div className="bg-slate-800/40 backdrop-blur-sm border-b border-slate-700/50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-center">
                 <div className="flex items-center space-x-6">
                   <div className="flex items-center space-x-3">
                     <div className="flex items-center space-x-2">
@@ -1303,7 +1303,7 @@ function Analyzer() {
                       </span>
                     </div>
                     <div className="text-slate-300 text-sm">
-                      {usage.runs_remaining === -1 ? 'Unlimited analyses' : `${usage.runs_remaining} analyses remaining`}
+                      {usage.runs_remaining === -1 ? '∞' : `${usage.runs_remaining} analyses remaining`}
                     </div>
                   </div>
                   
@@ -1327,14 +1327,12 @@ function Analyzer() {
                     <div className="flex items-center space-x-1 text-slate-300">
                       <span className="text-xs">📝</span>
                       <span className="text-xs">
-                        {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars`}
+                        {usage.control_text_remaining === -1 ? '∞' : `${usage.control_text_remaining} chars`}
                       </span>
                     </div>
                   )}
-                </div>
-                
-                {/* Upgrade Prompts */}
-                <div className="flex items-center space-x-3">
+                  
+                  {/* Upgrade Prompts */}
                   {usage.runs_remaining === 0 && (
                     <button 
                       onClick={() => window.location.href = '/pricing'}
