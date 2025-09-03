@@ -164,6 +164,7 @@ export default async function handler(req, res) {
           .single();
 
         if (subError || !subscription) {
+          console.log('🚨 No subscription found for user:', userId, 'Error:', subError);
           return res.status(400).json({ 
             error: 'TRIAL_LIMIT',
             message: 'Control text generation is not available on the Trial plan. Please upgrade to a paid plan to generate control text.',
@@ -195,6 +196,7 @@ export default async function handler(req, res) {
 
         // Check if control text generation is enabled for this plan
         if (!limits.control_text_enabled) {
+          console.log('🚨 Control text not enabled for plan:', subscription.plan_type?.toLowerCase(), 'Limits:', limits);
           return res.status(400).json({ 
             error: 'PLAN_LIMIT',
             message: 'Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise to generate control text.',

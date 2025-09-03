@@ -317,6 +317,7 @@ function Analyzer() {
         const data = await resp.json();
         setGeneratedText(data.generatedText || '');
       } catch (err) {
+        console.log('🚨 Control text generation error:', err.message);
         if (err.name === 'AbortError') {
           setGenerationError('Request timed out. Please try again or review manually.');
         } else {
