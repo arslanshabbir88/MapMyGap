@@ -55,11 +55,14 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
     console.log('🔍 Checking usage internally for user:', userId);
     
     // Get current subscription and usage
+    const dbStartTime = Date.now();
     const { data: subscription, error: subError } = await supabase
       .from('subscriptions')
       .select('*')
       .eq('user_id', userId)
       .single();
+    const dbTime = Date.now() - dbStartTime;
+    console.log(`⏱️ Database query time: ${dbTime}ms`);
 
     if (subError || !subscription) {
       console.log('⚠️ No subscription found, skipping usage tracking');
@@ -105,6 +108,7 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
     }
 
     // Track this analysis
+    const insertStartTime = Date.now();
     await supabase
       .from('usage_logs')
       .insert({
@@ -115,8 +119,11 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
         control_text_size: controlTextSize,
         framework: 'NIST_CSF' // or whatever framework is selected
       });
+    const insertTime = Date.now() - insertStartTime;
+    console.log(`⏱️ Usage log insert time: ${insertTime}ms`);
 
     // Increment usage counters
+    const updateStartTime = Date.now();
     await supabase
       .from('subscriptions')
       .update({ 
@@ -125,6 +132,8 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
         last_analysis_date: new Date().toISOString()
       })
       .eq('user_id', userId);
+    const updateTime = Date.now() - updateStartTime;
+    console.log(`⏱️ Subscription update time: ${updateTime}ms`);
 
     console.log('✅ Usage tracked successfully');
     return { success: true, usage };
@@ -579,6 +588,7 @@ export default async function handler(req, res) {
   }
   
   try {
+    const startTime = Date.now();
     console.log('🚀 Starting compliance analysis request');
     
     // Parse request body
@@ -589,14 +599,23 @@ export default async function handler(req, res) {
     }
 
     // Check and track usage before starting analysis
+    const usageStartTime = Date.now();
     await checkAndTrackUsage(userId, fileContent.length, 0);
+    const usageTime = Date.now() - usageStartTime;
+    console.log(`⏱️ Usage tracking completed in ${usageTime}ms`);
     
     // Generate unique request identifier to prevent caching
     const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
     console.log('🆔 Unique request ID:', requestId);
     
     // Perform AI analysis
+    const aiStartTime = Date.now();
     const result = await analyzeWithAI(fileContent, framework, selectedCategories);
+    const aiTime = Date.now() - aiStartTime;
+    console.log(`⏱️ AI analysis completed in ${aiTime}ms`);
+    
+    const totalTime = Date.now() - startTime;
+    console.log(`⏱️ Total function time: ${totalTime}ms`);
     
     // Return results in the format the frontend expects
     return res.status(200).json({
