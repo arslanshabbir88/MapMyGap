@@ -578,6 +578,8 @@ function Analyzer() {
       const pageSize = 10;
       const offset = reset ? 0 : historyPage * pageSize;
       
+      console.log('📚 Loading analysis history for user:', user.id, 'offset:', offset, 'pageSize:', pageSize);
+
       const { data, error } = await supabase
         .from('analysis_history')
         .select('*')
@@ -585,7 +587,12 @@ function Analyzer() {
         .order('created_at', { ascending: false })
         .range(offset, offset + pageSize - 1);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error loading history:', error);
+        throw error;
+      }
+      
+      console.log('📚 Loaded history data:', data?.length || 0, 'items');
       
       // Process the data to ensure proper structure
       const processedData = (data || []).map(item => {
@@ -700,11 +707,26 @@ function Analyzer() {
         console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
       }
       
+      console.log('💾 Saving analysis to history:', {
+        userId: user.id,
+        filename: displayName,
+        framework: selectedFramework,
+        hasResults: !!dataToSave.results,
+        hasSummary: !!dataToSave.summary,
+        hasDocumentContent: !!dataToSave.document_content,
+        plan: subscription?.plan_type?.toLowerCase()
+      });
+
       const { error } = await supabase
         .from('analysis_history')
         .insert(dataToSave);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error saving to history:', error);
+        throw error;
+      }
+      
+      console.log('✅ Successfully saved analysis to history');
       
       // Reload history to show the new entry
       await loadAnalysisHistory(true);
