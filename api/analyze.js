@@ -69,20 +69,50 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
       return { success: true, usage: null };
     }
 
-    // Calculate usage
-    const runsRemaining = subscription.runs_limit === -1 ? -1 : Math.max(0, subscription.runs_limit - subscription.runs_used);
-    const controlTextRemaining = subscription.control_text_limit === -1 ? -1 : Math.max(0, subscription.control_text_limit - (subscription.control_text_used || 0));
+    // Get tier limits based on user's exact specifications (same as check-usage.js)
+    const tierLimits = {
+      trial: { 
+        runs: 3, 
+        characters: 1000, 
+        control_text: 1000,
+        control_text_enabled: true
+      },
+      starter: { 
+        runs: 5, 
+        characters: 1000, 
+        control_text: 0,
+        control_text_enabled: false
+      },
+      professional: { 
+        runs: 25, 
+        characters: 1000, 
+        control_text: -1, // unlimited
+        control_text_enabled: true
+      },
+      enterprise: { 
+        runs: -1, // unlimited
+        characters: -1, // unlimited
+        control_text: -1, // unlimited
+        control_text_enabled: true
+      }
+    };
+
+    const limits = tierLimits[subscription.plan_type?.toLowerCase()] || tierLimits.trial;
+    
+    // Calculate usage using tier limits
+    const runsRemaining = limits.runs === -1 ? -1 : Math.max(0, limits.runs - subscription.runs_used);
+    const controlTextRemaining = limits.control_text === -1 ? -1 : Math.max(0, limits.control_text - (subscription.control_text_used || 0));
     
     const usage = {
-      plan: subscription.plan,
+      plan: subscription.plan_type?.toLowerCase() || 'trial',
       runs_remaining: runsRemaining,
       runs_used: subscription.runs_used,
-      runs_limit: subscription.runs_limit,
-      character_limit: subscription.character_limit,
-      control_text_enabled: subscription.control_text_enabled,
+      runs_limit: limits.runs,
+      character_limit: limits.characters,
+      control_text_enabled: limits.control_text_enabled,
       control_text_remaining: controlTextRemaining,
       control_text_used: subscription.control_text_used || 0,
-      control_text_limit: subscription.control_text_limit,
+      control_text_limit: limits.control_text,
       subscription_id: subscription.id
     };
 
