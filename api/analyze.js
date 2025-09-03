@@ -79,7 +79,7 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
       },
       starter: { 
         runs: 5, 
-        characters: 1000, 
+        characters: -1, // unlimited
         control_text: 0,
         control_text_enabled: false
       },
