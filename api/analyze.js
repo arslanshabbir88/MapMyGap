@@ -278,7 +278,7 @@ async function getAccessToken() {
 }
 
 // Direct call to Vertex AI API
-async function callVertexAI(prompt) {
+async function callVertexAI(prompt, checkCancellation = null) {
   try {
     const accessToken = await getAccessToken();
     const projectId = process.env.GCP_PROJECT_ID;
@@ -320,6 +320,11 @@ async function callVertexAI(prompt) {
       body: JSON.stringify(requestBody)
     });
 
+    // Check for cancellation before starting the race
+    if (checkCancellation && checkCancellation()) {
+      throw new Error('Request cancelled by client');
+    }
+
     // Race between fetch and timeout
     const response = await Promise.race([fetchPromise, timeoutPromise]);
 
@@ -342,7 +347,7 @@ async function callVertexAI(prompt) {
 }
 
 // Main analysis function using direct Vertex AI API
-async function analyzeWithAI(fileContent, framework, selectedCategories = null) {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null, checkCancellation = null) {
   // Generate deterministic hash for logging - use beginning and end of document
   const documentHash = crypto.createHash('sha256').update(
     fileContent.substring(0, 100) + 
@@ -576,7 +581,7 @@ CRITICAL REQUIREMENTS:
 4. Return ONLY valid JSON, no additional text or explanations`;
 
     // Call Vertex AI directly
-    const analysis = await callVertexAI(prompt);
+    const analysis = await callVertexAI(prompt, checkCancellation);
     
     console.log('✅ AI analysis completed successfully');
     console.log('📊 Response length:', analysis.length, 'characters');
@@ -629,7 +634,7 @@ CRITICAL REQUIREMENTS:
       analysis: parsedAnalysis,
       documentHash: documentHash.substring(0, 16)
     };
-    
+
   } catch (error) {
     console.log('❌ AI analysis failed:', error.message);
     throw error;
@@ -646,6 +651,17 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Set up request cancellation detection
+  let isRequestCancelled = false;
+  const checkCancellation = () => {
+    if (req.destroyed || req.aborted) {
+      isRequestCancelled = true;
+      console.log('🚫 Request was cancelled by client');
+      return true;
+    }
+    return false;
+  };
   
   try {
     const startTime = Date.now();
@@ -672,13 +688,25 @@ export default async function handler(req, res) {
     const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
     console.log('🆔 Unique request ID:', requestId);
     
+    // Check for cancellation before starting AI analysis
+    if (checkCancellation()) {
+      console.log('🚫 Request cancelled before AI analysis, skipping');
+      return res.status(499).json({ error: 'Request cancelled by client' });
+    }
+
     // Perform AI analysis
     const aiStartTime = Date.now();
-    const result = await analyzeWithAI(fileContent, framework, selectedCategories);
+    const result = await analyzeWithAI(fileContent, framework, selectedCategories, checkCancellation);
     const aiTime = Date.now() - aiStartTime;
     console.log(`⏱️ AI analysis completed in ${aiTime}ms`);
     
-    // Track usage only after successful analysis
+    // Check for cancellation after AI analysis but before tracking
+    if (checkCancellation()) {
+      console.log('🚫 Request cancelled after AI analysis, skipping usage tracking');
+      return res.status(499).json({ error: 'Request cancelled by client' });
+    }
+    
+    // Track usage only after successful analysis and no cancellation
     const trackingStartTime = Date.now();
     await trackUsageAfterAnalysis(userId, fileContent.length, 0);
     const trackingTime = Date.now() - trackingStartTime;
