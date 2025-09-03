@@ -1346,7 +1346,7 @@ function Analyzer() {
                       onClick={() => window.location.href = '/pricing'}
                       className="bg-slate-700/50 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-slate-600/50 transition-all duration-200 border border-slate-600/50"
                     >
-                      Low Usage
+                      Running Low
                     </button>
                   )}
                 </div>
