@@ -335,9 +335,18 @@ async function callVertexAI(prompt, checkCancellation = null) {
 
     const result = await response.json();
     
+    // Add detailed logging to debug response structure
+    console.log('🔍 Raw Vertex AI response structure:', JSON.stringify(result, null, 2));
+    
     if (result.candidates && result.candidates[0] && result.candidates[0].content) {
-      return result.candidates[0].content.parts[0].text;
+      if (result.candidates[0].content.parts && result.candidates[0].content.parts[0]) {
+        return result.candidates[0].content.parts[0].text;
+      } else {
+        console.error('❌ Missing parts in response:', result.candidates[0].content);
+        throw new Error('Unexpected response format: missing parts array');
+      }
     } else {
+      console.error('❌ Unexpected response format:', result);
       throw new Error('Unexpected response format from Vertex AI');
     }
   } catch (error) {
