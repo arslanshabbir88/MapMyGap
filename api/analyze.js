@@ -67,8 +67,8 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
       throw new Error('Analysis limit reached. Please upgrade your plan.');
     }
     
-    // Check document size limit
-    if (documentSize > usage.character_limit) {
+    // Check document size limit (skip if unlimited)
+    if (usage.character_limit !== -1 && documentSize > usage.character_limit) {
       throw new Error(`Document exceeds ${usage.character_limit} character limit for your plan.`);
     }
 

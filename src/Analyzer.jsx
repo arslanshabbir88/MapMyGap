@@ -851,7 +851,7 @@ function Analyzer() {
         return;
       }
       
-      if (fileContent.length > usage.character_limit) {
+      if (usage.character_limit !== -1 && fileContent.length > usage.character_limit) {
         setError(`Document exceeds ${usage.character_limit} character limit for your plan. Please upgrade or reduce document size.`);
         return;
       }

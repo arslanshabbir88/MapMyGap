@@ -8,11 +8,11 @@ ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS last_analysis_date TIMESTAMP 
 ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS control_text_used INTEGER DEFAULT 0;
 ALTER TABLE subscriptions ADD COLUMN IF NOT EXISTS control_text_reset_date TIMESTAMP WITH TIME ZONE;
 
--- Create usage_logs table for detailed tracking
+-- Create usage_logs table for detailed tracking (FIXED: using INTEGER for subscription_id)
 CREATE TABLE IF NOT EXISTS usage_logs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  subscription_id UUID REFERENCES subscriptions(id) ON DELETE CASCADE,
+  subscription_id INTEGER REFERENCES subscriptions(id) ON DELETE CASCADE, -- FIXED: INTEGER instead of UUID
   analysis_type VARCHAR(50) NOT NULL, -- 'comprehensive', 'quick', etc.
   document_size INTEGER NOT NULL, -- character count
   control_text_size INTEGER DEFAULT 0, -- character count for control text generation

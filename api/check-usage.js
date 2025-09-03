@@ -75,7 +75,7 @@ export default async function handler(req, res) {
       },
       enterprise: { 
         runs: -1, // unlimited
-        characters: 1000, 
+        characters: -1, // unlimited
         control_text: -1, // unlimited
         control_text_enabled: true
       }
