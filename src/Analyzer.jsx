@@ -260,8 +260,9 @@ function Analyzer() {
     const handleGenerateText = async () => {
       if (!result) return;
       
-      // Check if we have file content available
-      if (!fileContent || fileContent.trim() === '') {
+      // Check if we have file content available (either current or from history)
+      const availableContent = fileContent || result.document_content;
+      if (!availableContent || availableContent.trim() === '') {
         setGenerationError('Cannot generate control text from historical analysis. Please upload a new document to generate control text.');
         return;
       }
@@ -277,7 +278,7 @@ function Analyzer() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            originalDocument: fileContent,
+            originalDocument: availableContent,
             targetControl: result.control,
             framework: selectedFramework,
             userId: user?.id
@@ -506,7 +507,7 @@ function Analyzer() {
                         <div>
                                                         <button
                                 onClick={handleGenerateText}
-                                disabled={isGenerating || !fileContent || fileContent.trim() === ''}
+                                disabled={isGenerating || (!fileContent && !result.document_content)}
                                 className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
                             >
                                 <SparklesIcon />
@@ -666,6 +667,9 @@ function Analyzer() {
       // Ensure we have a proper filename
       const displayName = filename || uploadedFile?.name || 'Untitled Document';
       
+      // Check if user has a paid plan to store document content
+      const isPaidPlan = subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise');
+      
       // Ensure results and summary are properly structured
       const dataToSave = {
         user_id: user.id,
@@ -680,6 +684,11 @@ function Analyzer() {
           gaps: 0
         }
       };
+      
+      // Store document content for paid plans only
+      if (isPaidPlan && fileContent) {
+        dataToSave.document_content = fileContent;
+      }
       
       const { error } = await supabase
         .from('analysis_history')
