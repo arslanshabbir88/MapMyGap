@@ -262,6 +262,13 @@ function Analyzer() {
       
       // Check if we have file content available (either current or from history)
       const availableContent = fileContent || result.document_content;
+      console.log('🔍 Control text generation check:', {
+        hasFileContent: !!fileContent,
+        hasDocumentContent: !!result.document_content,
+        availableContent: !!availableContent,
+        plan: subscription?.plan_type?.toLowerCase()
+      });
+      
       if (!availableContent || availableContent.trim() === '') {
         setGenerationError('Cannot generate control text from historical analysis. Please upload a new document to generate control text.');
         return;
@@ -688,6 +695,9 @@ function Analyzer() {
       // Store document content for paid plans only
       if (isPaidPlan && fileContent) {
         dataToSave.document_content = fileContent;
+        console.log('💾 Storing document content for paid plan:', subscription.plan_type?.toLowerCase());
+      } else {
+        console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
       }
       
       const { error } = await supabase
