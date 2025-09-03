@@ -239,9 +239,9 @@ async function callVertexAI(prompt) {
       }
     };
 
-                  // Set timeout under Vercel's 60-second runtime limit
+                  // Set timeout to match Vercel's configured maxDuration
                   const getTimeoutDuration = (docLength) => {
-                    return 55000;  // 55 seconds (safe under Vercel's 60s runtime limit)
+                    return 290000;  // 290 seconds (safe under Vercel's 300s maxDuration)
                   };
 
                   const timeoutDuration = getTimeoutDuration(prompt.length);
