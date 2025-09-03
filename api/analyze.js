@@ -54,7 +54,19 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
 
     // Check current usage
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
-    const usageResponse = await fetch(`${baseUrl}/api/check-usage?user_id=${userId}`);
+    const usageUrl = `${baseUrl}/api/check-usage?user_id=${userId}`;
+    console.log('🔍 Checking usage at URL:', usageUrl);
+    
+    const usageResponse = await fetch(usageUrl);
+    console.log('🔍 Usage response status:', usageResponse.status);
+    console.log('🔍 Usage response headers:', Object.fromEntries(usageResponse.headers.entries()));
+    
+    if (!usageResponse.ok) {
+      const errorText = await usageResponse.text();
+      console.log('❌ Usage API error response:', errorText);
+      throw new Error(`Usage API returned ${usageResponse.status}: ${errorText}`);
+    }
+    
     const usageData = await usageResponse.json();
     
     if (!usageData.success) {
