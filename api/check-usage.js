@@ -69,7 +69,7 @@ export default async function handler(req, res) {
       },
       professional: { 
         runs: 25, 
-        characters: 1000, 
+        characters: -1, // unlimited
         control_text: -1, // unlimited
         control_text_enabled: true
       },
