@@ -222,7 +222,7 @@ async function callVertexAI(prompt) {
     const projectId = process.env.GCP_PROJECT_ID;
     const location = process.env.GCP_LOCATION || 'us-central1';
 
-    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash:generateContent`;
+    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-1.5-flash:generateContent`;
 
     const requestBody = {
       contents: [{
@@ -241,9 +241,9 @@ async function callVertexAI(prompt) {
 
                   // Add adaptive timeout wrapper based on document size
                   const getTimeoutDuration = (docLength) => {
-                    if (docLength < 3000) return 35000;      // Small docs: 35 seconds
-                    if (docLength < 5000) return 50000;      // Medium docs: 50 seconds
-                    return 58000;                            // Large docs: 58 seconds (safe under Vercel's 60s limit)
+                    if (docLength < 3000) return 30000;      // Small docs: 30 seconds
+                    if (docLength < 5000) return 45000;      // Medium docs: 45 seconds
+                    return 55000;                            // Large docs: 55 seconds (safe under Vercel's 60s limit)
                   };
 
                   const timeoutDuration = getTimeoutDuration(prompt.length);
@@ -290,7 +290,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null) 
     framework
   ).digest('hex');
   
-       console.log('🚀 Starting AI analysis with Gemini 2.5 Flash via direct Vertex AI API');
+       console.log('🚀 Starting AI analysis with Gemini 1.5 Flash via direct Vertex AI API');
      console.log('📄 Document length:', fileContent.length, 'characters');
      console.log('🔍 Framework:', framework);
      console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
