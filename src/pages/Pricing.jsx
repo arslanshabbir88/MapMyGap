@@ -8,21 +8,16 @@ const Pricing = ({ onShowLogin }) => {
   const plans = [
     {
       name: 'Trial',
-      price: '$0',
-      period: '/month',
-             description: 'Start with our 14-day free trial. Get full access to all features with no commitment.',
-             features: [
-         'Unlimited AI Analysis',
-         'Control Text Generation',
-         'All Framework Support',
-         'Real-time Insights'
-       ],
-             limitations: [
-         '1,000 character upload limit',
-         '1,000 character generation limit',
-         '3 total analyses',
-         '14-day duration'
-       ],
+      price: 'Free',
+      period: '14 days',
+      description: 'Perfect for testing the platform',
+      features: [
+        '3 analyses',
+        '1000 character upload limit',
+        '1000 character control text generation',
+        'Basic compliance frameworks',
+        'Email support'
+      ],
       priceId: STRIPE_CONFIG.prices.trial,
       buttonText: 'Start Free Trial',
       popular: false,
@@ -31,45 +26,55 @@ const Pricing = ({ onShowLogin }) => {
     {
       name: 'Starter',
       price: '$49',
-      period: '/month',
-             description: 'Perfect for small teams and individual consultants.',
-             features: [
-         '5 Analyses per Month',
-         'All Frameworks',
-         'Gap Analysis',
-         'Control Text Generation'
-       ],
+      period: 'per month',
+      description: 'Ideal for small teams getting started',
+      features: [
+        '5 analyses per month',
+        '1000 character upload limit',
+        'Basic compliance frameworks',
+        'Email support',
+        'Analysis history'
+      ],
       priceId: STRIPE_CONFIG.prices.starter,
-      buttonText: 'Subscribe to Starter',
+      buttonText: 'Get Started',
       popular: false
     },
     {
       name: 'Professional',
       price: '$149',
-      period: '/month',
-             description: 'Ideal for growing businesses and compliance consultants.',
-             features: [
-         'Everything in Starter, PLUS:',
-         '25 Analyses per Month',
-         'Implementation Text Generation'
-       ],
+      period: 'per month',
+      description: 'For growing compliance teams',
+      features: [
+        '25 analyses per month',
+        '1000 character upload limit',
+        'Control text generation included',
+        'All compliance frameworks',
+        'Priority email support',
+        'Analysis history',
+        'Export capabilities'
+      ],
       priceId: STRIPE_CONFIG.prices.professional,
-      buttonText: 'Subscribe to Professional',
+      buttonText: 'Get Started',
       popular: true
     },
     {
       name: 'Enterprise',
       price: '$499',
-      period: '/month',
-             description: 'For enterprise organizations with unlimited compliance needs.',
-             features: [
-         'Everything in Professional, PLUS:',
-         'Unlimited Analyses',
-         'Unlimited Implementation Text',
-         'Priority Support'
-       ],
+      period: 'per month',
+      description: 'For large organizations',
+      features: [
+        'Unlimited analyses',
+        '1000 character upload limit',
+        'Unlimited control text generation',
+        'All compliance frameworks',
+        'Priority support',
+        'Analysis history',
+        'Export capabilities',
+        'Custom integrations',
+        'Dedicated account manager'
+      ],
       priceId: STRIPE_CONFIG.prices.enterprise,
-      buttonText: 'Subscribe to Enterprise',
+      buttonText: 'Contact Sales',
       popular: false
     }
   ];
@@ -145,20 +150,7 @@ const Pricing = ({ onShowLogin }) => {
                    </ul>
                  </div>
 
-                                 {/* Limitations (for Trial) */}
-                 {plan.limitations && (
-                   <div className="mb-6">
-                     <h4 className="font-semibold text-yellow-400 mb-3 text-lg">Trial Limitations:</h4>
-                     <ul className="space-y-3">
-                       {plan.limitations.map((limitation, limitIndex) => (
-                         <li key={limitIndex} className="text-base text-gray-200 flex items-start font-medium">
-                           <span className="text-yellow-400 mr-3 mt-1 text-lg">⚠</span>
-                           {limitation}
-                         </li>
-                       ))}
-                     </ul>
-                   </div>
-                 )}
+
 
                 {/* Checkout Button */}
                 <div className="mt-auto">

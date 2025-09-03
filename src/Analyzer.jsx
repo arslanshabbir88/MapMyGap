@@ -178,6 +178,13 @@ function Analyzer() {
     }
   }, []);
 
+  // Fetch usage when user changes
+  useEffect(() => {
+    if (user) {
+      fetchUsage();
+    }
+  }, [user]);
+
   const [uploadedFile, setUploadedFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -195,8 +202,29 @@ function Analyzer() {
 
   // Removed strictness levels - now using comprehensive analysis mode
   const [lastAnalyzedMode, setLastAnalyzedMode] = useState(null);
+  
+  // Usage tracking state
+  const [usage, setUsage] = useState(null);
+  const [usageLoading, setUsageLoading] = useState(true);
 
   const { user, supabase } = useAuth();
+  
+  // Fetch usage information
+  const fetchUsage = async () => {
+    try {
+      setUsageLoading(true);
+      const response = await fetch(`/api/check-usage?user_id=${user.id}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setUsage(data.usage);
+      }
+    } catch (error) {
+      console.error('Failed to fetch usage:', error);
+    } finally {
+      setUsageLoading(false);
+    }
+  };
   
 
 
@@ -817,6 +845,19 @@ function Analyzer() {
       console.log('Storage clearing failed:', e);
     }
 
+    // Check usage limits before starting analysis
+    if (user && usage) {
+      if (usage.runs_remaining === 0) {
+        setError('Analysis limit reached. Please upgrade your plan to continue.');
+        return;
+      }
+      
+      if (fileContent.length > usage.character_limit) {
+        setError(`Document exceeds ${usage.character_limit} character limit for your plan. Please upgrade or reduce document size.`);
+        return;
+      }
+    }
+
     console.log('🚀 Starting analysis');
     setIsAnalyzing(true);
 
@@ -835,6 +876,7 @@ function Analyzer() {
           fileContent, 
           framework: selectedFramework,
           selectedCategories: selectedCategories,
+          userId: user?.id, // Add user ID for usage tracking
           timestamp: Date.now(),
           documentHash: btoa(fileContent.substring(0, 100) + fileContent.substring(Math.max(0, fileContent.length - 100))).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16)
         };
@@ -1049,6 +1091,8 @@ function Analyzer() {
           // Save to history for authenticated users
           if (user) {
             await saveAnalysisToHistory(finalResults, uploadedFile.name);
+            // Refresh usage after successful analysis
+            await fetchUsage();
           }
         } else {
           throw new Error("Invalid response structure from API.");
@@ -1195,6 +1239,52 @@ function Analyzer() {
             </div>
           </div>
         </header>
+        
+        {/* Usage Display */}
+        {usage && !usageLoading && (
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-medium text-blue-900">Usage Status</h3>
+                  <p className="text-sm text-blue-700">
+                    {usage.runs_remaining === -1 ? 'Unlimited' : `${usage.runs_remaining} analyses remaining`} • 
+                    {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)} Plan
+                  </p>
+                  {usage.control_text_enabled && (
+                    <p className="text-xs text-blue-600 mt-1">
+                      Control text: {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars remaining`}
+                    </p>
+                  )}
+                </div>
+                {usage.runs_remaining === 0 && (
+                  <button 
+                    onClick={() => window.location.href = '/pricing'}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+                  >
+                    Upgrade Plan
+                  </button>
+                )}
+              </div>
+              
+              {usage.runs_remaining > 0 && usage.runs_remaining !== -1 && (
+                <div className="mt-2">
+                  <div className="w-full bg-blue-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{ 
+                        width: `${((usage.runs_used / usage.runs_limit) * 100)}%` 
+                      }}
+                    ></div>
+                  </div>
+                  <p className="text-xs text-blue-600 mt-1">
+                    {usage.runs_used} of {usage.runs_limit} analyses used this period
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
         
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           {/* Step Indicator */}

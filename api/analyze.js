@@ -33,10 +33,84 @@
 
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
 // Direct Vertex AI API integration - no SDK authentication issues
 let accessToken = null;
 let tokenExpiry = 0;
+
+// Usage tracking function
+async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
+  try {
+    if (!userId) {
+      console.log('⚠️ No user ID provided, skipping usage tracking');
+      return { success: true, usage: null };
+    }
+
+    // Check current usage
+    const usageResponse = await fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/check-usage?user_id=${userId}`);
+    const usageData = await usageResponse.json();
+    
+    if (!usageData.success) {
+      throw new Error('Failed to check usage');
+    }
+
+    const { usage } = usageData;
+    
+    // Check if user has runs remaining
+    if (usage.runs_remaining === 0) {
+      throw new Error('Analysis limit reached. Please upgrade your plan.');
+    }
+    
+    // Check document size limit
+    if (documentSize > usage.character_limit) {
+      throw new Error(`Document exceeds ${usage.character_limit} character limit for your plan.`);
+    }
+
+    // Check control text generation limit
+    if (controlTextSize > 0 && !usage.control_text_enabled) {
+      throw new Error('Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise.');
+    }
+    
+    if (controlTextSize > 0 && usage.control_text_remaining === 0) {
+      throw new Error('Control text generation limit reached. Please upgrade your plan.');
+    }
+
+    // Track this analysis
+    await supabase
+      .from('usage_logs')
+      .insert({
+        user_id: userId,
+        subscription_id: usage.subscription_id,
+        analysis_type: 'comprehensive',
+        document_size: documentSize,
+        control_text_size: controlTextSize,
+        framework: 'NIST_CSF' // or whatever framework is selected
+      });
+
+    // Increment usage counters
+    await supabase
+      .from('subscriptions')
+      .update({ 
+        runs_used: usage.runs_used + 1,
+        control_text_used: (usage.control_text_used || 0) + controlTextSize,
+        last_analysis_date: new Date().toISOString()
+      })
+      .eq('user_id', userId);
+
+    console.log('✅ Usage tracked successfully');
+    return { success: true, usage: usageData.usage };
+    
+  } catch (error) {
+    console.error('Usage tracking error:', error);
+    throw error;
+  }
+}
 
 // Get access token from service account key
 async function getAccessToken() {
@@ -485,11 +559,14 @@ export default async function handler(req, res) {
     console.log('🚀 Starting compliance analysis request');
     
     // Parse request body
-    const { fileContent, framework, selectedCategories } = req.body;
+    const { fileContent, framework, selectedCategories, userId } = req.body;
     
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
+
+    // Check and track usage before starting analysis
+    await checkAndTrackUsage(userId, fileContent.length, 0);
     
     // Generate unique request identifier to prevent caching
     const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
@@ -513,7 +590,7 @@ export default async function handler(req, res) {
       timestamp: new Date().toISOString(),
       requestId: requestId
     });
-    
+
   } catch (error) {
     console.log('❌ Handler error:', error.message);
     return res.status(500).json({ 
