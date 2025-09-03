@@ -1247,28 +1247,69 @@ function Analyzer() {
           </div>
         </header>
         
-        {/* Usage Display - Minimal & Modern */}
+        {/* Usage Display - Integrated Header with Progress */}
         {usage && !usageLoading && usage.plan && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
-            <div className="flex items-center justify-center">
-              <div className="flex items-center space-x-4 text-sm text-slate-500">
-                <div className="flex items-center space-x-1.5">
-                  <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
-                  <span className="font-medium text-slate-400">
-                    {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)}
-                  </span>
+          <div className="bg-slate-800/40 backdrop-blur-sm border-b border-slate-700/50">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                      <span className="font-semibold text-white">
+                        {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)} Plan
+                      </span>
+                    </div>
+                    <div className="text-slate-300 text-sm">
+                      {usage.runs_remaining === -1 ? 'Unlimited analyses' : `${usage.runs_remaining} analyses remaining`}
+                    </div>
+                  </div>
+                  
+                  {/* Progress Bar for Limited Plans */}
+                  {usage.runs_remaining !== -1 && usage.runs_limit > 0 && (
+                    <div className="flex items-center space-x-3">
+                      <div className="w-32 bg-slate-600 rounded-full h-2">
+                        <div 
+                          className="bg-gradient-to-r from-emerald-400 to-blue-400 h-2 rounded-full transition-all duration-300" 
+                          style={{width: `${Math.max(0, (usage.runs_remaining / usage.runs_limit) * 100)}%`}}
+                        ></div>
+                      </div>
+                      <span className="text-xs text-slate-400">
+                        {usage.runs_used}/{usage.runs_limit}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Control Text Status */}
+                  {usage.control_text_enabled && (
+                    <div className="flex items-center space-x-1 text-slate-300">
+                      <span className="text-xs">📝</span>
+                      <span className="text-xs">
+                        {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars`}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <div className="text-slate-500">
-                  {usage.runs_remaining === -1 ? '∞' : usage.runs_remaining}
+                
+                {/* Upgrade Prompts */}
+                <div className="flex items-center space-x-3">
+                  {usage.runs_remaining === 0 && (
+                    <button 
+                      onClick={() => window.location.href = '/pricing'}
+                      className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
+                    >
+                      Upgrade Plan
+                    </button>
+                  )}
+                  {usage.runs_remaining > 0 && usage.runs_remaining <= 2 && usage.runs_remaining !== -1 && (
+                    <button 
+                      onClick={() => window.location.href = '/pricing'}
+                      className="bg-slate-700/50 text-slate-300 px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-slate-600/50 transition-all duration-200 border border-slate-600/50"
+                    >
+                      Low Usage
+                    </button>
+                  )}
                 </div>
-                {usage.runs_remaining === 0 && (
-                  <button 
-                    onClick={() => window.location.href = '/pricing'}
-                    className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
-                  >
-                    Upgrade
-                  </button>
-                )}
               </div>
             </div>
           </div>
