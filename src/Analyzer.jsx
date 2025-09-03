@@ -183,7 +183,7 @@ function Analyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
-  const [selectedCategories, setSelectedCategories] = useState(['ID', 'PR', 'DE', 'RS', 'RC', 'GV']);
+  const [selectedCategories, setSelectedCategories] = useState(['ID']);
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
