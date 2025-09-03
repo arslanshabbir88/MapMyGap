@@ -225,6 +225,13 @@ function Analyzer() {
       setUsageLoading(false);
     }
   };
+
+  // Fetch usage when user changes
+  useEffect(() => {
+    if (user) {
+      fetchUsage();
+    }
+  }, [user]);
   
 
 
