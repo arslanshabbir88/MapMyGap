@@ -259,6 +259,13 @@ function Analyzer() {
 
     const handleGenerateText = async () => {
       if (!result) return;
+      
+      // Check if we have file content available
+      if (!fileContent || fileContent.trim() === '') {
+        setGenerationError('Cannot generate control text from historical analysis. Please upload a new document to generate control text.');
+        return;
+      }
+      
       try {
         setGenerationError('');
         setGeneratedText('');
@@ -497,9 +504,9 @@ function Analyzer() {
                     )}
                     {(result.status === 'gap' || result.status === 'partial') && (
                         <div>
-                            <button 
+                                                        <button
                                 onClick={handleGenerateText}
-                                disabled={isGenerating}
+                                disabled={isGenerating || !fileContent || fileContent.trim() === ''}
                                 className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
                             >
                                 <SparklesIcon />
