@@ -44,7 +44,7 @@ const supabase = createClient(
 let accessToken = null;
 let tokenExpiry = 0;
 
-// Usage tracking function
+// Internal usage tracking function (no HTTP calls needed)
 async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
   try {
     if (!userId) {
@@ -52,9 +52,82 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
       return { success: true, usage: null };
     }
 
-    // Check current usage (temporarily disabled due to Vercel deployment protection)
-    console.log('⚠️ Usage tracking temporarily disabled due to Vercel deployment protection');
-    return { success: true, usage: null };
+    console.log('🔍 Checking usage internally for user:', userId);
+    
+    // Get current subscription and usage
+    const { data: subscription, error: subError } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', userId)
+      .single();
+
+    if (subError || !subscription) {
+      console.log('⚠️ No subscription found, skipping usage tracking');
+      return { success: true, usage: null };
+    }
+
+    // Calculate usage
+    const runsRemaining = subscription.runs_limit === -1 ? -1 : Math.max(0, subscription.runs_limit - subscription.runs_used);
+    const controlTextRemaining = subscription.control_text_limit === -1 ? -1 : Math.max(0, subscription.control_text_limit - (subscription.control_text_used || 0));
+    
+    const usage = {
+      plan: subscription.plan,
+      runs_remaining: runsRemaining,
+      runs_used: subscription.runs_used,
+      runs_limit: subscription.runs_limit,
+      character_limit: subscription.character_limit,
+      control_text_enabled: subscription.control_text_enabled,
+      control_text_remaining: controlTextRemaining,
+      control_text_used: subscription.control_text_used || 0,
+      control_text_limit: subscription.control_text_limit,
+      subscription_id: subscription.id
+    };
+
+    console.log('📊 Current usage:', usage);
+
+    // Check if user has runs remaining
+    if (usage.runs_remaining === 0) {
+      throw new Error('Analysis limit reached. Please upgrade your plan.');
+    }
+    
+    // Check document size limit (skip if unlimited)
+    if (usage.character_limit !== -1 && documentSize > usage.character_limit) {
+      throw new Error(`Document exceeds ${usage.character_limit} character limit for your plan.`);
+    }
+
+    // Check control text generation limit
+    if (controlTextSize > 0 && !usage.control_text_enabled) {
+      throw new Error('Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise.');
+    }
+    
+    if (controlTextSize > 0 && usage.control_text_remaining === 0) {
+      throw new Error('Control text generation limit reached. Please upgrade your plan.');
+    }
+
+    // Track this analysis
+    await supabase
+      .from('usage_logs')
+      .insert({
+        user_id: userId,
+        subscription_id: subscription.id,
+        analysis_type: 'comprehensive',
+        document_size: documentSize,
+        control_text_size: controlTextSize,
+        framework: 'NIST_CSF' // or whatever framework is selected
+      });
+
+    // Increment usage counters
+    await supabase
+      .from('subscriptions')
+      .update({ 
+        runs_used: subscription.runs_used + 1,
+        control_text_used: (subscription.control_text_used || 0) + controlTextSize,
+        last_analysis_date: new Date().toISOString()
+      })
+      .eq('user_id', userId);
+
+    console.log('✅ Usage tracked successfully');
+    return { success: true, usage };
     
   } catch (error) {
     console.error('Usage tracking error:', error);
