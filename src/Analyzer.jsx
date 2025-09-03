@@ -183,7 +183,7 @@ function Analyzer() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResults, setAnalysisResults] = useState(null);
   const [selectedFramework, setSelectedFramework] = useState('NIST_CSF');
-  const [selectedCategories, setSelectedCategories] = useState(['ID']);
+  const [selectedCategories, setSelectedCategories] = useState(['DE']);
   const [modalData, setModalData] = useState(null);
   const [error, setError] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
@@ -1420,7 +1420,7 @@ function Analyzer() {
                        if (e.target.value === 'NIST_800_53') {
                          setSelectedCategories(['AC']); // Default to first control family
                        } else if (e.target.value === 'NIST_CSF') {
-                         setSelectedCategories(['ID']); // Default to first CSF function
+                         setSelectedCategories(['DE']); // Default to first CSF function
                        } else {
                          setSelectedCategories([]);
                        }
