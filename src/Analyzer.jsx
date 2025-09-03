@@ -1247,31 +1247,24 @@ function Analyzer() {
           </div>
         </header>
         
-        {/* Usage Display - Elegant Integration */}
+        {/* Usage Display - Minimal & Modern */}
         {usage && !usageLoading && usage.plan && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-slate-300">
-                      {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)} Plan
-                    </span>
-                  </div>
-                  <div className="text-slate-400 text-sm">
-                    {usage.runs_remaining === -1 ? 'Unlimited analyses' : `${usage.runs_remaining} remaining`}
-                  </div>
-                  {usage.control_text_enabled && (
-                    <div className="text-slate-400 text-sm">
-                      • {usage.control_text_remaining === -1 ? 'Unlimited control text' : `${usage.control_text_remaining} chars`}
-                    </div>
-                  )}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1">
+            <div className="flex items-center justify-center">
+              <div className="flex items-center space-x-4 text-sm text-slate-500">
+                <div className="flex items-center space-x-1.5">
+                  <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+                  <span className="font-medium text-slate-400">
+                    {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)}
+                  </span>
+                </div>
+                <div className="text-slate-500">
+                  {usage.runs_remaining === -1 ? '∞' : usage.runs_remaining}
                 </div>
                 {usage.runs_remaining === 0 && (
                   <button 
                     onClick={() => window.location.href = '/pricing'}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
+                    className="text-blue-400 hover:text-blue-300 font-medium transition-colors"
                   >
                     Upgrade
                   </button>
@@ -1929,6 +1922,17 @@ function Analyzer() {
                             <p className="text-sm text-slate-400">
                               {item.framework || 'Unknown Framework'} • {new Date(item.created_at).toLocaleDateString()}
                             </p>
+                            {item.results && item.results.categories && (
+                              <p className="text-xs text-slate-500 mt-1">
+                                {item.results.categories.length} categories analyzed
+                                {item.results.categories.length > 0 && (
+                                  <span className="ml-2">
+                                    • {item.results.categories.map(cat => cat.name).slice(0, 2).join(', ')}
+                                    {item.results.categories.length > 2 && ` +${item.results.categories.length - 2} more`}
+                                  </span>
+                                )}
+                              </p>
+                            )}
                             {item.summary && (
                               <div className="flex items-center space-x-4 mt-1 text-xs text-slate-500">
                                 <span>Covered: {item.summary.covered || 0}</span>
