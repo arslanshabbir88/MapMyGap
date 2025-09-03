@@ -81,7 +81,7 @@ export default async function handler(req, res) {
       }
     };
 
-    const limits = tierLimits[subscription.plan] || tierLimits.trial;
+    const limits = tierLimits[subscription.plan_type?.toLowerCase()] || tierLimits.trial;
     
     return res.status(200).json({
       success: true,
@@ -94,7 +94,7 @@ export default async function handler(req, res) {
         control_text_limit: limits.control_text,
         control_text_remaining: limits.control_text === -1 ? -1 : Math.max(0, limits.control_text - (subscription.control_text_used || 0)),
         control_text_enabled: limits.control_text_enabled,
-        plan: subscription.plan,
+        plan: subscription.plan_type?.toLowerCase() || 'trial',
         reset_date: subscription.runs_reset_date,
         subscription_id: subscription.id
       }
