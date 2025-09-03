@@ -596,12 +596,11 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Check and track usage before starting analysis (temporarily disabled for testing)
-    console.log('⚠️ Usage tracking temporarily disabled for testing');
-    // const usageStartTime = Date.now();
-    // await checkAndTrackUsage(userId, fileContent.length, 0);
-    // const usageTime = Date.now() - usageStartTime;
-    // console.log(`⏱️ Usage tracking completed in ${usageTime}ms`);
+    // Check and track usage before starting analysis
+    const usageStartTime = Date.now();
+    await checkAndTrackUsage(userId, fileContent.length, 0);
+    const usageTime = Date.now() - usageStartTime;
+    console.log(`⏱️ Usage tracking completed in ${usageTime}ms`);
     
     // Generate unique request identifier to prevent caching
     const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
