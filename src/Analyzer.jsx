@@ -1247,48 +1247,36 @@ function Analyzer() {
           </div>
         </header>
         
-        {/* Usage Display */}
+        {/* Usage Display - Elegant Integration */}
         {usage && !usageLoading && usage.plan && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+            <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-xl p-3">
               <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm font-medium text-blue-900">Usage Status</h3>
-                  <p className="text-sm text-blue-700">
-                    {usage.runs_remaining === -1 ? 'Unlimited' : `${usage.runs_remaining} analyses remaining`} • 
-                    {usage.plan ? usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1) : 'Unknown'} Plan
-                  </p>
+                <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-slate-300">
+                      {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)} Plan
+                    </span>
+                  </div>
+                  <div className="text-slate-400 text-sm">
+                    {usage.runs_remaining === -1 ? 'Unlimited analyses' : `${usage.runs_remaining} remaining`}
+                  </div>
                   {usage.control_text_enabled && (
-                    <p className="text-xs text-blue-600 mt-1">
-                      Control text: {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars remaining`}
-                    </p>
+                    <div className="text-slate-400 text-sm">
+                      • {usage.control_text_remaining === -1 ? 'Unlimited control text' : `${usage.control_text_remaining} chars`}
+                    </div>
                   )}
                 </div>
                 {usage.runs_remaining === 0 && (
                   <button 
                     onClick={() => window.location.href = '/pricing'}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700"
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
                   >
-                    Upgrade Plan
+                    Upgrade
                   </button>
                 )}
               </div>
-              
-              {usage.runs_remaining > 0 && usage.runs_remaining !== -1 && (
-                <div className="mt-2">
-                  <div className="w-full bg-blue-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
-                      style={{ 
-                        width: `${((usage.runs_used / usage.runs_limit) * 100)}%` 
-                      }}
-                    ></div>
-                  </div>
-                  <p className="text-xs text-blue-600 mt-1">
-                    {usage.runs_used} of {usage.runs_limit} analyses used this period
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         )}

@@ -52,9 +52,71 @@ async function checkAndTrackUsage(userId, documentSize, controlTextSize = 0) {
       return { success: true, usage: null };
     }
 
-    // Check current usage (temporarily disabled due to API issues)
-    console.log('⚠️ Usage tracking temporarily disabled - proceeding with analysis');
-    return { success: true, usage: null };
+    // Check current usage
+    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000';
+    const usageUrl = `${baseUrl}/api/check-usage?user_id=${userId}`;
+    console.log('🔍 Checking usage at URL:', usageUrl);
+    
+    const usageResponse = await fetch(usageUrl);
+    console.log('🔍 Usage response status:', usageResponse.status);
+    
+    if (!usageResponse.ok) {
+      const errorText = await usageResponse.text();
+      console.log('❌ Usage API error response:', errorText);
+      throw new Error(`Usage API returned ${usageResponse.status}: ${errorText}`);
+    }
+    
+    const usageData = await usageResponse.json();
+    
+    if (!usageData.success) {
+      throw new Error('Failed to check usage');
+    }
+
+    const { usage } = usageData;
+    
+    // Check if user has runs remaining
+    if (usage.runs_remaining === 0) {
+      throw new Error('Analysis limit reached. Please upgrade your plan.');
+    }
+    
+    // Check document size limit (skip if unlimited)
+    if (usage.character_limit !== -1 && documentSize > usage.character_limit) {
+      throw new Error(`Document exceeds ${usage.character_limit} character limit for your plan.`);
+    }
+
+    // Check control text generation limit
+    if (controlTextSize > 0 && !usage.control_text_enabled) {
+      throw new Error('Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise.');
+    }
+    
+    if (controlTextSize > 0 && usage.control_text_remaining === 0) {
+      throw new Error('Control text generation limit reached. Please upgrade your plan.');
+    }
+
+    // Track this analysis
+    await supabase
+      .from('usage_logs')
+      .insert({
+        user_id: userId,
+        subscription_id: usage.subscription_id,
+        analysis_type: 'comprehensive',
+        document_size: documentSize,
+        control_text_size: controlTextSize,
+        framework: 'NIST_CSF' // or whatever framework is selected
+      });
+
+    // Increment usage counters
+    await supabase
+      .from('subscriptions')
+      .update({ 
+        runs_used: usage.runs_used + 1,
+        control_text_used: (usage.control_text_used || 0) + controlTextSize,
+        last_analysis_date: new Date().toISOString()
+      })
+      .eq('user_id', userId);
+
+    console.log('✅ Usage tracked successfully');
+    return { success: true, usage: usageData.usage };
     
   } catch (error) {
     console.error('Usage tracking error:', error);
