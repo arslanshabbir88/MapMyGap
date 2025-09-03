@@ -239,12 +239,9 @@ async function callVertexAI(prompt) {
       }
     };
 
-                  // Add adaptive timeout wrapper based on document size
+                  // Set maximum timeout for all documents (Pro plan limit)
                   const getTimeoutDuration = (docLength) => {
-                    if (docLength < 3000) return 30000;      // Small docs: 30 seconds
-                    if (docLength < 5000) return 60000;      // Medium docs: 60 seconds
-                    if (docLength < 10000) return 120000;    // Large docs: 2 minutes
-                    return 300000;                           // Very large docs: 5 minutes (Pro plan limit)
+                    return 300000;  // 5 minutes for all documents (Pro plan maximum)
                   };
 
                   const timeoutDuration = getTimeoutDuration(prompt.length);
