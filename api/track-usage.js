@@ -38,24 +38,42 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No active subscription found' });
     }
 
-    // Get subscription plan details
-    const { data: plan, error: planError } = await supabase
-      .from('subscription_plans')
-      .select('*')
-      .eq('id', subscription.plan_id)
-      .single();
+    // Get tier limits based on user's exact specifications (same as check-usage.js)
+    const tierLimits = {
+      trial: { 
+        runs: 3, 
+        characters: 1000, 
+        control_text: 1000,
+        control_text_enabled: true
+      },
+      starter: { 
+        runs: 5, 
+        characters: -1, // unlimited
+        control_text: 0,
+        control_text_enabled: false
+      },
+      professional: { 
+        runs: 25, 
+        characters: -1, // unlimited
+        control_text: -1, // unlimited
+        control_text_enabled: true
+      },
+      enterprise: { 
+        runs: -1, // unlimited
+        characters: -1, // unlimited
+        control_text: -1, // unlimited
+        control_text_enabled: true
+      }
+    };
 
-    if (planError || !plan) {
-      console.error('❌ Plan not found:', planError);
-      return res.status(400).json({ error: 'Plan not found' });
-    }
+    const limits = tierLimits[subscription.plan_type?.toLowerCase()] || tierLimits.trial;
 
     // Check if user has reached limits
-    if (subscription.runs_used >= plan.runs_limit && plan.runs_limit !== -1) {
+    if (subscription.runs_used >= limits.runs && limits.runs !== -1) {
       return res.status(400).json({ error: 'Analysis limit reached' });
     }
 
-    if (subscription.control_text_used + controlTextLength > plan.control_text_limit && plan.control_text_limit !== -1) {
+    if (subscription.control_text_used + controlTextLength > limits.control_text && limits.control_text !== -1) {
       return res.status(400).json({ error: 'Control text limit reached' });
     }
 
@@ -100,15 +118,15 @@ export default async function handler(req, res) {
 
     // Return updated usage info
     const updatedUsage = {
-      plan: plan.name.toLowerCase(),
-      runs_remaining: plan.runs_limit === -1 ? -1 : plan.runs_limit - (subscription.runs_used + 1),
+      plan: subscription.plan_type?.toLowerCase() || 'trial',
+      runs_remaining: limits.runs === -1 ? -1 : limits.runs - (subscription.runs_used + 1),
       runs_used: subscription.runs_used + 1,
-      runs_limit: plan.runs_limit,
-      character_limit: plan.character_limit,
-      control_text_enabled: plan.control_text_limit > 0,
-      control_text_remaining: plan.control_text_limit === -1 ? -1 : plan.control_text_limit - (subscription.control_text_used + controlTextLength),
+      runs_limit: limits.runs,
+      character_limit: limits.characters,
+      control_text_enabled: limits.control_text_enabled,
+      control_text_remaining: limits.control_text === -1 ? -1 : limits.control_text - (subscription.control_text_used + controlTextLength),
       control_text_used: subscription.control_text_used + controlTextLength,
-      control_text_limit: plan.control_text_limit,
+      control_text_limit: limits.control_text,
       subscription_id: subscription.id
     };
 
