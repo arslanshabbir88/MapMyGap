@@ -272,7 +272,8 @@ function Analyzer() {
           body: JSON.stringify({
             originalDocument: fileContent,
             targetControl: result.control,
-            framework: selectedFramework
+            framework: selectedFramework,
+            userId: user?.id
           }),
           signal: controller.signal
         });
@@ -294,6 +295,15 @@ function Analyzer() {
               throw new Error('AI_COLD_START: The AI model is experiencing processing issues. Please wait a moment and try again. This is a temporary issue that usually resolves on subsequent attempts.');
             } else if (errorData.error === 'QUOTA_EXCEEDED') {
               throw new Error('QUOTA_EXCEEDED: AI API quota exceeded. Please try again later or contact support.');
+            } else if (errorData.error === 'TRIAL_LIMIT' || errorData.error === 'PLAN_LIMIT' || errorData.error === 'CHARACTER_LIMIT') {
+              // Handle plan limit errors with upgrade prompts
+              if (errorData.upgradeRequired) {
+                throw new Error(`${errorData.message} Click here to upgrade your plan.`);
+              } else {
+                throw new Error(errorData.message);
+              }
+            } else if (errorData.error === 'USAGE_CHECK_FAILED') {
+              throw new Error('USAGE_CHECK_FAILED: Unable to verify your plan limits. Please try again or contact support.');
             } else if (errorData.message) {
               throw new Error(errorData.message);
             } else {

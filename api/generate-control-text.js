@@ -141,10 +141,94 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { originalDocument, targetControl, framework } = req.body;
+    const { originalDocument, targetControl, framework, userId } = req.body;
 
     if (!originalDocument || !targetControl || !framework) {
       return res.status(400).json({ error: 'Missing required parameters: originalDocument, targetControl, or framework.' });
+    }
+
+    // Check usage limits for control text generation
+    if (userId) {
+      try {
+        const { createClient } = await import('@supabase/supabase-js');
+        const supabase = createClient(
+          process.env.SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_ROLE_KEY
+        );
+
+        // Get user's subscription
+        const { data: subscription, error: subError } = await supabase
+          .from('subscriptions')
+          .select('*')
+          .eq('user_id', userId)
+          .single();
+
+        if (subError || !subscription) {
+          return res.status(400).json({ 
+            error: 'TRIAL_LIMIT',
+            message: 'Control text generation is not available on the Trial plan. Please upgrade to a paid plan to generate control text.',
+            upgradeRequired: true
+          });
+        }
+
+        // Get tier limits
+        const tierLimits = {
+          trial: { 
+            control_text: 0,
+            control_text_enabled: false
+          },
+          starter: { 
+            control_text: 0,
+            control_text_enabled: false
+          },
+          professional: { 
+            control_text: -1, // unlimited
+            control_text_enabled: true
+          },
+          enterprise: { 
+            control_text: -1, // unlimited
+            control_text_enabled: true
+          }
+        };
+
+        const limits = tierLimits[subscription.plan_type?.toLowerCase()] || tierLimits.trial;
+
+        // Check if control text generation is enabled for this plan
+        if (!limits.control_text_enabled) {
+          return res.status(400).json({ 
+            error: 'PLAN_LIMIT',
+            message: 'Control text generation is not available on your current plan. Please upgrade to Professional or Enterprise to generate control text.',
+            upgradeRequired: true,
+            currentPlan: subscription.plan_type?.toLowerCase() || 'trial'
+          });
+        }
+
+        // Check if user has reached character limits
+        if (limits.control_text !== -1 && subscription.control_text_used >= limits.control_text) {
+          return res.status(400).json({ 
+            error: 'CHARACTER_LIMIT',
+            message: `You have reached your control text generation limit (${limits.control_text} characters). Please upgrade your plan for unlimited control text generation.`,
+            upgradeRequired: true,
+            limit: limits.control_text,
+            used: subscription.control_text_used
+          });
+        }
+
+      } catch (usageError) {
+        console.error('❌ Error checking usage limits:', usageError);
+        return res.status(400).json({ 
+          error: 'USAGE_CHECK_FAILED',
+          message: 'Unable to verify your plan limits. Please try again or contact support.',
+          upgradeRequired: false
+        });
+      }
+    } else {
+      // No userId provided - assume Trial user
+      return res.status(400).json({ 
+        error: 'TRIAL_LIMIT',
+        message: 'Control text generation is not available on the Trial plan. Please upgrade to a paid plan to generate control text.',
+        upgradeRequired: true
+      });
     }
 
     console.log('🚀 Starting control text generation for:', framework);
