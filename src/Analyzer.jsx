@@ -240,7 +240,7 @@ function Analyzer() {
   }
 
   // DetailModal component - defined inside main function to use hooks properly
-  const DetailModal = ({ result, fileContent, selectedFramework, onClose }) => {
+  const DetailModal = ({ result, fileContent, selectedFramework, subscription, onClose }) => {
     if (!result) return null;
     
     const [isGenerating, setIsGenerating] = useState(false);
@@ -1354,7 +1354,7 @@ function Analyzer() {
           ring-offset-color: #0f172a;
         }
       `}</style>
-                          <DetailModal result={modalData} fileContent={fileContent} selectedFramework={selectedFramework} onClose={() => setModalData(null)} />
+                          <DetailModal result={modalData} fileContent={fileContent} selectedFramework={selectedFramework} subscription={subscription} onClose={() => setModalData(null)} />
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
         <header className="sticky top-0 z-10 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
           <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-3 sm:py-4">
