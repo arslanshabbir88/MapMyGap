@@ -205,7 +205,76 @@ function Analyzer() {
   // Debug subscription data
   useEffect(() => {
     console.log('🔍 Analyzer subscription data:', subscription);
-  }, [subscription]); // Fixed subscription import
+  }, [subscription]);
+
+  // Compression function for document content
+  const compressString = async (str) => {
+    const stream = new CompressionStream('gzip');
+    const writer = stream.writable.getWriter();
+    const reader = stream.readable.getReader();
+    
+    // Write the string to the compression stream
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    await writer.write(data);
+    await writer.close();
+    
+    // Read the compressed data
+    const chunks = [];
+    let done = false;
+    while (!done) {
+      const { value, done: readerDone } = await reader.read();
+      done = readerDone;
+      if (value) {
+        chunks.push(value);
+      }
+    }
+    
+    // Convert to base64 string
+    const compressed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+    let offset = 0;
+    for (const chunk of chunks) {
+      compressed.set(chunk, offset);
+      offset += chunk.length;
+    }
+    
+    return btoa(String.fromCharCode(...compressed));
+  };
+
+  // Decompression function for document content
+  const decompressString = async (compressedStr) => {
+    try {
+      const compressed = Uint8Array.from(atob(compressedStr), c => c.charCodeAt(0));
+      const stream = new DecompressionStream('gzip');
+      const writer = stream.writable.getWriter();
+      const reader = stream.readable.getReader();
+      
+      await writer.write(compressed);
+      await writer.close();
+      
+      const chunks = [];
+      let done = false;
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        done = readerDone;
+        if (value) {
+          chunks.push(value);
+        }
+      }
+      
+      const decompressed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
+      let offset = 0;
+      for (const chunk of chunks) {
+        decompressed.set(chunk, offset);
+        offset += chunk.length;
+      }
+      
+      return new TextDecoder().decode(decompressed);
+    } catch (error) {
+      console.error('Error decompressing content:', error);
+      return compressedStr; // Return as-is if decompression fails
+    }
+  }; // Fixed subscription import
   
   // Fetch usage when user changes
   useEffect(() => {
@@ -266,9 +335,22 @@ function Analyzer() {
       if (!result) return;
       
       // Check if we have file content available (either current or from history)
-      const availableContent = fileContent; // Only use current file content for control text generation
+      // Try to get content from current file or decompress from history
+      let availableContent = fileContent;
+      
+      if (!availableContent && result.document_content) {
+        try {
+          // Try to decompress historical content
+          availableContent = await decompressString(result.document_content);
+          console.log('🔍 Decompressed historical document content for control text generation');
+        } catch (error) {
+          console.error('❌ Error decompressing historical content:', error);
+          availableContent = result.document_content; // Fallback to raw content
+        }
+      }
+      
       if (!availableContent || availableContent.trim() === '') {
-        setGenerationError('Cannot generate control text from historical analysis. Please upload a new document to generate control text.');
+        setGenerationError('Cannot generate control text. Please upload a new document or ensure historical analysis has document content.');
         return;
       }
       
@@ -514,7 +596,7 @@ function Analyzer() {
                             {subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise') && (
                                 <button
                                     onClick={handleGenerateText}
-                                    disabled={isGenerating || !fileContent}
+                                    disabled={isGenerating || (!fileContent && !result.document_content)}
                                     className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
                                 >
                                     <SparklesIcon />
@@ -723,14 +805,21 @@ function Analyzer() {
         }
       };
       
-      // Store document hash for paid plans only (to avoid row size limits)
+      // Store compressed document content for paid plans only
       if (isPaidPlan && fileContent) {
-        // Create a simple hash of the document content
-        const documentHash = btoa(fileContent).substring(0, 1000); // Base64 encode and truncate
-        dataToSave.document_hash = documentHash;
-        console.log('💾 Storing document hash for paid plan:', subscription.plan_type?.toLowerCase(), 'Hash length:', documentHash.length);
+        try {
+          // Compress the document content using gzip compression
+          const compressed = await compressString(fileContent);
+          dataToSave.document_content = compressed;
+          console.log('💾 Storing compressed document content for paid plan:', subscription.plan_type?.toLowerCase(), 'Original:', fileContent.length, 'Compressed:', compressed.length);
+        } catch (error) {
+          console.error('❌ Error compressing document content:', error);
+          // Fallback: store truncated content if compression fails
+          dataToSave.document_content = fileContent.substring(0, 5000) + '... [truncated]';
+          console.log('💾 Storing truncated document content as fallback');
+        }
       } else {
-        console.log('❌ Not storing document hash. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
+        console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
       }
       
       console.log('💾 Saving analysis to history:', {
@@ -739,7 +828,7 @@ function Analyzer() {
         framework: selectedFramework,
         hasResults: !!dataToSave.results,
         hasSummary: !!dataToSave.summary,
-        hasDocumentHash: !!dataToSave.document_hash,
+        hasDocumentContent: !!dataToSave.document_content,
         plan: subscription?.plan_type?.toLowerCase()
       });
 
