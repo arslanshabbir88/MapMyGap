@@ -266,7 +266,7 @@ function Analyzer() {
       if (!result) return;
       
       // Check if we have file content available (either current or from history)
-      const availableContent = fileContent || result.document_content;
+      const availableContent = fileContent; // Only use current file content for control text generation
       if (!availableContent || availableContent.trim() === '') {
         setGenerationError('Cannot generate control text from historical analysis. Please upload a new document to generate control text.');
         return;
@@ -514,7 +514,7 @@ function Analyzer() {
                             {subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise') && (
                                 <button
                                     onClick={handleGenerateText}
-                                    disabled={isGenerating || (!fileContent && !result.document_content)}
+                                    disabled={isGenerating || !fileContent}
                                     className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
                                 >
                                     <SparklesIcon />
@@ -723,12 +723,14 @@ function Analyzer() {
         }
       };
       
-      // Store document content for paid plans only
+      // Store document hash for paid plans only (to avoid row size limits)
       if (isPaidPlan && fileContent) {
-        dataToSave.document_content = fileContent;
-        console.log('💾 Storing document content for paid plan:', subscription.plan_type?.toLowerCase());
+        // Create a simple hash of the document content
+        const documentHash = btoa(fileContent).substring(0, 1000); // Base64 encode and truncate
+        dataToSave.document_hash = documentHash;
+        console.log('💾 Storing document hash for paid plan:', subscription.plan_type?.toLowerCase(), 'Hash length:', documentHash.length);
       } else {
-        console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
+        console.log('❌ Not storing document hash. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
       }
       
       console.log('💾 Saving analysis to history:', {
@@ -737,7 +739,7 @@ function Analyzer() {
         framework: selectedFramework,
         hasResults: !!dataToSave.results,
         hasSummary: !!dataToSave.summary,
-        hasDocumentContent: !!dataToSave.document_content,
+        hasDocumentHash: !!dataToSave.document_hash,
         plan: subscription?.plan_type?.toLowerCase()
       });
 
