@@ -200,7 +200,7 @@ function Analyzer() {
   const [usage, setUsage] = useState(null);
   const [usageLoading, setUsageLoading] = useState(true);
 
-  const { user, supabase } = useAuth();
+  const { user, supabase, subscription } = useAuth();
   
   // Fetch usage when user changes
   useEffect(() => {
