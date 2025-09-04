@@ -83,7 +83,7 @@ export default async function handler(req, res) {
               else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
               
               // Store in Supabase - first try to update existing, then insert if none exists
-              let { error } = await supabase
+              const { data: updateData, error: updateError } = await supabase
                 .from('subscriptions')
                 .update({
                   stripe_subscription_id: subscription.id,
@@ -93,10 +93,13 @@ export default async function handler(req, res) {
                   current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
                   updated_at: new Date().toISOString()
                 })
-                .eq('user_id', session.metadata.userId);
+                .eq('user_id', session.metadata.userId)
+                .select();
+              
+              let error = updateError;
               
               // If no rows were updated, insert a new record
-              if (error || !error) {
+              if (!updateError && (!updateData || updateData.length === 0)) {
                 const { error: insertError } = await supabase
                   .from('subscriptions')
                   .insert({
