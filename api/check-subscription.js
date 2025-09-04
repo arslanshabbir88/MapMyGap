@@ -33,8 +33,13 @@ export default async function handler(req, res) {
     const { data: subscriptions, error } = await supabase
       .from('subscriptions')
       .select('*')
-      .eq('user_id', userId)
-      .eq('status', 'active');
+      .eq('user_id', userId);
+    
+    console.log('🔍 All subscriptions for user:', userId, 'Data:', subscriptions);
+    
+    // Filter for active subscriptions
+    const activeSubscriptions = subscriptions?.filter(sub => sub.status === 'active') || [];
+    console.log('🔍 Active subscriptions:', activeSubscriptions);
 
     if (error) {
       console.error('Supabase query error:', error);
@@ -42,22 +47,23 @@ export default async function handler(req, res) {
     }
 
     // Get the first active subscription (if any)
-    const subscription = subscriptions && subscriptions.length > 0 ? subscriptions[0] : null;
+    const subscription = activeSubscriptions && activeSubscriptions.length > 0 ? activeSubscriptions[0] : null;
 
     if (!subscription) {
-      console.log('No subscription found for user:', userId);
+      console.log('❌ No active subscription found for user:', userId);
+      console.log('🔍 All subscriptions found:', subscriptions);
       return res.status(200).json({ subscription: null });
     }
 
     const subscriptionData = {
       id: subscription.stripe_subscription_id,
       status: subscription.status,
-      plan: subscription.plan_type,
+      plan_type: subscription.plan_type,
       currentPeriodEnd: subscription.current_period_end,
       customerId: subscription.stripe_customer_id,
     };
 
-    console.log('Subscription found:', subscriptionData);
+    console.log('🔍 Subscription found for user:', userId, 'Data:', subscriptionData);
     res.status(200).json({ subscription: subscriptionData });
   } catch (error) {
     console.error('Error checking subscription:', error);

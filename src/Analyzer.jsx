@@ -200,7 +200,12 @@ function Analyzer() {
   const [usage, setUsage] = useState(null);
   const [usageLoading, setUsageLoading] = useState(true);
 
-  const { user, supabase, subscription } = useAuth(); // Fixed subscription import
+  const { user, supabase, subscription } = useAuth();
+  
+  // Debug subscription data
+  useEffect(() => {
+    console.log('🔍 Analyzer subscription data:', subscription);
+  }, [subscription]); // Fixed subscription import
   
   // Fetch usage when user changes
   useEffect(() => {

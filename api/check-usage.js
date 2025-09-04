@@ -34,7 +34,7 @@ export default async function handler(req, res) {
     
     if (now > resetDate) {
       // Reset runs for new period
-      const isTrial = subscription.plan === 'trial';
+      const isTrial = subscription.plan_type === 'trial';
       const newResetDate = isTrial 
         ? new Date(now.getTime() + (14 * 24 * 60 * 60 * 1000)) // 14 days from now
         : new Date(now.getFullYear(), now.getMonth() + 1, 1); // First day of next month
