@@ -91,6 +91,11 @@ export default async function handler(req, res) {
                   plan_type: planType,
                   status: subscription.status,
                   current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                  // Reset usage when plan changes
+                  runs_used: 0,
+                  control_text_used: 0,
+                  runs_reset_date: new Date().toISOString(),
+                  control_text_reset_date: new Date().toISOString(),
                   updated_at: new Date().toISOString()
                 })
                 .eq('user_id', session.metadata.userId)
@@ -109,6 +114,11 @@ export default async function handler(req, res) {
                     plan_type: planType,
                     status: subscription.status,
                     current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                    // Reset usage for new subscriptions
+                    runs_used: 0,
+                    control_text_used: 0,
+                    runs_reset_date: new Date().toISOString(),
+                    control_text_reset_date: new Date().toISOString(),
                     created_at: new Date().toISOString()
                   });
                 
