@@ -817,8 +817,8 @@ function Analyzer() {
       // Store full document content in separate table for paid plans
       if (isPaidPlan && fileContent) {
         try {
-          // Create a hash of the content for deduplication (handle Unicode characters)
-          const contentHash = btoa(encodeURIComponent(fileContent)).substring(0, 64); // Simple hash with Unicode support
+          // Create a simple hash of the content for deduplication (avoid btoa encoding issues)
+          const contentHash = fileContent.substring(0, 64) + '_' + fileContent.length; // Simple hash without encoding
           
           // First, save the analysis without document content
           const { data: savedAnalysis, error: analysisError } = await supabase
