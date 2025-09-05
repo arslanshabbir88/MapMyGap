@@ -15,6 +15,7 @@ import About from './pages/About.jsx';
 import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
+import AppLayout from './components/AppLayout.jsx';
 
 function AppContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -37,16 +38,20 @@ function AppContent() {
         <Route path="/" element={<Homepage onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/analyzer" element={
           user ? (
-            <SubscriptionGuard>
-              <Analyzer />
-            </SubscriptionGuard>
+            <AppLayout>
+              <SubscriptionGuard>
+                <Analyzer />
+              </SubscriptionGuard>
+            </AppLayout>
           ) : (
             <Navigate to="/" replace />
           )
         } />
         <Route path="/profile" element={
           user ? (
-            <Profile />
+            <AppLayout>
+              <Profile />
+            </AppLayout>
           ) : (
             <Navigate to="/" replace />
           )

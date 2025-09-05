@@ -24,7 +24,6 @@ import { useNavigate } from 'react-router-dom';
 import './App.css';
 import mammoth from 'mammoth';
 import * as pdfjsLib from 'pdfjs-dist';
-import Header from './components/Header';
 
 
 // Configure PDF.js worker to use local worker
@@ -1491,7 +1490,6 @@ function Analyzer() {
       `}</style>
                           <DetailModal result={modalData} fileContent={fileContent} selectedFramework={selectedFramework} subscription={subscription} onClose={() => setModalData(null)} />
       <div className="aurora-bg min-h-screen font-sans text-slate-300">
-        <Header />
         
         {/* Usage Display - Centered and Clean */}
         {usage && !usageLoading && usage.plan && (
@@ -1507,7 +1505,7 @@ function Analyzer() {
                       </span>
                     </div>
                     <div className="text-slate-300 text-sm">
-                      {usage.runs_remaining === -1 ? '∞' : `${usage.runs_remaining} analyses remaining`}
+                      {usage.runs_remaining === -1 ? 'Unlimited' : `${usage.runs_remaining} analyses remaining`}
                     </div>
                   </div>
                   
@@ -1531,7 +1529,7 @@ function Analyzer() {
                     <div className="flex items-center space-x-1 text-slate-300">
                       <span className="text-xs">📝</span>
                       <span className="text-xs">
-                        {usage.control_text_remaining === -1 ? '∞' : `${usage.control_text_remaining} chars`}
+                        {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars`}
                       </span>
                     </div>
                   )}
