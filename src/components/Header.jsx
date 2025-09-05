@@ -44,10 +44,19 @@ const Header = () => {
         <div className="flex justify-between items-center py-4">
           {/* Logo/Brand */}
           <div 
-            className="flex items-center cursor-pointer"
-            onClick={() => navigate('/analyzer')}
+            className="flex items-center cursor-pointer group"
+            onClick={() => navigate('/')}
           >
-            <h1 className="text-xl font-bold text-white">MapMyGap</h1>
+            {/* Logo Icon */}
+            <div className="relative mr-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">M</span>
+              </div>
+              <div className="absolute inset-0 bg-blue-400/30 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </div>
+            <h1 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">
+              MapMyGap
+            </h1>
           </div>
 
           {/* Navigation */}

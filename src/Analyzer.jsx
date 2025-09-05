@@ -1527,7 +1527,6 @@ function Analyzer() {
                   {/* Control Text Status */}
                   {usage.control_text_enabled && (
                     <div className="flex items-center space-x-1 text-slate-300">
-                      <span className="text-xs">📝</span>
                       <span className="text-xs">
                         {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars`}
                       </span>
