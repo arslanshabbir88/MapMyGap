@@ -818,8 +818,10 @@ function Analyzer() {
           
           // Check if compressed content is still too large (PostgreSQL limit is ~8KB for index rows)
           if (compressed.length > 6000) {
-            console.log('⚠️ Compressed content still too large, using truncation fallback');
-            dataToSave.document_content = fileContent.substring(0, 5000) + '... [truncated due to size]';
+            console.log('⚠️ Compressed content still too large, using aggressive truncation fallback');
+            // More aggressive truncation to ensure it fits
+            dataToSave.document_content = fileContent.substring(0, 3000) + '... [truncated due to size]';
+            console.log('💾 Storing truncated document content (3000 chars) for paid plan:', subscription.plan_type?.toLowerCase());
           } else {
             dataToSave.document_content = compressed;
             console.log('💾 Storing compressed document content for paid plan:', subscription.plan_type?.toLowerCase());

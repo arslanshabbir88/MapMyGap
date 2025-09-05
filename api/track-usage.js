@@ -103,6 +103,7 @@ export default async function handler(req, res) {
         user_id: userId,
         subscription_id: subscription.id,
         action: 'analysis',
+        analysis_type: 'analysis',
         document_length: documentLength,
         control_text_length: controlTextLength,
         created_at: new Date().toISOString()
