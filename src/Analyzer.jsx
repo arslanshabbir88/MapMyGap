@@ -335,17 +335,26 @@ function Analyzer() {
       if (!result) return;
       
       // Check if we have file content available (either current or from history)
-      // Try to get content from current file or decompress from history
+      // Try to get content from current file or fetch from history
       let availableContent = fileContent;
       
-      if (!availableContent && result.document_content) {
+      if (!availableContent && result.document_content_id) {
         try {
-          // Try to decompress historical content
-          availableContent = await decompressString(result.document_content);
-          console.log('🔍 Decompressed historical document content for control text generation');
+          // Fetch historical content from separate table
+          const { data: docData, error: docError } = await supabase
+            .from('document_content')
+            .select('content')
+            .eq('analysis_id', result.id)
+            .single();
+          
+          if (docError) {
+            console.error('❌ Error fetching historical content:', docError);
+          } else {
+            availableContent = docData.content;
+            console.log('🔍 Fetched historical document content for control text generation');
+          }
         } catch (error) {
-          console.error('❌ Error decompressing historical content:', error);
-          availableContent = result.document_content; // Fallback to raw content
+          console.error('❌ Error fetching historical content:', error);
         }
       }
       
@@ -596,7 +605,7 @@ function Analyzer() {
                             {subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise') && (
                                 <button
                                     onClick={handleGenerateText}
-                                    disabled={isGenerating || (!fileContent && !result.document_content)}
+                                    disabled={isGenerating || (!fileContent && !result.document_content_id)}
                                     className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
                                 >
                                     <SparklesIcon />
@@ -805,67 +814,74 @@ function Analyzer() {
         }
       };
       
-      // Store compressed document content for paid plans only
+      // Store full document content in separate table for paid plans
       if (isPaidPlan && fileContent) {
         try {
-          // Compress the document content using gzip compression
-          const compressed = await compressString(fileContent);
-          console.log('🔍 Compression details:', {
-            original: fileContent.length,
-            compressed: compressed.length,
-            compressionRatio: ((fileContent.length - compressed.length) / fileContent.length * 100).toFixed(1) + '%'
-          });
+          // Create a hash of the content for deduplication
+          const contentHash = btoa(fileContent).substring(0, 64); // Simple hash
           
-          // Check if compressed content is still too large (PostgreSQL limit is ~8KB for index rows)
-          if (compressed.length > 6000) {
-            console.log('⚠️ Compressed content still too large, using aggressive truncation fallback');
-            // More aggressive truncation to ensure it fits
-            dataToSave.document_content = fileContent.substring(0, 3000) + '... [truncated due to size]';
-            console.log('💾 Storing truncated document content (3000 chars) for paid plan:', subscription.plan_type?.toLowerCase());
+          // First, save the analysis without document content
+          const { data: savedAnalysis, error: analysisError } = await supabase
+            .from('analysis_history')
+            .insert(dataToSave)
+            .select()
+            .single();
+
+          if (analysisError) {
+            console.error('❌ Error saving analysis:', analysisError);
+            throw analysisError;
+          }
+
+          // Then save the full document content in separate table
+          const { data: documentData, error: docError } = await supabase
+            .from('document_content')
+            .insert({
+              analysis_id: savedAnalysis.id,
+              content: fileContent, // Store full content without compression
+              content_hash: contentHash
+            })
+            .select()
+            .single();
+
+          if (docError) {
+            console.error('❌ Error saving document content:', docError);
+            // Don't fail the analysis if document content fails
           } else {
-            dataToSave.document_content = compressed;
-            console.log('💾 Storing compressed document content for paid plan:', subscription.plan_type?.toLowerCase());
+            // Update the analysis with the document content ID
+            await supabase
+              .from('analysis_history')
+              .update({ document_content_id: documentData.id })
+              .eq('id', savedAnalysis.id);
+            
+            console.log('💾 Stored full document content in separate table for paid plan:', subscription.plan_type?.toLowerCase(), 'Content length:', fileContent.length);
           }
         } catch (error) {
-          console.error('❌ Error compressing document content:', error);
-          // Fallback: store truncated content if compression fails
-          dataToSave.document_content = fileContent.substring(0, 5000) + '... [truncated]';
-          console.log('💾 Storing truncated document content as fallback');
+          console.error('❌ Error storing document content:', error);
+          // Fallback: save analysis without document content
+          const { error: analysisError } = await supabase
+            .from('analysis_history')
+            .insert(dataToSave);
+          
+          if (analysisError) {
+            throw analysisError;
+          }
+          console.log('💾 Saved analysis without document content due to error');
         }
       } else {
         console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
+        
+        // Save analysis without document content
+        const { error: analysisError } = await supabase
+          .from('analysis_history')
+          .insert(dataToSave);
+        
+        if (analysisError) {
+          console.error('❌ Error saving analysis:', analysisError);
+          throw analysisError;
+        }
       }
       
-      console.log('💾 Saving analysis to history:', {
-        userId: user.id,
-        filename: displayName,
-        framework: selectedFramework,
-        hasResults: !!dataToSave.results,
-        hasSummary: !!dataToSave.summary,
-        hasDocumentContent: !!dataToSave.document_content,
-        plan: subscription?.plan_type?.toLowerCase()
-      });
-
-      const { error } = await supabase
-        .from('analysis_history')
-        .insert(dataToSave);
-
-      if (error) {
-        console.error('❌ Error saving to history:', error);
-        console.error('❌ Data being saved:', {
-          userId: dataToSave.user_id,
-          filename: dataToSave.filename,
-          framework: dataToSave.framework,
-          hasResults: !!dataToSave.results,
-          hasSummary: !!dataToSave.summary,
-          hasDocumentContent: !!dataToSave.document_content,
-          documentContentLength: dataToSave.document_content?.length || 0,
-          plan: subscription?.plan_type?.toLowerCase()
-        });
-        throw error;
-      }
-      
-      console.log('✅ Successfully saved analysis to history');
+      console.log('💾 Analysis saved successfully');
       
       // Reload history to show the new entry
       await loadAnalysisHistory(true);
