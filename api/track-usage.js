@@ -105,6 +105,7 @@ export default async function handler(req, res) {
         action: 'analysis',
         analysis_type: 'analysis',
         document_length: documentLength,
+        document_size: documentLength, // Add document_size field
         control_text_length: controlTextLength,
         created_at: new Date().toISOString()
       });
