@@ -104,8 +104,9 @@ export default async function handler(req, res) {
         subscription_id: subscription.id,
         action: 'analysis',
         analysis_type: 'analysis',
+        framework: 'NIST_CSF', // Add framework field
         document_length: documentLength,
-        document_size: documentLength, // Add document_size field
+        document_size: documentLength,
         control_text_length: controlTextLength,
         created_at: new Date().toISOString()
       });
