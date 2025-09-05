@@ -14,6 +14,7 @@ import Pricing from './pages/Pricing.jsx';
 import About from './pages/About.jsx';
 import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
+import Profile from './pages/Profile.jsx';
 
 function AppContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -39,6 +40,13 @@ function AppContent() {
             <SubscriptionGuard>
               <Analyzer />
             </SubscriptionGuard>
+          ) : (
+            <Navigate to="/" replace />
+          )
+        } />
+        <Route path="/profile" element={
+          user ? (
+            <Profile />
           ) : (
             <Navigate to="/" replace />
           )
