@@ -344,7 +344,7 @@ function Analyzer() {
           const { data: docData, error: docError } = await supabase
             .from('document_content')
             .select('content')
-            .eq('analysis_id', result.id)
+            .eq('analysis_id', parseInt(result.id))
             .single();
           
           if (docError) {
@@ -836,7 +836,7 @@ function Analyzer() {
           const { data: documentData, error: docError } = await supabase
             .from('document_content')
             .insert({
-              analysis_id: savedAnalysis.id,
+              analysis_id: parseInt(savedAnalysis.id), // Convert to bigint
               content: fileContent, // Store full content without compression
               content_hash: contentHash
             })
@@ -851,7 +851,7 @@ function Analyzer() {
             await supabase
               .from('analysis_history')
               .update({ document_content_id: documentData.id })
-              .eq('id', savedAnalysis.id);
+              .eq('id', parseInt(savedAnalysis.id));
             
             console.log('💾 Stored full document content in separate table for paid plan:', subscription.plan_type?.toLowerCase(), 'Content length:', fileContent.length);
           }

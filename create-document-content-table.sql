@@ -1,7 +1,7 @@
 -- Create separate table for document content to avoid row size limits
 CREATE TABLE IF NOT EXISTS document_content (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  analysis_id UUID REFERENCES analysis_history(id) ON DELETE CASCADE,
+  analysis_id BIGINT REFERENCES analysis_history(id) ON DELETE CASCADE,
   content TEXT NOT NULL,
   content_hash TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
