@@ -810,8 +810,20 @@ function Analyzer() {
         try {
           // Compress the document content using gzip compression
           const compressed = await compressString(fileContent);
-          dataToSave.document_content = compressed;
-          console.log('💾 Storing compressed document content for paid plan:', subscription.plan_type?.toLowerCase(), 'Original:', fileContent.length, 'Compressed:', compressed.length);
+          console.log('🔍 Compression details:', {
+            original: fileContent.length,
+            compressed: compressed.length,
+            compressionRatio: ((fileContent.length - compressed.length) / fileContent.length * 100).toFixed(1) + '%'
+          });
+          
+          // Check if compressed content is still too large (PostgreSQL limit is ~8KB for index rows)
+          if (compressed.length > 6000) {
+            console.log('⚠️ Compressed content still too large, using truncation fallback');
+            dataToSave.document_content = fileContent.substring(0, 5000) + '... [truncated due to size]';
+          } else {
+            dataToSave.document_content = compressed;
+            console.log('💾 Storing compressed document content for paid plan:', subscription.plan_type?.toLowerCase());
+          }
         } catch (error) {
           console.error('❌ Error compressing document content:', error);
           // Fallback: store truncated content if compression fails
@@ -838,6 +850,16 @@ function Analyzer() {
 
       if (error) {
         console.error('❌ Error saving to history:', error);
+        console.error('❌ Data being saved:', {
+          userId: dataToSave.user_id,
+          filename: dataToSave.filename,
+          framework: dataToSave.framework,
+          hasResults: !!dataToSave.results,
+          hasSummary: !!dataToSave.summary,
+          hasDocumentContent: !!dataToSave.document_content,
+          documentContentLength: dataToSave.document_content?.length || 0,
+          plan: subscription?.plan_type?.toLowerCase()
+        });
         throw error;
       }
       
