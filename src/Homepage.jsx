@@ -223,16 +223,6 @@ function Homepage({ onShowLogin }) {
                 </Link>
               </div>
               
-              {/* Social Proof */}
-              <div className="text-center">
-                <p className="text-slate-500 text-sm mb-2">Trusted by compliance professionals</p>
-                <div className="flex justify-center items-center gap-8 opacity-60">
-                  <div className="text-slate-600 font-medium">NIST</div>
-                  <div className="text-slate-600 font-medium">PCI DSS</div>
-                  <div className="text-slate-600 font-medium">ISO 27001</div>
-                  <div className="text-slate-600 font-medium">SOC 2</div>
-                </div>
-              </div>
             </div>
           </section>
 
@@ -375,10 +365,6 @@ function Homepage({ onShowLogin }) {
                 </Link>
               </div>
               
-              {/* Additional trust indicators */}
-              <div className="text-center">
-                <p className="text-slate-400 text-sm">Join compliance professionals who trust MapMyGap</p>
-              </div>
             </div>
           </section>
         </main>
