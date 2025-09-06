@@ -482,4 +482,4 @@ const allFrameworks = {
   }
 };
 
-module.exports = { allFrameworks };
+export { allFrameworks };

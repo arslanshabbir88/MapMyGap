@@ -483,7 +483,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         console.log('✅ Successfully loaded inline NIST 800-63B framework data');
       } else if (framework === 'SOC_2') {
         // Import SOC 2 framework data from frameworks-data.js
-        const { allFrameworks } = require('./frameworks-data.js');
+        const { allFrameworks } = await import('./frameworks-data.js');
         frameworkData = allFrameworks.SOC_2;
         console.log('✅ Successfully loaded SOC 2 framework data');
       }
