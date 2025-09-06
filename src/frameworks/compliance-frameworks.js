@@ -3454,6 +3454,534 @@ export const nist80063b = {
   ]
 };
 
+// NYDFS Part 500 Cybersecurity Regulation
+export const nydfs500 = {
+  name: "NYDFS Part 500",
+  description: "New York State Department of Financial Services Cybersecurity Regulation",
+  categories: [
+    {
+      name: "Cybersecurity Program (500.02)",
+      description: "Establish and maintain a cybersecurity program designed to protect the confidentiality, integrity, and availability of information systems",
+      results: [
+        {
+          id: "500.02(a)",
+          control: "Implement a cybersecurity program based on the Covered Entity's risk assessment",
+          status: "gap",
+          details: "Cybersecurity program not established or not based on risk assessment",
+          recommendation: "Develop a comprehensive cybersecurity program that addresses identified risks and is regularly updated based on ongoing risk assessments"
+        },
+        {
+          id: "500.02(b)",
+          control: "Design the cybersecurity program to protect the confidentiality, integrity, and availability of the Covered Entity's information systems",
+          status: "gap",
+          details: "Program does not adequately address CIA triad requirements",
+          recommendation: "Ensure cybersecurity program explicitly addresses confidentiality, integrity, and availability of information systems"
+        },
+        {
+          id: "500.02(c)",
+          control: "Address cybersecurity risks identified in the risk assessment",
+          status: "gap",
+          details: "Program does not address identified cybersecurity risks",
+          recommendation: "Map all identified risks to specific controls and mitigation strategies in the cybersecurity program"
+        }
+      ]
+    },
+    {
+      name: "Cybersecurity Policy (500.03)",
+      description: "Implement written cybersecurity policy approved by senior management or board of directors",
+      results: [
+        {
+          id: "500.03(a)",
+          control: "Implement a written cybersecurity policy setting forth the Covered Entity's policies and procedures for the protection of its information systems and nonpublic information",
+          status: "gap",
+          details: "Written cybersecurity policy not implemented",
+          recommendation: "Develop comprehensive written cybersecurity policy covering all required areas and ensure it is approved by senior management or board"
+        },
+        {
+          id: "500.03(b)",
+          control: "Policy must be approved by a senior officer or the board of directors",
+          status: "gap",
+          details: "Policy not approved by appropriate authority",
+          recommendation: "Ensure cybersecurity policy is formally approved by senior officer or board of directors and documented"
+        },
+        {
+          id: "500.03(c)",
+          control: "Policy must be reviewed and updated at least annually",
+          status: "gap",
+          details: "Policy review process not established",
+          recommendation: "Implement annual policy review process with documented updates and re-approval"
+        }
+      ]
+    },
+    {
+      name: "Chief Information Security Officer (500.04)",
+      description: "Designate qualified individual to serve as CISO responsible for cybersecurity program",
+      results: [
+        {
+          id: "500.04(a)",
+          control: "Designate a qualified individual to serve as the Chief Information Security Officer",
+          status: "gap",
+          details: "CISO not designated or individual lacks required qualifications",
+          recommendation: "Designate a qualified individual with appropriate cybersecurity expertise and experience to serve as CISO"
+        },
+        {
+          id: "500.04(b)",
+          control: "CISO must report to the board of directors or senior officer at least annually",
+          status: "gap",
+          details: "CISO reporting structure not established",
+          recommendation: "Establish reporting structure where CISO reports to board or senior officer at least annually"
+        },
+        {
+          id: "500.04(c)",
+          control: "CISO must have sufficient authority and resources to implement and maintain the cybersecurity program",
+          status: "gap",
+          details: "CISO lacks sufficient authority or resources",
+          recommendation: "Ensure CISO has adequate authority, budget, and resources to effectively implement cybersecurity program"
+        },
+        {
+          id: "500.04(d)",
+          control: "CISO must report annually to the board on plans for remediating material inadequacies",
+          status: "gap",
+          details: "Annual reporting on remediation plans not established",
+          recommendation: "Implement annual reporting process where CISO reports remediation plans for material inadequacies to board"
+        }
+      ]
+    },
+    {
+      name: "Penetration Testing and Vulnerability Assessments (500.05)",
+      description: "Conduct periodic penetration testing and vulnerability assessments",
+      results: [
+        {
+          id: "500.05(a)",
+          control: "Conduct annual penetration testing of the Covered Entity's information systems",
+          status: "gap",
+          details: "Annual penetration testing not conducted",
+          recommendation: "Implement annual penetration testing program conducted by qualified personnel or third-party vendors"
+        },
+        {
+          id: "500.05(b)",
+          control: "Conduct bi-annual vulnerability assessments of the Covered Entity's information systems",
+          status: "gap",
+          details: "Bi-annual vulnerability assessments not conducted",
+          recommendation: "Implement bi-annual vulnerability assessment program using automated tools and manual testing"
+        },
+        {
+          id: "500.05(c)",
+          control: "Conduct automated scans or manual reviews to discover, analyze, and report vulnerabilities",
+          status: "gap",
+          details: "Automated vulnerability scanning not implemented",
+          recommendation: "Implement automated vulnerability scanning tools with regular scanning schedules and manual review processes"
+        },
+        {
+          id: "500.05(d)",
+          control: "Scan frequency must be determined based on risk assessment but must occur promptly after material system changes",
+          status: "gap",
+          details: "Scanning frequency not based on risk assessment or material changes",
+          recommendation: "Establish risk-based scanning frequency and ensure immediate scanning after material system changes"
+        }
+      ]
+    },
+    {
+      name: "Audit Trail (500.06)",
+      description: "Maintain audit trail of all user access and administrative actions",
+      results: [
+        {
+          id: "500.06(a)",
+          control: "Maintain audit trail of all user access and administrative actions on information systems",
+          status: "gap",
+          details: "Comprehensive audit trail not maintained",
+          recommendation: "Implement comprehensive audit logging for all user access and administrative actions across information systems"
+        },
+        {
+          id: "500.06(b)",
+          control: "Audit trail must be designed to detect and respond to cybersecurity events",
+          status: "gap",
+          details: "Audit trail not designed for cybersecurity event detection",
+          recommendation: "Design audit trail system to enable detection and response to cybersecurity events with appropriate alerting"
+        },
+        {
+          id: "500.06(c)",
+          control: "Audit trail must be retained for at least six years",
+          status: "gap",
+          details: "Audit trail retention period not established",
+          recommendation: "Implement audit trail retention for minimum six years with secure storage and retrieval capabilities"
+        }
+      ]
+    },
+    {
+      name: "Access Privileges (500.07)",
+      description: "Limit user access privileges and periodically review access",
+      results: [
+        {
+          id: "500.07(a)",
+          control: "Limit user access privileges to information systems that contain nonpublic information to those necessary to perform the user's job functions",
+          status: "gap",
+          details: "Access privileges not limited to job functions",
+          recommendation: "Implement least privilege access controls ensuring users only have access necessary for their job functions"
+        },
+        {
+          id: "500.07(b)",
+          control: "Periodically review access privileges and remove or disable access that is no longer necessary",
+          status: "gap",
+          details: "Access review process not established",
+          recommendation: "Implement periodic access review process with documented procedures for removing unnecessary access"
+        },
+        {
+          id: "500.07(c)",
+          control: "Implement privileged access management for users with administrative access",
+          status: "gap",
+          details: "Privileged access management not implemented",
+          recommendation: "Implement privileged access management solution for administrative accounts with additional controls and monitoring"
+        }
+      ]
+    },
+    {
+      name: "Application Security (500.08)",
+      description: "Develop, maintain, and test application security procedures",
+      results: [
+        {
+          id: "500.08(a)",
+          control: "Develop written procedures for the secure development of applications",
+          status: "gap",
+          details: "Secure development procedures not documented",
+          recommendation: "Develop comprehensive secure development lifecycle (SDLC) procedures including security requirements, testing, and review processes"
+        },
+        {
+          id: "500.08(b)",
+          control: "Implement secure coding practices and security testing throughout the development process",
+          status: "gap",
+          details: "Secure coding practices not implemented",
+          recommendation: "Implement secure coding standards, training, and automated security testing tools in development process"
+        },
+        {
+          id: "500.08(c)",
+          control: "Conduct regular security testing of applications",
+          status: "gap",
+          details: "Regular application security testing not conducted",
+          recommendation: "Implement regular application security testing including static, dynamic, and interactive testing"
+        }
+      ]
+    },
+    {
+      name: "Risk Assessment (500.09)",
+      description: "Conduct periodic risk assessments to inform cybersecurity program design",
+      results: [
+        {
+          id: "500.09(a)",
+          control: "Conduct periodic risk assessments to inform the design of the cybersecurity program",
+          status: "gap",
+          details: "Periodic risk assessments not conducted",
+          recommendation: "Implement regular risk assessment process to identify and evaluate cybersecurity risks"
+        },
+        {
+          id: "500.09(b)",
+          control: "Risk assessments must be updated at least annually",
+          status: "gap",
+          details: "Annual risk assessment updates not established",
+          recommendation: "Establish annual risk assessment review and update process with documented methodology"
+        },
+        {
+          id: "500.09(c)",
+          control: "Risk assessments must address novel cybersecurity threats",
+          status: "gap",
+          details: "Risk assessments do not address emerging threats",
+          recommendation: "Ensure risk assessments include evaluation of novel and emerging cybersecurity threats"
+        }
+      ]
+    },
+    {
+      name: "Cybersecurity Personnel and Intelligence (500.10)",
+      description: "Employ qualified cybersecurity personnel and utilize cybersecurity intelligence",
+      results: [
+        {
+          id: "500.10(a)",
+          control: "Employ qualified cybersecurity personnel or engage qualified third-party service providers",
+          status: "gap",
+          details: "Qualified cybersecurity personnel not employed",
+          recommendation: "Employ qualified cybersecurity personnel or engage qualified third-party service providers with appropriate expertise"
+        },
+        {
+          id: "500.10(b)",
+          control: "Utilize cybersecurity intelligence to inform the cybersecurity program",
+          status: "gap",
+          details: "Cybersecurity intelligence not utilized",
+          recommendation: "Implement cybersecurity intelligence gathering and analysis capabilities to inform program decisions"
+        },
+        {
+          id: "500.10(c)",
+          control: "Provide regular cybersecurity training to personnel",
+          status: "gap",
+          details: "Regular cybersecurity training not provided",
+          recommendation: "Implement comprehensive cybersecurity training program for all personnel with regular updates"
+        }
+      ]
+    },
+    {
+      name: "Third-Party Service Provider Security Policy (500.11)",
+      description: "Implement policies and procedures for third-party service provider security",
+      results: [
+        {
+          id: "500.11(a)",
+          control: "Implement written policies and procedures for third-party service provider security",
+          status: "gap",
+          details: "Third-party security policies not implemented",
+          recommendation: "Develop comprehensive written policies and procedures for managing third-party service provider security"
+        },
+        {
+          id: "500.11(b)",
+          control: "Assess the cybersecurity practices of third-party service providers",
+          status: "gap",
+          details: "Third-party cybersecurity assessments not conducted",
+          recommendation: "Implement regular assessment process to evaluate third-party service provider cybersecurity practices"
+        },
+        {
+          id: "500.11(c)",
+          control: "Ensure third-party service providers maintain appropriate cybersecurity practices",
+          status: "gap",
+          details: "Third-party cybersecurity requirements not enforced",
+          recommendation: "Establish contractual requirements and monitoring processes to ensure third-party cybersecurity compliance"
+        }
+      ]
+    },
+    {
+      name: "Multi-Factor Authentication (500.12)",
+      description: "Implement multi-factor authentication for access to information systems",
+      results: [
+        {
+          id: "500.12(a)",
+          control: "Implement multi-factor authentication for any individual accessing any information systems",
+          status: "gap",
+          details: "Multi-factor authentication not implemented",
+          recommendation: "Implement multi-factor authentication for all individuals accessing information systems"
+        },
+        {
+          id: "500.12(b)",
+          control: "MFA must be implemented for remote access to information systems",
+          status: "gap",
+          details: "MFA not implemented for remote access",
+          recommendation: "Ensure multi-factor authentication is specifically implemented for all remote access to information systems"
+        },
+        {
+          id: "500.12(c)",
+          control: "MFA implementation must be risk-based and appropriate for the level of risk",
+          status: "gap",
+          details: "MFA implementation not risk-based",
+          recommendation: "Implement risk-based MFA approach with appropriate controls based on access risk levels"
+        }
+      ]
+    },
+    {
+      name: "Limitations on Data Retention (500.13)",
+      description: "Implement data retention policies and procedures",
+      results: [
+        {
+          id: "500.13(a)",
+          control: "Implement policies and procedures for the secure disposal of nonpublic information",
+          status: "gap",
+          details: "Data disposal policies not implemented",
+          recommendation: "Develop comprehensive policies and procedures for secure disposal of nonpublic information"
+        },
+        {
+          id: "500.13(b)",
+          control: "Data retention policies must be based on business needs and legal requirements",
+          status: "gap",
+          details: "Data retention policies not aligned with business and legal requirements",
+          recommendation: "Develop data retention policies that balance business needs with legal and regulatory requirements"
+        },
+        {
+          id: "500.13(c)",
+          control: "Implement secure data destruction procedures",
+          status: "gap",
+          details: "Secure data destruction procedures not implemented",
+          recommendation: "Implement secure data destruction procedures including physical and digital destruction methods"
+        }
+      ]
+    },
+    {
+      name: "Training and Monitoring (500.14)",
+      description: "Provide cybersecurity training and implement monitoring capabilities",
+      results: [
+        {
+          id: "500.14(a)",
+          control: "Provide regular cybersecurity awareness training to all personnel",
+          status: "gap",
+          details: "Cybersecurity awareness training not provided",
+          recommendation: "Implement comprehensive cybersecurity awareness training program for all personnel with regular updates"
+        },
+        {
+          id: "500.14(b)",
+          control: "Implement risk-based controls to protect against malicious code",
+          status: "gap",
+          details: "Malicious code protection not implemented",
+          recommendation: "Implement email and web filtering, endpoint protection, and other controls to protect against malicious code"
+        },
+        {
+          id: "500.14(c)",
+          control: "For Class A companies: implement endpoint detection and response solutions",
+          status: "gap",
+          details: "EDR solutions not implemented for Class A companies",
+          recommendation: "Implement endpoint detection and response (EDR) solutions to monitor and respond to unusual activity"
+        },
+        {
+          id: "500.14(d)",
+          control: "For Class A companies: implement centralized logging and security event solutions",
+          status: "gap",
+          details: "Centralized logging not implemented for Class A companies",
+          recommendation: "Implement centralized logging and security information and event management (SIEM) solutions"
+        }
+      ]
+    },
+    {
+      name: "Encryption of Nonpublic Information (500.15)",
+      description: "Implement encryption for nonpublic information",
+      results: [
+        {
+          id: "500.15(a)",
+          control: "Implement encryption for nonpublic information in transit over external networks",
+          status: "gap",
+          details: "Encryption in transit not implemented",
+          recommendation: "Implement strong encryption (TLS 1.2 or higher) for all nonpublic information transmitted over external networks"
+        },
+        {
+          id: "500.15(b)",
+          control: "Implement encryption for nonpublic information at rest",
+          status: "gap",
+          details: "Encryption at rest not implemented",
+          recommendation: "Implement strong encryption for nonpublic information stored on all devices and systems"
+        },
+        {
+          id: "500.15(c)",
+          control: "Encryption must be implemented using industry-standard algorithms",
+          status: "gap",
+          details: "Encryption algorithms not industry-standard",
+          recommendation: "Use industry-standard encryption algorithms (AES-256, RSA-2048 or higher) for all encryption implementations"
+        }
+      ]
+    },
+    {
+      name: "Incident Response Plan (500.16)",
+      description: "Establish incident response plan for cybersecurity events",
+      results: [
+        {
+          id: "500.16(a)",
+          control: "Establish a written incident response plan to respond to cybersecurity events",
+          status: "gap",
+          details: "Incident response plan not established",
+          recommendation: "Develop comprehensive written incident response plan with clear procedures for detecting, responding to, and recovering from cybersecurity events"
+        },
+        {
+          id: "500.16(b)",
+          control: "Incident response plan must address confidentiality, integrity, and availability of information systems",
+          status: "gap",
+          details: "Incident response plan does not address CIA requirements",
+          recommendation: "Ensure incident response plan specifically addresses protection of confidentiality, integrity, and availability"
+        },
+        {
+          id: "500.16(c)",
+          control: "Test incident response plan at least annually",
+          status: "gap",
+          details: "Incident response plan testing not conducted",
+          recommendation: "Implement annual incident response plan testing including tabletop exercises and simulation drills"
+        },
+        {
+          id: "500.16(d)",
+          control: "Update incident response plan based on lessons learned from testing and actual incidents",
+          status: "gap",
+          details: "Incident response plan not updated based on lessons learned",
+          recommendation: "Establish process to update incident response plan based on testing results and actual incident experiences"
+        }
+      ]
+    },
+    {
+      name: "Notices to Superintendent (500.17)",
+      description: "Notify NYDFS of cybersecurity events and other required notifications",
+      results: [
+        {
+          id: "500.17(a)",
+          control: "Notify NYDFS within 72 hours of any cybersecurity event",
+          status: "gap",
+          details: "72-hour notification process not established",
+          recommendation: "Implement process to notify NYDFS within 72 hours of any cybersecurity event with required information"
+        },
+        {
+          id: "500.17(b)",
+          control: "Notify NYDFS of cybersecurity events affecting third-party service providers",
+          status: "gap",
+          details: "Third-party incident notification not established",
+          recommendation: "Establish process to notify NYDFS of cybersecurity events affecting third-party service providers"
+        },
+        {
+          id: "500.17(c)",
+          control: "Submit annual certification of compliance with Part 500",
+          status: "gap",
+          details: "Annual certification process not established",
+          recommendation: "Implement annual certification process to submit compliance certification to NYDFS"
+        }
+      ]
+    },
+    {
+      name: "Confidentiality (500.18)",
+      description: "Maintain confidentiality of information provided to NYDFS",
+      results: [
+        {
+          id: "500.18(a)",
+          control: "Maintain confidentiality of information provided to NYDFS in connection with cybersecurity events",
+          status: "gap",
+          details: "Confidentiality procedures not established",
+          recommendation: "Implement procedures to maintain confidentiality of information provided to NYDFS"
+        },
+        {
+          id: "500.18(b)",
+          control: "Ensure proper handling of sensitive information in communications with NYDFS",
+          status: "gap",
+          details: "Sensitive information handling procedures not established",
+          recommendation: "Establish procedures for proper handling and protection of sensitive information in NYDFS communications"
+        }
+      ]
+    },
+    {
+      name: "Exemptions (500.19)",
+      description: "Understand and document any applicable exemptions",
+      results: [
+        {
+          id: "500.19(a)",
+          control: "Document any applicable exemptions from Part 500 requirements",
+          status: "gap",
+          details: "Exemption documentation not maintained",
+          recommendation: "Document any applicable exemptions from Part 500 requirements with proper justification and approval"
+        },
+        {
+          id: "500.19(b)",
+          control: "Review exemptions annually to ensure they remain applicable",
+          status: "gap",
+          details: "Exemption review process not established",
+          recommendation: "Implement annual review process to assess continued applicability of any exemptions"
+        }
+      ]
+    },
+    {
+      name: "Effective Date and Compliance (500.20)",
+      description: "Ensure compliance with effective dates and ongoing requirements",
+      results: [
+        {
+          id: "500.20(a)",
+          control: "Ensure compliance with all effective dates for Part 500 requirements",
+          status: "gap",
+          details: "Effective date compliance not tracked",
+          recommendation: "Implement tracking system to ensure compliance with all Part 500 effective dates and requirements"
+        },
+        {
+          id: "500.20(b)",
+          control: "Maintain ongoing compliance with all applicable Part 500 requirements",
+          status: "gap",
+          details: "Ongoing compliance monitoring not established",
+          recommendation: "Implement ongoing compliance monitoring and assessment processes for all applicable Part 500 requirements"
+        }
+      ]
+    }
+  ]
+};
+
 // Export all frameworks for use in the application
 export const allFrameworks = {
   NIST_CSF: nistCSF,
@@ -3461,5 +3989,6 @@ export const allFrameworks = {
   PCI_DSS: pciDSS,
   ISO_27001: iso27001,
   SOC_2: soc2,
-  NIST_800_63B: nist80063b
+  NIST_800_63B: nist80063b,
+  NYDFS_500: nydfs500
 };

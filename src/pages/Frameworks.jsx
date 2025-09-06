@@ -330,6 +330,121 @@ const Frameworks = ({ onShowLogin }) => {
         "Healthcare providers",
         "Any organization processing payments"
       ]
+    },
+    'nydfs-500': {
+      name: "NYDFS Part 500",
+      fullName: "NYDFS Cybersecurity Regulation",
+      version: "Part 500",
+      description: "New York State Department of Financial Services cybersecurity requirements for financial institutions.",
+      overview: "NYDFS Part 500 establishes cybersecurity requirements for financial services companies operating in New York. The regulation mandates comprehensive cybersecurity programs, incident response capabilities, and regular assessments to protect consumers and ensure the safety of the financial services industry.",
+      icon: "🏛️",
+      color: "from-blue-600 to-blue-700",
+      categories: [
+        {
+          name: "Cybersecurity Program (500.02)",
+          description: "Establish and maintain a cybersecurity program designed to protect information systems",
+          controls: ["500.02(a)", "500.02(b)", "500.02(c)"]
+        },
+        {
+          name: "Cybersecurity Policy (500.03)",
+          description: "Implement written cybersecurity policy approved by senior management",
+          controls: ["500.03(a)", "500.03(b)", "500.03(c)"]
+        },
+        {
+          name: "Chief Information Security Officer (500.04)",
+          description: "Designate qualified individual to serve as CISO",
+          controls: ["500.04(a)", "500.04(b)", "500.04(c)", "500.04(d)"]
+        },
+        {
+          name: "Penetration Testing (500.05)",
+          description: "Conduct periodic penetration testing and vulnerability assessments",
+          controls: ["500.05(a)", "500.05(b)", "500.05(c)", "500.05(d)"]
+        },
+        {
+          name: "Audit Trail (500.06)",
+          description: "Maintain audit trail of all user access and administrative actions",
+          controls: ["500.06(a)", "500.06(b)", "500.06(c)"]
+        },
+        {
+          name: "Access Privileges (500.07)",
+          description: "Limit user access privileges and periodically review access",
+          controls: ["500.07(a)", "500.07(b)", "500.07(c)"]
+        },
+        {
+          name: "Application Security (500.08)",
+          description: "Develop, maintain, and test application security procedures",
+          controls: ["500.08(a)", "500.08(b)", "500.08(c)"]
+        },
+        {
+          name: "Risk Assessment (500.09)",
+          description: "Conduct periodic risk assessments to inform cybersecurity program design",
+          controls: ["500.09(a)", "500.09(b)", "500.09(c)"]
+        },
+        {
+          name: "Cybersecurity Personnel (500.10)",
+          description: "Employ qualified cybersecurity personnel and utilize intelligence",
+          controls: ["500.10(a)", "500.10(b)", "500.10(c)"]
+        },
+        {
+          name: "Third-Party Security (500.11)",
+          description: "Implement policies for third-party service provider security",
+          controls: ["500.11(a)", "500.11(b)", "500.11(c)"]
+        },
+        {
+          name: "Multi-Factor Authentication (500.12)",
+          description: "Implement multi-factor authentication for access to information systems",
+          controls: ["500.12(a)", "500.12(b)", "500.12(c)"]
+        },
+        {
+          name: "Data Retention (500.13)",
+          description: "Implement data retention policies and procedures",
+          controls: ["500.13(a)", "500.13(b)", "500.13(c)"]
+        },
+        {
+          name: "Training and Monitoring (500.14)",
+          description: "Provide cybersecurity training and implement monitoring capabilities",
+          controls: ["500.14(a)", "500.14(b)", "500.14(c)", "500.14(d)"]
+        },
+        {
+          name: "Encryption (500.15)",
+          description: "Implement encryption for nonpublic information",
+          controls: ["500.15(a)", "500.15(b)", "500.15(c)"]
+        },
+        {
+          name: "Incident Response (500.16)",
+          description: "Establish incident response plan for cybersecurity events",
+          controls: ["500.16(a)", "500.16(b)", "500.16(c)", "500.16(d)"]
+        },
+        {
+          name: "Notices to Superintendent (500.17)",
+          description: "Notify NYDFS of cybersecurity events and other required notifications",
+          controls: ["500.17(a)", "500.17(b)", "500.17(c)"]
+        },
+        {
+          name: "Confidentiality (500.18)",
+          description: "Maintain confidentiality of information provided to NYDFS",
+          controls: ["500.18(a)", "500.18(b)"]
+        },
+        {
+          name: "Exemptions (500.19)",
+          description: "Understand and document any applicable exemptions",
+          controls: ["500.19(a)", "500.19(b)"]
+        },
+        {
+          name: "Effective Date (500.20)",
+          description: "Ensure compliance with effective dates and ongoing requirements",
+          controls: ["500.20(a)", "500.20(b)"]
+        }
+      ],
+      useCases: [
+        "Financial institutions in New York",
+        "Banks and credit unions",
+        "Insurance companies",
+        "Mortgage companies",
+        "Money transmitters",
+        "Virtual currency businesses",
+        "Any NYDFS-regulated entity"
+      ]
     }
   };
 

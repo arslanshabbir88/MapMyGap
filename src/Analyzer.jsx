@@ -601,14 +601,14 @@ function Analyzer() {
                         <div>
                             {/* Only show control text generation button for Professional/Enterprise users */}
                             {subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise') && (
-                                <button
-                                    onClick={handleGenerateText}
+                            <button 
+                                onClick={handleGenerateText}
                                     disabled={isGenerating || (!fileContent && !result.document_content_id)}
-                                    className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
-                                >
-                                    <SparklesIcon />
+                                className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
+                            >
+                                <SparklesIcon />
                                     {isGenerating ? 'Generating...' : 'Generate Complete Implementation'}
-                                </button>
+                            </button>
                             )}
                             
                             {/* Show upgrade prompt for Trial/Starter users */}
@@ -1131,7 +1131,7 @@ function Analyzer() {
         document.addEventListener('visibilitychange', handleVisibilityChange);
         
         const response = await fetch(apiUrl, {
-          method: 'POST',
+        method: 'POST',
           headers: { 
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
@@ -1145,8 +1145,8 @@ function Analyzer() {
         // Remove the event listener after request completes
         document.removeEventListener('visibilitychange', handleVisibilityChange);
 
-        if (!response.ok) {
-          const errorText = await response.text();
+      if (!response.ok) {
+        const errorText = await response.text();
           
           // Try to parse as JSON for better error handling
           try {
@@ -1174,7 +1174,7 @@ function Analyzer() {
         
         result = await response.json();
         
-        if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+      if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
           let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
           console.log('Raw AI response:', rawJson);
           console.log('Raw response length:', rawJson.length);
@@ -1365,7 +1365,7 @@ function Analyzer() {
               console.error('❌ Error tracking usage:', error);
             }
           }
-        } else {
+      } else {
           throw new Error("Invalid response structure from API.");
         }
       } else {
@@ -1395,7 +1395,7 @@ function Analyzer() {
       } else if (e.message && e.message.includes('overloaded')) {
         setError('🚨 Google\'s AI servers are currently overloaded. Please wait a few minutes and try again.');
       } else {
-        setError(`An error occurred during analysis: ${e.message}`);
+      setError(`An error occurred during analysis: ${e.message}`);
       }
     } finally {
       console.log('🏁 Analysis ended, setting isAnalyzing to false');
@@ -1410,8 +1410,7 @@ function Analyzer() {
     { id: 'PCI_DSS', name: 'PCI DSS v4.0', enabled: true },
     { id: 'ISO_27001', name: 'ISO/IEC 27001:2022', enabled: true },
     { id: 'SOC_2', name: 'SOC 2 Type II', enabled: true },
-    { id: 'FFIEC_CAT', name: 'FFIEC Cybersecurity Assessment Tool', enabled: false },
-    { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: false },
+    { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: true },
   ];
   
   return (
@@ -1503,7 +1502,7 @@ function Analyzer() {
                       <span className="font-semibold text-white">
                         {usage.plan.charAt(0).toUpperCase() + usage.plan.slice(1)} Plan
                       </span>
-                    </div>
+            </div>
                     <div className="text-slate-300 text-sm">
                       {usage.runs_remaining === -1 ? 'Unlimited' : `${usage.runs_remaining} analyses remaining`}
                     </div>
@@ -1540,7 +1539,7 @@ function Analyzer() {
                       className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-lg hover:shadow-xl"
                     >
                       Upgrade Plan
-                    </button>
+            </button>
                   )}
                   {usage.runs_remaining > 0 && usage.runs_remaining <= 2 && usage.runs_remaining !== -1 && (
                     <button 
@@ -1550,7 +1549,7 @@ function Analyzer() {
                       Running Low
                     </button>
                   )}
-                </div>
+          </div>
               </div>
             </div>
           </div>
@@ -2294,12 +2293,12 @@ function Analyzer() {
                               <>
                                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
+                    </svg>
                                 Load More ({analysisHistory.length} of many)
-                              </>
+                  </>
                             )}
-                          </button>
-                        </div>
+              </button>
+            </div>
                       )}
                     </div>
                   ) : (
