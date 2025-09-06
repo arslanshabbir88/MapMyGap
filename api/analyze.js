@@ -481,6 +481,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
           ]
         };
         console.log('✅ Successfully loaded inline NIST 800-63B framework data');
+      } else if (framework === 'SOC_2') {
+        // Import SOC 2 framework data from compliance-frameworks.js
+        const { soc2 } = await import('../src/frameworks/compliance-frameworks.js');
+        frameworkData = soc2;
+        console.log('✅ Successfully loaded SOC 2 framework data');
       }
       // Add other frameworks as needed
     } catch (importError) {
@@ -544,12 +549,51 @@ CRITICAL REQUIREMENTS:
       } else {
         frameworkPrompt = `\n\nFor NIST SP 800-63B-4, analyze ALL controls in the selected categories (AAL, Authenticator Type Requirements, Technical Requirements, Authenticator Event Management, Session Management). Include detailed analysis of authentication assurance levels, authenticator types, technical requirements, event management, and session management controls.`;
       }
+    } else if (framework === 'SOC_2') {
+      if (frameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for SOC 2:', selectedCategories);
+          console.log('🔍 Available SOC 2 categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category names to framework category names
+          const categoryMapping = {
+            'Security': 'Security - Common Criteria',
+            'Availability': 'Availability',
+            'Processing Integrity': 'Processing Integrity',
+            'Confidentiality': 'Confidentiality',
+            'Privacy': 'Privacy'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for SOC 2:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of SOC 2 categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor SOC 2 Type II, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        frameworkPrompt = `\n\nFor SOC 2 Type II, analyze ALL Trust Service Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) in the selected areas.`;
+      }
     } else if (framework === 'PCI_DSS') {
       frameworkPrompt = `\n\nFor PCI DSS v4.0, analyze ALL requirements in the selected areas. Include comprehensive coverage of security controls, access management, and compliance requirements.`;
     } else if (framework === 'ISO_27001') {
       frameworkPrompt = `\n\nFor ISO 27001:2022, analyze ALL controls in the selected categories. Provide comprehensive coverage of information security management system controls.`;
-    } else if (framework === 'SOC_2') {
-      frameworkPrompt = `\n\nFor SOC 2 Type II, analyze ALL Trust Service Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) in the selected areas.`;
     }
 
                 // Create the prompt for the AI
