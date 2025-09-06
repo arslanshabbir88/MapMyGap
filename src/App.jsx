@@ -56,14 +56,14 @@ function AppContent() {
             <Navigate to="/" replace />
           )
         } />
-        <Route path="/terms" element={<TermsOfService />} />
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/frameworks" element={<Frameworks />} />
-        <Route path="/security" element={<Security />} />
+        <Route path="/terms" element={<TermsOfService onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/privacy" element={<PrivacyPolicy onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/faq" element={<FAQ onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/how-it-works" element={<HowItWorks onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/frameworks" element={<Frameworks onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/security" element={<Security onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/pricing" element={<Pricing onShowLogin={() => setShowLoginModal(true)} />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/about" element={<About onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

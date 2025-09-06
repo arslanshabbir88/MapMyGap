@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const Frameworks = () => {
+const Frameworks = ({ onShowLogin }) => {
   const [selectedFramework, setSelectedFramework] = useState('nist-csf');
 
   const frameworks = {
@@ -337,7 +337,7 @@ const Frameworks = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
-      <SharedNavigation />
+      <SharedNavigation onShowLogin={onShowLogin} />
       
       <main>
         {/* Hero Section */}

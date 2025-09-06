@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const About = () => {
+const About = ({ onShowLogin }) => {
   const values = [
     {
       icon: "🎯",
@@ -39,7 +39,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
-      <SharedNavigation />
+      <SharedNavigation onShowLogin={onShowLogin} />
       
       <main>
         {/* Hero Section */}
