@@ -482,9 +482,9 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         };
         console.log('✅ Successfully loaded inline NIST 800-63B framework data');
       } else if (framework === 'SOC_2') {
-        // Import SOC 2 framework data from compliance-frameworks.js
-        const { soc2 } = await import('../src/frameworks/compliance-frameworks.js');
-        frameworkData = soc2;
+        // Import SOC 2 framework data from frameworks-data.js
+        const { allFrameworks } = require('./frameworks-data.js');
+        frameworkData = allFrameworks.SOC_2;
         console.log('✅ Successfully loaded SOC 2 framework data');
       }
       // Add other frameworks as needed
