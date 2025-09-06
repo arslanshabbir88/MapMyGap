@@ -559,6 +559,12 @@ CRITICAL REQUIREMENTS:
           
           // Map user-friendly category names to framework category names
           const categoryMapping = {
+            'CC': 'Security - Common Criteria',
+            'A': 'Availability',
+            'PI': 'Processing Integrity',
+            'C': 'Confidentiality',
+            'P': 'Privacy',
+            // Also support full names for backward compatibility
             'Security': 'Security - Common Criteria',
             'Availability': 'Availability',
             'Processing Integrity': 'Processing Integrity',
