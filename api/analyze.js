@@ -486,6 +486,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         const { allFrameworks } = await import('./frameworks-data.js');
         frameworkData = allFrameworks.SOC_2;
         console.log('✅ Successfully loaded SOC 2 framework data');
+      } else if (framework === 'SOC_1') {
+        // Import SOC 1 framework data from frameworks-data.js
+        const { allFrameworks } = await import('./frameworks-data.js');
+        frameworkData = allFrameworks.SOC_1;
+        console.log('✅ Successfully loaded SOC 1 framework data');
       }
       // Add other frameworks as needed
     } catch (importError) {
@@ -595,6 +600,53 @@ CRITICAL REQUIREMENTS:
 4. Do NOT create or add any additional categories not listed here`;
       } else {
         frameworkPrompt = `\n\nFor SOC 2 Type II, analyze ALL Trust Service Criteria (Security, Availability, Processing Integrity, Confidentiality, Privacy) in the selected areas.`;
+      }
+    } else if (framework === 'SOC_1') {
+      if (frameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for SOC 1:', selectedCategories);
+          console.log('🔍 Available SOC 1 categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category names to framework category names
+          const categoryMapping = {
+            'CE': 'Control Environment',
+            'RA': 'Risk Assessment',
+            'CA': 'Control Activities',
+            'IC': 'Information and Communication',
+            'M': 'Monitoring',
+            // Also support full names for backward compatibility
+            'Control Environment': 'Control Environment',
+            'Risk Assessment': 'Risk Assessment',
+            'Control Activities': 'Control Activities',
+            'Information and Communication': 'Information and Communication',
+            'Monitoring': 'Monitoring'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for SOC 1:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of SOC 1 categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor SOC 1 Type II, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        frameworkPrompt = `\n\nFor SOC 1 Type II, analyze ALL COSO framework components (Control Environment, Risk Assessment, Control Activities, Information and Communication, Monitoring) in the selected areas.`;
       }
     } else if (framework === 'PCI_DSS') {
       frameworkPrompt = `\n\nFor PCI DSS v4.0, analyze ALL requirements in the selected areas. Include comprehensive coverage of security controls, access management, and compliance requirements.`;

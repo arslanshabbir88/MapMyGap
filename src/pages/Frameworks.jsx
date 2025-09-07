@@ -199,6 +199,49 @@ const Frameworks = ({ onShowLogin }) => {
         "Any organization with digital identity systems"
       ]
     },
+    'soc1': {
+      name: "SOC 1",
+      fullName: "System and Organization Controls 1",
+      version: "Type II",
+      description: "AICPA's framework for reporting on controls at service organizations that impact user entities' financial reporting.",
+      overview: "SOC 1 is designed for service organizations that impact their clients' financial reporting. It focuses on internal control over financial reporting (ICFR) and is based on the COSO framework with five components: Control Environment, Risk Assessment, Control Activities, Information and Communication, and Monitoring.",
+      icon: "📈",
+      color: "from-purple-600 to-purple-700",
+      categories: [
+        {
+          name: "Control Environment (CE)",
+          description: "Tone at the top, integrity, ethical values, and organizational structure",
+          controls: ["CE1.1", "CE1.2", "CE1.3", "CE1.4", "CE1.5", "CE1.6", "CE1.7"]
+        },
+        {
+          name: "Risk Assessment (RA)",
+          description: "Risk identification, analysis, and fraud risk assessment for financial reporting",
+          controls: ["RA1.1", "RA1.2", "RA1.3", "RA1.4", "RA1.5", "RA1.6"]
+        },
+        {
+          name: "Control Activities (CA)",
+          description: "Policies, procedures, segregation of duties, and authorization controls",
+          controls: ["CA1.1", "CA1.2", "CA1.3", "CA1.4", "CA1.5", "CA1.6", "CA1.7", "CA1.8"]
+        },
+        {
+          name: "Information and Communication (IC)",
+          description: "Information quality, internal/external communication, and documentation",
+          controls: ["IC1.1", "IC1.2", "IC1.3", "IC1.4", "IC1.5", "IC1.6"]
+        },
+        {
+          name: "Monitoring (M)",
+          description: "Ongoing monitoring, separate evaluations, and deficiency management",
+          controls: ["M1.1", "M1.2", "M1.3", "M1.4", "M1.5", "M1.6"]
+        }
+      ],
+      useCases: [
+        "Service organizations processing financial data",
+        "Payroll service providers",
+        "Financial data processors",
+        "Organizations supporting user entities' financial reporting",
+        "Third-party service providers with financial impact"
+      ]
+    },
     'soc2': {
       name: "SOC 2",
       fullName: "System and Organization Controls 2",
