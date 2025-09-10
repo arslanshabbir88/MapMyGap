@@ -294,7 +294,7 @@ async function callVertexAI(prompt, checkCancellation = null) {
         }]
       }],
       generationConfig: {
-        maxOutputTokens: 65536, // Increased from 32768 to handle large documents
+        maxOutputTokens: 32768, // Reverted to original limit since NIST_CSF uses lightweight approach
         temperature: 0.0,
         topP: 1.0,
         topK: 1
@@ -515,6 +515,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     // Add comprehensive framework-specific instructions
     let frameworkPrompt = '';
     if (framework === 'NIST_CSF') {
+      // Use lightweight approach for NIST_CSF to avoid token limits
       frameworkPrompt = `\n\nFor NIST CSF v2.0, analyze ALL controls in the selected functions (IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER, GOVERN). Include detailed analysis of asset management, access control, awareness training, and all relevant controls.`;
     } else if (framework === 'NIST_800_53') {
       frameworkPrompt = `\n\nFor NIST SP 800-53, analyze ALL controls in the selected families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, SR). Provide comprehensive coverage of all controls within selected families.`;
