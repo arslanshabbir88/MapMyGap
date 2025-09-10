@@ -294,7 +294,7 @@ async function callVertexAI(prompt, checkCancellation = null) {
         }]
       }],
       generationConfig: {
-        maxOutputTokens: 32768,
+        maxOutputTokens: 65536, // Increased from 32768 to handle large documents
         temperature: 0.0,
         topP: 1.0,
         topK: 1
@@ -342,8 +342,15 @@ async function callVertexAI(prompt, checkCancellation = null) {
       if (result.candidates[0].content.parts && result.candidates[0].content.parts[0]) {
         return result.candidates[0].content.parts[0].text;
       } else {
-        console.error('❌ Missing parts in response:', result.candidates[0].content);
-        throw new Error('Unexpected response format: missing parts array');
+        // Check if response was truncated due to token limit
+        const finishReason = result.candidates[0].finishReason;
+        if (finishReason === 'MAX_TOKENS') {
+          console.error('❌ Response truncated due to token limit. Consider using category-specific analysis for large documents.');
+          throw new Error('Analysis too complex for current token limit. Please try analyzing specific categories instead of comprehensive analysis.');
+        } else {
+          console.error('❌ Missing parts in response:', result.candidates[0].content);
+          throw new Error('Unexpected response format: missing parts array');
+        }
       }
     } else {
       console.error('❌ Unexpected response format:', result);
