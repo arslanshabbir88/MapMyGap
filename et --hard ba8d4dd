@@ -1,0 +1,10 @@
+[33m4d095d5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add tab switching warning and improve error messaging
+[33mb930310[m Redeploy tab switching fix
+[33m125d5c4[m Remove tab switching cancellation to improve UX
+[33mba8d4dd[m Fix NIST_CSF token limit issue: revert to lightweight approach for comprehensive analysis
+[33m585f46f[m Fix MAX_TOKENS error: increase token limit to 65536 and add better error handling for truncated responses
+[33mff7fabc[m Add comprehensive SOC 1 Type II framework implementation
+[33mc09cf58[m Fix ES module compatibility for frameworks-data.js
+[33meb1a5bc[m Fix SOC 2 category mapping for abbreviated codes
+[33me9a00cf[m Fix SOC 2 framework data loading in Vercel
+[33mb42b3b8[m Fix SOC 2 Type II framework implementation
