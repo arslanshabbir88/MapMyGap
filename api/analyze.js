@@ -498,6 +498,21 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         const { allFrameworks } = await import('./frameworks-data.js');
         frameworkData = allFrameworks.SOC_1;
         console.log('✅ Successfully loaded SOC 1 framework data');
+      } else if (framework === 'NYDFS_500') {
+        // Import NYDFS Part 500 framework data from frameworks-data.js
+        const { allFrameworks } = await import('./frameworks-data.js');
+        frameworkData = allFrameworks.NYDFS_500;
+        console.log('✅ Successfully loaded NYDFS Part 500 framework data');
+      } else if (framework === 'PCI_DSS') {
+        // Import PCI DSS framework data from frameworks-data.js
+        const { allFrameworks } = await import('./frameworks-data.js');
+        frameworkData = allFrameworks.PCI_DSS;
+        console.log('✅ Successfully loaded PCI DSS framework data');
+      } else if (framework === 'ISO_27001') {
+        // Import ISO 27001 framework data from frameworks-data.js
+        const { allFrameworks } = await import('./frameworks-data.js');
+        frameworkData = allFrameworks.ISO_27001;
+        console.log('✅ Successfully loaded ISO 27001 framework data');
       }
       // Add other frameworks as needed
     } catch (importError) {
@@ -656,10 +671,151 @@ CRITICAL REQUIREMENTS:
       } else {
         frameworkPrompt = `\n\nFor SOC 1 Type II, analyze ALL COSO framework components (Control Environment, Risk Assessment, Control Activities, Information and Communication, Monitoring) in the selected areas.`;
       }
+    } else if (framework === 'NYDFS_500') {
+      if (frameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for NYDFS 500:', selectedCategories);
+          console.log('🔍 Available NYDFS 500 categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category codes to framework category names
+          const categoryMapping = {
+            '500.02': 'Cybersecurity Program (500.02)',
+            '500.03': 'Cybersecurity Policy (500.03)',
+            '500.04': 'Chief Information Security Officer (500.04)',
+            '500.05': 'Penetration Testing and Vulnerability Assessments (500.05)',
+            '500.06': 'Audit Trail (500.06)',
+            '500.07': 'Access Privileges (500.07)',
+            '500.08': 'Application Security (500.08)',
+            '500.09': 'Risk Assessment (500.09)',
+            '500.10': 'Cybersecurity Personnel and Intelligence (500.10)',
+            '500.11': 'Third-Party Service Provider Security Policy (500.11)',
+            '500.12': 'Multi-Factor Authentication (500.12)',
+            '500.13': 'Limitations on Data Retention (500.13)',
+            '500.14': 'Training and Monitoring (500.14)',
+            '500.15': 'Encryption of Nonpublic Information (500.15)',
+            '500.16': 'Incident Response Plan (500.16)',
+            '500.17': 'Notices to Superintendent (500.17)',
+            '500.18': 'Confidentiality (500.18)',
+            '500.19': 'Exemptions (500.19)'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for NYDFS 500:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of NYDFS 500 categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor NYDFS Part 500, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        frameworkPrompt = `\n\nFor NYDFS Part 500, analyze ALL cybersecurity requirements in the selected areas. Provide comprehensive coverage of New York State cybersecurity regulations.`;
+      }
     } else if (framework === 'PCI_DSS') {
-      frameworkPrompt = `\n\nFor PCI DSS v4.0, analyze ALL requirements in the selected areas. Include comprehensive coverage of security controls, access management, and compliance requirements.`;
+      if (frameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for PCI DSS:', selectedCategories);
+          console.log('🔍 Available PCI DSS categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category codes to framework category names
+          const categoryMapping = {
+            'PCI_1': 'Build and Maintain a Secure Network and Systems',
+            'PCI_2': 'Protect Cardholder Data',
+            'PCI_3': 'Maintain a Vulnerability Management Program',
+            'PCI_4': 'Implement Strong Access Control Measures',
+            'PCI_5': 'Regularly Monitor and Test Networks',
+            'PCI_6': 'Maintain an Information Security Policy'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for PCI DSS:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of PCI DSS categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor PCI DSS v4.0, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        frameworkPrompt = `\n\nFor PCI DSS v4.0, analyze ALL requirements in the selected areas. Include comprehensive coverage of security controls, access management, and compliance requirements.`;
+      }
     } else if (framework === 'ISO_27001') {
-      frameworkPrompt = `\n\nFor ISO 27001:2022, analyze ALL controls in the selected categories. Provide comprehensive coverage of information security management system controls.`;
+      if (frameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for ISO 27001:', selectedCategories);
+          console.log('🔍 Available ISO 27001 categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category codes to framework category names
+          const categoryMapping = {
+            'A.5': 'Organizational Controls',
+            'A.6': 'People Controls',
+            'A.7': 'Physical and Environmental Security',
+            'A.8': 'Technology Controls',
+            'A.9': 'Access Control',
+            'A.10': 'Cryptography',
+            'A.11': 'Operations Security',
+            'A.12': 'Communications Security',
+            'A.13': 'System Acquisition and Development',
+            'A.14': 'Supplier Relationships',
+            'A.15': 'Information Security Incident Management',
+            'A.16': 'Information Security Aspects of Business Continuity',
+            'A.17': 'Compliance'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for ISO 27001:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of ISO 27001 categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor ISO 27001:2022, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        frameworkPrompt = `\n\nFor ISO 27001:2022, analyze ALL controls in the selected categories. Provide comprehensive coverage of information security management system controls.`;
+      }
     }
 
                 // Create the prompt for the AI

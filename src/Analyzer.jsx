@@ -1605,6 +1605,12 @@ function Analyzer() {
                          setSelectedCategories(['AC']); // Default to first control family
                        } else if (e.target.value === 'NIST_CSF') {
                          setSelectedCategories(['DE']); // Default to first CSF function
+                       } else if (e.target.value === 'NYDFS_500') {
+                         setSelectedCategories(['500.02']); // Default to first NYDFS category
+                       } else if (e.target.value === 'PCI_DSS') {
+                         setSelectedCategories(['PCI_1']); // Default to first PCI DSS requirement
+                       } else if (e.target.value === 'ISO_27001') {
+                         setSelectedCategories(['A.5']); // Default to first ISO 27001 category
                        } else {
                          setSelectedCategories([]);
                        }
@@ -2147,6 +2153,199 @@ function Analyzer() {
                      </svg>
                      <span>Please select at least one trust service criteria to analyze</span>
                    </div>
+                 </div>
+               )}
+
+               {/* NYDFS Part 500 Category Selection */}
+               {selectedFramework === 'NYDFS_500' && (
+                 <div className="mb-6">
+                   <div className="mb-3">
+                     <label className="block text-sm font-medium text-slate-300">
+                       NYDFS Part 500 Category to Analyze
+                     </label>
+                   </div>
+                   
+                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                     <div className="flex items-center space-x-2 text-sm text-blue-300">
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                       </svg>
+                       <span>Select one NYDFS Part 500 category to analyze (prevents token limit issues)</span>
+                     </div>
+                   </div>
+                   
+                   <div className="space-y-2">
+                     {[
+                       { code: '500.02', name: 'Cybersecurity Program', description: 'Establish and maintain a cybersecurity program' },
+                       { code: '500.03', name: 'Cybersecurity Policy', description: 'Implement written cybersecurity policy' },
+                       { code: '500.04', name: 'Chief Information Security Officer', description: 'Designate qualified CISO' },
+                       { code: '500.05', name: 'Penetration Testing', description: 'Conduct periodic penetration testing and vulnerability assessments' },
+                       { code: '500.06', name: 'Audit Trail', description: 'Maintain audit trail of user access and administrative actions' },
+                       { code: '500.07', name: 'Access Privileges', description: 'Limit user access privileges and periodically review access' },
+                       { code: '500.08', name: 'Application Security', description: 'Develop, maintain, and test application security procedures' },
+                       { code: '500.09', name: 'Risk Assessment', description: 'Conduct periodic risk assessments' },
+                       { code: '500.10', name: 'Cybersecurity Personnel', description: 'Employ qualified cybersecurity personnel and utilize intelligence' },
+                       { code: '500.11', name: 'Third-Party Security', description: 'Implement policies for third-party service provider security' },
+                       { code: '500.12', name: 'Multi-Factor Authentication', description: 'Implement multi-factor authentication for system access' },
+                       { code: '500.13', name: 'Data Retention', description: 'Implement data retention policies and procedures' },
+                       { code: '500.14', name: 'Training and Monitoring', description: 'Provide cybersecurity training and implement monitoring' },
+                       { code: '500.15', name: 'Encryption', description: 'Implement encryption for nonpublic information' },
+                       { code: '500.16', name: 'Incident Response Plan', description: 'Establish incident response plan for cybersecurity events' },
+                       { code: '500.17', name: 'Notices to Superintendent', description: 'Notify NYDFS of cybersecurity events' },
+                       { code: '500.18', name: 'Confidentiality', description: 'Maintain confidentiality of information provided to NYDFS' },
+                       { code: '500.19', name: 'Exemptions', description: 'Understand and document any applicable exemptions' }
+                     ].map(category => (
+                       <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                         <input
+                           type="radio"
+                           name="nydfs-category"
+                           value={category.code}
+                           checked={selectedCategories.includes(category.code)}
+                           onChange={(e) => {
+                             setSelectedCategories([e.target.value]);
+                           }}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                         />
+                         <div className="flex-1 min-w-0">
+                           <div className="flex items-center space-x-2">
+                             <span className="font-medium text-slate-200">{category.code}</span>
+                             <span className="text-slate-300">-</span>
+                             <span className="text-slate-300">{category.name}</span>
+                           </div>
+                           <div className="text-slate-400 text-xs mt-1">{category.description}</div>
+                         </div>
+                       </label>
+                     ))}
+                   </div>
+                   
+                   {selectedCategories.filter(cat => cat.startsWith('500.')).length === 0 && (
+                     <div className="mt-2 text-sm text-red-400">
+                       Please select one NYDFS Part 500 category to analyze.
+                     </div>
+                   )}
+                 </div>
+               )}
+
+               {/* PCI DSS Requirement Selection */}
+               {selectedFramework === 'PCI_DSS' && (
+                 <div className="mb-6">
+                   <div className="mb-3">
+                     <label className="block text-sm font-medium text-slate-300">
+                       PCI DSS Requirement to Analyze
+                     </label>
+                   </div>
+                   
+                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                     <div className="flex items-center space-x-2 text-sm text-blue-300">
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                       </svg>
+                       <span>Select one PCI DSS requirement to analyze (prevents token limit issues)</span>
+                     </div>
+                   </div>
+                   
+                   <div className="space-y-2">
+                     {[
+                       { code: 'PCI_1', name: 'Build and Maintain Secure Networks', description: 'Establish and maintain secure network infrastructure' },
+                       { code: 'PCI_2', name: 'Protect Cardholder Data', description: 'Protect stored cardholder data and secure transmission' },
+                       { code: 'PCI_3', name: 'Maintain Vulnerability Management', description: 'Regularly update and patch systems' },
+                       { code: 'PCI_4', name: 'Implement Strong Access Control', description: 'Restrict access to cardholder data by business need-to-know' },
+                       { code: 'PCI_5', name: 'Regularly Monitor Networks', description: 'Track and monitor all access to network resources' },
+                       { code: 'PCI_6', name: 'Maintain Information Security Policy', description: 'Maintain a policy that addresses information security' }
+                     ].map(requirement => (
+                       <label key={requirement.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                         <input
+                           type="radio"
+                           name="pci-requirement"
+                           value={requirement.code}
+                           checked={selectedCategories.includes(requirement.code)}
+                           onChange={(e) => {
+                             setSelectedCategories([e.target.value]);
+                           }}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                         />
+                         <div className="flex-1 min-w-0">
+                           <div className="flex items-center space-x-2">
+                             <span className="font-medium text-slate-200">{requirement.code}</span>
+                             <span className="text-slate-300">-</span>
+                             <span className="text-slate-300">{requirement.name}</span>
+                           </div>
+                           <div className="text-slate-400 text-xs mt-1">{requirement.description}</div>
+                         </div>
+                       </label>
+                     ))}
+                   </div>
+                   
+                   {selectedCategories.filter(cat => cat.startsWith('PCI_')).length === 0 && (
+                     <div className="mt-2 text-sm text-red-400">
+                       Please select one PCI DSS requirement to analyze.
+                     </div>
+                   )}
+                 </div>
+               )}
+
+               {/* ISO 27001 Category Selection */}
+               {selectedFramework === 'ISO_27001' && (
+                 <div className="mb-6">
+                   <div className="mb-3">
+                     <label className="block text-sm font-medium text-slate-300">
+                       ISO 27001 Category to Analyze
+                     </label>
+                   </div>
+                   
+                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                     <div className="flex items-center space-x-2 text-sm text-blue-300">
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                       </svg>
+                       <span>Select one ISO 27001 category to analyze (prevents token limit issues)</span>
+                     </div>
+                   </div>
+                   
+                   <div className="space-y-2">
+                     {[
+                       { code: 'A.5', name: 'Organizational Controls', description: 'Controls that set the organizational context for information security' },
+                       { code: 'A.6', name: 'People Controls', description: 'Controls that address human resource security' },
+                       { code: 'A.7', name: 'Physical and Environmental Security', description: 'Controls for physical and environmental security' },
+                       { code: 'A.8', name: 'Technology Controls', description: 'Controls for technology and system security' },
+                       { code: 'A.9', name: 'Access Control', description: 'Controls for managing access to information and systems' },
+                       { code: 'A.10', name: 'Cryptography', description: 'Controls for cryptographic protection of information' },
+                       { code: 'A.11', name: 'Operations Security', description: 'Controls for secure operations and system management' },
+                       { code: 'A.12', name: 'Communications Security', description: 'Controls for secure communications and network security' },
+                       { code: 'A.13', name: 'System Acquisition and Development', description: 'Controls for secure system development and acquisition' },
+                       { code: 'A.14', name: 'Supplier Relationships', description: 'Controls for managing supplier security' },
+                       { code: 'A.15', name: 'Information Security Incident Management', description: 'Controls for incident management and response' },
+                       { code: 'A.16', name: 'Information Security Aspects of Business Continuity', description: 'Controls for business continuity and disaster recovery' },
+                       { code: 'A.17', name: 'Compliance', description: 'Controls for ensuring compliance with legal and regulatory requirements' }
+                     ].map(category => (
+                       <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                         <input
+                           type="radio"
+                           name="iso-category"
+                           value={category.code}
+                           checked={selectedCategories.includes(category.code)}
+                           onChange={(e) => {
+                             setSelectedCategories([e.target.value]);
+                           }}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                         />
+                         <div className="flex-1 min-w-0">
+                           <div className="flex items-center space-x-2">
+                             <span className="font-medium text-slate-200">{category.code}</span>
+                             <span className="text-slate-300">-</span>
+                             <span className="text-slate-300">{category.name}</span>
+                           </div>
+                           <div className="text-slate-400 text-xs mt-1">{category.description}</div>
+                         </div>
+                       </label>
+                     ))}
+                   </div>
+                   
+                   {selectedCategories.filter(cat => cat.startsWith('A.')).length === 0 && (
+                     <div className="mt-2 text-sm text-red-400">
+                       Please select one ISO 27001 category to analyze.
+                     </div>
+                   )}
                  </div>
                )}
                
