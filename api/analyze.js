@@ -726,9 +726,17 @@ CRITICAL REQUIREMENTS:
         frameworkPrompt = `\n\nFor NYDFS Part 500, analyze ALL cybersecurity requirements in the selected areas. Provide comprehensive coverage of New York State cybersecurity regulations.`;
       }
     } else if (framework === 'PCI_DSS') {
+      console.log('🔍 DEBUG - Entering PCI_DSS section');
+      console.log('🔍 DEBUG - frameworkData exists:', !!frameworkData);
+      console.log('🔍 DEBUG - selectedCategories at PCI_DSS:', selectedCategories);
+      console.log('🔍 DEBUG - selectedCategories length at PCI_DSS:', selectedCategories?.length);
+      
       if (frameworkData) {
         // Filter framework data to only include selected categories
         let filteredCategories = frameworkData.categories;
+        console.log('🔍 DEBUG - About to check selectedCategories condition');
+        console.log('🔍 DEBUG - selectedCategories && selectedCategories.length > 0:', selectedCategories && selectedCategories.length > 0);
+        
         if (selectedCategories && selectedCategories.length > 0) {
           console.log('🔍 Original selectedCategories for PCI DSS:', selectedCategories);
           console.log('🔍 Available PCI DSS categories:', frameworkData.categories.map(c => c.name));
@@ -944,6 +952,12 @@ export default async function handler(req, res) {
     
     // Parse request body
     const { fileContent, framework, selectedCategories, userId } = req.body;
+    
+    // Debug logging for selectedCategories
+    console.log('🔍 DEBUG - selectedCategories received:', selectedCategories);
+    console.log('🔍 DEBUG - selectedCategories type:', typeof selectedCategories);
+    console.log('🔍 DEBUG - selectedCategories length:', selectedCategories?.length);
+    console.log('🔍 DEBUG - selectedCategories is array:', Array.isArray(selectedCategories));
     
     if (!fileContent || !framework) {
       return res.status(400).json({ error: 'Missing required fields' });
