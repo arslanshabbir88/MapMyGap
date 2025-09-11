@@ -1099,7 +1099,8 @@ function Analyzer() {
         console.log('File content preview (first 500 chars):', fileContent.substring(0, 500));
         console.log('Selected framework:', selectedFramework);
         console.log('Selected categories:', selectedCategories);
-        console.log('Analysis mode: Comprehensive');
+        const analysisMode = selectedCategories && selectedCategories.length > 0 ? 'Category-specific' : 'Comprehensive';
+        console.log('Analysis mode:', analysisMode);
         
         const requestBody = { 
           fileContent, 
@@ -2246,12 +2247,12 @@ function Analyzer() {
                    
                    <div className="space-y-2">
                      {[
-                       { code: 'PCI_1', name: 'Build and Maintain Secure Networks', description: 'Establish and maintain secure network infrastructure' },
-                       { code: 'PCI_2', name: 'Protect Cardholder Data', description: 'Protect stored cardholder data and secure transmission' },
-                       { code: 'PCI_3', name: 'Maintain Vulnerability Management', description: 'Regularly update and patch systems' },
-                       { code: 'PCI_4', name: 'Implement Strong Access Control', description: 'Restrict access to cardholder data by business need-to-know' },
-                       { code: 'PCI_5', name: 'Regularly Monitor Networks', description: 'Track and monitor all access to network resources' },
-                       { code: 'PCI_6', name: 'Maintain Information Security Policy', description: 'Maintain a policy that addresses information security' }
+                       { code: 'PCI_1', displayCode: 'PCI 1', name: 'Build and Maintain Secure Networks', description: 'Establish and maintain secure network infrastructure' },
+                       { code: 'PCI_2', displayCode: 'PCI 2', name: 'Protect Cardholder Data', description: 'Protect stored cardholder data and secure transmission' },
+                       { code: 'PCI_3', displayCode: 'PCI 3', name: 'Maintain Vulnerability Management', description: 'Regularly update and patch systems' },
+                       { code: 'PCI_4', displayCode: 'PCI 4', name: 'Implement Strong Access Control', description: 'Restrict access to cardholder data by business need-to-know' },
+                       { code: 'PCI_5', displayCode: 'PCI 5', name: 'Regularly Monitor Networks', description: 'Track and monitor all access to network resources' },
+                       { code: 'PCI_6', displayCode: 'PCI 6', name: 'Maintain Information Security Policy', description: 'Maintain a policy that addresses information security' }
                      ].map(requirement => (
                        <label key={requirement.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                          <input
@@ -2266,7 +2267,7 @@ function Analyzer() {
                          />
                          <div className="flex-1 min-w-0">
                            <div className="flex items-center space-x-2">
-                             <span className="font-medium text-slate-200">{requirement.code}</span>
+                             <span className="font-medium text-slate-200">{requirement.displayCode}</span>
                              <span className="text-slate-300">-</span>
                              <span className="text-slate-300">{requirement.name}</span>
                            </div>
