@@ -2082,24 +2082,6 @@ function Analyzer() {
 
 
 
-              <button
-                onClick={handleAnalyze}
-                disabled={isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0}
-                className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
-                  isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                }`}
-              >
-                {isAnalyzing ? (
-                  <div className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Analyzing...</span>
-                  </div>
-                ) : (
-                  'Analyze Document'
-                )}
-              </button>
               
               {/* Simple Analysis Warning */}
               {isAnalyzing && (
