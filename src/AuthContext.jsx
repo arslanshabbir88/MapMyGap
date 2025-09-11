@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo: `https://auth.mapmygap.com/auth/v1/callback`
         }
       });
       if (error) throw error;
@@ -137,6 +137,7 @@ export const AuthProvider = ({ children }) => {
       return;
     }
 
+    console.log('🔍 Checking subscription status for user:', user.id);
     setSubscriptionLoading(true);
     try {
       // Check if user has an active subscription
@@ -152,8 +153,11 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('🔍 Subscription data received:', data);
         setSubscription(data.subscription);
+        console.log('🔍 Subscription state set to:', data.subscription);
       } else {
+        console.log('❌ Subscription check failed:', response.status, response.statusText);
         setSubscription(null);
       }
     } catch (error) {
