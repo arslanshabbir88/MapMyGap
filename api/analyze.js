@@ -499,18 +499,18 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         frameworkData = allFrameworks.SOC_1;
         console.log('✅ Successfully loaded SOC 1 framework data');
       } else if (framework === 'NYDFS_500') {
-        // Import NYDFS Part 500 framework data from frameworks-data.js
-        const { allFrameworks } = await import('./frameworks-data.js');
+        // Import NYDFS Part 500 framework data from compliance-frameworks.js
+        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.NYDFS_500;
         console.log('✅ Successfully loaded NYDFS Part 500 framework data');
       } else if (framework === 'PCI_DSS') {
-        // Import PCI DSS framework data from frameworks-data.js
-        const { allFrameworks } = await import('./frameworks-data.js');
+        // Import PCI DSS framework data from compliance-frameworks.js
+        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.PCI_DSS;
         console.log('✅ Successfully loaded PCI DSS framework data');
       } else if (framework === 'ISO_27001') {
-        // Import ISO 27001 framework data from frameworks-data.js
-        const { allFrameworks } = await import('./frameworks-data.js');
+        // Import ISO 27001 framework data from compliance-frameworks.js
+        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.ISO_27001;
         console.log('✅ Successfully loaded ISO 27001 framework data');
       }

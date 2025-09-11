@@ -2285,37 +2285,8 @@ function Analyzer() {
                  </div>
                )}
 
-               {/* Analyze Document Button for PCI DSS */}
-               {selectedFramework === 'PCI_DSS' && (
-                 <div className="mb-6">
-                   <button
-                     onClick={handleAnalyze}
-                     disabled={isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0}
-                     className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-200 ${
-                       isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0
-                         ? 'bg-gray-400 cursor-not-allowed'
-                         : 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
-                     }`}
-                   >
-                     {isAnalyzing ? (
-                       <div className="flex items-center justify-center space-x-2">
-                         <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                         <span>Analyzing...</span>
-                       </div>
-                     ) : (
-                       <div className="flex items-center justify-center space-x-2">
-                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                         </svg>
-                         <span>Analyze Document</span>
-                       </div>
-                     )}
-                   </button>
-                 </div>
-               )}
-
-               {/* Analyze Document Button for other frameworks */}
-               {selectedFramework !== 'PCI_DSS' && (
+               {/* Analyze Document Button */}
+               <div className="mb-6">
                  <button
                    onClick={handleAnalyze}
                    disabled={isAnalyzing || !uploadedFile || !selectedFramework || selectedCategories.length === 0}
@@ -2339,7 +2310,7 @@ function Analyzer() {
                      </div>
                    )}
                  </button>
-               )}
+               </div>
 
                {/* ISO 27001 Category Selection */}
                {selectedFramework === 'ISO_27001' && (
