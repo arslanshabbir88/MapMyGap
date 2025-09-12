@@ -6,311 +6,508 @@ export const pciDSS = {
   description: "Payment Card Industry Data Security Standard",
   categories: [
     {
-      name: "Build and Maintain a Secure Network and Systems",
-      description: "Establish and maintain a secure network infrastructure",
+      name: "Requirement 1: Install and Maintain Network Security Controls",
+      description: "Processes and mechanisms for network security controls are defined and understood",
       results: [
         {
-          id: "PCI DSS 1.1.1",
-          control: "Implement and manage network security controls (NSCs) such as firewalls to regulate traffic between trusted and untrusted networks",
+          id: "PCI DSS 1.1",
+          control: "Processes and mechanisms for network security controls are defined and understood",
           status: "gap",
-          details: "Network security controls not implemented",
-          recommendation: "Deploy firewalls and network security controls to segment trusted and untrusted networks"
+          details: "Network security control processes not defined",
+          recommendation: "Document and implement comprehensive network security control processes and mechanisms"
         },
         {
-          id: "PCI DSS 1.1.2",
-          control: "Ensure that only authorized traffic is permitted between trusted and untrusted networks",
+          id: "PCI DSS 1.2",
+          control: "Network security controls are configured and maintained",
           status: "gap",
-          details: "Traffic filtering rules not established",
-          recommendation: "Implement strict traffic filtering rules to allow only authorized communications"
+          details: "Network security controls not properly configured",
+          recommendation: "Implement and maintain proper configuration of network security controls including firewalls and routers"
         },
         {
-          id: "PCI DSS 1.2.1",
-          control: "Establish and maintain secure configurations for all system components",
+          id: "PCI DSS 1.3",
+          control: "Network access to and from the cardholder data environment is restricted",
           status: "gap",
-          details: "Secure configuration baseline not established",
-          recommendation: "Develop and maintain secure configuration baselines for all system components"
+          details: "Network access restrictions not implemented",
+          recommendation: "Implement strict network access controls to limit access to cardholder data environment"
         },
         {
-          id: "PCI DSS 1.2.2",
-          control: "Remove or disable all unnecessary and insecure services and protocols",
+          id: "PCI DSS 1.4",
+          control: "Network connections between trusted and untrusted networks are controlled",
           status: "gap",
-          details: "Unnecessary services and protocols not removed",
-          recommendation: "Audit and remove all unnecessary services, protocols, and functions from system components"
+          details: "Trusted/untrusted network controls not implemented",
+          recommendation: "Implement controls to manage and monitor connections between trusted and untrusted networks"
         },
         {
-          id: "PCI DSS 1.2.3",
-          control: "Implement security parameters to prevent misuse",
+          id: "PCI DSS 1.5",
+          control: "Network security controls are installed and maintained between wireless and wired networks",
           status: "gap",
-          details: "Security parameters not configured",
-          recommendation: "Configure security parameters to prevent misuse and unauthorized access"
+          details: "Wireless/wired network segmentation not implemented",
+          recommendation: "Install and maintain network security controls to separate wireless and wired networks"
+        },
+        {
+          id: "PCI DSS 1.6",
+          control: "Network security controls are implemented to protect systems from unauthorized access",
+          status: "gap",
+          details: "Unauthorized access protection not implemented",
+          recommendation: "Deploy network security controls to prevent unauthorized access to systems"
         }
       ]
     },
     {
-      name: "Protect Account Data",
-      description: "Protect stored account data and secure transmission of cardholder data",
+      name: "Requirement 2: Apply Secure Configurations to All System Components",
+      description: "Processes and mechanisms for secure configurations are defined and understood",
       results: [
         {
-          id: "PCI DSS 3.1.1",
-          control: "Keep cardholder data storage to a minimum by implementing data retention and disposal policies, procedures and processes",
+          id: "PCI DSS 2.1",
+          control: "Processes and mechanisms for secure configurations are defined and understood",
           status: "gap",
-          details: "Data retention policies not established",
-          recommendation: "Develop data retention and disposal policies aligned with business needs and legal requirements"
+          details: "Secure configuration processes not defined",
+          recommendation: "Document and implement comprehensive secure configuration processes and mechanisms"
         },
         {
-          id: "PCI DSS 3.2.1",
-          control: "Do not store sensitive authentication data after authorization (even if encrypted)",
+          id: "PCI DSS 2.2",
+          control: "System components are configured securely",
+          status: "gap",
+          details: "System components not securely configured",
+          recommendation: "Implement secure configuration baselines for all system components"
+        },
+        {
+          id: "PCI DSS 2.3",
+          control: "Wireless environments are configured securely",
+          status: "gap",
+          details: "Wireless security configuration not implemented",
+          recommendation: "Configure wireless environments with strong security settings and encryption"
+        },
+        {
+          id: "PCI DSS 2.4",
+          control: "Configuration standards are applied to new systems before they are deployed",
+          status: "gap",
+          details: "Pre-deployment configuration standards not applied",
+          recommendation: "Implement configuration standards that must be applied before system deployment"
+        },
+        {
+          id: "PCI DSS 2.5",
+          control: "Security features that are not needed are disabled",
+          status: "gap",
+          details: "Unnecessary security features not disabled",
+          recommendation: "Disable or remove unnecessary security features and services"
+        }
+      ]
+    },
+    {
+      name: "Requirement 3: Protect Stored Account Data",
+      description: "Processes and mechanisms for protecting stored account data are defined and understood",
+      results: [
+        {
+          id: "PCI DSS 3.1",
+          control: "Processes and mechanisms for protecting stored account data are defined and understood",
+          status: "gap",
+          details: "Account data protection processes not defined",
+          recommendation: "Document and implement comprehensive processes for protecting stored account data"
+        },
+        {
+          id: "PCI DSS 3.2",
+          control: "Storage of account data is kept to a minimum",
+          status: "gap",
+          details: "Account data storage not minimized",
+          recommendation: "Implement data retention policies to minimize storage of account data"
+        },
+        {
+          id: "PCI DSS 3.3",
+          control: "Sensitive authentication data (SAD) is not stored after authorization",
           status: "gap",
           details: "Sensitive authentication data storage not controlled",
           recommendation: "Implement procedures to prevent storage of sensitive authentication data post-authorization"
         },
         {
-          id: "PCI DSS 3.3.1",
-          control: "Mask PAN when displayed (the first six and last four digits are the maximum number of digits to be displayed)",
+          id: "PCI DSS 3.4",
+          control: "Access to stored account data is restricted",
+          status: "gap",
+          details: "Access to stored account data not restricted",
+          recommendation: "Implement access controls to restrict access to stored account data"
+        },
+        {
+          id: "PCI DSS 3.5",
+          control: "Primary account number (PAN) is masked when displayed",
           status: "gap",
           details: "PAN masking not implemented",
-          recommendation: "Implement PAN masking in all displays and logs"
+          recommendation: "Implement PAN masking in all displays and logs (first 6 and last 4 digits maximum)"
         },
         {
-          id: "PCI DSS 3.4.1",
-          control: "Render PAN unreadable anywhere it is stored (including on portable digital media, backup media, and in logs)",
+          id: "PCI DSS 3.6",
+          control: "Cryptographic keys used for encryption of account data are secured",
           status: "gap",
-          details: "PAN encryption not implemented",
-          recommendation: "Implement strong encryption for PAN storage using industry-standard algorithms"
+          details: "Cryptographic key security not implemented",
+          recommendation: "Implement secure key management for encryption keys used to protect account data"
         },
         {
-          id: "PCI DSS 4.1.1",
-          control: "Use strong cryptography and security protocols to safeguard sensitive cardholder data during transmission over open, public networks",
+          id: "PCI DSS 3.7",
+          control: "Cryptographic key management policies and procedures are implemented",
           status: "gap",
-          details: "Strong cryptography not implemented for data transmission",
-          recommendation: "Implement strong cryptographic protocols (TLS 1.2 or higher) for all data transmission over public networks"
-        },
-        {
-          id: "PCI DSS 4.2.1",
-          control: "Never send unprotected PANs by end-user messaging technologies",
-          status: "gap",
-          details: "PAN protection in messaging not implemented",
-          recommendation: "Implement secure messaging protocols or encryption for any PAN transmission via messaging technologies"
+          details: "Key management policies not implemented",
+          recommendation: "Develop and implement comprehensive cryptographic key management policies and procedures"
         }
       ]
     },
     {
-      name: "Maintain a Vulnerability Management Program",
-      description: "Maintain security systems and develop secure applications",
+      name: "Requirement 4: Protect Cardholder Data with Strong Cryptography During Transmission",
+      description: "Processes and mechanisms for protecting transmissions are defined and understood",
       results: [
         {
-          id: "PCI DSS 5.1.1",
-          control: "Deploy anti-malware software on all systems commonly affected by malicious software",
+          id: "PCI DSS 4.1",
+          control: "Processes and mechanisms for protecting transmissions are defined and understood",
           status: "gap",
-          details: "Anti-malware software not deployed",
-          recommendation: "Deploy and maintain anti-malware solutions on all systems commonly affected by malicious software"
+          details: "Transmission protection processes not defined",
+          recommendation: "Document and implement comprehensive processes for protecting cardholder data transmissions"
         },
         {
-          id: "PCI DSS 5.1.2",
-          control: "Ensure that all anti-malware mechanisms are kept current, perform periodic scans, and generate audit logs",
+          id: "PCI DSS 4.2",
+          control: "Strong cryptography and security protocols protect cardholder data during transmission",
+          status: "gap",
+          details: "Strong cryptography not implemented for transmissions",
+          recommendation: "Implement strong cryptographic protocols (TLS 1.2 or higher) for all cardholder data transmissions"
+        },
+        {
+          id: "PCI DSS 4.3",
+          control: "PAN is only sent via secure messaging technologies",
+          status: "gap",
+          details: "Secure messaging for PAN not implemented",
+          recommendation: "Implement secure messaging technologies for any PAN transmission"
+        }
+      ]
+    },
+    {
+      name: "Requirement 5: Protect All Systems and Networks from Malicious Software",
+      description: "Processes and mechanisms for anti-malware protection are defined and understood",
+      results: [
+        {
+          id: "PCI DSS 5.1",
+          control: "Processes and mechanisms for anti-malware protection are defined and understood",
+          status: "gap",
+          details: "Anti-malware protection processes not defined",
+          recommendation: "Document and implement comprehensive anti-malware protection processes"
+        },
+        {
+          id: "PCI DSS 5.2",
+          control: "Anti-malware mechanisms and processes are implemented",
+          status: "gap",
+          details: "Anti-malware mechanisms not implemented",
+          recommendation: "Deploy anti-malware solutions on all systems commonly affected by malicious software"
+        },
+        {
+          id: "PCI DSS 5.3",
+          control: "Anti-malware mechanisms are actively running, updated, and generating logs",
           status: "gap",
           details: "Anti-malware maintenance not established",
-          recommendation: "Implement automated anti-malware updates and regular scanning with audit logging"
-        },
-        {
-          id: "PCI DSS 6.1.1",
-          control: "Establish a process to identify security vulnerabilities, using reputable outside sources for security vulnerability information",
-          status: "gap",
-          details: "Vulnerability identification process not established",
-          recommendation: "Implement formal process to identify security vulnerabilities using reputable sources"
-        },
-        {
-          id: "PCI DSS 6.1.2",
-          control: "Ensure that all system components and software are protected from known vulnerabilities by having the latest vendor-supplied security patches installed",
-          status: "gap",
-          details: "Patch management process not established",
-          recommendation: "Implement automated patch management system with regular security updates"
-        },
-        {
-          id: "PCI DSS 6.2.1",
-          control: "Establish a process to identify and assign a risk ranking to newly discovered security vulnerabilities",
-          status: "gap",
-          details: "Vulnerability risk assessment process not implemented",
-          recommendation: "Create vulnerability management program with risk ranking methodology"
+          recommendation: "Ensure anti-malware mechanisms are running, updated, and generating audit logs"
         }
       ]
     },
     {
-      name: "Implement Strong Access Control Measures",
-      description: "Restrict access to cardholder data on a need-to-know basis",
+      name: "Requirement 6: Develop and Maintain Secure Systems and Software",
+      description: "Processes and mechanisms for developing and maintaining secure systems are defined and understood",
       results: [
         {
-          id: "PCI DSS 7.1.1",
-          control: "Define access needs for each role, including: system components and data resources that each role needs to access for their job function",
+          id: "PCI DSS 6.1",
+          control: "Processes and mechanisms for developing and maintaining secure systems are defined and understood",
           status: "gap",
-          details: "Role-based access control not defined",
-          recommendation: "Define access requirements for each job role and implement role-based access controls"
+          details: "Secure development processes not defined",
+          recommendation: "Document and implement comprehensive secure development and maintenance processes"
         },
         {
-          id: "PCI DSS 7.1.2",
-          control: "Assign access based on individual personnel's job classification and function",
+          id: "PCI DSS 6.2",
+          control: "Security vulnerabilities are identified and addressed",
           status: "gap",
-          details: "Access assignment process not established",
-          recommendation: "Implement formal access assignment process based on job functions"
+          details: "Vulnerability identification process not established",
+          recommendation: "Implement formal process to identify and address security vulnerabilities"
         },
         {
-          id: "PCI DSS 7.1.3",
-          control: "Document and maintain a list of service providers with access to cardholder data",
+          id: "PCI DSS 6.3",
+          control: "Custom software is securely developed",
           status: "gap",
-          details: "Service provider access not documented",
-          recommendation: "Maintain comprehensive list of service providers with access to cardholder data"
+          details: "Secure development practices not implemented",
+          recommendation: "Implement secure development practices for custom software"
         },
         {
-          id: "PCI DSS 8.1.1",
-          control: "Assign all users a unique ID before allowing them to access system components or cardholder data",
+          id: "PCI DSS 6.4",
+          control: "Public-facing web applications are protected against attacks",
           status: "gap",
-          details: "Unique user identification not implemented",
-          recommendation: "Implement unique user ID assignment system for all system access"
+          details: "Web application protection not implemented",
+          recommendation: "Implement protection mechanisms for public-facing web applications"
         },
         {
-          id: "PCI DSS 8.1.2",
-          control: "Control addition, deletion, and modification of user IDs, credentials, and other identifier objects",
+          id: "PCI DSS 6.5",
+          control: "Changes to systems are managed securely",
           status: "gap",
-          details: "User ID management controls not implemented",
-          recommendation: "Implement formal processes for user ID lifecycle management"
+          details: "Secure change management not implemented",
+          recommendation: "Implement secure change management processes for system modifications"
+        }
+      ]
+    },
+    {
+      name: "Requirement 7: Restrict Access to System Components and Cardholder Data",
+      description: "Processes and mechanisms for restricting access are defined and understood",
+      results: [
+        {
+          id: "PCI DSS 7.1",
+          control: "Processes and mechanisms for restricting access are defined and understood",
+          status: "gap",
+          details: "Access restriction processes not defined",
+          recommendation: "Document and implement comprehensive access restriction processes"
         },
         {
-          id: "PCI DSS 8.2.1",
-          control: "Use strong authentication methods for all access to the cardholder data environment",
+          id: "PCI DSS 7.2",
+          control: "Access to system components and data is based on least privilege and business need to know",
           status: "gap",
-          details: "Strong authentication not implemented",
-          recommendation: "Implement multi-factor authentication for all access to cardholder data environment"
+          details: "Least privilege access not implemented",
+          recommendation: "Implement least privilege access controls based on business need to know"
         },
         {
-          id: "PCI DSS 9.1.1",
-          control: "Use appropriate facility entry controls to limit and monitor physical access to systems in the cardholder data environment",
+          id: "PCI DSS 7.3",
+          control: "Access is assigned and managed per role-based access control (RBAC)",
           status: "gap",
-          details: "Physical access controls not implemented",
+          details: "Role-based access control not implemented",
+          recommendation: "Implement role-based access control system for managing user access"
+        }
+      ]
+    },
+    {
+      name: "Requirement 8: Identify Users and Authenticate Access to System Components",
+      description: "Processes and mechanisms for identifying users are defined and understood",
+      results: [
+        {
+          id: "PCI DSS 8.1",
+          control: "Processes and mechanisms for identifying users are defined and understood",
+          status: "gap",
+          details: "User identification processes not defined",
+          recommendation: "Document and implement comprehensive user identification processes"
+        },
+        {
+          id: "PCI DSS 8.2",
+          control: "User identification and authentication are implemented",
+          status: "gap",
+          details: "User identification and authentication not implemented",
+          recommendation: "Implement unique user identification and authentication mechanisms"
+        },
+        {
+          id: "PCI DSS 8.3",
+          control: "Strong authentication for access to the CDE is enforced",
+          status: "gap",
+          details: "Strong authentication not enforced for CDE access",
+          recommendation: "Enforce strong authentication for all access to cardholder data environment"
+        },
+        {
+          id: "PCI DSS 8.4",
+          control: "Multi-factor authentication (MFA) is implemented for all non-console administrative and remote access",
+          status: "gap",
+          details: "Multi-factor authentication not implemented",
+          recommendation: "Implement multi-factor authentication for all non-console administrative and remote access"
+        },
+        {
+          id: "PCI DSS 8.5",
+          control: "Passwords/passphrases meet strong complexity and security requirements",
+          status: "gap",
+          details: "Password complexity requirements not implemented",
+          recommendation: "Implement strong password/passphrase complexity and security requirements"
+        },
+        {
+          id: "PCI DSS 8.6",
+          control: "Application and system accounts are managed securely",
+          status: "gap",
+          details: "Application and system account management not implemented",
+          recommendation: "Implement secure management of application and system accounts"
+        }
+      ]
+    },
+    {
+      name: "Requirement 9: Restrict Physical Access to Cardholder Data",
+      description: "Processes and mechanisms for restricting physical access are defined and understood",
+      results: [
+        {
+          id: "PCI DSS 9.1",
+          control: "Processes and mechanisms for restricting physical access are defined and understood",
+          status: "gap",
+          details: "Physical access restriction processes not defined",
+          recommendation: "Document and implement comprehensive physical access restriction processes"
+        },
+        {
+          id: "PCI DSS 9.2",
+          control: "Physical security controls are implemented",
+          status: "gap",
+          details: "Physical security controls not implemented",
           recommendation: "Implement physical security controls including access cards, biometrics, and visitor management"
         },
         {
-          id: "PCI DSS 9.1.2",
-          control: "Monitor physical access to sensitive areas",
+          id: "PCI DSS 9.3",
+          control: "Access to sensitive areas is restricted and monitored",
           status: "gap",
-          details: "Physical access monitoring not implemented",
-          recommendation: "Implement video surveillance and access logging for sensitive areas"
+          details: "Sensitive area access controls not implemented",
+          recommendation: "Implement restricted access and monitoring for sensitive areas"
+        },
+        {
+          id: "PCI DSS 9.4",
+          control: "Physical access for personnel and visitors is controlled",
+          status: "gap",
+          details: "Personnel and visitor access controls not implemented",
+          recommendation: "Implement controlled physical access for personnel and visitors"
+        },
+        {
+          id: "PCI DSS 9.5",
+          control: "Media with cardholder data is protected",
+          status: "gap",
+          details: "Media protection not implemented",
+          recommendation: "Implement protection mechanisms for media containing cardholder data"
+        },
+        {
+          id: "PCI DSS 9.6",
+          control: "Media is securely destroyed when no longer needed",
+          status: "gap",
+          details: "Secure media destruction not implemented",
+          recommendation: "Implement secure destruction procedures for media no longer needed"
         }
       ]
     },
     {
-      name: "Regularly Monitor and Test Networks",
-      description: "Monitor all access to network resources and cardholder data",
+      name: "Requirement 10: Log and Monitor All Access to System Components and Cardholder Data",
+      description: "Processes and mechanisms for logging and monitoring are defined and understood",
       results: [
         {
-          id: "PCI DSS 10.1.1",
-          control: "Implement audit trails to link all access to system components to each individual user",
+          id: "PCI DSS 10.1",
+          control: "Processes and mechanisms for logging and monitoring are defined and understood",
           status: "gap",
-          details: "Audit trail implementation not complete",
-          recommendation: "Implement comprehensive audit logging for all system access"
+          details: "Logging and monitoring processes not defined",
+          recommendation: "Document and implement comprehensive logging and monitoring processes"
         },
         {
-          id: "PCI DSS 10.2.1",
-          control: "Implement automated audit trails for all system components to reconstruct the following events",
+          id: "PCI DSS 10.2",
+          control: "Audit logs capture required details for system events",
           status: "gap",
-          details: "Automated audit trails not implemented",
-          recommendation: "Deploy automated logging solutions for all critical system events"
+          details: "Audit logging not implemented",
+          recommendation: "Implement comprehensive audit logging for all system events"
         },
         {
-          id: "PCI DSS 10.2.2",
-          control: "Implement automated audit trails for all system components to reconstruct the following events: all individual user accesses to cardholder data",
+          id: "PCI DSS 10.3",
+          control: "Audit logs are protected from unauthorized modification",
           status: "gap",
-          details: "Cardholder data access logging not implemented",
-          recommendation: "Implement detailed logging for all cardholder data access"
+          details: "Audit log protection not implemented",
+          recommendation: "Implement protection mechanisms to prevent unauthorized modification of audit logs"
         },
         {
-          id: "PCI DSS 10.2.3",
-          control: "Implement automated audit trails for all system components to reconstruct the following events: all actions taken by any individual with root or administrative privileges",
+          id: "PCI DSS 10.4",
+          control: "Logs are reviewed, and anomalies are addressed",
           status: "gap",
-          details: "Privileged access logging not implemented",
-          recommendation: "Implement comprehensive logging for all administrative and root access"
+          details: "Log review process not implemented",
+          recommendation: "Implement regular log review process and anomaly detection"
         },
         {
-          id: "PCI DSS 11.1.1",
-          control: "Test for the presence of wireless access points and detect unauthorized wireless access points quarterly",
+          id: "PCI DSS 10.5",
+          control: "Time synchronization mechanisms are in place",
           status: "gap",
-          details: "Wireless access point testing not implemented",
-          recommendation: "Implement quarterly wireless access point detection and testing"
-        },
-        {
-          id: "PCI DSS 11.2.1",
-          control: "Run internal and external network vulnerability scans at least quarterly and after any significant change in the network",
-          status: "gap",
-          details: "Vulnerability scanning not implemented",
-          recommendation: "Implement quarterly vulnerability scanning program with qualified personnel"
-        },
-        {
-          id: "PCI DSS 11.3.1",
-          control: "Implement a methodology for penetration testing that includes external and internal penetration testing",
-          status: "gap",
-          details: "Penetration testing methodology not established",
-          recommendation: "Develop and implement comprehensive penetration testing program"
+          details: "Time synchronization not implemented",
+          recommendation: "Implement time synchronization mechanisms across all systems"
         }
       ]
     },
     {
-      name: "Maintain an Information Security Policy",
-      description: "Maintain a policy that addresses information security",
+      name: "Requirement 11: Test Security of Systems and Networks Regularly",
+      description: "Processes and mechanisms for testing security are defined and understood",
       results: [
         {
-          id: "PCI DSS 12.1.1",
-          control: "Establish, publish, maintain, and disseminate a security policy",
+          id: "PCI DSS 11.1",
+          control: "Processes and mechanisms for testing security are defined and understood",
           status: "gap",
-          details: "Information security policy not established",
-          recommendation: "Develop comprehensive information security policy covering all PCI DSS requirements"
+          details: "Security testing processes not defined",
+          recommendation: "Document and implement comprehensive security testing processes"
         },
         {
-          id: "PCI DSS 12.2.1",
-          control: "Implement a risk-assessment process that is performed at least annually and upon significant changes to the environment",
+          id: "PCI DSS 11.2",
+          control: "Vulnerability scans are performed regularly",
           status: "gap",
-          details: "Risk assessment process not implemented",
-          recommendation: "Establish formal risk assessment process with annual reviews"
+          details: "Regular vulnerability scanning not implemented",
+          recommendation: "Implement regular vulnerability scanning program with qualified personnel"
         },
         {
-          id: "PCI DSS 12.3.1",
-          control: "Develop usage policies for critical technologies and define proper use of these technologies",
+          id: "PCI DSS 11.3",
+          control: "Internal and external penetration testing is conducted",
           status: "gap",
-          details: "Usage policies for critical technologies not established",
-          recommendation: "Develop and maintain usage policies for all critical technologies"
+          details: "Penetration testing not implemented",
+          recommendation: "Conduct regular internal and external penetration testing"
         },
         {
-          id: "PCI DSS 12.4.1",
-          control: "Ensure that the security policy and procedures clearly define information security responsibilities for all personnel",
+          id: "PCI DSS 11.4",
+          control: "Intrusion-detection and intrusion-prevention techniques are used",
           status: "gap",
-          details: "Security responsibilities not defined",
-          recommendation: "Clearly define and communicate information security responsibilities for all personnel"
+          details: "Intrusion detection/prevention not implemented",
+          recommendation: "Implement intrusion detection and prevention systems"
         },
         {
-          id: "PCI DSS 12.5.1",
-          control: "Assign to an individual or team the following information security management responsibilities",
+          id: "PCI DSS 11.5",
+          control: "Change- and tamper-detection mechanisms are deployed",
           status: "gap",
-          details: "Information security management responsibilities not assigned",
-          recommendation: "Assign dedicated information security management responsibilities to qualified personnel"
+          details: "Change and tamper detection not implemented",
+          recommendation: "Deploy change and tamper detection mechanisms"
+        }
+      ]
+    },
+    {
+      name: "Requirement 12: Support Information Security with Organizational Policies and Programs",
+      description: "Processes and mechanisms for supporting information security are defined and understood",
+      results: [
+        {
+          id: "PCI DSS 12.1",
+          control: "Processes and mechanisms for supporting information security are defined and understood",
+          status: "gap",
+          details: "Information security support processes not defined",
+          recommendation: "Document and implement comprehensive information security support processes"
         },
         {
-          id: "PCI DSS 12.6.1",
-          control: "Implement a formal security awareness program to make all personnel aware of the importance of cardholder data security",
+          id: "PCI DSS 12.2",
+          control: "Risk assessments are performed at least annually",
           status: "gap",
-          details: "Security awareness program not implemented",
-          recommendation: "Develop and implement comprehensive security awareness training program"
+          details: "Annual risk assessments not implemented",
+          recommendation: "Implement annual risk assessment process"
         },
         {
-          id: "PCI DSS 12.7.1",
-          control: "Screen potential personnel prior to hire to minimize the risk of attacks from internal sources",
+          id: "PCI DSS 12.3",
+          control: "Information security policies and procedures are documented, in use, and known to all parties",
           status: "gap",
-          details: "Personnel screening not implemented",
-          recommendation: "Implement background screening process for all personnel with access to cardholder data"
+          details: "Information security policies not documented or communicated",
+          recommendation: "Document, implement, and communicate information security policies and procedures"
         },
         {
-          id: "PCI DSS 12.8.1",
-          control: "Maintain and implement policies and procedures to manage service providers with whom cardholder data is shared",
+          id: "PCI DSS 12.4",
+          control: "Security responsibilities are assigned and communicated",
           status: "gap",
-          details: "Service provider management policies not established",
-          recommendation: "Develop comprehensive service provider management policies and procedures"
+          details: "Security responsibilities not assigned",
+          recommendation: "Assign and communicate information security responsibilities"
+        },
+        {
+          id: "PCI DSS 12.5",
+          control: "Personnel are trained on security awareness",
+          status: "gap",
+          details: "Security awareness training not implemented",
+          recommendation: "Implement comprehensive security awareness training program"
+        },
+        {
+          id: "PCI DSS 12.6",
+          control: "Service providers with which account data is shared are managed",
+          status: "gap",
+          details: "Service provider management not implemented",
+          recommendation: "Implement service provider management program"
+        },
+        {
+          id: "PCI DSS 12.7",
+          control: "Incident response procedures are established, tested, and maintained",
+          status: "gap",
+          details: "Incident response procedures not established",
+          recommendation: "Establish, test, and maintain incident response procedures"
+        },
+        {
+          id: "PCI DSS 12.8",
+          control: "A continuous compliance program is maintained",
+          status: "gap",
+          details: "Continuous compliance program not implemented",
+          recommendation: "Implement and maintain continuous compliance program"
         }
       ]
     }
@@ -4427,3 +4624,4 @@ export const allFrameworks = {
   NIST_800_63B: nist80063b,
   NYDFS_500: nydfs500
 };
+

@@ -1609,7 +1609,7 @@ function Analyzer() {
                        } else if (e.target.value === 'NYDFS_500') {
                          setSelectedCategories(['500.02']); // Default to first NYDFS category
                        } else if (e.target.value === 'PCI_DSS') {
-                         setSelectedCategories(['Build and Maintain a Secure Network and Systems']); // Default to first PCI DSS requirement
+                         setSelectedCategories(['Requirement 1: Install and Maintain Network Security Controls']); // Default to first PCI DSS requirement
                        } else if (e.target.value === 'ISO_27001') {
                          setSelectedCategories(['A.5']); // Default to first ISO 27001 category
                        } else {
@@ -2229,12 +2229,18 @@ function Analyzer() {
                    
                    <div className="space-y-2">
                      {[
-                       { code: 'Build and Maintain a Secure Network and Systems', displayCode: 'Requirement 1', name: 'Build and Maintain a Secure Network and Systems', description: 'Establish and maintain a secure network infrastructure' },
-                       { code: 'Protect Account Data', displayCode: 'Requirement 2', name: 'Protect Account Data', description: 'Protect stored account data and secure transmission of cardholder data' },
-                       { code: 'Maintain a Vulnerability Management Program', displayCode: 'Requirement 3', name: 'Maintain a Vulnerability Management Program', description: 'Maintain security systems and develop secure applications' },
-                       { code: 'Implement Strong Access Control Measures', displayCode: 'Requirement 4', name: 'Implement Strong Access Control Measures', description: 'Restrict access to cardholder data on a need-to-know basis' },
-                       { code: 'Regularly Monitor and Test Networks', displayCode: 'Requirement 5', name: 'Regularly Monitor and Test Networks', description: 'Monitor all access to network resources and cardholder data' },
-                       { code: 'Maintain an Information Security Policy', displayCode: 'Requirement 6', name: 'Maintain an Information Security Policy', description: 'Maintain a policy that addresses information security' }
+                       { code: 'Requirement 1: Install and Maintain Network Security Controls', displayCode: 'Req 1', name: 'Install and Maintain Network Security Controls', description: 'Processes and mechanisms for network security controls are defined and understood' },
+                       { code: 'Requirement 2: Apply Secure Configurations to All System Components', displayCode: 'Req 2', name: 'Apply Secure Configurations to All System Components', description: 'Processes and mechanisms for secure configurations are defined and understood' },
+                       { code: 'Requirement 3: Protect Stored Account Data', displayCode: 'Req 3', name: 'Protect Stored Account Data', description: 'Processes and mechanisms for protecting stored account data are defined and understood' },
+                       { code: 'Requirement 4: Protect Cardholder Data with Strong Cryptography During Transmission', displayCode: 'Req 4', name: 'Protect Cardholder Data with Strong Cryptography During Transmission', description: 'Processes and mechanisms for protecting transmissions are defined and understood' },
+                       { code: 'Requirement 5: Protect All Systems and Networks from Malicious Software', displayCode: 'Req 5', name: 'Protect All Systems and Networks from Malicious Software', description: 'Processes and mechanisms for anti-malware protection are defined and understood' },
+                       { code: 'Requirement 6: Develop and Maintain Secure Systems and Software', displayCode: 'Req 6', name: 'Develop and Maintain Secure Systems and Software', description: 'Processes and mechanisms for developing and maintaining secure systems are defined and understood' },
+                       { code: 'Requirement 7: Restrict Access to System Components and Cardholder Data', displayCode: 'Req 7', name: 'Restrict Access to System Components and Cardholder Data', description: 'Processes and mechanisms for restricting access are defined and understood' },
+                       { code: 'Requirement 8: Identify Users and Authenticate Access to System Components', displayCode: 'Req 8', name: 'Identify Users and Authenticate Access to System Components', description: 'Processes and mechanisms for identifying users are defined and understood' },
+                       { code: 'Requirement 9: Restrict Physical Access to Cardholder Data', displayCode: 'Req 9', name: 'Restrict Physical Access to Cardholder Data', description: 'Processes and mechanisms for restricting physical access are defined and understood' },
+                       { code: 'Requirement 10: Log and Monitor All Access to System Components and Cardholder Data', displayCode: 'Req 10', name: 'Log and Monitor All Access to System Components and Cardholder Data', description: 'Processes and mechanisms for logging and monitoring are defined and understood' },
+                       { code: 'Requirement 11: Test Security of Systems and Networks Regularly', displayCode: 'Req 11', name: 'Test Security of Systems and Networks Regularly', description: 'Processes and mechanisms for testing security are defined and understood' },
+                       { code: 'Requirement 12: Support Information Security with Organizational Policies and Programs', displayCode: 'Req 12', name: 'Support Information Security with Organizational Policies and Programs', description: 'Processes and mechanisms for supporting information security are defined and understood' }
                      ].map(requirement => (
                        <label key={requirement.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                          <input

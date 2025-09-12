@@ -744,19 +744,32 @@ CRITICAL REQUIREMENTS:
           
           // Map user-friendly category codes to framework category names
           const categoryMapping = {
-            'PCI_1': 'Build and Maintain a Secure Network and Systems',
-            'PCI_2': 'Protect Account Data',
-            'PCI_3': 'Maintain a Vulnerability Management Program',
-            'PCI_4': 'Implement Strong Access Control Measures',
-            'PCI_5': 'Regularly Monitor and Test Networks',
-            'PCI_6': 'Maintain an Information Security Policy',
+            // Legacy mappings for backward compatibility
+            'PCI_1': 'Requirement 1: Install and Maintain Network Security Controls',
+            'PCI_2': 'Requirement 2: Apply Secure Configurations to All System Components',
+            'PCI_3': 'Requirement 3: Protect Stored Account Data',
+            'PCI_4': 'Requirement 4: Protect Cardholder Data with Strong Cryptography During Transmission',
+            'PCI_5': 'Requirement 5: Protect All Systems and Networks from Malicious Software',
+            'PCI_6': 'Requirement 6: Develop and Maintain Secure Systems and Software',
+            'PCI_7': 'Requirement 7: Restrict Access to System Components and Cardholder Data',
+            'PCI_8': 'Requirement 8: Identify Users and Authenticate Access to System Components',
+            'PCI_9': 'Requirement 9: Restrict Physical Access to Cardholder Data',
+            'PCI_10': 'Requirement 10: Log and Monitor All Access to System Components and Cardholder Data',
+            'PCI_11': 'Requirement 11: Test Security of Systems and Networks Regularly',
+            'PCI_12': 'Requirement 12: Support Information Security with Organizational Policies and Programs',
             // Direct mapping for new category names
-            'Build and Maintain a Secure Network and Systems': 'Build and Maintain a Secure Network and Systems',
-            'Protect Account Data': 'Protect Account Data',
-            'Maintain a Vulnerability Management Program': 'Maintain a Vulnerability Management Program',
-            'Implement Strong Access Control Measures': 'Implement Strong Access Control Measures',
-            'Regularly Monitor and Test Networks': 'Regularly Monitor and Test Networks',
-            'Maintain an Information Security Policy': 'Maintain an Information Security Policy'
+            'Requirement 1: Install and Maintain Network Security Controls': 'Requirement 1: Install and Maintain Network Security Controls',
+            'Requirement 2: Apply Secure Configurations to All System Components': 'Requirement 2: Apply Secure Configurations to All System Components',
+            'Requirement 3: Protect Stored Account Data': 'Requirement 3: Protect Stored Account Data',
+            'Requirement 4: Protect Cardholder Data with Strong Cryptography During Transmission': 'Requirement 4: Protect Cardholder Data with Strong Cryptography During Transmission',
+            'Requirement 5: Protect All Systems and Networks from Malicious Software': 'Requirement 5: Protect All Systems and Networks from Malicious Software',
+            'Requirement 6: Develop and Maintain Secure Systems and Software': 'Requirement 6: Develop and Maintain Secure Systems and Software',
+            'Requirement 7: Restrict Access to System Components and Cardholder Data': 'Requirement 7: Restrict Access to System Components and Cardholder Data',
+            'Requirement 8: Identify Users and Authenticate Access to System Components': 'Requirement 8: Identify Users and Authenticate Access to System Components',
+            'Requirement 9: Restrict Physical Access to Cardholder Data': 'Requirement 9: Restrict Physical Access to Cardholder Data',
+            'Requirement 10: Log and Monitor All Access to System Components and Cardholder Data': 'Requirement 10: Log and Monitor All Access to System Components and Cardholder Data',
+            'Requirement 11: Test Security of Systems and Networks Regularly': 'Requirement 11: Test Security of Systems and Networks Regularly',
+            'Requirement 12: Support Information Security with Organizational Policies and Programs': 'Requirement 12: Support Information Security with Organizational Policies and Programs'
           };
           
           console.log('🔍 DEBUG - Category mapping for selected:', selectedCategories.map(s => `${s} -> ${categoryMapping[s]}`));
