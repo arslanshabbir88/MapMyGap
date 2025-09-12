@@ -202,7 +202,13 @@ function Analyzer() {
   
   // Debug subscription data
   useEffect(() => {
-    console.log('🔍 Analyzer subscription data:', subscription);
+    if (subscription) {
+      console.log('🔍 Analyzer subscription data:', subscription);
+      console.log('🔍 Plan type:', subscription.plan_type);
+      console.log('🔍 Plan type lowercase:', subscription.plan_type?.toLowerCase());
+      console.log('🔍 Is professional?', subscription.plan_type?.toLowerCase() === 'professional');
+      console.log('🔍 Is enterprise?', subscription.plan_type?.toLowerCase() === 'enterprise');
+    }
   }, [subscription]);
 
   // Compression function for document content
@@ -600,7 +606,22 @@ function Analyzer() {
                     {(result.status === 'gap' || result.status === 'partial') && (
                         <div>
                             {/* Only show control text generation button for Professional/Enterprise users */}
-                            {subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise') && (
+                            {(() => {
+                              const hasSubscription = !!subscription;
+                              const isProfessional = subscription?.plan_type?.toLowerCase() === 'professional';
+                              const isEnterprise = subscription?.plan_type?.toLowerCase() === 'enterprise';
+                              const shouldShowButton = hasSubscription && (isProfessional || isEnterprise);
+                              
+                              console.log('🔍 Control text button debug:', {
+                                hasSubscription,
+                                planType: subscription?.plan_type,
+                                isProfessional,
+                                isEnterprise,
+                                shouldShowButton
+                              });
+                              
+                              return shouldShowButton;
+                            })() && (
                             <button 
                                 onClick={handleGenerateText}
                                     disabled={isGenerating || (!fileContent && !result.document_content_id)}
@@ -612,7 +633,14 @@ function Analyzer() {
                             )}
                             
                             {/* Show upgrade prompt for Trial/Starter users */}
-                            {(!subscription || (subscription.plan_type?.toLowerCase() !== 'professional' && subscription.plan_type?.toLowerCase() !== 'enterprise')) && (
+                            {(() => {
+                              const hasSubscription = !!subscription;
+                              const isProfessional = subscription?.plan_type?.toLowerCase() === 'professional';
+                              const isEnterprise = subscription?.plan_type?.toLowerCase() === 'enterprise';
+                              const shouldShowUpgrade = !hasSubscription || (!isProfessional && !isEnterprise);
+                              
+                              return shouldShowUpgrade;
+                            })() && (
                                 <div className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg">
                                     <div className="flex items-center space-x-3">
                                         <div className="flex-shrink-0">
@@ -1408,7 +1436,7 @@ function Analyzer() {
     { id: 'NIST_CSF', name: 'NIST Cybersecurity Framework (CSF) v2.0', enabled: true },
     { id: 'NIST_800_53', name: 'NIST SP 800-53 Rev. 5', enabled: true },
     { id: 'NIST_800_63B', name: 'NIST SP 800-63B Digital Identity Guidelines', enabled: true },
-    { id: 'PCI_DSS', name: 'PCI DSS v4.0', enabled: true },
+    { id: 'PCI_DSS', name: 'PCI DSS v4.0.1', enabled: true },
     { id: 'ISO_27001', name: 'ISO/IEC 27001:2022', enabled: true },
     { id: 'SOC_1', name: 'SOC 1 Type II', enabled: true },
     { id: 'SOC_2', name: 'SOC 2 Type II', enabled: true },
