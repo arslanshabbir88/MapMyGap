@@ -681,6 +681,7 @@ CRITICAL REQUIREMENTS:
           
           // Map user-friendly category codes to framework category names
           const categoryMapping = {
+            '500.1': 'Definitions (500.1)',
             '500.02': 'Cybersecurity Program (500.02)',
             '500.03': 'Cybersecurity Policy (500.03)',
             '500.04': 'Chief Information Security Officer (500.04)',
@@ -698,7 +699,13 @@ CRITICAL REQUIREMENTS:
             '500.16': 'Incident Response Plan (500.16)',
             '500.17': 'Notices to Superintendent (500.17)',
             '500.18': 'Confidentiality (500.18)',
-            '500.19': 'Exemptions (500.19)'
+            '500.19': 'Exemptions (500.19)',
+            '500.20': 'Enforcement (500.20)',
+            '500.21': 'Effective Date (500.21)',
+            '500.22': 'Transitional Periods (500.22)',
+            '500.23': 'Severability (500.23)',
+            '500.24': 'Electronic Filing Exemptions (500.24)',
+            '500.25': 'Class A Company Requirements (500.25)'
           };
           
           // Filter to only selected categories
