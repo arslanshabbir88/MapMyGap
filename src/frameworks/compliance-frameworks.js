@@ -4105,21 +4105,49 @@ export const nydfs500 = {
           control: "Implement a cybersecurity program based on the Covered Entity's risk assessment",
           status: "gap",
           details: "Cybersecurity program not established or not based on risk assessment",
-          recommendation: "Develop a comprehensive cybersecurity program that addresses identified risks and is regularly updated based on ongoing risk assessments"
+          recommendation: "Develop a comprehensive cybersecurity program that addresses identified risks and is regularly updated based on ongoing risk assessments. The program must be designed to protect the confidentiality, integrity, and availability of the Covered Entity's information systems."
         },
         {
           id: "500.02(b)",
           control: "Design the cybersecurity program to protect the confidentiality, integrity, and availability of the Covered Entity's information systems",
           status: "gap",
           details: "Program does not adequately address CIA triad requirements",
-          recommendation: "Ensure cybersecurity program explicitly addresses confidentiality, integrity, and availability of information systems"
+          recommendation: "Ensure cybersecurity program explicitly addresses confidentiality, integrity, and availability of information systems. The program must be designed to protect against unauthorized access, use, or other malicious acts that would result in material financial loss to the Covered Entity or material harm to any natural person."
         },
         {
           id: "500.02(c)",
           control: "Address cybersecurity risks identified in the risk assessment",
           status: "gap",
           details: "Program does not address identified cybersecurity risks",
-          recommendation: "Map all identified risks to specific controls and mitigation strategies in the cybersecurity program"
+          recommendation: "Map all identified risks to specific controls and mitigation strategies in the cybersecurity program. The program must address risks identified in the risk assessment and be updated as the risk assessment is updated."
+        },
+        {
+          id: "500.02(d)",
+          control: "Ensure the cybersecurity program is designed to perform the following core cybersecurity functions: Identify, Protect, Detect, Respond, and Recover",
+          status: "gap",
+          details: "Program does not implement core cybersecurity functions framework",
+          recommendation: "Implement a cybersecurity program that performs the five core cybersecurity functions: Identify (assets, vulnerabilities, threats), Protect (implement safeguards), Detect (monitor and identify events), Respond (contain and mitigate incidents), and Recover (restore capabilities and services)."
+        },
+        {
+          id: "500.02(e)",
+          control: "For Class A companies: implement additional cybersecurity program requirements including enhanced monitoring and detection capabilities",
+          status: "gap",
+          details: "Class A company enhanced requirements not implemented",
+          recommendation: "For Class A companies, implement enhanced cybersecurity program requirements including advanced threat detection, continuous monitoring, and comprehensive incident response capabilities as specified in the regulation."
+        },
+        {
+          id: "500.02(f)",
+          control: "Ensure the cybersecurity program addresses both internal and external threats",
+          status: "gap",
+          details: "Program does not comprehensively address internal and external threats",
+          recommendation: "Develop cybersecurity program that addresses both internal threats (insider threats, employee errors) and external threats (nation-states, terrorist organizations, independent criminal actors) with appropriate controls and monitoring."
+        },
+        {
+          id: "500.02(g)",
+          control: "Implement cybersecurity program governance and oversight mechanisms",
+          status: "gap",
+          details: "Cybersecurity program governance not established",
+          recommendation: "Establish clear governance structure for the cybersecurity program including roles, responsibilities, reporting lines, and oversight mechanisms to ensure effective program management and continuous improvement."
         }
       ]
     },
@@ -4531,28 +4559,56 @@ export const nydfs500 = {
     },
     {
       name: "Notices to Superintendent (500.17)",
-      description: "Notify NYDFS of cybersecurity events and other required notifications",
+      description: "Notify NYDFS of cybersecurity events and other required notifications under the Second Amendment",
       results: [
         {
           id: "500.17(a)",
           control: "Notify NYDFS within 72 hours of any cybersecurity event",
           status: "gap",
           details: "72-hour notification process not established",
-          recommendation: "Implement process to notify NYDFS within 72 hours of any cybersecurity event with required information"
+          recommendation: "Implement process to notify NYDFS within 72 hours of any cybersecurity event with required information including event details, impact assessment, and response actions taken."
         },
         {
           id: "500.17(b)",
           control: "Notify NYDFS of cybersecurity events affecting third-party service providers",
           status: "gap",
           details: "Third-party incident notification not established",
-          recommendation: "Establish process to notify NYDFS of cybersecurity events affecting third-party service providers"
+          recommendation: "Establish process to notify NYDFS of cybersecurity events affecting third-party service providers, including events that impact the covered entity's operations or data."
         },
         {
           id: "500.17(c)",
           control: "Submit annual certification of compliance with Part 500",
           status: "gap",
           details: "Annual certification process not established",
-          recommendation: "Implement annual certification process to submit compliance certification to NYDFS"
+          recommendation: "Implement annual certification process to submit compliance certification to NYDFS, including certification by senior officer or board member of compliance with all applicable Part 500 requirements."
+        },
+        {
+          id: "500.17(d)",
+          control: "Comply with 30-day notification requirement for cybersecurity incidents",
+          status: "gap",
+          details: "30-day notification requirement not implemented",
+          recommendation: "Implement process to notify NYDFS within 30 days of any cybersecurity incident that requires notification to any government body, self-regulatory agency, or supervisory body, or that has a reasonable likelihood of materially harming any material part of the normal operations of the covered entity."
+        },
+        {
+          id: "500.17(e)",
+          control: "Notify NYDFS of ransomware incidents immediately",
+          status: "gap",
+          details: "Ransomware notification process not established",
+          recommendation: "Implement immediate notification process for any cybersecurity incident that results in the deployment of ransomware within a material part of the covered entity's information systems."
+        },
+        {
+          id: "500.17(f)",
+          control: "Maintain records of all notifications to NYDFS",
+          status: "gap",
+          details: "Notification record keeping not implemented",
+          recommendation: "Implement record keeping system for all notifications sent to NYDFS, including copies of notifications, response communications, and follow-up actions taken."
+        },
+        {
+          id: "500.17(g)",
+          control: "Ensure notification content meets NYDFS requirements",
+          status: "gap",
+          details: "Notification content requirements not documented",
+          recommendation: "Document and implement notification content requirements including event description, timeline, impact assessment, containment measures, and remediation actions taken or planned."
         }
       ]
     },
@@ -4578,41 +4634,267 @@ export const nydfs500 = {
     },
     {
       name: "Exemptions (500.19)",
-      description: "Understand and document any applicable exemptions",
+      description: "Understand and document any applicable exemptions under the Second Amendment",
       results: [
         {
           id: "500.19(a)",
           control: "Document any applicable exemptions from Part 500 requirements",
           status: "gap",
           details: "Exemption documentation not maintained",
-          recommendation: "Document any applicable exemptions from Part 500 requirements with proper justification and approval"
+          recommendation: "Document any applicable exemptions from Part 500 requirements with proper justification and approval. Ensure exemptions are properly documented and filed with NYDFS as required."
         },
         {
           id: "500.19(b)",
           control: "Review exemptions annually to ensure they remain applicable",
           status: "gap",
           details: "Exemption review process not established",
-          recommendation: "Implement annual review process to assess continued applicability of any exemptions"
+          recommendation: "Implement annual review process to assess continued applicability of any exemptions. Ensure exemptions are reviewed and updated as business circumstances change."
+        },
+        {
+          id: "500.19(c)",
+          control: "Understand exemption criteria for small companies and limited scope entities",
+          status: "gap",
+          details: "Exemption criteria not understood or documented",
+          recommendation: "Document understanding of exemption criteria including: companies with fewer than 10 employees and less than $5M in gross annual revenue; companies with less than $10M in gross annual revenue and no nonpublic information; and other specific exemption categories as defined in the regulation."
+        },
+        {
+          id: "500.19(d)",
+          control: "File Notice of Exemption within 30 days of determination",
+          status: "gap",
+          details: "Notice of Exemption filing process not established",
+          recommendation: "Implement process to file Notice of Exemption electronically within 30 days of determination that the covered entity is exempt from Part 500 requirements."
+        },
+        {
+          id: "500.19(e)",
+          control: "Understand that exemptions may be revoked if circumstances change",
+          status: "gap",
+          details: "Exemption revocation process not understood",
+          recommendation: "Document understanding that exemptions may be revoked if the covered entity no longer qualifies for the exemption, and implement monitoring to ensure continued qualification."
+        },
+        {
+          id: "500.19(f)",
+          control: "Implement 180-day compliance period if exemption is lost",
+          status: "gap",
+          details: "Exemption loss compliance process not established",
+          recommendation: "Implement process to comply with all applicable Part 500 requirements within 180 days if the covered entity ceases to qualify for an exemption."
+        },
+        {
+          id: "500.19(g)",
+          control: "Understand specific exemptions for certain insurance entities",
+          status: "gap",
+          details: "Insurance entity exemptions not understood",
+          recommendation: "Document understanding of specific exemptions for persons subject to Insurance Law sections 1110 and 5904, accredited reinsurers, certified reinsurers, reciprocal jurisdiction reinsurers, and individual insurance agents in inactive status."
+        },
+        {
+          id: "500.19(h)",
+          control: "Ensure exemption status is properly maintained and documented",
+          status: "gap",
+          details: "Exemption status maintenance not implemented",
+          recommendation: "Implement ongoing process to maintain and document exemption status, including regular review of qualification criteria and proper filing of required notices with NYDFS."
         }
       ]
     },
     {
-      name: "Effective Date and Compliance (500.20)",
-      description: "Ensure compliance with effective dates and ongoing requirements",
+      name: "Enforcement (500.20)",
+      description: "Understand enforcement provisions and penalty factors under the Second Amendment",
       results: [
         {
           id: "500.20(a)",
-          control: "Ensure compliance with all effective dates for Part 500 requirements",
+          control: "Understand that this regulation will be enforced by the superintendent pursuant to applicable laws",
           status: "gap",
-          details: "Effective date compliance not tracked",
-          recommendation: "Implement tracking system to ensure compliance with all Part 500 effective dates and requirements"
+          details: "Enforcement provisions not understood or documented",
+          recommendation: "Document understanding of enforcement provisions and ensure compliance program addresses all requirements to avoid violations"
         },
         {
           id: "500.20(b)",
-          control: "Maintain ongoing compliance with all applicable Part 500 requirements",
+          control: "Recognize that single acts or failures to act constitute violations of this Part",
           status: "gap",
-          details: "Ongoing compliance monitoring not established",
-          recommendation: "Implement ongoing compliance monitoring and assessment processes for all applicable Part 500 requirements"
+          details: "Violation criteria not understood",
+          recommendation: "Ensure all personnel understand that single acts or failures to act constitute violations, including failure to secure or prevent unauthorized access to nonpublic information"
+        },
+        {
+          id: "500.20(c)",
+          control: "Understand penalty factors that will be considered in enforcement actions",
+          status: "gap",
+          details: "Penalty factors not documented or addressed in compliance program",
+          recommendation: "Document understanding of penalty factors including cooperation with superintendent, good faith, unintentional vs. intentional conduct, history of violations, harm to consumers, and consistency with nationally recognized frameworks like NIST"
+        },
+        {
+          id: "500.20(d)",
+          control: "Implement controls to address key penalty factors in compliance program",
+          status: "gap",
+          details: "Compliance program does not address key penalty factors",
+          recommendation: "Ensure compliance program addresses key penalty factors including timely and accurate disclosures to affected consumers, consistent policies with NIST frameworks, and proper documentation of good faith efforts"
+        }
+      ]
+    },
+    {
+      name: "Effective Date (500.21)",
+      description: "Comply with effective dates and transitional periods",
+      results: [
+        {
+          id: "500.21(a)",
+          control: "Comply with original effective date of March 1, 2017 for Part 500",
+          status: "gap",
+          details: "Original effective date compliance not verified",
+          recommendation: "Verify compliance with all requirements effective March 1, 2017, including annual certification requirements commencing February 15, 2018"
+        },
+        {
+          id: "500.21(b)",
+          control: "Comply with Second Amendment effective date of November 1, 2023",
+          status: "gap",
+          details: "Second Amendment effective date compliance not verified",
+          recommendation: "Ensure compliance with all Second Amendment requirements effective November 1, 2023, including new sections 500.19(e)-(h), 500.20, 500.21, 500.22, and 500.24"
+        }
+      ]
+    },
+    {
+      name: "Transitional Periods (500.22)",
+      description: "Comply with transitional periods for implementation of requirements",
+      results: [
+        {
+          id: "500.22(a)",
+          control: "Comply with 180-day transitional period from original effective date",
+          status: "gap",
+          details: "Original 180-day transitional period compliance not verified",
+          recommendation: "Verify compliance with all requirements within 180 days of March 1, 2017, except as otherwise specified in the regulation"
+        },
+        {
+          id: "500.22(b)",
+          control: "Comply with additional transitional periods for specific sections",
+          status: "gap",
+          details: "Additional transitional periods not tracked",
+          recommendation: "Ensure compliance with additional transitional periods: 1 year for sections 500.4(b), 500.5, 500.9, 500.12, and 500.14(b); 18 months for sections 500.6, 500.8, 500.13, 500.14(a), and 500.15; 2 years for section 500.11"
+        },
+        {
+          id: "500.22(c)",
+          control: "Comply with 180-day transitional period for Second Amendment",
+          status: "gap",
+          details: "Second Amendment 180-day transitional period not tracked",
+          recommendation: "Ensure compliance with all Second Amendment requirements within 180 days of November 1, 2023, except as otherwise specified"
+        },
+        {
+          id: "500.22(d)",
+          control: "Comply with specific transitional periods for Second Amendment sections",
+          status: "gap",
+          details: "Second Amendment specific transitional periods not tracked",
+          recommendation: "Ensure compliance with Second Amendment transitional periods: 30 days for section 500.17; 1 year for sections 500.4, 500.15, 500.16, and 500.19(a); 18 months for sections 500.5(a)(2), 500.7, 500.14(a)(2), and 500.14(b); 2 years for sections 500.12 and 500.13(a)"
+        }
+      ]
+    },
+    {
+      name: "Severability (500.23)",
+      description: "Understand severability provisions and their impact on compliance",
+      results: [
+        {
+          id: "500.23(a)",
+          control: "Understand that if any provision is adjudged invalid, other provisions remain valid",
+          status: "gap",
+          details: "Severability provisions not understood",
+          recommendation: "Document understanding that if any provision of Part 500 is adjudged invalid by a court, such judgment shall not affect the validity of other provisions"
+        },
+        {
+          id: "500.23(b)",
+          control: "Ensure compliance program addresses all provisions regardless of potential severability",
+          status: "gap",
+          details: "Compliance program does not account for severability",
+          recommendation: "Ensure compliance program addresses all provisions of Part 500 comprehensively, as severability does not excuse non-compliance with valid provisions"
+        }
+      ]
+    },
+    {
+      name: "Electronic Filing Exemptions (500.24)",
+      description: "Understand and manage electronic filing exemption requirements",
+      results: [
+        {
+          id: "500.24(a)",
+          control: "Understand that electronic filing exemptions may be requested",
+          status: "gap",
+          details: "Electronic filing exemption process not understood",
+          recommendation: "Document understanding that filers may apply for exemptions from electronic filing requirements by submitting written requests at least 30 days before the filing deadline"
+        },
+        {
+          id: "500.24(b)",
+          control: "Know the requirements for exemption requests",
+          status: "gap",
+          details: "Exemption request requirements not documented",
+          recommendation: "Document requirements for exemption requests including DFS license number, specific filing identification, basis for exemption (undue hardship, impracticability, or good cause), and scope of exemption"
+        },
+        {
+          id: "500.24(c)",
+          control: "Understand the exemption approval process",
+          status: "gap",
+          details: "Exemption approval process not understood",
+          recommendation: "Understand that exemptions require superintendent's written determination specifying the basis for approval and scope of exemption, and that approved exemptions require acceptable alternative filing methods"
+        },
+        {
+          id: "500.24(d)",
+          control: "Implement process for managing electronic filing exemptions if needed",
+          status: "gap",
+          details: "Electronic filing exemption management process not implemented",
+          recommendation: "If electronic filing exemptions are needed, implement process for requesting, tracking, and managing exemptions including proper documentation and compliance with alternative filing requirements"
+        }
+      ]
+    },
+    {
+      name: "Class A Company Requirements (500.25)",
+      description: "Additional requirements for Class A companies with enhanced cybersecurity obligations",
+      results: [
+        {
+          id: "500.25(a)",
+          control: "Determine if entity qualifies as Class A company based on revenue and employee criteria",
+          status: "gap",
+          details: "Class A company determination not conducted",
+          recommendation: "Conduct annual assessment to determine if entity qualifies as Class A company: $20M+ gross annual revenue in each of last two fiscal years AND either 2,000+ employees averaged over last two fiscal years OR $1B+ gross annual revenue in each of last two fiscal years from all business operations and affiliates."
+        },
+        {
+          id: "500.25(b)",
+          control: "Implement enhanced endpoint detection and response (EDR) solutions for Class A companies",
+          status: "gap",
+          details: "EDR solutions not implemented for Class A companies",
+          recommendation: "For Class A companies, implement endpoint detection and response solutions to monitor and respond to unusual activity, including real-time monitoring, automated response capabilities, and integration with security operations center."
+        },
+        {
+          id: "500.25(c)",
+          control: "Implement centralized logging and security event management for Class A companies",
+          status: "gap",
+          details: "Centralized logging not implemented for Class A companies",
+          recommendation: "For Class A companies, implement centralized logging and security information and event management (SIEM) solutions to aggregate, correlate, and analyze security events across all information systems."
+        },
+        {
+          id: "500.25(d)",
+          control: "Implement enhanced monitoring and detection capabilities for Class A companies",
+          status: "gap",
+          details: "Enhanced monitoring not implemented for Class A companies",
+          recommendation: "For Class A companies, implement advanced threat detection capabilities including behavioral analytics, machine learning-based detection, and continuous monitoring of all critical systems and data."
+        },
+        {
+          id: "500.25(e)",
+          control: "Implement comprehensive incident response capabilities for Class A companies",
+          status: "gap",
+          details: "Enhanced incident response not implemented for Class A companies",
+          recommendation: "For Class A companies, implement comprehensive incident response capabilities including 24/7 security operations center, automated incident response workflows, and advanced threat hunting capabilities."
+        },
+        {
+          id: "500.25(f)",
+          control: "Implement enhanced third-party risk management for Class A companies",
+          status: "gap",
+          details: "Enhanced third-party risk management not implemented for Class A companies",
+          recommendation: "For Class A companies, implement enhanced third-party risk management including continuous monitoring of third-party security posture, regular security assessments, and contractual requirements for cybersecurity controls."
+        },
+        {
+          id: "500.25(g)",
+          control: "Implement enhanced cybersecurity governance for Class A companies",
+          status: "gap",
+          details: "Enhanced governance not implemented for Class A companies",
+          recommendation: "For Class A companies, implement enhanced cybersecurity governance including dedicated cybersecurity committee, regular board reporting, and comprehensive risk management framework."
+        },
+        {
+          id: "500.25(h)",
+          control: "Implement enhanced cybersecurity training and awareness for Class A companies",
+          status: "gap",
+          details: "Enhanced training not implemented for Class A companies",
+          recommendation: "For Class A companies, implement enhanced cybersecurity training and awareness programs including role-specific training, regular security awareness updates, and advanced threat simulation exercises."
         }
       ]
     }

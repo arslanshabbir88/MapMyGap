@@ -2187,7 +2187,7 @@ function Analyzer() {
                    
                    <div className="space-y-2">
                      {[
-                       { code: '500.02', name: 'Cybersecurity Program', description: 'Establish and maintain a cybersecurity program' },
+                       { code: '500.02', name: 'Cybersecurity Program', description: 'Establish and maintain a cybersecurity program (Enhanced with Second Amendment)' },
                        { code: '500.03', name: 'Cybersecurity Policy', description: 'Implement written cybersecurity policy' },
                        { code: '500.04', name: 'Chief Information Security Officer', description: 'Designate qualified CISO' },
                        { code: '500.05', name: 'Penetration Testing', description: 'Conduct periodic penetration testing and vulnerability assessments' },
@@ -2202,9 +2202,15 @@ function Analyzer() {
                        { code: '500.14', name: 'Training and Monitoring', description: 'Provide cybersecurity training and implement monitoring' },
                        { code: '500.15', name: 'Encryption', description: 'Implement encryption for nonpublic information' },
                        { code: '500.16', name: 'Incident Response Plan', description: 'Establish incident response plan for cybersecurity events' },
-                       { code: '500.17', name: 'Notices to Superintendent', description: 'Notify NYDFS of cybersecurity events' },
+                       { code: '500.17', name: 'Notices to Superintendent', description: 'Notify NYDFS of cybersecurity events (Enhanced with Second Amendment)' },
                        { code: '500.18', name: 'Confidentiality', description: 'Maintain confidentiality of information provided to NYDFS' },
-                       { code: '500.19', name: 'Exemptions', description: 'Understand and document any applicable exemptions' }
+                       { code: '500.19', name: 'Exemptions', description: 'Understand and document any applicable exemptions (Enhanced with Second Amendment)' },
+                       { code: '500.20', name: 'Enforcement', description: 'Understand enforcement provisions and penalty factors (Second Amendment)' },
+                       { code: '500.21', name: 'Effective Date', description: 'Comply with effective dates and transitional periods (Second Amendment)' },
+                       { code: '500.22', name: 'Transitional Periods', description: 'Comply with transitional periods for implementation (Second Amendment)' },
+                       { code: '500.23', name: 'Severability', description: 'Understand severability provisions and their impact (Second Amendment)' },
+                       { code: '500.24', name: 'Electronic Filing Exemptions', description: 'Understand and manage electronic filing exemption requirements (Second Amendment)' },
+                       { code: '500.25', name: 'Class A Company Requirements', description: 'Additional requirements for Class A companies (Second Amendment)' }
                      ].map(category => (
                        <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                          <input
