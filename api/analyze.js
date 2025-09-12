@@ -730,6 +730,7 @@ CRITICAL REQUIREMENTS:
       console.log('🔍 DEBUG - frameworkData exists:', !!frameworkData);
       console.log('🔍 DEBUG - selectedCategories at PCI_DSS:', selectedCategories);
       console.log('🔍 DEBUG - selectedCategories length at PCI_DSS:', selectedCategories?.length);
+      console.log('🔍 DEBUG - frameworkData categories:', frameworkData?.categories?.length);
       
       if (frameworkData) {
         // Filter framework data to only include selected categories
@@ -751,6 +752,8 @@ CRITICAL REQUIREMENTS:
             'PCI_6': 'Maintain an Information Security Policy'
           };
           
+          console.log('🔍 DEBUG - Category mapping for selected:', selectedCategories.map(s => `${s} -> ${categoryMapping[s]}`));
+          
           // Filter to only selected categories
           filteredCategories = frameworkData.categories.filter(cat => 
             selectedCategories.some(selected => 
@@ -760,6 +763,7 @@ CRITICAL REQUIREMENTS:
           
           console.log('🎯 Filtered categories for PCI DSS:', filteredCategories.map(c => c.name));
           console.log('🎯 Number of PCI DSS categories being sent to AI:', filteredCategories.length);
+          console.log('🎯 DEBUG - filteredCategories structure:', JSON.stringify(filteredCategories, null, 2).substring(0, 500));
         }
         
         // Use the filtered framework data to enforce consistent control structure
