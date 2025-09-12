@@ -745,11 +745,18 @@ CRITICAL REQUIREMENTS:
           // Map user-friendly category codes to framework category names
           const categoryMapping = {
             'PCI_1': 'Build and Maintain a Secure Network and Systems',
-            'PCI_2': 'Protect Cardholder Data',
+            'PCI_2': 'Protect Account Data',
             'PCI_3': 'Maintain a Vulnerability Management Program',
             'PCI_4': 'Implement Strong Access Control Measures',
             'PCI_5': 'Regularly Monitor and Test Networks',
-            'PCI_6': 'Maintain an Information Security Policy'
+            'PCI_6': 'Maintain an Information Security Policy',
+            // Direct mapping for new category names
+            'Build and Maintain a Secure Network and Systems': 'Build and Maintain a Secure Network and Systems',
+            'Protect Account Data': 'Protect Account Data',
+            'Maintain a Vulnerability Management Program': 'Maintain a Vulnerability Management Program',
+            'Implement Strong Access Control Measures': 'Implement Strong Access Control Measures',
+            'Regularly Monitor and Test Networks': 'Regularly Monitor and Test Networks',
+            'Maintain an Information Security Policy': 'Maintain an Information Security Policy'
           };
           
           console.log('🔍 DEBUG - Category mapping for selected:', selectedCategories.map(s => `${s} -> ${categoryMapping[s]}`));

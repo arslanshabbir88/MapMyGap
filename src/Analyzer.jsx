@@ -1609,7 +1609,7 @@ function Analyzer() {
                        } else if (e.target.value === 'NYDFS_500') {
                          setSelectedCategories(['500.02']); // Default to first NYDFS category
                        } else if (e.target.value === 'PCI_DSS') {
-                         setSelectedCategories(['PCI_1']); // Default to first PCI DSS requirement
+                         setSelectedCategories(['Build and Maintain a Secure Network and Systems']); // Default to first PCI DSS requirement
                        } else if (e.target.value === 'ISO_27001') {
                          setSelectedCategories(['A.5']); // Default to first ISO 27001 category
                        } else {
@@ -2229,12 +2229,12 @@ function Analyzer() {
                    
                    <div className="space-y-2">
                      {[
-                       { code: 'PCI_1', displayCode: 'PCI 1', name: 'Build and Maintain Secure Networks', description: 'Establish and maintain secure network infrastructure' },
-                       { code: 'PCI_2', displayCode: 'PCI 2', name: 'Protect Cardholder Data', description: 'Protect stored cardholder data and secure transmission' },
-                       { code: 'PCI_3', displayCode: 'PCI 3', name: 'Maintain Vulnerability Management', description: 'Regularly update and patch systems' },
-                       { code: 'PCI_4', displayCode: 'PCI 4', name: 'Implement Strong Access Control', description: 'Restrict access to cardholder data by business need-to-know' },
-                       { code: 'PCI_5', displayCode: 'PCI 5', name: 'Regularly Monitor Networks', description: 'Track and monitor all access to network resources' },
-                       { code: 'PCI_6', displayCode: 'PCI 6', name: 'Maintain Information Security Policy', description: 'Maintain a policy that addresses information security' }
+                       { code: 'Build and Maintain a Secure Network and Systems', displayCode: 'Requirement 1', name: 'Build and Maintain a Secure Network and Systems', description: 'Establish and maintain a secure network infrastructure' },
+                       { code: 'Protect Account Data', displayCode: 'Requirement 2', name: 'Protect Account Data', description: 'Protect stored account data and secure transmission of cardholder data' },
+                       { code: 'Maintain a Vulnerability Management Program', displayCode: 'Requirement 3', name: 'Maintain a Vulnerability Management Program', description: 'Maintain security systems and develop secure applications' },
+                       { code: 'Implement Strong Access Control Measures', displayCode: 'Requirement 4', name: 'Implement Strong Access Control Measures', description: 'Restrict access to cardholder data on a need-to-know basis' },
+                       { code: 'Regularly Monitor and Test Networks', displayCode: 'Requirement 5', name: 'Regularly Monitor and Test Networks', description: 'Monitor all access to network resources and cardholder data' },
+                       { code: 'Maintain an Information Security Policy', displayCode: 'Requirement 6', name: 'Maintain an Information Security Policy', description: 'Maintain a policy that addresses information security' }
                      ].map(requirement => (
                        <label key={requirement.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                          <input

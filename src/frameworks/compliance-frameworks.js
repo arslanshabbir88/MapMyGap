@@ -11,44 +11,44 @@ export const pciDSS = {
       results: [
         {
           id: "PCI DSS 1.1.1",
-          control: "All users are assigned a unique ID before allowing them to access system components or cardholder data",
+          control: "Implement and manage network security controls (NSCs) such as firewalls to regulate traffic between trusted and untrusted networks",
           status: "gap",
-          details: "User identification and authentication controls not implemented",
-          recommendation: "Implement unique user ID assignment system with proper authentication mechanisms"
+          details: "Network security controls not implemented",
+          recommendation: "Deploy firewalls and network security controls to segment trusted and untrusted networks"
         },
         {
           id: "PCI DSS 1.1.2",
-          control: "Logical access controls are implemented via an access control system(s)",
+          control: "Ensure that only authorized traffic is permitted between trusted and untrusted networks",
           status: "gap",
-          details: "Access control system not in place",
-          recommendation: "Deploy access control system with role-based permissions and least privilege principles"
-        },
-        {
-          id: "PCI DSS 1.1.3",
-          control: "Access to system components and data is restricted to authorized personnel only",
-          status: "gap",
-          details: "No access restrictions implemented",
-          recommendation: "Implement access controls and user management procedures"
+          details: "Traffic filtering rules not established",
+          recommendation: "Implement strict traffic filtering rules to allow only authorized communications"
         },
         {
           id: "PCI DSS 1.2.1",
-          control: "Security policies and operational procedures for managing network security are documented, in use, and known to all affected parties",
+          control: "Establish and maintain secure configurations for all system components",
           status: "gap",
-          details: "Security policies not documented or communicated",
-          recommendation: "Create comprehensive security policies and ensure staff awareness"
+          details: "Secure configuration baseline not established",
+          recommendation: "Develop and maintain secure configuration baselines for all system components"
         },
         {
-          id: "PCI DSS 1.3.1",
-          control: "Security policies and operational procedures for managing network security are documented, in use, and known to all affected parties",
+          id: "PCI DSS 1.2.2",
+          control: "Remove or disable all unnecessary and insecure services and protocols",
           status: "gap",
-          details: "Network security procedures not established",
-          recommendation: "Document network security procedures and train relevant personnel"
+          details: "Unnecessary services and protocols not removed",
+          recommendation: "Audit and remove all unnecessary services, protocols, and functions from system components"
+        },
+        {
+          id: "PCI DSS 1.2.3",
+          control: "Implement security parameters to prevent misuse",
+          status: "gap",
+          details: "Security parameters not configured",
+          recommendation: "Configure security parameters to prevent misuse and unauthorized access"
         }
       ]
     },
     {
-      name: "Protect Cardholder Data",
-      description: "Protect stored cardholder data and secure transmission of cardholder data",
+      name: "Protect Account Data",
+      description: "Protect stored account data and secure transmission of cardholder data",
       results: [
         {
           id: "PCI DSS 3.1.1",
@@ -77,33 +77,61 @@ export const pciDSS = {
           status: "gap",
           details: "PAN encryption not implemented",
           recommendation: "Implement strong encryption for PAN storage using industry-standard algorithms"
+        },
+        {
+          id: "PCI DSS 4.1.1",
+          control: "Use strong cryptography and security protocols to safeguard sensitive cardholder data during transmission over open, public networks",
+          status: "gap",
+          details: "Strong cryptography not implemented for data transmission",
+          recommendation: "Implement strong cryptographic protocols (TLS 1.2 or higher) for all data transmission over public networks"
+        },
+        {
+          id: "PCI DSS 4.2.1",
+          control: "Never send unprotected PANs by end-user messaging technologies",
+          status: "gap",
+          details: "PAN protection in messaging not implemented",
+          recommendation: "Implement secure messaging protocols or encryption for any PAN transmission via messaging technologies"
         }
       ]
     },
     {
-      name: "Maintain Vulnerability Management Program",
+      name: "Maintain a Vulnerability Management Program",
       description: "Maintain security systems and develop secure applications",
       results: [
         {
           id: "PCI DSS 5.1.1",
+          control: "Deploy anti-malware software on all systems commonly affected by malicious software",
+          status: "gap",
+          details: "Anti-malware software not deployed",
+          recommendation: "Deploy and maintain anti-malware solutions on all systems commonly affected by malicious software"
+        },
+        {
+          id: "PCI DSS 5.1.2",
+          control: "Ensure that all anti-malware mechanisms are kept current, perform periodic scans, and generate audit logs",
+          status: "gap",
+          details: "Anti-malware maintenance not established",
+          recommendation: "Implement automated anti-malware updates and regular scanning with audit logging"
+        },
+        {
+          id: "PCI DSS 6.1.1",
+          control: "Establish a process to identify security vulnerabilities, using reputable outside sources for security vulnerability information",
+          status: "gap",
+          details: "Vulnerability identification process not established",
+          recommendation: "Implement formal process to identify security vulnerabilities using reputable sources"
+        },
+        {
+          id: "PCI DSS 6.1.2",
           control: "Ensure that all system components and software are protected from known vulnerabilities by having the latest vendor-supplied security patches installed",
           status: "gap",
           details: "Patch management process not established",
           recommendation: "Implement automated patch management system with regular security updates"
         },
         {
-          id: "PCI DSS 5.2.1",
+          id: "PCI DSS 6.2.1",
           control: "Establish a process to identify and assign a risk ranking to newly discovered security vulnerabilities",
           status: "gap",
           details: "Vulnerability risk assessment process not implemented",
           recommendation: "Create vulnerability management program with risk ranking methodology"
-        },
-        {
-          id: "PCI DSS 5.3.1",
-          control: "Ensure that security policies and operational procedures for managing vulnerabilities are documented, in use, and known to all affected parties",
-          status: "gap",
-          details: "Vulnerability management procedures not documented",
-          recommendation: "Document vulnerability management procedures and ensure staff awareness"
         }
       ]
     },
@@ -122,15 +150,50 @@ export const pciDSS = {
           id: "PCI DSS 7.1.2",
           control: "Assign access based on individual personnel's job classification and function",
           status: "gap",
-          details: "Individual access assignments not implemented",
-          recommendation: "Implement individual access assignment system based on job requirements"
+          details: "Access assignment process not established",
+          recommendation: "Implement formal access assignment process based on job functions"
         },
         {
           id: "PCI DSS 7.1.3",
           control: "Document and maintain a list of service providers with access to cardholder data",
           status: "gap",
-          details: "Service provider access documentation not maintained",
-          recommendation: "Create and maintain service provider access inventory with regular reviews"
+          details: "Service provider access not documented",
+          recommendation: "Maintain comprehensive list of service providers with access to cardholder data"
+        },
+        {
+          id: "PCI DSS 8.1.1",
+          control: "Assign all users a unique ID before allowing them to access system components or cardholder data",
+          status: "gap",
+          details: "Unique user identification not implemented",
+          recommendation: "Implement unique user ID assignment system for all system access"
+        },
+        {
+          id: "PCI DSS 8.1.2",
+          control: "Control addition, deletion, and modification of user IDs, credentials, and other identifier objects",
+          status: "gap",
+          details: "User ID management controls not implemented",
+          recommendation: "Implement formal processes for user ID lifecycle management"
+        },
+        {
+          id: "PCI DSS 8.2.1",
+          control: "Use strong authentication methods for all access to the cardholder data environment",
+          status: "gap",
+          details: "Strong authentication not implemented",
+          recommendation: "Implement multi-factor authentication for all access to cardholder data environment"
+        },
+        {
+          id: "PCI DSS 9.1.1",
+          control: "Use appropriate facility entry controls to limit and monitor physical access to systems in the cardholder data environment",
+          status: "gap",
+          details: "Physical access controls not implemented",
+          recommendation: "Implement physical security controls including access cards, biometrics, and visitor management"
+        },
+        {
+          id: "PCI DSS 9.1.2",
+          control: "Monitor physical access to sensitive areas",
+          status: "gap",
+          details: "Physical access monitoring not implemented",
+          recommendation: "Implement video surveillance and access logging for sensitive areas"
         }
       ]
     },
@@ -142,22 +205,112 @@ export const pciDSS = {
           id: "PCI DSS 10.1.1",
           control: "Implement audit trails to link all access to system components to each individual user",
           status: "gap",
-          details: "Audit trails not implemented",
+          details: "Audit trail implementation not complete",
           recommendation: "Implement comprehensive audit logging for all system access"
         },
         {
           id: "PCI DSS 10.2.1",
-          control: "Automated audit trails are implemented for all system components",
+          control: "Implement automated audit trails for all system components to reconstruct the following events",
           status: "gap",
-          details: "Automated audit trails not in place",
-          recommendation: "Deploy automated audit trail system across all system components"
+          details: "Automated audit trails not implemented",
+          recommendation: "Deploy automated logging solutions for all critical system events"
         },
         {
-          id: "PCI DSS 10.3.1",
-          control: "Record at least the following audit trail entries for all system components for each event: user identification, type of event, date and time, success or failure indication, origination of event, and identity or name of affected data, system component, or resource",
+          id: "PCI DSS 10.2.2",
+          control: "Implement automated audit trails for all system components to reconstruct the following events: all individual user accesses to cardholder data",
           status: "gap",
-          details: "Comprehensive audit trail requirements not met",
-          recommendation: "Implement detailed audit logging with all required event information"
+          details: "Cardholder data access logging not implemented",
+          recommendation: "Implement detailed logging for all cardholder data access"
+        },
+        {
+          id: "PCI DSS 10.2.3",
+          control: "Implement automated audit trails for all system components to reconstruct the following events: all actions taken by any individual with root or administrative privileges",
+          status: "gap",
+          details: "Privileged access logging not implemented",
+          recommendation: "Implement comprehensive logging for all administrative and root access"
+        },
+        {
+          id: "PCI DSS 11.1.1",
+          control: "Test for the presence of wireless access points and detect unauthorized wireless access points quarterly",
+          status: "gap",
+          details: "Wireless access point testing not implemented",
+          recommendation: "Implement quarterly wireless access point detection and testing"
+        },
+        {
+          id: "PCI DSS 11.2.1",
+          control: "Run internal and external network vulnerability scans at least quarterly and after any significant change in the network",
+          status: "gap",
+          details: "Vulnerability scanning not implemented",
+          recommendation: "Implement quarterly vulnerability scanning program with qualified personnel"
+        },
+        {
+          id: "PCI DSS 11.3.1",
+          control: "Implement a methodology for penetration testing that includes external and internal penetration testing",
+          status: "gap",
+          details: "Penetration testing methodology not established",
+          recommendation: "Develop and implement comprehensive penetration testing program"
+        }
+      ]
+    },
+    {
+      name: "Maintain an Information Security Policy",
+      description: "Maintain a policy that addresses information security",
+      results: [
+        {
+          id: "PCI DSS 12.1.1",
+          control: "Establish, publish, maintain, and disseminate a security policy",
+          status: "gap",
+          details: "Information security policy not established",
+          recommendation: "Develop comprehensive information security policy covering all PCI DSS requirements"
+        },
+        {
+          id: "PCI DSS 12.2.1",
+          control: "Implement a risk-assessment process that is performed at least annually and upon significant changes to the environment",
+          status: "gap",
+          details: "Risk assessment process not implemented",
+          recommendation: "Establish formal risk assessment process with annual reviews"
+        },
+        {
+          id: "PCI DSS 12.3.1",
+          control: "Develop usage policies for critical technologies and define proper use of these technologies",
+          status: "gap",
+          details: "Usage policies for critical technologies not established",
+          recommendation: "Develop and maintain usage policies for all critical technologies"
+        },
+        {
+          id: "PCI DSS 12.4.1",
+          control: "Ensure that the security policy and procedures clearly define information security responsibilities for all personnel",
+          status: "gap",
+          details: "Security responsibilities not defined",
+          recommendation: "Clearly define and communicate information security responsibilities for all personnel"
+        },
+        {
+          id: "PCI DSS 12.5.1",
+          control: "Assign to an individual or team the following information security management responsibilities",
+          status: "gap",
+          details: "Information security management responsibilities not assigned",
+          recommendation: "Assign dedicated information security management responsibilities to qualified personnel"
+        },
+        {
+          id: "PCI DSS 12.6.1",
+          control: "Implement a formal security awareness program to make all personnel aware of the importance of cardholder data security",
+          status: "gap",
+          details: "Security awareness program not implemented",
+          recommendation: "Develop and implement comprehensive security awareness training program"
+        },
+        {
+          id: "PCI DSS 12.7.1",
+          control: "Screen potential personnel prior to hire to minimize the risk of attacks from internal sources",
+          status: "gap",
+          details: "Personnel screening not implemented",
+          recommendation: "Implement background screening process for all personnel with access to cardholder data"
+        },
+        {
+          id: "PCI DSS 12.8.1",
+          control: "Maintain and implement policies and procedures to manage service providers with whom cardholder data is shared",
+          status: "gap",
+          details: "Service provider management policies not established",
+          recommendation: "Develop comprehensive service provider management policies and procedures"
         }
       ]
     }
