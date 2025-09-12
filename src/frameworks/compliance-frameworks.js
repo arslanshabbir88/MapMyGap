@@ -4097,6 +4097,68 @@ export const nydfs500 = {
   description: "New York State Department of Financial Services Cybersecurity Regulation",
   categories: [
     {
+      name: "Definitions (500.1)",
+      description: "Understand key definitions and terms used throughout Part 500",
+      results: [
+        {
+          id: "500.1(a)",
+          control: "Understand definition of 'Affiliate' and control relationships",
+          status: "gap",
+          details: "Affiliate definition not understood or documented",
+          recommendation: "Document understanding of affiliate definition: any person that controls, is controlled by or is under common control with another person, including possession of power to direct management and policies."
+        },
+        {
+          id: "500.1(b)",
+          control: "Understand definition of 'Authorized user' and access requirements",
+          status: "gap",
+          details: "Authorized user definition not understood",
+          recommendation: "Document understanding of authorized user definition: any employee, contractor, agent or other person that participates in business operations and is authorized to access information systems and data."
+        },
+        {
+          id: "500.1(c)",
+          control: "Understand definition of 'CISO' and qualification requirements",
+          status: "gap",
+          details: "CISO definition and qualifications not understood",
+          recommendation: "Document understanding of CISO definition: qualified individual responsible for overseeing and implementing cybersecurity program and enforcing cybersecurity policy."
+        },
+        {
+          id: "500.1(d)",
+          control: "Understand definition of 'Class A company' and qualification criteria",
+          status: "gap",
+          details: "Class A company definition not understood",
+          recommendation: "Document understanding of Class A company definition: covered entity with $20M+ gross annual revenue in each of last two fiscal years AND either 2,000+ employees averaged over last two fiscal years OR $1B+ gross annual revenue in each of last two fiscal years from all business operations and affiliates."
+        },
+        {
+          id: "500.1(e)",
+          control: "Understand definition of 'Covered entity' and scope of regulation",
+          status: "gap",
+          details: "Covered entity definition not understood",
+          recommendation: "Document understanding of covered entity definition: any person operating under or required to operate under a license, registration, charter, certificate, permit, accreditation or similar authorization under Banking Law, Insurance Law or Financial Services Law."
+        },
+        {
+          id: "500.1(f)",
+          control: "Understand definition of 'Cybersecurity event' vs 'Cybersecurity incident'",
+          status: "gap",
+          details: "Cybersecurity event and incident definitions not understood",
+          recommendation: "Document understanding of cybersecurity event (any act or attempt to gain unauthorized access) vs cybersecurity incident (event that impacts covered entity and requires government notification, has reasonable likelihood of material harm, or results in ransomware deployment)."
+        },
+        {
+          id: "500.1(g)",
+          control: "Understand definition of 'Nonpublic information' and protection requirements",
+          status: "gap",
+          details: "Nonpublic information definition not understood",
+          recommendation: "Document understanding of nonpublic information definition: all electronic information that is not publicly available and includes business information, personal information with identifiers, and health information that could cause material adverse impact if compromised."
+        },
+        {
+          id: "500.1(h)",
+          control: "Understand definition of 'Multi-factor authentication' and implementation requirements",
+          status: "gap",
+          details: "MFA definition not understood",
+          recommendation: "Document understanding of MFA definition: authentication through verification of at least two of knowledge factors (password), possession factors (token), or inherence factors (biometric characteristic)."
+        }
+      ]
+    },
+    {
       name: "Cybersecurity Program (500.02)",
       description: "Establish and maintain a cybersecurity program designed to protect the confidentiality, integrity, and availability of information systems",
       results: [
@@ -4160,21 +4222,42 @@ export const nydfs500 = {
           control: "Implement a written cybersecurity policy setting forth the Covered Entity's policies and procedures for the protection of its information systems and nonpublic information",
           status: "gap",
           details: "Written cybersecurity policy not implemented",
-          recommendation: "Develop comprehensive written cybersecurity policy covering all required areas and ensure it is approved by senior management or board"
+          recommendation: "Develop comprehensive written cybersecurity policy covering all required areas including information system protection, nonpublic information handling, access controls, incident response, and business continuity. Policy must be approved by senior management or board of directors."
         },
         {
           id: "500.03(b)",
           control: "Policy must be approved by a senior officer or the board of directors",
           status: "gap",
           details: "Policy not approved by appropriate authority",
-          recommendation: "Ensure cybersecurity policy is formally approved by senior officer or board of directors and documented"
+          recommendation: "Ensure cybersecurity policy is formally approved by senior officer or board of directors and documented. The policy must be reviewed and updated at least annually to reflect changes in technology, business operations, or regulatory requirements."
         },
         {
           id: "500.03(c)",
           control: "Policy must be reviewed and updated at least annually",
           status: "gap",
           details: "Policy review process not established",
-          recommendation: "Implement annual policy review process with documented updates and re-approval"
+          recommendation: "Implement annual policy review process with documented updates and re-approval. The policy must address the covered entity's specific risk profile and be updated to reflect changes in technology, business operations, or regulatory requirements."
+        },
+        {
+          id: "500.03(d)",
+          control: "Policy must be based on the covered entity's risk assessment",
+          status: "gap",
+          details: "Policy not based on risk assessment",
+          recommendation: "Ensure cybersecurity policy is based on the covered entity's risk assessment and addresses identified cybersecurity risks. The policy should be tailored to the organization's specific risk profile and business operations."
+        },
+        {
+          id: "500.03(e)",
+          control: "Policy must address the protection of nonpublic information",
+          status: "gap",
+          details: "Policy does not adequately address nonpublic information protection",
+          recommendation: "Ensure cybersecurity policy specifically addresses the protection of nonpublic information including data classification, handling procedures, access controls, and disposal requirements."
+        },
+        {
+          id: "500.03(f)",
+          control: "Policy must be communicated to all personnel",
+          status: "gap",
+          details: "Policy communication process not established",
+          recommendation: "Implement process to communicate cybersecurity policy to all personnel, including training on policy requirements and regular updates on policy changes."
         }
       ]
     },
@@ -4187,28 +4270,49 @@ export const nydfs500 = {
           control: "Designate a qualified individual to serve as the Chief Information Security Officer",
           status: "gap",
           details: "CISO not designated or individual lacks required qualifications",
-          recommendation: "Designate a qualified individual with appropriate cybersecurity expertise and experience to serve as CISO"
+          recommendation: "Designate a qualified individual with appropriate cybersecurity expertise and experience to serve as CISO. The CISO must have sufficient knowledge and experience to oversee and implement the covered entity's cybersecurity program and enforce its cybersecurity policy."
         },
         {
           id: "500.04(b)",
           control: "CISO must report to the board of directors or senior officer at least annually",
           status: "gap",
           details: "CISO reporting structure not established",
-          recommendation: "Establish reporting structure where CISO reports to board or senior officer at least annually"
+          recommendation: "Establish reporting structure where CISO reports to board or senior officer at least annually. The CISO must have direct access to the board or senior officer and provide regular updates on cybersecurity program status and risks."
         },
         {
           id: "500.04(c)",
           control: "CISO must have sufficient authority and resources to implement and maintain the cybersecurity program",
           status: "gap",
           details: "CISO lacks sufficient authority or resources",
-          recommendation: "Ensure CISO has adequate authority, budget, and resources to effectively implement cybersecurity program"
+          recommendation: "Ensure CISO has adequate authority, budget, and resources to effectively implement cybersecurity program. The CISO must have the authority to make decisions regarding cybersecurity matters and access to necessary resources including personnel, technology, and budget."
         },
         {
           id: "500.04(d)",
           control: "CISO must report annually to the board on plans for remediating material inadequacies",
           status: "gap",
           details: "Annual reporting on remediation plans not established",
-          recommendation: "Implement annual reporting process where CISO reports remediation plans for material inadequacies to board"
+          recommendation: "Implement annual reporting process where CISO reports remediation plans for material inadequacies to board. The report must include specific plans for addressing identified gaps and improving the cybersecurity program."
+        },
+        {
+          id: "500.04(e)",
+          control: "CISO must be responsible for overseeing and implementing the cybersecurity program",
+          status: "gap",
+          details: "CISO oversight responsibilities not clearly defined",
+          recommendation: "Clearly define CISO responsibilities for overseeing and implementing the cybersecurity program, including policy development, risk management, incident response, and program evaluation."
+        },
+        {
+          id: "500.04(f)",
+          control: "CISO must be responsible for enforcing the cybersecurity policy",
+          status: "gap",
+          details: "CISO policy enforcement responsibilities not established",
+          recommendation: "Establish CISO responsibilities for enforcing the cybersecurity policy, including monitoring compliance, investigating violations, and taking corrective action when necessary."
+        },
+        {
+          id: "500.04(g)",
+          control: "CISO must have appropriate qualifications and experience",
+          status: "gap",
+          details: "CISO qualifications not verified or documented",
+          recommendation: "Ensure CISO has appropriate qualifications and experience in cybersecurity, including relevant certifications, education, and professional experience. Document CISO qualifications and maintain records of ongoing professional development."
         }
       ]
     },
@@ -4221,28 +4325,56 @@ export const nydfs500 = {
           control: "Conduct annual penetration testing of the Covered Entity's information systems",
           status: "gap",
           details: "Annual penetration testing not conducted",
-          recommendation: "Implement annual penetration testing program conducted by qualified personnel or third-party vendors"
+          recommendation: "Implement annual penetration testing program conducted by qualified personnel or third-party vendors. Testing must be performed by qualified personnel and include both external and internal penetration testing of all information systems."
         },
         {
           id: "500.05(b)",
           control: "Conduct bi-annual vulnerability assessments of the Covered Entity's information systems",
           status: "gap",
           details: "Bi-annual vulnerability assessments not conducted",
-          recommendation: "Implement bi-annual vulnerability assessment program using automated tools and manual testing"
+          recommendation: "Implement bi-annual vulnerability assessment program using automated tools and manual testing. Assessments must be conducted at least twice per year and include all information systems."
         },
         {
           id: "500.05(c)",
           control: "Conduct automated scans or manual reviews to discover, analyze, and report vulnerabilities",
           status: "gap",
           details: "Automated vulnerability scanning not implemented",
-          recommendation: "Implement automated vulnerability scanning tools with regular scanning schedules and manual review processes"
+          recommendation: "Implement automated vulnerability scanning tools with regular scanning schedules and manual review processes. Use industry-standard vulnerability scanning tools and ensure comprehensive coverage of all systems."
         },
         {
           id: "500.05(d)",
           control: "Scan frequency must be determined based on risk assessment but must occur promptly after material system changes",
           status: "gap",
           details: "Scanning frequency not based on risk assessment or material changes",
-          recommendation: "Establish risk-based scanning frequency and ensure immediate scanning after material system changes"
+          recommendation: "Establish risk-based scanning frequency and ensure immediate scanning after material system changes. Document scanning frequency decisions and maintain records of all scans performed."
+        },
+        {
+          id: "500.05(e)",
+          control: "Ensure penetration testing is performed by qualified personnel",
+          status: "gap",
+          details: "Penetration testing personnel qualifications not verified",
+          recommendation: "Ensure penetration testing is performed by qualified personnel with appropriate certifications and experience. Document personnel qualifications and maintain records of testing credentials."
+        },
+        {
+          id: "500.05(f)",
+          control: "Document and remediate vulnerabilities identified during testing",
+          status: "gap",
+          details: "Vulnerability remediation process not established",
+          recommendation: "Implement process to document all vulnerabilities identified during testing and establish remediation timeline based on risk level. Track remediation progress and verify fixes."
+        },
+        {
+          id: "500.05(g)",
+          control: "Include both external and internal penetration testing",
+          status: "gap",
+          details: "Testing scope does not include both external and internal testing",
+          recommendation: "Ensure penetration testing includes both external testing (from outside the network) and internal testing (from inside the network) to identify vulnerabilities from different attack vectors."
+        },
+        {
+          id: "500.05(h)",
+          control: "Test all information systems including specialized systems",
+          status: "gap",
+          details: "Testing does not cover all information systems",
+          recommendation: "Ensure testing covers all information systems including specialized systems such as industrial/process control systems, telephone switching systems, and environmental control systems as defined in the regulation."
         }
       ]
     },

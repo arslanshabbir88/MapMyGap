@@ -2187,6 +2187,7 @@ function Analyzer() {
                    
                    <div className="space-y-2">
                      {[
+                       { code: '500.1', name: 'Definitions', description: 'Understand key definitions and terms used throughout Part 500' },
                        { code: '500.02', name: 'Cybersecurity Program', description: 'Establish and maintain a cybersecurity program (Enhanced with Second Amendment)' },
                        { code: '500.03', name: 'Cybersecurity Policy', description: 'Implement written cybersecurity policy' },
                        { code: '500.04', name: 'Chief Information Security Officer', description: 'Designate qualified CISO' },
