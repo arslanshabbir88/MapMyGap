@@ -4387,21 +4387,56 @@ export const nydfs500 = {
           control: "Maintain audit trail of all user access and administrative actions on information systems",
           status: "gap",
           details: "Comprehensive audit trail not maintained",
-          recommendation: "Implement comprehensive audit logging for all user access and administrative actions across information systems"
+          recommendation: "Implement comprehensive audit logging for all user access and administrative actions across information systems. The audit trail must include all user access to information systems, administrative actions, and system events."
         },
         {
           id: "500.06(b)",
           control: "Audit trail must be designed to detect and respond to cybersecurity events",
           status: "gap",
           details: "Audit trail not designed for cybersecurity event detection",
-          recommendation: "Design audit trail system to enable detection and response to cybersecurity events with appropriate alerting"
+          recommendation: "Design audit trail system to enable detection and response to cybersecurity events with appropriate alerting. The system must be capable of identifying suspicious activities and potential security incidents."
         },
         {
           id: "500.06(c)",
           control: "Audit trail must be retained for at least six years",
           status: "gap",
           details: "Audit trail retention period not established",
-          recommendation: "Implement audit trail retention for minimum six years with secure storage and retrieval capabilities"
+          recommendation: "Implement audit trail retention for minimum six years with secure storage and retrieval capabilities. Ensure audit logs are protected from tampering and unauthorized access."
+        },
+        {
+          id: "500.06(d)",
+          control: "Audit trail must be maintained in a secure location",
+          status: "gap",
+          details: "Audit trail storage location not secure",
+          recommendation: "Store audit trails in a secure location with appropriate access controls and backup procedures. Ensure audit logs are protected from unauthorized modification or deletion."
+        },
+        {
+          id: "500.06(e)",
+          control: "Audit trail must be accessible for examination by the superintendent",
+          status: "gap",
+          details: "Audit trail not accessible for regulatory examination",
+          recommendation: "Ensure audit trails are accessible for examination by the superintendent upon request. Maintain proper documentation and retrieval procedures for regulatory compliance."
+        },
+        {
+          id: "500.06(f)",
+          control: "Audit trail must include sufficient detail to reconstruct activities",
+          status: "gap",
+          details: "Audit trail lacks sufficient detail for reconstruction",
+          recommendation: "Ensure audit trails contain sufficient detail to reconstruct user activities, including timestamps, user identification, actions performed, and system responses. Include both successful and failed access attempts."
+        },
+        {
+          id: "500.06(g)",
+          control: "Audit trail must be monitored and reviewed regularly",
+          status: "gap",
+          details: "Audit trail monitoring and review process not established",
+          recommendation: "Implement regular monitoring and review of audit trails to identify suspicious activities, policy violations, and potential security incidents. Establish procedures for responding to audit findings."
+        },
+        {
+          id: "500.06(h)",
+          control: "Audit trail must cover all information systems including specialized systems",
+          status: "gap",
+          details: "Audit trail does not cover all information systems",
+          recommendation: "Ensure audit trails cover all information systems including specialized systems such as industrial/process control systems, telephone switching systems, and environmental control systems as defined in the regulation."
         }
       ]
     },
@@ -4414,21 +4449,56 @@ export const nydfs500 = {
           control: "Limit user access privileges to information systems that contain nonpublic information to those necessary to perform the user's job functions",
           status: "gap",
           details: "Access privileges not limited to job functions",
-          recommendation: "Implement least privilege access controls ensuring users only have access necessary for their job functions"
+          recommendation: "Implement least privilege access controls ensuring users only have access necessary for their job functions. Access must be based on business need and job responsibilities, with regular justification and approval processes."
         },
         {
           id: "500.07(b)",
           control: "Periodically review access privileges and remove or disable access that is no longer necessary",
           status: "gap",
           details: "Access review process not established",
-          recommendation: "Implement periodic access review process with documented procedures for removing unnecessary access"
+          recommendation: "Implement periodic access review process with documented procedures for removing unnecessary access. Reviews must be conducted at least annually and include verification of business need for continued access."
         },
         {
           id: "500.07(c)",
           control: "Implement privileged access management for users with administrative access",
           status: "gap",
           details: "Privileged access management not implemented",
-          recommendation: "Implement privileged access management solution for administrative accounts with additional controls and monitoring"
+          recommendation: "Implement privileged access management solution for administrative accounts with additional controls and monitoring. Include multi-factor authentication, session recording, and regular access reviews for privileged accounts."
+        },
+        {
+          id: "500.07(d)",
+          control: "Implement role-based access control (RBAC) system",
+          status: "gap",
+          details: "RBAC system not implemented",
+          recommendation: "Implement role-based access control system that assigns access based on job roles and responsibilities. Define clear roles with specific access permissions and regularly review role assignments."
+        },
+        {
+          id: "500.07(e)",
+          control: "Implement access provisioning and deprovisioning procedures",
+          status: "gap",
+          details: "Access provisioning procedures not established",
+          recommendation: "Establish formal procedures for provisioning access when users join the organization and deprovisioning access when users leave or change roles. Include approval workflows and verification processes."
+        },
+        {
+          id: "500.07(f)",
+          control: "Implement segregation of duties controls",
+          status: "gap",
+          details: "Segregation of duties not implemented",
+          recommendation: "Implement segregation of duties controls to prevent single users from having conflicting access rights. Ensure critical functions require multiple approvals and separate individuals for different phases of processes."
+        },
+        {
+          id: "500.07(g)",
+          control: "Implement access monitoring and logging",
+          status: "gap",
+          details: "Access monitoring not implemented",
+          recommendation: "Implement comprehensive access monitoring and logging for all user access to information systems. Monitor for unusual access patterns, failed access attempts, and unauthorized access attempts."
+        },
+        {
+          id: "500.07(h)",
+          control: "Implement access control testing and validation",
+          status: "gap",
+          details: "Access control testing not implemented",
+          recommendation: "Implement regular testing and validation of access controls to ensure they are working as intended. Include penetration testing of access controls and regular review of access permissions."
         }
       ]
     },
@@ -4441,21 +4511,56 @@ export const nydfs500 = {
           control: "Develop written procedures for the secure development of applications",
           status: "gap",
           details: "Secure development procedures not documented",
-          recommendation: "Develop comprehensive secure development lifecycle (SDLC) procedures including security requirements, testing, and review processes"
+          recommendation: "Develop comprehensive secure development lifecycle (SDLC) procedures including security requirements, testing, and review processes. Procedures must cover all phases of development from requirements to deployment and maintenance."
         },
         {
           id: "500.08(b)",
           control: "Implement secure coding practices and security testing throughout the development process",
           status: "gap",
           details: "Secure coding practices not implemented",
-          recommendation: "Implement secure coding standards, training, and automated security testing tools in development process"
+          recommendation: "Implement secure coding standards, training, and automated security testing tools in development process. Include secure coding guidelines, developer training, and code review processes."
         },
         {
           id: "500.08(c)",
           control: "Conduct regular security testing of applications",
           status: "gap",
           details: "Regular application security testing not conducted",
-          recommendation: "Implement regular application security testing including static, dynamic, and interactive testing"
+          recommendation: "Implement regular application security testing including static, dynamic, and interactive testing. Testing must be conducted throughout the development lifecycle and on production applications."
+        },
+        {
+          id: "500.08(d)",
+          control: "Implement application security controls and safeguards",
+          status: "gap",
+          details: "Application security controls not implemented",
+          recommendation: "Implement appropriate application security controls including input validation, output encoding, authentication, authorization, session management, and error handling. Controls must be designed to prevent common vulnerabilities."
+        },
+        {
+          id: "500.08(e)",
+          control: "Implement secure configuration management for applications",
+          status: "gap",
+          details: "Secure configuration management not implemented",
+          recommendation: "Implement secure configuration management for applications including secure default configurations, configuration baselines, and change management processes. Regular configuration reviews and updates must be conducted."
+        },
+        {
+          id: "500.08(f)",
+          control: "Implement application vulnerability management",
+          status: "gap",
+          details: "Application vulnerability management not implemented",
+          recommendation: "Implement application vulnerability management including regular vulnerability scanning, patch management, and vulnerability remediation processes. Establish procedures for identifying, assessing, and remediating application vulnerabilities."
+        },
+        {
+          id: "500.08(g)",
+          control: "Implement secure application deployment procedures",
+          status: "gap",
+          details: "Secure deployment procedures not implemented",
+          recommendation: "Implement secure application deployment procedures including secure deployment environments, deployment approval processes, and post-deployment security validation. Ensure applications are deployed securely and securely configured."
+        },
+        {
+          id: "500.08(h)",
+          control: "Implement application security monitoring and logging",
+          status: "gap",
+          details: "Application security monitoring not implemented",
+          recommendation: "Implement application security monitoring and logging to detect security events, monitor application behavior, and log security-relevant activities. Include real-time monitoring and alerting for security incidents."
         }
       ]
     },
@@ -4468,21 +4573,56 @@ export const nydfs500 = {
           control: "Conduct periodic risk assessments to inform the design of the cybersecurity program",
           status: "gap",
           details: "Periodic risk assessments not conducted",
-          recommendation: "Implement regular risk assessment process to identify and evaluate cybersecurity risks"
+          recommendation: "Implement regular risk assessment process to identify and evaluate cybersecurity risks. Risk assessments must be comprehensive and cover all aspects of the organization's information systems and operations."
         },
         {
           id: "500.09(b)",
           control: "Risk assessments must be updated at least annually",
           status: "gap",
           details: "Annual risk assessment updates not established",
-          recommendation: "Establish annual risk assessment review and update process with documented methodology"
+          recommendation: "Establish annual risk assessment review and update process with documented methodology. Risk assessments must be updated whenever there are material changes to the organization's systems or operations."
         },
         {
           id: "500.09(c)",
           control: "Risk assessments must address novel cybersecurity threats",
           status: "gap",
           details: "Risk assessments do not address emerging threats",
-          recommendation: "Ensure risk assessments include evaluation of novel and emerging cybersecurity threats"
+          recommendation: "Ensure risk assessments include evaluation of novel and emerging cybersecurity threats. Stay current with threat intelligence and industry best practices to identify new risks."
+        },
+        {
+          id: "500.09(d)",
+          control: "Risk assessments must be documented and maintained",
+          status: "gap",
+          details: "Risk assessment documentation not maintained",
+          recommendation: "Document all risk assessments including methodology, findings, and recommendations. Maintain risk assessment documentation for regulatory examination and internal review purposes."
+        },
+        {
+          id: "500.09(e)",
+          control: "Risk assessments must identify and assess all information systems",
+          status: "gap",
+          details: "Risk assessments do not cover all information systems",
+          recommendation: "Ensure risk assessments identify and assess all information systems including specialized systems such as industrial/process control systems, telephone switching systems, and environmental control systems."
+        },
+        {
+          id: "500.09(f)",
+          control: "Risk assessments must evaluate third-party service provider risks",
+          status: "gap",
+          details: "Third-party service provider risks not evaluated",
+          recommendation: "Include evaluation of third-party service provider risks in risk assessments. Assess risks associated with vendors, contractors, and other third parties that have access to information systems or nonpublic information."
+        },
+        {
+          id: "500.09(g)",
+          control: "Risk assessments must include business impact analysis",
+          status: "gap",
+          details: "Business impact analysis not included in risk assessments",
+          recommendation: "Include business impact analysis in risk assessments to understand the potential impact of cybersecurity events on business operations, reputation, and financial condition."
+        },
+        {
+          id: "500.09(h)",
+          control: "Risk assessments must be used to inform cybersecurity program design",
+          status: "gap",
+          details: "Risk assessments not used to inform program design",
+          recommendation: "Use risk assessment findings to inform the design and implementation of the cybersecurity program. Ensure controls and safeguards are appropriate for identified risks and risk levels."
         }
       ]
     },
@@ -4495,21 +4635,56 @@ export const nydfs500 = {
           control: "Employ qualified cybersecurity personnel or engage qualified third-party service providers",
           status: "gap",
           details: "Qualified cybersecurity personnel not employed",
-          recommendation: "Employ qualified cybersecurity personnel or engage qualified third-party service providers with appropriate expertise"
+          recommendation: "Employ qualified cybersecurity personnel or engage qualified third-party service providers with appropriate expertise. Personnel must have relevant cybersecurity certifications, education, and experience."
         },
         {
           id: "500.10(b)",
           control: "Utilize cybersecurity intelligence to inform the cybersecurity program",
           status: "gap",
           details: "Cybersecurity intelligence not utilized",
-          recommendation: "Implement cybersecurity intelligence gathering and analysis capabilities to inform program decisions"
+          recommendation: "Implement cybersecurity intelligence gathering and analysis capabilities to inform program decisions. Subscribe to threat intelligence feeds and participate in information sharing organizations."
         },
         {
           id: "500.10(c)",
           control: "Provide regular cybersecurity training to personnel",
           status: "gap",
           details: "Regular cybersecurity training not provided",
-          recommendation: "Implement comprehensive cybersecurity training program for all personnel with regular updates"
+          recommendation: "Implement comprehensive cybersecurity training program for all personnel with regular updates. Training must cover cybersecurity awareness, policies, procedures, and incident response."
+        },
+        {
+          id: "500.10(d)",
+          control: "Ensure cybersecurity personnel have appropriate qualifications and experience",
+          status: "gap",
+          details: "Cybersecurity personnel qualifications not verified",
+          recommendation: "Verify that cybersecurity personnel have appropriate qualifications and experience for their roles. Maintain records of personnel qualifications and provide ongoing professional development opportunities."
+        },
+        {
+          id: "500.10(e)",
+          control: "Implement cybersecurity personnel background checks and security clearances",
+          status: "gap",
+          details: "Background checks not conducted for cybersecurity personnel",
+          recommendation: "Conduct appropriate background checks and security clearances for cybersecurity personnel. Ensure personnel are trustworthy and have no conflicts of interest that could compromise security."
+        },
+        {
+          id: "500.10(f)",
+          control: "Establish cybersecurity personnel roles and responsibilities",
+          status: "gap",
+          details: "Cybersecurity personnel roles not clearly defined",
+          recommendation: "Clearly define roles and responsibilities for cybersecurity personnel. Establish reporting relationships, decision-making authority, and accountability measures for cybersecurity functions."
+        },
+        {
+          id: "500.10(g)",
+          control: "Implement cybersecurity personnel retention and succession planning",
+          status: "gap",
+          details: "Cybersecurity personnel retention not addressed",
+          recommendation: "Implement retention strategies and succession planning for cybersecurity personnel. Ensure continuity of cybersecurity operations and knowledge transfer."
+        },
+        {
+          id: "500.10(h)",
+          control: "Establish cybersecurity personnel performance management",
+          status: "gap",
+          details: "Cybersecurity personnel performance management not established",
+          recommendation: "Establish performance management processes for cybersecurity personnel including regular reviews, goal setting, and performance improvement plans. Link performance to cybersecurity program effectiveness."
         }
       ]
     },
