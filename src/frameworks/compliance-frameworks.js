@@ -2,8 +2,13 @@
 // This file provides structured control data for AI analysis
 
 export const pciDSS = {
-  name: "PCI DSS v4.0",
-  description: "Payment Card Industry Data Security Standard",
+  name: "PCI DSS v4.0.1",
+  description: "Payment Card Industry Data Security Standard v4.0.1 (June 2024)",
+  definitions: {
+    "Legal Exception": "A specific circumstance where a requirement may not apply due to legal or regulatory constraints that prevent full implementation of the requirement.",
+    "Phishing Resistant Authentication": "Authentication methods that are resistant to phishing attacks, such as FIDO2/WebAuthn, PIV cards, or other hardware-based authentication tokens that cannot be easily compromised through social engineering.",
+    "Visitor": "Any individual who is not an employee, contractor, or authorized personnel but has physical access to areas where cardholder data is processed, stored, or transmitted."
+  },
   categories: [
     {
       name: "Requirement 1: Install and Maintain Network Security Controls",
@@ -96,56 +101,56 @@ export const pciDSS = {
     },
     {
       name: "Requirement 3: Protect Stored Account Data",
-      description: "Processes and mechanisms for protecting stored account data are defined and understood",
+      description: "Processes and mechanisms for protecting stored account data are defined and understood. Applies to all entities that store, process, or transmit account data, including issuers and companies supporting issuing services.",
       results: [
         {
           id: "PCI DSS 3.1",
           control: "Processes and mechanisms for protecting stored account data are defined and understood",
           status: "gap",
           details: "Account data protection processes not defined",
-          recommendation: "Document and implement comprehensive processes for protecting stored account data"
+          recommendation: "Document and implement comprehensive processes for protecting stored account data. For issuers and companies supporting issuing services, ensure processes address specific requirements for cardholder data storage and processing."
         },
         {
           id: "PCI DSS 3.2",
           control: "Storage of account data is kept to a minimum",
           status: "gap",
           details: "Account data storage not minimized",
-          recommendation: "Implement data retention policies to minimize storage of account data"
+          recommendation: "Implement data retention policies to minimize storage of account data. Consider Customized Approach Objective for organizations with specific business needs for data retention."
         },
         {
           id: "PCI DSS 3.3",
           control: "Sensitive authentication data (SAD) is not stored after authorization",
           status: "gap",
           details: "Sensitive authentication data storage not controlled",
-          recommendation: "Implement procedures to prevent storage of sensitive authentication data post-authorization"
+          recommendation: "Implement procedures to prevent storage of sensitive authentication data post-authorization. This applies to all entities regardless of their role in the payment ecosystem."
         },
         {
           id: "PCI DSS 3.4",
           control: "Access to stored account data is restricted",
           status: "gap",
           details: "Access to stored account data not restricted",
-          recommendation: "Implement access controls to restrict access to stored account data"
+          recommendation: "Implement access controls to restrict access to stored account data. For organizations using keyed cryptographic hashes to render PAN unreadable, ensure proper key management and access controls are in place."
         },
         {
           id: "PCI DSS 3.5",
           control: "Primary account number (PAN) is masked when displayed",
           status: "gap",
           details: "PAN masking not implemented",
-          recommendation: "Implement PAN masking in all displays and logs (first 6 and last 4 digits maximum)"
+          recommendation: "Implement PAN masking in all displays and logs (first 6 and last 4 digits maximum). For organizations using keyed cryptographic hashes, ensure PAN is properly masked in all user interfaces and logs."
         },
         {
           id: "PCI DSS 3.6",
           control: "Cryptographic keys used for encryption of account data are secured",
           status: "gap",
           details: "Cryptographic key security not implemented",
-          recommendation: "Implement secure key management for encryption keys used to protect account data"
+          recommendation: "Implement secure key management for encryption keys used to protect account data. For organizations using keyed cryptographic hashes, ensure keys are properly secured and managed according to industry standards."
         },
         {
           id: "PCI DSS 3.7",
           control: "Cryptographic key management policies and procedures are implemented",
           status: "gap",
           details: "Key management policies not implemented",
-          recommendation: "Develop and implement comprehensive cryptographic key management policies and procedures"
+          recommendation: "Develop and implement comprehensive cryptographic key management policies and procedures. Include specific guidance for keyed cryptographic hash implementations and key rotation procedures."
         }
       ]
     },
@@ -205,42 +210,42 @@ export const pciDSS = {
     },
     {
       name: "Requirement 6: Develop and Maintain Secure Systems and Software",
-      description: "Processes and mechanisms for developing and maintaining secure systems are defined and understood",
+      description: "Processes and mechanisms for developing and maintaining secure systems are defined and understood. Includes specific requirements for payment page script management and critical vulnerability patching.",
       results: [
         {
           id: "PCI DSS 6.1",
           control: "Processes and mechanisms for developing and maintaining secure systems are defined and understood",
           status: "gap",
           details: "Secure development processes not defined",
-          recommendation: "Document and implement comprehensive secure development and maintenance processes"
+          recommendation: "Document and implement comprehensive secure development and maintenance processes. Include specific procedures for managing payment page scripts and their security."
         },
         {
           id: "PCI DSS 6.2",
           control: "Security vulnerabilities are identified and addressed",
           status: "gap",
           details: "Vulnerability identification process not established",
-          recommendation: "Implement formal process to identify and address security vulnerabilities"
+          recommendation: "Implement formal process to identify and address security vulnerabilities. Install patches for critical vulnerabilities within 30 days of release. For non-critical vulnerabilities, implement risk-based patching schedule."
         },
         {
           id: "PCI DSS 6.3",
           control: "Custom software is securely developed",
           status: "gap",
           details: "Secure development practices not implemented",
-          recommendation: "Implement secure development practices for custom software"
+          recommendation: "Implement secure development practices for custom software. Include secure coding practices, code reviews, and security testing throughout the development lifecycle."
         },
         {
           id: "PCI DSS 6.4",
           control: "Public-facing web applications are protected against attacks",
           status: "gap",
           details: "Web application protection not implemented",
-          recommendation: "Implement protection mechanisms for public-facing web applications"
+          recommendation: "Implement protection mechanisms for public-facing web applications. For payment page scripts, ensure they are managed securely and protected against tampering. Implement Content Security Policy (CSP) and other web application security controls."
         },
         {
           id: "PCI DSS 6.5",
           control: "Changes to systems are managed securely",
           status: "gap",
           details: "Secure change management not implemented",
-          recommendation: "Implement secure change management processes for system modifications"
+          recommendation: "Implement secure change management processes for system modifications. Include specific procedures for managing changes to payment page scripts and ensuring their integrity."
         }
       ]
     },
@@ -273,49 +278,49 @@ export const pciDSS = {
     },
     {
       name: "Requirement 8: Identify Users and Authenticate Access to System Components",
-      description: "Processes and mechanisms for identifying users are defined and understood",
+      description: "Processes and mechanisms for identifying users are defined and understood. Includes MFA requirements with exceptions for phishing-resistant authentication factors.",
       results: [
         {
           id: "PCI DSS 8.1",
           control: "Processes and mechanisms for identifying users are defined and understood",
           status: "gap",
           details: "User identification processes not defined",
-          recommendation: "Document and implement comprehensive user identification processes"
+          recommendation: "Document and implement comprehensive user identification processes. Include procedures for managing different types of authentication factors and their security requirements."
         },
         {
           id: "PCI DSS 8.2",
           control: "User identification and authentication are implemented",
           status: "gap",
           details: "User identification and authentication not implemented",
-          recommendation: "Implement unique user identification and authentication mechanisms"
+          recommendation: "Implement unique user identification and authentication mechanisms. Ensure all users have unique identifiers and appropriate authentication methods."
         },
         {
           id: "PCI DSS 8.3",
           control: "Strong authentication for access to the CDE is enforced",
           status: "gap",
           details: "Strong authentication not enforced for CDE access",
-          recommendation: "Enforce strong authentication for all access to cardholder data environment"
+          recommendation: "Enforce strong authentication for all access to cardholder data environment. Consider implementing phishing-resistant authentication factors for enhanced security."
         },
         {
           id: "PCI DSS 8.4",
           control: "Multi-factor authentication (MFA) is implemented for all non-console administrative and remote access",
           status: "gap",
           details: "Multi-factor authentication not implemented",
-          recommendation: "Implement multi-factor authentication for all non-console administrative and remote access"
+          recommendation: "Implement multi-factor authentication for all non-console administrative and remote access. Note: MFA is not required for user accounts authenticated solely with phishing-resistant authentication factors (e.g., FIDO2/WebAuthn, PIV cards)."
         },
         {
           id: "PCI DSS 8.5",
           control: "Passwords/passphrases meet strong complexity and security requirements",
           status: "gap",
           details: "Password complexity requirements not implemented",
-          recommendation: "Implement strong password/passphrase complexity and security requirements"
+          recommendation: "Implement strong password/passphrase complexity and security requirements. For organizations using phishing-resistant authentication, ensure password policies are still appropriate for fallback authentication methods."
         },
         {
           id: "PCI DSS 8.6",
           control: "Application and system accounts are managed securely",
           status: "gap",
           details: "Application and system account management not implemented",
-          recommendation: "Implement secure management of application and system accounts"
+          recommendation: "Implement secure management of application and system accounts. Include procedures for managing authentication credentials for automated systems and service accounts."
         }
       ]
     },
@@ -451,63 +456,63 @@ export const pciDSS = {
     },
     {
       name: "Requirement 12: Support Information Security with Organizational Policies and Programs",
-      description: "Processes and mechanisms for supporting information security are defined and understood",
+      description: "Processes and mechanisms for supporting information security are defined and understood. Includes specific guidance for third-party service provider (TPSP) relationships and visitor management.",
       results: [
         {
           id: "PCI DSS 12.1",
           control: "Processes and mechanisms for supporting information security are defined and understood",
           status: "gap",
           details: "Information security support processes not defined",
-          recommendation: "Document and implement comprehensive information security support processes"
+          recommendation: "Document and implement comprehensive information security support processes. Include specific procedures for managing relationships with third-party service providers and visitor access controls."
         },
         {
           id: "PCI DSS 12.2",
           control: "Risk assessments are performed at least annually",
           status: "gap",
           details: "Annual risk assessments not implemented",
-          recommendation: "Implement annual risk assessment process"
+          recommendation: "Implement annual risk assessment process. Include assessment of risks associated with third-party service providers and their access to cardholder data."
         },
         {
           id: "PCI DSS 12.3",
           control: "Information security policies and procedures are documented, in use, and known to all parties",
           status: "gap",
           details: "Information security policies not documented or communicated",
-          recommendation: "Document, implement, and communicate information security policies and procedures"
+          recommendation: "Document, implement, and communicate information security policies and procedures. Ensure policies address third-party service provider requirements and visitor management procedures."
         },
         {
           id: "PCI DSS 12.4",
           control: "Security responsibilities are assigned and communicated",
           status: "gap",
           details: "Security responsibilities not assigned",
-          recommendation: "Assign and communicate information security responsibilities"
+          recommendation: "Assign and communicate information security responsibilities. Include specific responsibilities for managing third-party service provider relationships and visitor access controls."
         },
         {
           id: "PCI DSS 12.5",
           control: "Personnel are trained on security awareness",
           status: "gap",
           details: "Security awareness training not implemented",
-          recommendation: "Implement comprehensive security awareness training program"
+          recommendation: "Implement comprehensive security awareness training program. Include training on third-party service provider security requirements and visitor management procedures."
         },
         {
           id: "PCI DSS 12.6",
           control: "Service providers with which account data is shared are managed",
           status: "gap",
           details: "Service provider management not implemented",
-          recommendation: "Implement service provider management program"
+          recommendation: "Implement service provider management program. Clarify relationships between customers and third-party service providers (TPSPs). Ensure proper agreements and security requirements are in place for all service providers with access to cardholder data."
         },
         {
           id: "PCI DSS 12.7",
           control: "Incident response procedures are established, tested, and maintained",
           status: "gap",
           details: "Incident response procedures not established",
-          recommendation: "Establish, test, and maintain incident response procedures"
+          recommendation: "Establish, test, and maintain incident response procedures. Include procedures for handling incidents involving third-party service providers and visitor-related security incidents."
         },
         {
           id: "PCI DSS 12.8",
           control: "A continuous compliance program is maintained",
           status: "gap",
           details: "Continuous compliance program not implemented",
-          recommendation: "Implement and maintain continuous compliance program"
+          recommendation: "Implement and maintain continuous compliance program. Include regular monitoring and assessment of third-party service provider compliance and visitor access management effectiveness."
         }
       ]
     }
