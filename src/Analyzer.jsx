@@ -1663,6 +1663,16 @@ function Analyzer() {
                 </p>
               </div>
 
+              {/* Static Analysis Timing Disclaimer */}
+              <div className="mb-6 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                <div className="flex items-center space-x-2 text-sm text-blue-400">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <span>💡 Analysis typically takes 30-60 seconds. Please don't leave this page while analysis is running.</span>
+                </div>
+              </div>
+
               {/* Control Family Selection for NIST 800-53 */}
               {selectedFramework === 'NIST_800_53' && (
                 <div className="mb-6">
@@ -1900,7 +1910,7 @@ function Analyzer() {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                      <span>Select one COSO component to analyze (prevents token limit issues)</span>
+                      <span>Select one COSO component to analyze</span>
                     </div>
                   </div>
                   
@@ -1951,7 +1961,7 @@ function Analyzer() {
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
-                      <span>Select one trust service criteria to analyze (prevents token limit issues)</span>
+                      <span>Select one trust service criteria to analyze</span>
                     </div>
                   </div>
                   
@@ -2111,17 +2121,6 @@ function Analyzer() {
 
 
               
-              {/* Simple Analysis Warning */}
-              {isAnalyzing && (
-                <div className="mt-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-                  <div className="flex items-center space-x-2 text-sm text-blue-400">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <span>💡 Analysis typically takes 30-60 seconds. Please don't leave this page while analysis is running.</span>
-                  </div>
-                </div>
-              )}
 
               {selectedFramework === 'NIST_800_53' && selectedCategories.length === 0 && (
                  <div className="mt-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
@@ -2181,7 +2180,7 @@ function Analyzer() {
                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                        </svg>
-                       <span>Select one NYDFS Part 500 category to analyze (prevents token limit issues)</span>
+                       <span>Select one NYDFS Part 500 category to analyze</span>
                      </div>
                    </div>
                    
@@ -2258,7 +2257,7 @@ function Analyzer() {
                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                        </svg>
-                       <span>Select one PCI DSS requirement to analyze (prevents token limit issues)</span>
+                       <span>Select one PCI DSS requirement to analyze</span>
                      </div>
                    </div>
                    
@@ -2349,7 +2348,7 @@ function Analyzer() {
                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                        </svg>
-                       <span>Select one ISO 27001 category to analyze (prevents token limit issues)</span>
+                       <span>Select one ISO 27001 category to analyze</span>
                      </div>
                    </div>
                    
