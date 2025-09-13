@@ -2366,7 +2366,8 @@ function Analyzer() {
                        { code: 'A.14', name: 'Supplier Relationships', description: 'Controls for managing supplier security' },
                        { code: 'A.15', name: 'Information Security Incident Management', description: 'Controls for incident management and response' },
                        { code: 'A.16', name: 'Information Security Aspects of Business Continuity', description: 'Controls for business continuity and disaster recovery' },
-                       { code: 'A.17', name: 'Compliance', description: 'Controls for ensuring compliance with legal and regulatory requirements' }
+                       { code: 'A.17', name: 'Compliance', description: 'Controls for ensuring compliance with legal and regulatory requirements' },
+                       { code: 'A.18', name: 'Privacy and Protection of PII', description: 'Controls for privacy and personally identifiable information protection' }
                      ].map(category => (
                        <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                          <input

@@ -818,8 +818,8 @@ CRITICAL REQUIREMENTS:
           const categoryMapping = {
             'A.5': 'Organizational Controls',
             'A.6': 'People Controls',
-            'A.7': 'Physical and Environmental Security',
-            'A.8': 'Technology Controls',
+            'A.7': 'Physical Controls',
+            'A.8': 'Technological Controls',
             'A.9': 'Access Control',
             'A.10': 'Cryptography',
             'A.11': 'Operations Security',
@@ -828,7 +828,8 @@ CRITICAL REQUIREMENTS:
             'A.14': 'Supplier Relationships',
             'A.15': 'Information Security Incident Management',
             'A.16': 'Information Security Aspects of Business Continuity',
-            'A.17': 'Compliance'
+            'A.17': 'Compliance',
+            'A.18': 'Privacy and Protection of PII'
           };
           
           // Filter to only selected categories

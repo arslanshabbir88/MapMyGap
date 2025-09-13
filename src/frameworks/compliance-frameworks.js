@@ -561,6 +561,230 @@ export const iso27001 = {
           status: "gap",
           details: "Authority contact procedures not established",
           recommendation: "Establish procedures for contacting relevant authorities"
+        },
+        {
+          id: "A.5.6",
+          control: "Contact with special interest groups",
+          status: "gap",
+          details: "Special interest group contact procedures not established",
+          recommendation: "Establish procedures for contacting special interest groups and industry associations"
+        },
+        {
+          id: "A.5.7",
+          control: "Threat intelligence",
+          status: "gap",
+          details: "Threat intelligence program not implemented",
+          recommendation: "Implement threat intelligence program to identify and assess security threats"
+        },
+        {
+          id: "A.5.8",
+          control: "Information security in project management",
+          status: "gap",
+          details: "Project management security controls not implemented",
+          recommendation: "Integrate information security requirements into project management processes"
+        },
+        {
+          id: "A.5.9",
+          control: "Inventory of information and other associated assets",
+          status: "gap",
+          details: "Asset inventory not maintained",
+          recommendation: "Maintain comprehensive inventory of information assets and associated resources"
+        },
+        {
+          id: "A.5.10",
+          control: "Acceptable use of information and other associated assets",
+          status: "gap",
+          details: "Acceptable use policies not established",
+          recommendation: "Develop and communicate acceptable use policies for information assets"
+        },
+        {
+          id: "A.5.11",
+          control: "Return of assets",
+          status: "gap",
+          details: "Asset return procedures not established",
+          recommendation: "Establish procedures for returning information assets upon termination"
+        },
+        {
+          id: "A.5.12",
+          control: "Classification of information",
+          status: "gap",
+          details: "Information classification scheme not implemented",
+          recommendation: "Implement information classification scheme based on business requirements"
+        },
+        {
+          id: "A.5.13",
+          control: "Labelling of information",
+          status: "gap",
+          details: "Information labeling procedures not established",
+          recommendation: "Establish procedures for labeling information according to classification scheme"
+        },
+        {
+          id: "A.5.14",
+          control: "Information transfer",
+          status: "gap",
+          details: "Information transfer controls not implemented",
+          recommendation: "Implement controls for secure information transfer between parties"
+        },
+        {
+          id: "A.5.15",
+          control: "Access control",
+          status: "gap",
+          details: "Access control policies not established",
+          recommendation: "Develop and implement comprehensive access control policies and procedures"
+        },
+        {
+          id: "A.5.16",
+          control: "Identity management",
+          status: "gap",
+          details: "Identity management system not implemented",
+          recommendation: "Implement identity management system for user lifecycle management"
+        },
+        {
+          id: "A.5.17",
+          control: "Authentication information",
+          status: "gap",
+          details: "Authentication information management not implemented",
+          recommendation: "Implement secure management of authentication information"
+        },
+        {
+          id: "A.5.18",
+          control: "Access rights",
+          status: "gap",
+          details: "Access rights management not implemented",
+          recommendation: "Implement access rights management with regular review and revocation"
+        },
+        {
+          id: "A.5.19",
+          control: "Information security in supplier relationships",
+          status: "gap",
+          details: "Supplier security requirements not established",
+          recommendation: "Establish security requirements for supplier relationships"
+        },
+        {
+          id: "A.5.20",
+          control: "Addressing information security within supplier agreements",
+          status: "gap",
+          details: "Supplier security agreements not established",
+          recommendation: "Include information security requirements in supplier agreements"
+        },
+        {
+          id: "A.5.21",
+          control: "Managing information security in the ICT supply chain",
+          status: "gap",
+          details: "ICT supply chain security not managed",
+          recommendation: "Implement security controls for ICT supply chain management"
+        },
+        {
+          id: "A.5.22",
+          control: "Monitoring, review and change management of supplier services",
+          status: "gap",
+          details: "Supplier service monitoring not implemented",
+          recommendation: "Implement monitoring and review of supplier services"
+        },
+        {
+          id: "A.5.23",
+          control: "Information security for use of cloud services",
+          status: "gap",
+          details: "Cloud service security controls not implemented",
+          recommendation: "Implement security controls for cloud service usage"
+        },
+        {
+          id: "A.5.24",
+          control: "Information security incident management planning and preparation",
+          status: "gap",
+          details: "Incident management planning not established",
+          recommendation: "Develop incident management planning and preparation procedures"
+        },
+        {
+          id: "A.5.25",
+          control: "Assessment and decision on information security events",
+          status: "gap",
+          details: "Security event assessment procedures not established",
+          recommendation: "Establish procedures for assessing and deciding on security events"
+        },
+        {
+          id: "A.5.26",
+          control: "Response to information security incidents",
+          status: "gap",
+          details: "Incident response procedures not established",
+          recommendation: "Develop comprehensive incident response procedures"
+        },
+        {
+          id: "A.5.27",
+          control: "Learning from information security incidents",
+          status: "gap",
+          details: "Incident learning process not implemented",
+          recommendation: "Implement process for learning from security incidents"
+        },
+        {
+          id: "A.5.28",
+          control: "Collection of evidence",
+          status: "gap",
+          details: "Evidence collection procedures not established",
+          recommendation: "Establish procedures for collecting and preserving evidence"
+        },
+        {
+          id: "A.5.29",
+          control: "Information security during disruption",
+          status: "gap",
+          details: "Disruption security measures not implemented",
+          recommendation: "Implement security measures during business disruption"
+        },
+        {
+          id: "A.5.30",
+          control: "ICT readiness for business continuity",
+          status: "gap",
+          details: "ICT continuity planning not implemented",
+          recommendation: "Implement ICT readiness for business continuity"
+        },
+        {
+          id: "A.5.31",
+          control: "Legal, statutory, regulatory and contractual requirements",
+          status: "gap",
+          details: "Legal compliance requirements not identified",
+          recommendation: "Identify and comply with legal and regulatory requirements"
+        },
+        {
+          id: "A.5.32",
+          control: "Intellectual property rights",
+          status: "gap",
+          details: "Intellectual property protection not implemented",
+          recommendation: "Implement protection for intellectual property rights"
+        },
+        {
+          id: "A.5.33",
+          control: "Protection of records",
+          status: "gap",
+          details: "Record protection procedures not established",
+          recommendation: "Establish procedures for protecting organizational records"
+        },
+        {
+          id: "A.5.34",
+          control: "Privacy and protection of personally identifiable information",
+          status: "gap",
+          details: "PII protection measures not implemented",
+          recommendation: "Implement privacy and PII protection measures"
+        },
+        {
+          id: "A.5.35",
+          control: "Independent review of information security",
+          status: "gap",
+          details: "Independent security review not conducted",
+          recommendation: "Conduct independent review of information security implementation"
+        },
+        {
+          id: "A.5.36",
+          control: "Compliance with policies and standards for information security",
+          status: "gap",
+          details: "Compliance monitoring not implemented",
+          recommendation: "Implement compliance monitoring for security policies and standards"
+        },
+        {
+          id: "A.5.37",
+          control: "Documented operating procedures",
+          status: "gap",
+          details: "Operating procedures not documented",
+          recommendation: "Document all operating procedures for information security"
         }
       ]
     },
@@ -602,6 +826,27 @@ export const iso27001 = {
           status: "gap",
           details: "Employment termination procedures not include security measures",
           recommendation: "Implement security procedures for employment termination and role changes"
+        },
+        {
+          id: "A.6.6",
+          control: "Confidentiality or non-disclosure agreements",
+          status: "gap",
+          details: "Confidentiality agreements not established",
+          recommendation: "Implement confidentiality and non-disclosure agreements for all personnel"
+        },
+        {
+          id: "A.6.7",
+          control: "Remote working",
+          status: "gap",
+          details: "Remote working security controls not implemented",
+          recommendation: "Implement security controls for remote working arrangements"
+        },
+        {
+          id: "A.6.8",
+          control: "Information security event reporting",
+          status: "gap",
+          details: "Security event reporting procedures not established",
+          recommendation: "Establish procedures for personnel to report security events"
         }
       ]
     },
@@ -636,6 +881,76 @@ export const iso27001 = {
           status: "gap",
           details: "Physical security monitoring not implemented",
           recommendation: "Implement physical security monitoring and surveillance systems"
+        },
+        {
+          id: "A.7.5",
+          control: "Protecting against physical and environmental threats",
+          status: "gap",
+          details: "Physical threat protection not implemented",
+          recommendation: "Implement protection against physical and environmental threats"
+        },
+        {
+          id: "A.7.6",
+          control: "Working in secure areas",
+          status: "gap",
+          details: "Secure area working procedures not established",
+          recommendation: "Establish procedures for working in secure areas"
+        },
+        {
+          id: "A.7.7",
+          control: "Clear desk and clear screen",
+          status: "gap",
+          details: "Clear desk and screen policies not implemented",
+          recommendation: "Implement clear desk and clear screen policies"
+        },
+        {
+          id: "A.7.8",
+          control: "Equipment siting and protection",
+          status: "gap",
+          details: "Equipment protection measures not implemented",
+          recommendation: "Implement equipment siting and protection measures"
+        },
+        {
+          id: "A.7.9",
+          control: "Security of assets off-premises",
+          status: "gap",
+          details: "Off-premises asset security not implemented",
+          recommendation: "Implement security measures for assets used off-premises"
+        },
+        {
+          id: "A.7.10",
+          control: "Storage media",
+          status: "gap",
+          details: "Storage media security not implemented",
+          recommendation: "Implement secure handling and storage of media"
+        },
+        {
+          id: "A.7.11",
+          control: "Supporting utilities",
+          status: "gap",
+          details: "Utility security measures not implemented",
+          recommendation: "Implement security measures for supporting utilities"
+        },
+        {
+          id: "A.7.12",
+          control: "Cabling security",
+          status: "gap",
+          details: "Cabling security measures not implemented",
+          recommendation: "Implement security measures for power and telecommunications cabling"
+        },
+        {
+          id: "A.7.13",
+          control: "Equipment maintenance",
+          status: "gap",
+          details: "Equipment maintenance security not implemented",
+          recommendation: "Implement secure equipment maintenance procedures"
+        },
+        {
+          id: "A.7.14",
+          control: "Reuse or disposal of equipment",
+          status: "gap",
+          details: "Equipment disposal security not implemented",
+          recommendation: "Implement secure procedures for equipment reuse and disposal"
         }
       ]
     },
@@ -677,40 +992,969 @@ export const iso27001 = {
           status: "gap",
           details: "Secure authentication mechanisms not implemented",
           recommendation: "Implement multi-factor authentication and secure authentication protocols"
+        },
+        {
+          id: "A.8.6",
+          control: "Capacity management",
+          status: "gap",
+          details: "Capacity management not implemented",
+          recommendation: "Implement capacity management for information systems"
+        },
+        {
+          id: "A.8.7",
+          control: "Protection against malware",
+          status: "gap",
+          details: "Malware protection not implemented",
+          recommendation: "Implement protection against malicious code and malware"
+        },
+        {
+          id: "A.8.8",
+          control: "Management of technical vulnerabilities",
+          status: "gap",
+          details: "Vulnerability management not implemented",
+          recommendation: "Implement technical vulnerability management process"
+        },
+        {
+          id: "A.8.9",
+          control: "Configuration management",
+          status: "gap",
+          details: "Configuration management not implemented",
+          recommendation: "Implement configuration management for information systems"
+        },
+        {
+          id: "A.8.10",
+          control: "Information deletion",
+          status: "gap",
+          details: "Information deletion procedures not implemented",
+          recommendation: "Implement secure information deletion procedures"
+        },
+        {
+          id: "A.8.11",
+          control: "Data masking",
+          status: "gap",
+          details: "Data masking not implemented",
+          recommendation: "Implement data masking to limit exposure of sensitive information"
+        },
+        {
+          id: "A.8.12",
+          control: "Data leakage prevention",
+          status: "gap",
+          details: "Data leakage prevention not implemented",
+          recommendation: "Implement data leakage prevention controls"
+        },
+        {
+          id: "A.8.13",
+          control: "Monitoring activities",
+          status: "gap",
+          details: "Monitoring activities not implemented",
+          recommendation: "Implement monitoring of information processing activities"
+        },
+        {
+          id: "A.8.14",
+          control: "Audit logging",
+          status: "gap",
+          details: "Audit logging not implemented",
+          recommendation: "Implement audit logging for information systems"
+        },
+        {
+          id: "A.8.15",
+          control: "Clock synchronization",
+          status: "gap",
+          details: "Clock synchronization not implemented",
+          recommendation: "Implement clock synchronization for information systems"
+        },
+        {
+          id: "A.8.16",
+          control: "Use of privileged utility programs",
+          status: "gap",
+          details: "Privileged utility program controls not implemented",
+          recommendation: "Implement controls for use of privileged utility programs"
+        },
+        {
+          id: "A.8.17",
+          control: "Installation of software on operational systems",
+          status: "gap",
+          details: "Software installation controls not implemented",
+          recommendation: "Implement controls for software installation on operational systems"
+        },
+        {
+          id: "A.8.18",
+          control: "Management of technical vulnerabilities in systems",
+          status: "gap",
+          details: "System vulnerability management not implemented",
+          recommendation: "Implement technical vulnerability management for systems"
+        },
+        {
+          id: "A.8.19",
+          control: "Restrictions on software installation",
+          status: "gap",
+          details: "Software installation restrictions not implemented",
+          recommendation: "Implement restrictions on software installation"
+        },
+        {
+          id: "A.8.20",
+          control: "Secure coding",
+          status: "gap",
+          details: "Secure coding practices not implemented",
+          recommendation: "Implement secure coding practices and standards"
+        },
+        {
+          id: "A.8.21",
+          control: "Secure development environment",
+          status: "gap",
+          details: "Secure development environment not implemented",
+          recommendation: "Implement secure development environment"
+        },
+        {
+          id: "A.8.22",
+          control: "System security testing",
+          status: "gap",
+          details: "System security testing not implemented",
+          recommendation: "Implement system security testing procedures"
+        },
+        {
+          id: "A.8.23",
+          control: "Outsourced development",
+          status: "gap",
+          details: "Outsourced development security not implemented",
+          recommendation: "Implement security controls for outsourced development"
+        },
+        {
+          id: "A.8.24",
+          control: "System change control procedures",
+          status: "gap",
+          details: "System change control not implemented",
+          recommendation: "Implement system change control procedures"
+        },
+        {
+          id: "A.8.25",
+          control: "Modifications to systems in operational use",
+          status: "gap",
+          details: "System modification controls not implemented",
+          recommendation: "Implement controls for modifications to operational systems"
+        },
+        {
+          id: "A.8.26",
+          control: "Secure development policy",
+          status: "gap",
+          details: "Secure development policy not established",
+          recommendation: "Establish secure development policy and procedures"
+        },
+        {
+          id: "A.8.27",
+          control: "System security requirements",
+          status: "gap",
+          details: "System security requirements not defined",
+          recommendation: "Define system security requirements"
+        },
+        {
+          id: "A.8.28",
+          control: "System acceptance testing",
+          status: "gap",
+          details: "System acceptance testing not implemented",
+          recommendation: "Implement system acceptance testing procedures"
+        },
+        {
+          id: "A.8.29",
+          control: "Development and support processes",
+          status: "gap",
+          details: "Development and support processes not secured",
+          recommendation: "Implement secure development and support processes"
+        },
+        {
+          id: "A.8.30",
+          control: "Test data",
+          status: "gap",
+          details: "Test data security not implemented",
+          recommendation: "Implement secure handling of test data"
+        },
+        {
+          id: "A.8.31",
+          control: "Separation of development, test and operational environments",
+          status: "gap",
+          details: "Environment separation not implemented",
+          recommendation: "Implement separation of development, test and operational environments"
+        },
+        {
+          id: "A.8.32",
+          control: "Change management",
+          status: "gap",
+          details: "Change management not implemented",
+          recommendation: "Implement change management procedures"
+        },
+        {
+          id: "A.8.33",
+          control: "Test information",
+          status: "gap",
+          details: "Test information security not implemented",
+          recommendation: "Implement secure handling of test information"
+        },
+        {
+          id: "A.8.34",
+          control: "Protection of information systems during audit testing",
+          status: "gap",
+          details: "Audit testing protection not implemented",
+          recommendation: "Implement protection of information systems during audit testing"
         }
       ]
     },
     {
-      name: "Resilience Controls",
-      description: "Controls that address business continuity and incident response",
+      name: "Access Control",
+      description: "Controls that address access management and authentication",
       results: [
         {
           id: "A.9.1",
-          control: "Information security incident management process",
+          control: "Business requirement for access control",
           status: "gap",
-          details: "Incident management process not established",
-          recommendation: "Establish comprehensive incident management process with response procedures"
+          details: "Access control business requirements not defined",
+          recommendation: "Define business requirements for access control"
         },
         {
           id: "A.9.2",
-          control: "Information security incident reporting",
+          control: "User access management",
           status: "gap",
-          details: "Incident reporting procedures not established",
-          recommendation: "Implement incident reporting procedures and escalation mechanisms"
+          details: "User access management not implemented",
+          recommendation: "Implement user access management procedures"
         },
         {
           id: "A.9.3",
-          control: "Information security incident learning",
+          control: "User registration and de-registration",
           status: "gap",
-          details: "Incident learning process not implemented",
-          recommendation: "Implement process for learning from security incidents and improving controls"
+          details: "User registration procedures not implemented",
+          recommendation: "Implement user registration and de-registration procedures"
         },
         {
           id: "A.9.4",
-          control: "Evidence collection",
+          control: "User access provisioning",
           status: "gap",
-          details: "Evidence collection procedures not established",
-          recommendation: "Establish procedures for collecting and preserving evidence during incidents"
+          details: "User access provisioning not implemented",
+          recommendation: "Implement user access provisioning procedures"
+        },
+        {
+          id: "A.9.5",
+          control: "Management of privileged access rights",
+          status: "gap",
+          details: "Privileged access management not implemented",
+          recommendation: "Implement management of privileged access rights"
+        },
+        {
+          id: "A.9.6",
+          control: "Management of secret authentication information of users",
+          status: "gap",
+          details: "Secret authentication information management not implemented",
+          recommendation: "Implement management of secret authentication information"
+        },
+        {
+          id: "A.9.7",
+          control: "Review of user access rights",
+          status: "gap",
+          details: "User access rights review not implemented",
+          recommendation: "Implement regular review of user access rights"
+        },
+        {
+          id: "A.9.8",
+          control: "Removal or adjustment of access rights",
+          status: "gap",
+          details: "Access rights removal procedures not implemented",
+          recommendation: "Implement procedures for removal or adjustment of access rights"
+        },
+        {
+          id: "A.9.9",
+          control: "Use of privileged utility programs",
+          status: "gap",
+          details: "Privileged utility program controls not implemented",
+          recommendation: "Implement controls for use of privileged utility programs"
+        },
+        {
+          id: "A.9.10",
+          control: "Access control to program source code",
+          status: "gap",
+          details: "Source code access controls not implemented",
+          recommendation: "Implement access control to program source code"
+        },
+        {
+          id: "A.9.11",
+          control: "Secure log-on procedures",
+          status: "gap",
+          details: "Secure log-on procedures not implemented",
+          recommendation: "Implement secure log-on procedures"
+        },
+        {
+          id: "A.9.12",
+          control: "Password management system",
+          status: "gap",
+          details: "Password management system not implemented",
+          recommendation: "Implement password management system"
+        },
+        {
+          id: "A.9.13",
+          control: "Use of privileged utility programs",
+          status: "gap",
+          details: "Privileged utility program controls not implemented",
+          recommendation: "Implement controls for use of privileged utility programs"
+        },
+        {
+          id: "A.9.14",
+          control: "Information access restriction",
+          status: "gap",
+          details: "Information access restrictions not implemented",
+          recommendation: "Implement information access restrictions"
+        }
+      ]
+    },
+    {
+      name: "Cryptography",
+      description: "Controls that address cryptographic protection of information",
+      results: [
+        {
+          id: "A.10.1",
+          control: "Policy on the use of cryptographic controls",
+          status: "gap",
+          details: "Cryptographic policy not established",
+          recommendation: "Establish policy on the use of cryptographic controls"
+        },
+        {
+          id: "A.10.2",
+          control: "Key management",
+          status: "gap",
+          details: "Key management not implemented",
+          recommendation: "Implement key management procedures"
+        }
+      ]
+    },
+    {
+      name: "Operations Security",
+      description: "Controls that address secure operations and system management",
+      results: [
+        {
+          id: "A.11.1",
+          control: "Documented operating procedures",
+          status: "gap",
+          details: "Operating procedures not documented",
+          recommendation: "Document all operating procedures"
+        },
+        {
+          id: "A.11.2",
+          control: "Change management",
+          status: "gap",
+          details: "Change management not implemented",
+          recommendation: "Implement change management procedures"
+        },
+        {
+          id: "A.11.3",
+          control: "Capacity management",
+          status: "gap",
+          details: "Capacity management not implemented",
+          recommendation: "Implement capacity management"
+        },
+        {
+          id: "A.11.4",
+          control: "Separation of development, test and operational environments",
+          status: "gap",
+          details: "Environment separation not implemented",
+          recommendation: "Implement separation of environments"
+        },
+        {
+          id: "A.11.5",
+          control: "Controls against malicious code",
+          status: "gap",
+          details: "Malicious code controls not implemented",
+          recommendation: "Implement controls against malicious code"
+        },
+        {
+          id: "A.11.6",
+          control: "Backup",
+          status: "gap",
+          details: "Backup procedures not implemented",
+          recommendation: "Implement backup procedures"
+        },
+        {
+          id: "A.11.7",
+          control: "Event logging",
+          status: "gap",
+          details: "Event logging not implemented",
+          recommendation: "Implement event logging"
+        },
+        {
+          id: "A.11.8",
+          control: "Monitoring system use",
+          status: "gap",
+          details: "System use monitoring not implemented",
+          recommendation: "Implement monitoring of system use"
+        },
+        {
+          id: "A.11.9",
+          control: "Protection of log information",
+          status: "gap",
+          details: "Log information protection not implemented",
+          recommendation: "Implement protection of log information"
+        },
+        {
+          id: "A.11.10",
+          control: "Administrator and operator logs",
+          status: "gap",
+          details: "Administrator logs not implemented",
+          recommendation: "Implement administrator and operator logs"
+        },
+        {
+          id: "A.11.11",
+          control: "Clock synchronization",
+          status: "gap",
+          details: "Clock synchronization not implemented",
+          recommendation: "Implement clock synchronization"
+        },
+        {
+          id: "A.11.12",
+          control: "Installation of software on operational systems",
+          status: "gap",
+          details: "Software installation controls not implemented",
+          recommendation: "Implement controls for software installation"
+        },
+        {
+          id: "A.11.13",
+          control: "Management of technical vulnerabilities",
+          status: "gap",
+          details: "Vulnerability management not implemented",
+          recommendation: "Implement technical vulnerability management"
+        },
+        {
+          id: "A.11.14",
+          control: "Information systems audit considerations",
+          status: "gap",
+          details: "Audit considerations not implemented",
+          recommendation: "Implement information systems audit considerations"
+        },
+        {
+          id: "A.11.15",
+          control: "Controls against malicious code",
+          status: "gap",
+          details: "Malicious code controls not implemented",
+          recommendation: "Implement controls against malicious code"
+        }
+      ]
+    },
+    {
+      name: "Communications Security",
+      description: "Controls that address secure communications and network security",
+      results: [
+        {
+          id: "A.12.1",
+          control: "Network security management",
+          status: "gap",
+          details: "Network security management not implemented",
+          recommendation: "Implement network security management"
+        },
+        {
+          id: "A.12.2",
+          control: "Network segregation",
+          status: "gap",
+          details: "Network segregation not implemented",
+          recommendation: "Implement network segregation"
+        },
+        {
+          id: "A.12.3",
+          control: "Use of cryptographic techniques",
+          status: "gap",
+          details: "Cryptographic techniques not implemented",
+          recommendation: "Implement use of cryptographic techniques"
+        },
+        {
+          id: "A.12.4",
+          control: "Secure communications",
+          status: "gap",
+          details: "Secure communications not implemented",
+          recommendation: "Implement secure communications"
+        },
+        {
+          id: "A.12.5",
+          control: "Electronic messaging",
+          status: "gap",
+          details: "Electronic messaging security not implemented",
+          recommendation: "Implement electronic messaging security"
+        },
+        {
+          id: "A.12.6",
+          control: "Confidentiality or non-disclosure agreements",
+          status: "gap",
+          details: "Confidentiality agreements not established",
+          recommendation: "Establish confidentiality agreements"
+        },
+        {
+          id: "A.12.7",
+          control: "Publicly available information",
+          status: "gap",
+          details: "Public information controls not implemented",
+          recommendation: "Implement controls for publicly available information"
+        }
+      ]
+    },
+    {
+      name: "System Acquisition and Development",
+      description: "Controls that address secure system development and acquisition",
+      results: [
+        {
+          id: "A.13.1",
+          control: "Information security requirements analysis and specification",
+          status: "gap",
+          details: "Security requirements analysis not implemented",
+          recommendation: "Implement information security requirements analysis"
+        },
+        {
+          id: "A.13.2",
+          control: "Securing application services on public networks",
+          status: "gap",
+          details: "Public network security not implemented",
+          recommendation: "Implement security for application services on public networks"
+        },
+        {
+          id: "A.13.3",
+          control: "Protecting application services transactions",
+          status: "gap",
+          details: "Transaction protection not implemented",
+          recommendation: "Implement protection for application services transactions"
+        },
+        {
+          id: "A.13.4",
+          control: "Segregation in networks",
+          status: "gap",
+          details: "Network segregation not implemented",
+          recommendation: "Implement network segregation"
+        },
+        {
+          id: "A.13.5",
+          control: "Secure development policy",
+          status: "gap",
+          details: "Secure development policy not established",
+          recommendation: "Establish secure development policy"
+        },
+        {
+          id: "A.13.6",
+          control: "System change control procedures",
+          status: "gap",
+          details: "System change control not implemented",
+          recommendation: "Implement system change control procedures"
+        },
+        {
+          id: "A.13.7",
+          control: "Technical review of applications after operating system changes",
+          status: "gap",
+          details: "Technical review not implemented",
+          recommendation: "Implement technical review of applications"
+        },
+        {
+          id: "A.13.8",
+          control: "Restrictions on changes to software packages",
+          status: "gap",
+          details: "Software change restrictions not implemented",
+          recommendation: "Implement restrictions on software package changes"
+        },
+        {
+          id: "A.13.9",
+          control: "Secure system engineering principles",
+          status: "gap",
+          details: "Secure engineering principles not implemented",
+          recommendation: "Implement secure system engineering principles"
+        },
+        {
+          id: "A.13.10",
+          control: "Secure development environment",
+          status: "gap",
+          details: "Secure development environment not implemented",
+          recommendation: "Implement secure development environment"
+        },
+        {
+          id: "A.13.11",
+          control: "Outsourced development",
+          status: "gap",
+          details: "Outsourced development security not implemented",
+          recommendation: "Implement security for outsourced development"
+        },
+        {
+          id: "A.13.12",
+          control: "System security testing",
+          status: "gap",
+          details: "System security testing not implemented",
+          recommendation: "Implement system security testing"
+        },
+        {
+          id: "A.13.13",
+          control: "System acceptance testing",
+          status: "gap",
+          details: "System acceptance testing not implemented",
+          recommendation: "Implement system acceptance testing"
+        },
+        {
+          id: "A.13.14",
+          control: "Protection of test data",
+          status: "gap",
+          details: "Test data protection not implemented",
+          recommendation: "Implement protection of test data"
+        },
+        {
+          id: "A.13.15",
+          control: "Development and support processes",
+          status: "gap",
+          details: "Development and support processes not secured",
+          recommendation: "Implement secure development and support processes"
+        },
+        {
+          id: "A.13.16",
+          control: "Information leakage",
+          status: "gap",
+          details: "Information leakage prevention not implemented",
+          recommendation: "Implement information leakage prevention"
+        },
+        {
+          id: "A.13.17",
+          control: "Modifications to systems in operational use",
+          status: "gap",
+          details: "System modification controls not implemented",
+          recommendation: "Implement controls for system modifications"
+        },
+        {
+          id: "A.13.18",
+          control: "Secure coding",
+          status: "gap",
+          details: "Secure coding practices not implemented",
+          recommendation: "Implement secure coding practices"
+        },
+        {
+          id: "A.13.19",
+          control: "System security requirements",
+          status: "gap",
+          details: "System security requirements not defined",
+          recommendation: "Define system security requirements"
+        },
+        {
+          id: "A.13.20",
+          control: "System acceptance testing",
+          status: "gap",
+          details: "System acceptance testing not implemented",
+          recommendation: "Implement system acceptance testing"
+        },
+        {
+          id: "A.13.21",
+          control: "Development and support processes",
+          status: "gap",
+          details: "Development and support processes not secured",
+          recommendation: "Implement secure development and support processes"
+        },
+        {
+          id: "A.13.22",
+          control: "Test data",
+          status: "gap",
+          details: "Test data security not implemented",
+          recommendation: "Implement secure handling of test data"
+        },
+        {
+          id: "A.13.23",
+          control: "Separation of development, test and operational environments",
+          status: "gap",
+          details: "Environment separation not implemented",
+          recommendation: "Implement separation of environments"
+        },
+        {
+          id: "A.13.24",
+          control: "Change management",
+          status: "gap",
+          details: "Change management not implemented",
+          recommendation: "Implement change management procedures"
+        },
+        {
+          id: "A.13.25",
+          control: "Test information",
+          status: "gap",
+          details: "Test information security not implemented",
+          recommendation: "Implement secure handling of test information"
+        },
+        {
+          id: "A.13.26",
+          control: "Protection of information systems during audit testing",
+          status: "gap",
+          details: "Audit testing protection not implemented",
+          recommendation: "Implement protection during audit testing"
+        },
+        {
+          id: "A.13.27",
+          control: "System security testing",
+          status: "gap",
+          details: "System security testing not implemented",
+          recommendation: "Implement system security testing"
+        },
+        {
+          id: "A.13.28",
+          control: "System acceptance testing",
+          status: "gap",
+          details: "System acceptance testing not implemented",
+          recommendation: "Implement system acceptance testing"
+        },
+        {
+          id: "A.13.29",
+          control: "Development and support processes",
+          status: "gap",
+          details: "Development and support processes not secured",
+          recommendation: "Implement secure development and support processes"
+        },
+        {
+          id: "A.13.30",
+          control: "Test data",
+          status: "gap",
+          details: "Test data security not implemented",
+          recommendation: "Implement secure handling of test data"
+        },
+        {
+          id: "A.13.31",
+          control: "Separation of development, test and operational environments",
+          status: "gap",
+          details: "Environment separation not implemented",
+          recommendation: "Implement separation of environments"
+        },
+        {
+          id: "A.13.32",
+          control: "Change management",
+          status: "gap",
+          details: "Change management not implemented",
+          recommendation: "Implement change management procedures"
+        },
+        {
+          id: "A.13.33",
+          control: "Test information",
+          status: "gap",
+          details: "Test information security not implemented",
+          recommendation: "Implement secure handling of test information"
+        },
+        {
+          id: "A.13.34",
+          control: "Protection of information systems during audit testing",
+          status: "gap",
+          details: "Audit testing protection not implemented",
+          recommendation: "Implement protection during audit testing"
+        }
+      ]
+    },
+    {
+      name: "Supplier Relationships",
+      description: "Controls that address managing supplier security",
+      results: [
+        {
+          id: "A.14.1",
+          control: "Information security policy for supplier relationships",
+          status: "gap",
+          details: "Supplier security policy not established",
+          recommendation: "Establish information security policy for supplier relationships"
+        },
+        {
+          id: "A.14.2",
+          control: "Addressing security within supplier agreements",
+          status: "gap",
+          details: "Supplier security agreements not established",
+          recommendation: "Include security requirements in supplier agreements"
+        },
+        {
+          id: "A.14.3",
+          control: "Information and communication technology supply chain",
+          status: "gap",
+          details: "ICT supply chain security not managed",
+          recommendation: "Implement ICT supply chain security management"
+        },
+        {
+          id: "A.14.4",
+          control: "Monitoring and review of supplier services",
+          status: "gap",
+          details: "Supplier service monitoring not implemented",
+          recommendation: "Implement monitoring and review of supplier services"
+        },
+        {
+          id: "A.14.5",
+          control: "Managing changes to supplier services",
+          status: "gap",
+          details: "Supplier service change management not implemented",
+          recommendation: "Implement management of changes to supplier services"
+        }
+      ]
+    },
+    {
+      name: "Information Security Incident Management",
+      description: "Controls that address incident management and response",
+      results: [
+        {
+          id: "A.15.1",
+          control: "Responsibilities and procedures",
+          status: "gap",
+          details: "Incident management responsibilities not defined",
+          recommendation: "Define incident management responsibilities and procedures"
+        },
+        {
+          id: "A.15.2",
+          control: "Reporting information security events",
+          status: "gap",
+          details: "Security event reporting not implemented",
+          recommendation: "Implement reporting of information security events"
+        },
+        {
+          id: "A.15.3",
+          control: "Reporting information security weaknesses",
+          status: "gap",
+          details: "Security weakness reporting not implemented",
+          recommendation: "Implement reporting of information security weaknesses"
+        },
+        {
+          id: "A.15.4",
+          control: "Assessment of and decision on information security events",
+          status: "gap",
+          details: "Security event assessment not implemented",
+          recommendation: "Implement assessment and decision on security events"
+        },
+        {
+          id: "A.15.5",
+          control: "Response to information security incidents",
+          status: "gap",
+          details: "Incident response not implemented",
+          recommendation: "Implement response to information security incidents"
+        },
+        {
+          id: "A.15.6",
+          control: "Learning from information security incidents",
+          status: "gap",
+          details: "Incident learning not implemented",
+          recommendation: "Implement learning from information security incidents"
+        },
+        {
+          id: "A.15.7",
+          control: "Collection of evidence",
+          status: "gap",
+          details: "Evidence collection not implemented",
+          recommendation: "Implement collection of evidence"
+        }
+      ]
+    },
+    {
+      name: "Information Security Aspects of Business Continuity",
+      description: "Controls that address business continuity and disaster recovery",
+      results: [
+        {
+          id: "A.16.1",
+          control: "Planning information security continuity",
+          status: "gap",
+          details: "Security continuity planning not implemented",
+          recommendation: "Implement planning for information security continuity"
+        },
+        {
+          id: "A.16.2",
+          control: "Redundancies",
+          status: "gap",
+          details: "Redundancy measures not implemented",
+          recommendation: "Implement redundancy measures"
+        },
+        {
+          id: "A.16.3",
+          control: "Information processing facilities",
+          status: "gap",
+          details: "Information processing facility continuity not implemented",
+          recommendation: "Implement information processing facility continuity"
+        },
+        {
+          id: "A.16.4",
+          control: "Readiness for information security continuity",
+          status: "gap",
+          details: "Security continuity readiness not implemented",
+          recommendation: "Implement readiness for information security continuity"
+        }
+      ]
+    },
+    {
+      name: "Compliance",
+      description: "Controls that address legal and regulatory compliance",
+      results: [
+        {
+          id: "A.17.1",
+          control: "Identification of applicable legislation and contractual requirements",
+          status: "gap",
+          details: "Applicable legislation not identified",
+          recommendation: "Identify applicable legislation and contractual requirements"
+        },
+        {
+          id: "A.17.2",
+          control: "Intellectual property rights",
+          status: "gap",
+          details: "Intellectual property protection not implemented",
+          recommendation: "Implement intellectual property rights protection"
+        },
+        {
+          id: "A.17.3",
+          control: "Protection of records",
+          status: "gap",
+          details: "Record protection not implemented",
+          recommendation: "Implement protection of records"
+        },
+        {
+          id: "A.17.4",
+          control: "Privacy and protection of personally identifiable information",
+          status: "gap",
+          details: "PII protection not implemented",
+          recommendation: "Implement privacy and PII protection"
+        },
+        {
+          id: "A.17.5",
+          control: "Regulation of cryptographic controls",
+          status: "gap",
+          details: "Cryptographic control regulation not implemented",
+          recommendation: "Implement regulation of cryptographic controls"
+        },
+        {
+          id: "A.17.6",
+          control: "Compliance with security policies and standards",
+          status: "gap",
+          details: "Security policy compliance not implemented",
+          recommendation: "Implement compliance with security policies and standards"
+        },
+        {
+          id: "A.17.7",
+          control: "Technical compliance review",
+          status: "gap",
+          details: "Technical compliance review not implemented",
+          recommendation: "Implement technical compliance review"
+        },
+        {
+          id: "A.17.8",
+          control: "Information systems audit considerations",
+          status: "gap",
+          details: "Audit considerations not implemented",
+          recommendation: "Implement information systems audit considerations"
+        }
+      ]
+    },
+    {
+      name: "Privacy and Protection of PII",
+      description: "Controls that address privacy and personally identifiable information protection",
+      results: [
+        {
+          id: "A.18.1",
+          control: "Privacy and PII protection",
+          status: "gap",
+          details: "PII protection not implemented",
+          recommendation: "Implement privacy and PII protection measures"
+        },
+        {
+          id: "A.18.2",
+          control: "PII processing",
+          status: "gap",
+          details: "PII processing controls not implemented",
+          recommendation: "Implement PII processing controls"
+        },
+        {
+          id: "A.18.3",
+          control: "PII retention",
+          status: "gap",
+          details: "PII retention controls not implemented",
+          recommendation: "Implement PII retention controls"
+        },
+        {
+          id: "A.18.4",
+          control: "PII disposal",
+          status: "gap",
+          details: "PII disposal controls not implemented",
+          recommendation: "Implement PII disposal controls"
         }
       ]
     }
