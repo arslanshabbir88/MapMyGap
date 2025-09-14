@@ -1989,9 +1989,7 @@ function Analyzer() {
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
-                            <span className="font-medium text-slate-200">{criteria.code}</span>
-                            <span className="text-slate-300">-</span>
-                            <span className="text-slate-300">{criteria.name}</span>
+                            <span className="font-medium text-slate-200">{criteria.name}</span>
                           </div>
                           <div className="text-slate-400 text-xs mt-1">{criteria.description}</div>
                         </div>
