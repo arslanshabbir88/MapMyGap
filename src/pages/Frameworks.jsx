@@ -24,22 +24,22 @@ const Frameworks = ({ onShowLogin }) => {
         {
           name: "Protect (PR)",
           description: "Develop and implement appropriate safeguards (28 controls)",
-          controls: ["PR.AC-1", "PR.AC-2", "PR.AC-3", "PR.AC-4", "PR.AC-5", "PR.AC-6", "PR.AC-7", "PR.AT-1", "PR.AT-2", "PR.AT-3", "PR.AT-4", "PR.AT-5", "PR.DS-1", "PR.DS-2", "PR.DS-3", "PR.DS-4", "PR.DS-5", "PR.DS-6", "PR.DS-7", "PR.DS-8", "PR.PT-1", "PR.PT-2", "PR.PT-3", "PR.PT-4", "PR.IT-1", "PR.IT-2", "PR.IT-3", "PR.IT-4"]
+          controls: ["PR.AC-01", "PR.AC-02", "PR.AC-03", "PR.AC-04", "PR.AC-05", "PR.AC-06", "PR.AC-07", "PR.AT-01", "PR.AT-02", "PR.AT-03", "PR.AT-04", "PR.AT-05", "PR.DS-01", "PR.DS-02", "PR.DS-03", "PR.DS-04", "PR.DS-05", "PR.DS-06", "PR.DS-07", "PR.DS-08", "PR.PT-01", "PR.PT-02", "PR.PT-03", "PR.PT-04", "PR.IT-01", "PR.IT-02", "PR.IT-03", "PR.IT-04"]
         },
         {
           name: "Detect (DE)",
           description: "Develop and implement appropriate activities to identify cybersecurity events (13 controls)",
-          controls: ["DE.CM-1", "DE.CM-2", "DE.CM-3", "DE.CM-4", "DE.CM-5", "DE.CM-6", "DE.CM-7", "DE.CM-8", "DE.AE-1", "DE.AE-2", "DE.AE-3", "DE.AE-4", "DE.AE-5"]
+          controls: ["DE.CM-01", "DE.CM-02", "DE.CM-03", "DE.CM-04", "DE.CM-05", "DE.CM-06", "DE.CM-07", "DE.CM-08", "DE.AE-01", "DE.AE-02", "DE.AE-03", "DE.AE-04", "DE.AE-05"]
         },
         {
           name: "Respond (RS)",
           description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events (18 controls)",
-          controls: ["RS.MA-1", "RS.MA-2", "RS.MA-3", "RS.AN-1", "RS.AN-2", "RS.AN-3", "RS.AN-4", "RS.AN-5", "RS.CO-1", "RS.CO-2", "RS.CO-3", "RS.CO-4", "RS.CO-5", "RS.MI-1", "RS.MI-2", "RS.MI-3", "RS.MI-4", "RS.MI-5"]
+          controls: ["RS.MA-01", "RS.MA-02", "RS.MA-03", "RS.AN-01", "RS.AN-02", "RS.AN-03", "RS.AN-04", "RS.AN-05", "RS.CO-01", "RS.CO-02", "RS.CO-03", "RS.CO-04", "RS.CO-05", "RS.MI-01", "RS.MI-02", "RS.MI-03", "RS.MI-04", "RS.MI-05"]
         },
         {
           name: "Recover (RC)",
           description: "Develop and implement appropriate activities to maintain plans for resilience (10 controls)",
-          controls: ["RC.RP-1", "RC.RP-2", "RC.RP-3", "RC.RP-4", "RC.RP-5", "RC.RP-6", "RC.CO-1", "RC.CO-2", "RC.CO-3", "RC.CO-4"]
+          controls: ["RC.RP-01", "RC.RP-02", "RC.RP-03", "RC.RP-04", "RC.RP-05", "RC.RP-06", "RC.CO-01", "RC.CO-02", "RC.CO-03", "RC.CO-04"]
         },
         {
           name: "Govern (GV)",
