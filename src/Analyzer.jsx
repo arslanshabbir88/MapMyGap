@@ -1970,10 +1970,10 @@ function Analyzer() {
                   <div className="space-y-2">
                     {[
                       { code: 'CC', name: 'Security (SEC)', description: 'Control Environment, Communication, Risk Assessment, Monitoring, Control Activities' },
-                      { code: 'A', name: 'Availability', description: 'System operations, monitoring, disaster recovery, and business continuity' },
-                      { code: 'C', name: 'Confidentiality', description: 'Information classification, handling, and data protection controls' },
-                      { code: 'PI', name: 'Processing Integrity', description: 'System processing accuracy, completeness, and data quality controls' },
-                      { code: 'P', name: 'Privacy', description: 'Privacy by design, notice, consent, and data subject rights management' }
+                      { code: 'A', name: 'Availability (A)', description: 'System operations, monitoring, disaster recovery, and business continuity' },
+                      { code: 'C', name: 'Confidentiality (C)', description: 'Information classification, handling, and data protection controls' },
+                      { code: 'PI', name: 'Processing Integrity (PI)', description: 'System processing accuracy, completeness, and data quality controls' },
+                      { code: 'P', name: 'Privacy (P)', description: 'Privacy by design, notice, consent, and data subject rights management' }
                     ].map(criteria => (
                       <label key={criteria.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                         <input
