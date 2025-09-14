@@ -1441,6 +1441,7 @@ function Analyzer() {
     { id: 'SOC_1', name: 'SOC 1 Type II', enabled: true },
     { id: 'SOC_2', name: 'SOC 2 Type II', enabled: true },
     { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: true },
+    { id: 'HIPAA', name: 'HIPAA - Health Insurance Portability and Accountability Act', enabled: true },
   ];
   
   return (
@@ -2368,6 +2369,66 @@ function Analyzer() {
                    {selectedCategories.filter(cat => cat.startsWith('A.')).length === 0 && (
                      <div className="mt-2 text-sm text-red-400">
                        Please select one ISO 27001 category to analyze.
+                     </div>
+                   )}
+                 </div>
+               )}
+
+               {/* HIPAA Category Selection */}
+               {selectedFramework === 'HIPAA' && (
+                 <div className="mb-6">
+                   <div className="mb-3">
+                     <label className="block text-sm font-medium text-slate-300">
+                       HIPAA Rule to Analyze
+                     </label>
+                   </div>
+                   
+                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                     <div className="flex items-center space-x-2 text-sm text-blue-300">
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                       </svg>
+                       <span>Select one HIPAA rule to analyze</span>
+                     </div>
+                   </div>
+                   
+                   <div className="space-y-2">
+                     {[
+                       { code: 'AS', name: 'Administrative Safeguards (45 CFR 164.308)', description: '9 Standards, 22 Implementation Specifications - Administrative policies and procedures' },
+                       { code: 'PS', name: 'Physical Safeguards (45 CFR 164.310)', description: '4 Standards, 8 Implementation Specifications - Physical measures and procedures' },
+                       { code: 'TS', name: 'Technical Safeguards (45 CFR 164.312)', description: '5 Standards, 9 Implementation Specifications - Technology and procedures' },
+                       { code: 'OR', name: 'Organizational Requirements (45 CFR 164.314)', description: '2 Standards, 2 Implementation Specifications - Business associate requirements' },
+                       { code: 'PD', name: 'Policies & Documentation (45 CFR 164.316)', description: '1 Standard, 2 Implementation Specifications - Documentation requirements' },
+                       { code: 'PR', name: 'Privacy Rule (45 CFR 164 Subpart E)', description: 'Standards for protection of individuals\' medical records and personal health information' },
+                       { code: 'BN', name: 'Breach Notification Rule (45 CFR 164 Subpart D)', description: 'Requirements for notification following a breach of unsecured PHI' },
+                       { code: 'ER', name: 'Enforcement Rule (45 CFR 160 Subpart C)', description: 'Procedures for investigations and civil money penalties for HIPAA violations' }
+                     ].map(category => (
+                       <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                         <input
+                           type="radio"
+                           name="hipaa-category"
+                           value={category.code}
+                           checked={selectedCategories.includes(category.code)}
+                           onChange={(e) => {
+                             setSelectedCategories([e.target.value]);
+                           }}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                         />
+                         <div className="flex-1 min-w-0">
+                           <div className="flex items-center space-x-2">
+                             <span className="font-medium text-slate-200">{category.code}</span>
+                             <span className="text-slate-300">-</span>
+                             <span className="text-slate-300">{category.name}</span>
+                           </div>
+                           <div className="text-slate-400 text-xs mt-1">{category.description}</div>
+                         </div>
+                       </label>
+                     ))}
+                   </div>
+                   
+                   {selectedCategories.filter(cat => ['AS', 'PS', 'TS', 'OR', 'PD', 'PR', 'BN', 'ER'].includes(cat)).length === 0 && (
+                     <div className="mt-2 text-sm text-red-400">
+                       Please select one HIPAA rule to analyze.
                      </div>
                    )}
                  </div>

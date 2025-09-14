@@ -1,4 +1,4 @@
-// Comprehensive Compliance Framework Controls
+﻿// Comprehensive Compliance Framework Controls
 // This file provides structured control data for AI analysis
 
 export const pciDSS = {
@@ -6452,6 +6452,715 @@ export const nydfs500 = {
   ]
 };
 
+// HIPAA (Health Insurance Portability and Accountability Act) - Complete Official Framework
+export const hipaa = {
+  name: "HIPAA",
+  description: "Health Insurance Portability and Accountability Act - Complete Official Framework (45 CFR 164)",
+  definitions: {
+    "PHI": "Protected Health Information - individually identifiable health information transmitted or maintained in any form or medium",
+    "ePHI": "Electronic Protected Health Information - PHI that is transmitted or maintained in electronic media",
+    "Covered Entity": "Health plans, health care clearinghouses, and health care providers who transmit health information electronically",
+    "Business Associate": "A person or entity that performs certain functions or activities on behalf of a covered entity involving the use or disclosure of PHI",
+    "Minimum Necessary": "The standard that requires covered entities to make reasonable efforts to limit PHI to the minimum necessary to accomplish the intended purpose",
+    "Required": "Implementation specification that must be implemented",
+    "Addressable": "Implementation specification that must be implemented if reasonable and appropriate"
+  },
+  categories: [
+    {
+      name: "Administrative Safeguards (45 CFR 164.308)",
+      description: "Administrative policies and procedures to manage the selection, development, implementation, and maintenance of security measures (9 Standards, 22 Implementation Specifications)",
+      results: [
+        {
+          id: "164.308(a)(1)",
+          control: "Security Officer (Required)",
+          status: "gap",
+          details: "Security officer not designated",
+          recommendation: "Designate a security officer responsible for developing and implementing security policies and procedures"
+        },
+        {
+          id: "164.308(a)(2)",
+          control: "Workforce Security (Required)",
+          status: "gap",
+          details: "Workforce security procedures not implemented",
+          recommendation: "Implement procedures for authorizing and/or supervising workforce members who work with ePHI"
+        },
+        {
+          id: "164.308(a)(3)",
+          control: "Information Access Management (Required)",
+          status: "gap",
+          details: "Information access management not implemented",
+          recommendation: "Implement policies and procedures for granting access to ePHI based on workforce member's role"
+        },
+        {
+          id: "164.308(a)(4)",
+          control: "Security Awareness and Training (Required)",
+          status: "gap",
+          details: "Security awareness training not provided",
+          recommendation: "Implement security awareness and training program for all workforce members"
+        },
+        {
+          id: "164.308(a)(5)",
+          control: "Security Incident Procedures (Required)",
+          status: "gap",
+          details: "Security incident procedures not established",
+          recommendation: "Implement policies and procedures to address security incidents"
+        },
+        {
+          id: "164.308(a)(6)",
+          control: "Contingency Plan (Required)",
+          status: "gap",
+          details: "Contingency plan not developed",
+          recommendation: "Establish and implement procedures for responding to emergency or other occurrences that damage systems containing ePHI"
+        },
+        {
+          id: "164.308(a)(7)",
+          control: "Evaluation (Required)",
+          status: "gap",
+          details: "Security evaluation procedures not implemented",
+          recommendation: "Perform periodic evaluations of security measures and their effectiveness"
+        },
+        {
+          id: "164.308(a)(8)",
+          control: "Business Associate Contracts and Other Arrangements (Required)",
+          status: "gap",
+          details: "Business associate agreements not established",
+          recommendation: "Execute business associate agreements with all vendors who have access to ePHI"
+        },
+        {
+          id: "164.308(b)(1)",
+          control: "Written Security Policy (Required)",
+          status: "gap",
+          details: "Written security policy not established",
+          recommendation: "Develop and maintain written security policies and procedures"
+        },
+        {
+          id: "164.308(a)(3)(i)",
+          control: "Access Authorization (Addressable)",
+          status: "gap",
+          details: "Access authorization procedures not implemented",
+          recommendation: "Implement procedures for authorizing workforce member access to ePHI"
+        },
+        {
+          id: "164.308(a)(3)(ii)",
+          control: "Access Establishment and Modification (Addressable)",
+          status: "gap",
+          details: "Access establishment procedures not implemented",
+          recommendation: "Implement procedures for establishing, documenting, reviewing, and modifying workforce member access to ePHI"
+        },
+        {
+          id: "164.308(a)(4)(i)",
+          control: "Security Reminders (Addressable)",
+          status: "gap",
+          details: "Security reminder program not implemented",
+          recommendation: "Implement periodic security updates and reminders for workforce members"
+        },
+        {
+          id: "164.308(a)(4)(ii)(A)",
+          control: "Protection from Malicious Software (Addressable)",
+          status: "gap",
+          details: "Malicious software protection not implemented",
+          recommendation: "Implement procedures for guarding against, detecting, and reporting malicious software"
+        },
+        {
+          id: "164.308(a)(4)(ii)(B)",
+          control: "Log-in Monitoring (Addressable)",
+          status: "gap",
+          details: "Log-in monitoring not implemented",
+          recommendation: "Implement procedures for monitoring log-in attempts and reporting discrepancies"
+        },
+        {
+          id: "164.308(a)(4)(ii)(C)",
+          control: "Password Management (Addressable)",
+          status: "gap",
+          details: "Password management procedures not implemented",
+          recommendation: "Implement procedures for creating, changing, and safeguarding passwords"
+        },
+        {
+          id: "164.308(a)(5)(i)",
+          control: "Response and Reporting (Addressable)",
+          status: "gap",
+          details: "Security incident response procedures not implemented",
+          recommendation: "Implement procedures for responding to and reporting security incidents"
+        },
+        {
+          id: "164.308(a)(6)(i)",
+          control: "Data Backup Plan (Required)",
+          status: "gap",
+          details: "Data backup plan not established",
+          recommendation: "Establish and implement procedures to create and maintain retrievable exact copies of ePHI"
+        },
+        {
+          id: "164.308(a)(6)(ii)",
+          control: "Disaster Recovery Plan (Required)",
+          status: "gap",
+          details: "Disaster recovery plan not established",
+          recommendation: "Establish and implement procedures to restore any loss of data"
+        },
+        {
+          id: "164.308(a)(6)(iii)",
+          control: "Emergency Mode Operation Plan (Required)",
+          status: "gap",
+          details: "Emergency mode operation plan not established",
+          recommendation: "Establish and implement procedures to enable continuation of critical business processes while operating in emergency mode"
+        },
+        {
+          id: "164.308(a)(7)(i)",
+          control: "Periodic Technical and Nontechnical Evaluation (Addressable)",
+          status: "gap",
+          details: "Periodic evaluation not implemented",
+          recommendation: "Implement periodic technical and nontechnical evaluation of security measures"
+        },
+        {
+          id: "164.308(a)(8)(i)",
+          control: "Business Associate Contracts (Required)",
+          status: "gap",
+          details: "Business associate contracts not established",
+          recommendation: "Execute business associate contracts that meet HIPAA requirements"
+        },
+        {
+          id: "164.308(a)(8)(ii)",
+          control: "Other Arrangements (Addressable)",
+          status: "gap",
+          details: "Other arrangements not documented",
+          recommendation: "Document other arrangements with business associates that meet HIPAA requirements"
+        },
+        {
+          id: "164.308(b)(1)",
+          control: "Written Security Policy (Required)",
+          status: "gap",
+          details: "Written security policy not established",
+          recommendation: "Develop and maintain written security policies and procedures"
+        },
+        {
+          id: "164.308(b)(2)",
+          control: "Assigned Security Responsibility (Required)",
+          status: "gap",
+          details: "Security responsibility not assigned",
+          recommendation: "Assign security responsibility to a specific individual or organization"
+        },
+        {
+          id: "164.308(b)(3)",
+          control: "Workforce Security (Required)",
+          status: "gap",
+          details: "Workforce security procedures not implemented",
+          recommendation: "Implement procedures for authorizing and/or supervising workforce members who work with ePHI"
+        },
+        {
+          id: "164.308(b)(4)",
+          control: "Information Access Management (Required)",
+          status: "gap",
+          details: "Information access management not implemented",
+          recommendation: "Implement policies and procedures for granting access to ePHI"
+        },
+        {
+          id: "164.308(b)(5)",
+          control: "Security Awareness and Training (Required)",
+          status: "gap",
+          details: "Security awareness training not provided",
+          recommendation: "Implement security awareness and training program for all workforce members"
+        },
+        {
+          id: "164.308(b)(6)",
+          control: "Security Incident Procedures (Required)",
+          status: "gap",
+          details: "Security incident procedures not established",
+          recommendation: "Implement policies and procedures to address security incidents"
+        },
+        {
+          id: "164.308(b)(7)",
+          control: "Contingency Plan (Required)",
+          status: "gap",
+          details: "Contingency plan not developed",
+          recommendation: "Establish and implement procedures for responding to emergency or other occurrences that damage systems containing ePHI"
+        },
+        {
+          id: "164.308(b)(8)",
+          control: "Evaluation (Required)",
+          status: "gap",
+          details: "Security evaluation procedures not implemented",
+          recommendation: "Perform periodic evaluations of security measures and their effectiveness"
+        },
+        {
+          id: "164.308(b)(9)",
+          control: "Business Associate Contracts and Other Arrangements (Required)",
+          status: "gap",
+          details: "Business associate agreements not established",
+          recommendation: "Execute business associate agreements with all vendors who have access to ePHI"
+        }
+      ]
+    },
+    {
+      name: "Physical Safeguards (45 CFR 164.310)",
+      description: "Physical measures, policies, and procedures to protect electronic information systems and related buildings and equipment (4 Standards, 8 Implementation Specifications)",
+      results: [
+        {
+          id: "164.310(a)(1)",
+          control: "Facility Access Controls (Required)",
+          status: "gap",
+          details: "Facility access controls not implemented",
+          recommendation: "Implement physical safeguards to limit physical access to electronic information systems and facilities"
+        },
+        {
+          id: "164.310(a)(2)(i)",
+          control: "Contingency Operations (Addressable)",
+          status: "gap",
+          details: "Contingency operations access not established",
+          recommendation: "Establish procedures that allow facility access in support of restoration of lost data under the disaster recovery plan"
+        },
+        {
+          id: "164.310(a)(2)(ii)",
+          control: "Facility Security Plan (Addressable)",
+          status: "gap",
+          details: "Facility security plan not developed",
+          recommendation: "Develop and implement a facility security plan to safeguard the facility and equipment from unauthorized access"
+        },
+        {
+          id: "164.310(a)(2)(iii)",
+          control: "Access Control and Validation Procedures (Addressable)",
+          status: "gap",
+          details: "Access control and validation procedures not implemented",
+          recommendation: "Implement procedures to control and validate a person's access to facilities based on their role or function"
+        },
+        {
+          id: "164.310(a)(2)(iv)",
+          control: "Maintenance Records (Addressable)",
+          status: "gap",
+          details: "Maintenance records not maintained",
+          recommendation: "Maintain records of repairs and modifications to the physical components of a facility"
+        },
+        {
+          id: "164.310(b)",
+          control: "Workstation Use (Required)",
+          status: "gap",
+          details: "Workstation use policies not established",
+          recommendation: "Implement policies and procedures that specify the proper functions to be performed by workstations"
+        },
+        {
+          id: "164.310(c)",
+          control: "Workstation Security (Required)",
+          status: "gap",
+          details: "Workstation security measures not implemented",
+          recommendation: "Implement physical safeguards for all workstations that access ePHI"
+        },
+        {
+          id: "164.310(d)(1)",
+          control: "Device and Media Controls (Required)",
+          status: "gap",
+          details: "Device and media controls not implemented",
+          recommendation: "Implement policies and procedures that govern the receipt and removal of hardware and electronic media"
+        },
+        {
+          id: "164.310(d)(2)(i)",
+          control: "Disposal (Required)",
+          status: "gap",
+          details: "Media disposal procedures not implemented",
+          recommendation: "Implement procedures for the final disposition of ePHI and/or the hardware or electronic media on which it is stored"
+        },
+        {
+          id: "164.310(d)(2)(ii)",
+          control: "Media Re-use (Required)",
+          status: "gap",
+          details: "Media re-use procedures not implemented",
+          recommendation: "Implement procedures for removal of ePHI from electronic media before the media are made available for re-use"
+        },
+        {
+          id: "164.310(d)(2)(iii)",
+          control: "Accountability (Addressable)",
+          status: "gap",
+          details: "Media accountability procedures not implemented",
+          recommendation: "Maintain a record of the movements of hardware and electronic media and any person responsible for them"
+        },
+        {
+          id: "164.310(d)(2)(iv)",
+          control: "Data Backup and Storage (Addressable)",
+          status: "gap",
+          details: "Data backup and storage procedures not implemented",
+          recommendation: "Create a retrievable, exact copy of ePHI before movement of equipment"
+        }
+      ]
+    },
+    {
+      name: "Technical Safeguards (45 CFR 164.312)",
+      description: "Technology and the policy and procedures for its use that protect ePHI and control access to it (5 Standards, 9 Implementation Specifications)",
+      results: [
+        {
+          id: "164.312(a)(1)",
+          control: "Access Control (Required)",
+          status: "gap",
+          details: "Access control mechanisms not implemented",
+          recommendation: "Implement technical policies and procedures for electronic information systems that maintain ePHI"
+        },
+        {
+          id: "164.312(a)(2)(i)",
+          control: "Unique User Identification (Required)",
+          status: "gap",
+          details: "Unique user identification not implemented",
+          recommendation: "Assign a unique name and/or number for identifying and tracking user identity"
+        },
+        {
+          id: "164.312(a)(2)(ii)",
+          control: "Emergency Access Procedure (Required)",
+          status: "gap",
+          details: "Emergency access procedures not established",
+          recommendation: "Establish procedures for obtaining necessary ePHI during an emergency"
+        },
+        {
+          id: "164.312(a)(2)(iii)",
+          control: "Automatic Logoff (Addressable)",
+          status: "gap",
+          details: "Automatic logoff not implemented",
+          recommendation: "Implement electronic procedures that terminate an electronic session after a predetermined time of inactivity"
+        },
+        {
+          id: "164.312(a)(2)(iv)",
+          control: "Encryption and Decryption (Addressable)",
+          status: "gap",
+          details: "Encryption and decryption not implemented",
+          recommendation: "Implement a mechanism to encrypt and decrypt ePHI"
+        },
+        {
+          id: "164.312(b)",
+          control: "Audit Controls (Required)",
+          status: "gap",
+          details: "Audit controls not implemented",
+          recommendation: "Implement hardware, software, and/or procedural mechanisms that record and examine activity in information systems"
+        },
+        {
+          id: "164.312(c)(1)",
+          control: "Integrity (Required)",
+          status: "gap",
+          details: "Data integrity controls not implemented",
+          recommendation: "Implement policies and procedures to protect ePHI from improper alteration or destruction"
+        },
+        {
+          id: "164.312(c)(2)",
+          control: "Mechanism to Authenticate ePHI (Addressable)",
+          status: "gap",
+          details: "ePHI authentication mechanism not implemented",
+          recommendation: "Implement electronic mechanisms to corroborate that ePHI has not been altered or destroyed"
+        },
+        {
+          id: "164.312(d)",
+          control: "Person or Entity Authentication (Required)",
+          status: "gap",
+          details: "Authentication mechanisms not implemented",
+          recommendation: "Implement procedures to verify that a person or entity seeking access to ePHI is the one claimed"
+        },
+        {
+          id: "164.312(e)(1)",
+          control: "Transmission Security (Required)",
+          status: "gap",
+          details: "Transmission security measures not implemented",
+          recommendation: "Implement technical security measures to guard against unauthorized access to ePHI during transmission"
+        },
+        {
+          id: "164.312(e)(2)(i)",
+          control: "Integrity Controls (Addressable)",
+          status: "gap",
+          details: "Transmission integrity controls not implemented",
+          recommendation: "Implement security measures to ensure that electronically transmitted ePHI is not improperly modified"
+        },
+        {
+          id: "164.312(e)(2)(ii)",
+          control: "Encryption (Addressable)",
+          status: "gap",
+          details: "Transmission encryption not implemented",
+          recommendation: "Implement encryption for ePHI during transmission"
+        }
+      ]
+    },
+    {
+      name: "Organizational Requirements (45 CFR 164.314)",
+      description: "Organizational requirements for covered entities and business associates (2 Standards, 2 Implementation Specifications)",
+      results: [
+        {
+          id: "164.314(a)(1)",
+          control: "Business Associate Contracts (Required)",
+          status: "gap",
+          details: "Business associate contracts not established",
+          recommendation: "Execute business associate contracts that meet HIPAA requirements"
+        },
+        {
+          id: "164.314(a)(2)",
+          control: "Other Arrangements (Addressable)",
+          status: "gap",
+          details: "Other arrangements not documented",
+          recommendation: "Document other arrangements with business associates that meet HIPAA requirements"
+        },
+        {
+          id: "164.314(b)(1)",
+          control: "Requirements for Group Health Plans (Required)",
+          status: "gap",
+          details: "Group health plan requirements not implemented",
+          recommendation: "Implement requirements for group health plans regarding business associate contracts"
+        },
+        {
+          id: "164.314(b)(2)",
+          control: "Implementation Specifications (Required)",
+          status: "gap",
+          details: "Implementation specifications not documented",
+          recommendation: "Document implementation specifications for group health plan requirements"
+        }
+      ]
+    },
+    {
+      name: "Policies and Procedures and Documentation Requirements (45 CFR 164.316)",
+      description: "Policies and procedures and documentation requirements (1 Standard, 2 Implementation Specifications)",
+      results: [
+        {
+          id: "164.316(a)",
+          control: "Policies and Procedures (Required)",
+          status: "gap",
+          details: "Policies and procedures not established",
+          recommendation: "Implement reasonable and appropriate policies and procedures to comply with HIPAA requirements"
+        },
+        {
+          id: "164.316(b)(1)",
+          control: "Documentation (Required)",
+          status: "gap",
+          details: "Documentation not maintained",
+          recommendation: "Maintain documentation of policies and procedures for 6 years from the date of creation or last effective date"
+        },
+        {
+          id: "164.316(b)(2)",
+          control: "Time Limit (Required)",
+          status: "gap",
+          details: "Time limit requirements not met",
+          recommendation: "Ensure documentation is available to persons responsible for implementing procedures"
+        }
+      ]
+    },
+    {
+      name: "Privacy Rule (45 CFR 164 Subpart E)",
+      description: "Standards for the protection of individuals' medical records and personal health information",
+      results: [
+        {
+          id: "PR-1",
+          control: "Individual Rights - Access to PHI",
+          status: "gap",
+          details: "Individual access rights not properly implemented",
+          recommendation: "Implement procedures for individuals to access their PHI within 30 days of request"
+        },
+        {
+          id: "PR-2",
+          control: "Individual Rights - Amendment of PHI",
+          status: "gap",
+          details: "Individual amendment rights not established",
+          recommendation: "Establish procedures for individuals to request amendment of their PHI"
+        },
+        {
+          id: "PR-3",
+          control: "Individual Rights - Accounting of Disclosures",
+          status: "gap",
+          details: "Accounting of disclosures not implemented",
+          recommendation: "Implement tracking and reporting of PHI disclosures for the past 6 years"
+        },
+        {
+          id: "PR-4",
+          control: "Uses and Disclosures - General Rule",
+          status: "gap",
+          details: "General use and disclosure policies not established",
+          recommendation: "Develop comprehensive policies for permitted and required uses and disclosures of PHI"
+        },
+        {
+          id: "PR-5",
+          control: "Uses and Disclosures - Treatment, Payment, and Operations",
+          status: "gap",
+          details: "TPO use and disclosure procedures not documented",
+          recommendation: "Document procedures for using and disclosing PHI for treatment, payment, and healthcare operations"
+        },
+        {
+          id: "PR-6",
+          control: "Uses and Disclosures - Authorization Required",
+          status: "gap",
+          details: "Authorization requirements not properly implemented",
+          recommendation: "Implement procedures for obtaining valid authorization for uses and disclosures not permitted by the Privacy Rule"
+        },
+        {
+          id: "PR-7",
+          control: "Uses and Disclosures - Minimum Necessary",
+          status: "gap",
+          details: "Minimum necessary standard not implemented",
+          recommendation: "Implement policies and procedures to ensure only minimum necessary PHI is used or disclosed"
+        },
+        {
+          id: "PR-8",
+          control: "Administrative Requirements - Privacy Officer",
+          status: "gap",
+          details: "Privacy officer not designated",
+          recommendation: "Designate a privacy officer responsible for developing and implementing privacy policies"
+        },
+        {
+          id: "PR-9",
+          control: "Administrative Requirements - Workforce Training",
+          status: "gap",
+          details: "Privacy training not provided to workforce",
+          recommendation: "Provide privacy training to all workforce members and maintain training records"
+        },
+        {
+          id: "PR-10",
+          control: "Administrative Requirements - Safeguards",
+          status: "gap",
+          details: "Administrative safeguards not implemented",
+          recommendation: "Implement administrative safeguards to protect PHI from intentional or unintentional use or disclosure"
+        },
+        {
+          id: "PR-11",
+          control: "Organizational Requirements - Business Associate Agreements",
+          status: "gap",
+          details: "Business associate agreements not established",
+          recommendation: "Execute business associate agreements with all vendors who have access to PHI"
+        },
+        {
+          id: "PR-12",
+          control: "Organizational Requirements - Workforce Access",
+          status: "gap",
+          details: "Workforce access controls not implemented",
+          recommendation: "Implement workforce access controls to limit PHI access to authorized personnel only"
+        }
+      ]
+    },
+    {
+      name: "Breach Notification Rule (45 CFR 164 Subpart D)",
+      description: "Requirements for covered entities and business associates to provide notification following a breach of unsecured PHI",
+      results: [
+        {
+          id: "BN-1",
+          control: "Breach Assessment (164.402)",
+          status: "gap",
+          details: "Breach assessment procedures not established",
+          recommendation: "Implement procedures to assess whether a use or disclosure of PHI constitutes a breach"
+        },
+        {
+          id: "BN-2",
+          control: "Individual Notification (164.404)",
+          status: "gap",
+          details: "Individual notification procedures not established",
+          recommendation: "Implement procedures to notify individuals whose unsecured PHI has been breached"
+        },
+        {
+          id: "BN-3",
+          control: "Media Notification (164.406)",
+          status: "gap",
+          details: "Media notification procedures not established",
+          recommendation: "Implement procedures to notify prominent media outlets when breaches affect 500+ individuals in a state"
+        },
+        {
+          id: "BN-4",
+          control: "HHS Notification (164.408)",
+          status: "gap",
+          details: "HHS notification procedures not established",
+          recommendation: "Implement procedures to notify HHS of breaches involving 500+ individuals within 60 days"
+        },
+        {
+          id: "BN-5",
+          control: "Business Associate Notification (164.410)",
+          status: "gap",
+          details: "Business associate notification procedures not established",
+          recommendation: "Implement procedures for business associates to notify covered entities of breaches"
+        },
+        {
+          id: "BN-6",
+          control: "Breach Documentation (164.414)",
+          status: "gap",
+          details: "Breach documentation procedures not established",
+          recommendation: "Maintain documentation of all breach notifications and responses for 6 years"
+        },
+        {
+          id: "BN-7",
+          control: "Timeliness of Notification (164.404(b))",
+          status: "gap",
+          details: "Notification timeliness requirements not met",
+          recommendation: "Ensure individual notifications are provided without unreasonable delay and no later than 60 days"
+        },
+        {
+          id: "BN-8",
+          control: "Content of Individual Notification (164.404(c))",
+          status: "gap",
+          details: "Individual notification content requirements not met",
+          recommendation: "Include required elements in individual breach notifications: description, date, types of PHI, steps to take, contact information"
+        },
+        {
+          id: "BN-9",
+          control: "Method of Individual Notification (164.404(d))",
+          status: "gap",
+          details: "Individual notification methods not established",
+          recommendation: "Provide individual notifications by first-class mail or email if preferred by individual"
+        },
+        {
+          id: "BN-10",
+          control: "Substitute Notice (164.404(e))",
+          status: "gap",
+          details: "Substitute notice procedures not established",
+          recommendation: "Implement substitute notice procedures when individual contact information is insufficient"
+        }
+      ]
+    },
+    {
+      name: "Enforcement Rule (45 CFR 160 Subpart C)",
+      description: "Procedures for investigations, compliance reviews, and civil money penalties for HIPAA violations",
+      results: [
+        {
+          id: "ER-1",
+          control: "Compliance Reviews (160.304)",
+          status: "gap",
+          details: "Compliance review procedures not established",
+          recommendation: "Implement procedures to cooperate with HHS compliance reviews and investigations"
+        },
+        {
+          id: "ER-2",
+          control: "Complaint Investigations (160.306)",
+          status: "gap",
+          details: "Complaint investigation procedures not established",
+          recommendation: "Implement procedures to respond to and cooperate with HHS complaint investigations"
+        },
+        {
+          id: "ER-3",
+          control: "Civil Money Penalties (160.400)",
+          status: "gap",
+          details: "Civil money penalty procedures not established",
+          recommendation: "Implement procedures to respond to civil money penalty notices and requests for hearings"
+        },
+        {
+          id: "ER-4",
+          control: "Hearing Procedures (160.500)",
+          status: "gap",
+          details: "Hearing procedures not established",
+          recommendation: "Implement procedures for requesting and participating in administrative hearings"
+        },
+        {
+          id: "ER-5",
+          control: "Compliance Monitoring (160.310)",
+          status: "gap",
+          details: "Compliance monitoring procedures not established",
+          recommendation: "Implement ongoing compliance monitoring and self-assessment procedures"
+        },
+        {
+          id: "ER-6",
+          control: "Documentation Requirements (160.312)",
+          status: "gap",
+          details: "Documentation requirements not met",
+          recommendation: "Maintain documentation of compliance activities and make available to HHS upon request"
+        },
+        {
+          id: "ER-7",
+          control: "Cooperation with HHS (160.314)",
+          status: "gap",
+          details: "HHS cooperation procedures not established",
+          recommendation: "Implement procedures to cooperate with HHS investigations and provide requested information"
+        },
+        {
+          id: "ER-8",
+          control: "Corrective Action Plans (160.316)",
+          status: "gap",
+          details: "Corrective action plan procedures not established",
+          recommendation: "Implement procedures to develop and execute corrective action plans when violations are identified"
+        }
+      ]
+    }
+  ]
+};
+
 // Export all frameworks for use in the application
 export const allFrameworks = {
   NIST_CSF: nistCSF,
@@ -6460,6 +7169,6 @@ export const allFrameworks = {
   ISO_27001: iso27001,
   SOC_2: soc2,
   NIST_800_63B: nist80063b,
-  NYDFS_500: nydfs500
+  NYDFS_500: nydfs500,
+  HIPAA: hipaa
 };
-

@@ -513,6 +513,11 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.ISO_27001;
         console.log('✅ Successfully loaded ISO 27001 framework data');
+      } else if (framework === 'HIPAA') {
+        // Import HIPAA framework data from compliance-frameworks.js
+        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
+        frameworkData = allFrameworks.HIPAA;
+        console.log('✅ Successfully loaded HIPAA framework data');
       }
       // Add other frameworks as needed
     } catch (importError) {
@@ -855,6 +860,50 @@ CRITICAL REQUIREMENTS:
 4. Do NOT create or add any additional categories not listed here`;
       } else {
         frameworkPrompt = `\n\nFor ISO 27001:2022, analyze ALL controls in the selected categories. Provide comprehensive coverage of information security management system controls.`;
+      }
+    } else if (framework === 'HIPAA') {
+      if (frameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for HIPAA:', selectedCategories);
+          console.log('🔍 Available HIPAA categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category codes to framework category names
+             const categoryMapping = {
+               'AS': 'Administrative Safeguards (45 CFR 164.308)',
+               'PS': 'Physical Safeguards (45 CFR 164.310)',
+               'TS': 'Technical Safeguards (45 CFR 164.312)',
+               'OR': 'Organizational Requirements (45 CFR 164.314)',
+               'PD': 'Policies and Procedures and Documentation Requirements (45 CFR 164.316)',
+               'PR': 'Privacy Rule (45 CFR 164 Subpart E)',
+               'BN': 'Breach Notification Rule (45 CFR 164 Subpart D)',
+               'ER': 'Enforcement Rule (45 CFR 160 Subpart C)'
+             };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for HIPAA:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of HIPAA categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor HIPAA, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        frameworkPrompt = `\n\nFor HIPAA, analyze ALL rules in the selected areas. Include comprehensive coverage of privacy, security, breach notification, and enforcement requirements.`;
       }
     }
 
