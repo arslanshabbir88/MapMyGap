@@ -103,11 +103,19 @@ export const nistCSF = {
         { id: "RS.MA-04", control: "Incidents are escalated or elevated as needed", status: "gap", details: "Incident escalation not implemented", recommendation: "Establish incident escalation procedures" },
         { id: "RS.MA-05", control: "The criteria for initiating incident recovery are applied", status: "gap", details: "Recovery initiation criteria not established", recommendation: "Establish criteria for initiating incident recovery" },
         
-        // Incident Analysis (RS.AN) - 3 controls
+        // Incident Analysis (RS.AN) - 4 controls
         { id: "RS.AN-03", control: "Analysis is performed to establish what has taken place during an incident and the root cause of the incident", status: "gap", details: "Incident analysis not performed", recommendation: "Perform comprehensive incident analysis" },
         { id: "RS.AN-06", control: "Actions performed during an investigation are recorded, and the records' integrity and provenance are preserved", status: "gap", details: "Investigation recording not implemented", recommendation: "Implement investigation recording and preservation" },
         { id: "RS.AN-07", control: "Incident data and metadata are collected, and their integrity and provenance are preserved", status: "gap", details: "Data collection not implemented", recommendation: "Implement incident data collection and preservation" },
-        { id: "RS.AN-08", control: "An incident's magnitude is estimated and validated", status: "gap", details: "Magnitude estimation not implemented", recommendation: "Implement incident magnitude estimation and validation" }
+        { id: "RS.AN-08", control: "An incident's magnitude is estimated and validated", status: "gap", details: "Magnitude estimation not implemented", recommendation: "Implement incident magnitude estimation and validation" },
+        
+        // Incident Response Reporting and Communication (RS.CO) - 2 controls
+        { id: "RS.CO-02", control: "Internal and external stakeholders are notified of incidents", status: "gap", details: "Stakeholder notification not implemented", recommendation: "Implement stakeholder notification procedures" },
+        { id: "RS.CO-03", control: "Information is shared with designated internal and external stakeholders", status: "gap", details: "Information sharing not implemented", recommendation: "Implement secure information sharing protocols" },
+        
+        // Incident Mitigation (RS.MI) - 2 controls
+        { id: "RS.MI-01", control: "Incidents are contained", status: "gap", details: "Incident containment not implemented", recommendation: "Contain incidents to prevent further damage" },
+        { id: "RS.MI-02", control: "Incidents are eradicated", status: "gap", details: "Incident eradication not implemented", recommendation: "Eradicate incidents to eliminate threats" }
       ]
     },
     {

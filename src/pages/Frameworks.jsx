@@ -11,7 +11,7 @@ const Frameworks = ({ onShowLogin }) => {
       name: "NIST CSF",
       fullName: "NIST Cybersecurity Framework",
       version: "Version 2.0",
-      description: "A voluntary framework for managing and reducing cybersecurity risk (99 controls across 6 functions).",
+      description: "A voluntary framework for managing and reducing cybersecurity risk (104 controls across 6 functions).",
       overview: "The NIST Cybersecurity Framework provides a common language for understanding, managing, and expressing cybersecurity risk both internally and externally. It can be used to help identify and prioritize actions for reducing cybersecurity risk.",
       icon: "🔄",
       color: "from-green-600 to-green-700",
@@ -33,8 +33,8 @@ const Frameworks = ({ onShowLogin }) => {
         },
         {
           name: "Respond (RS)",
-          description: "Actions regarding a detected cybersecurity incident are taken (8 controls)",
-          controls: ["RS.MA-01", "RS.MA-02", "RS.MA-03", "RS.MA-04", "RS.MA-05", "RS.AN-03", "RS.AN-06", "RS.AN-07", "RS.AN-08"]
+          description: "Actions regarding a detected cybersecurity incident are taken (13 controls)",
+          controls: ["RS.MA-01", "RS.MA-02", "RS.MA-03", "RS.MA-04", "RS.MA-05", "RS.AN-03", "RS.AN-06", "RS.AN-07", "RS.AN-08", "RS.CO-02", "RS.CO-03", "RS.MI-01", "RS.MI-02"]
         },
         {
           name: "Recover (RC)",
