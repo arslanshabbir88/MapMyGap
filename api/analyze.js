@@ -387,10 +387,18 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     
     try {
       if (framework === 'NIST_CSF' && USE_NIST_CSF_STRUCTURED_ANALYSIS) {
-        // Import comprehensive NIST CSF framework data from nist-frameworks.js
-        const { nistCSF } = await import('../nist-frameworks.js');
-        frameworkData = nistCSF;
-        console.log('✅ Successfully loaded comprehensive NIST CSF framework data (107 controls)');
+        console.log('🔍 Attempting to load NIST CSF framework data...');
+        try {
+          // Import comprehensive NIST CSF framework data from nist-frameworks.js
+          const { nistCSF } = await import('../nist-frameworks.js');
+          frameworkData = nistCSF;
+          console.log('✅ Successfully loaded comprehensive NIST CSF framework data (107 controls)');
+          console.log('🔍 Framework data categories:', frameworkData.categories.length);
+        } catch (importError) {
+          console.log('❌ Failed to import NIST CSF framework data:', importError.message);
+          console.log('⚠️ Falling back to generic NIST CSF analysis');
+          frameworkData = null;
+        }
       } else if (framework === 'NIST_800_63B') {
         // Inline the comprehensive NIST 800-63B-4 category structure to avoid import issues
         frameworkData = {
