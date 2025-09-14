@@ -1969,7 +1969,7 @@ function Analyzer() {
                   
                   <div className="space-y-2">
                     {[
-                      { code: 'CC', name: 'Common Criteria', description: 'Control Environment, Communication, Risk Assessment, Monitoring, Control Activities' },
+                      { code: 'CC', name: 'Security (SEC)', description: 'Control Environment, Communication, Risk Assessment, Monitoring, Control Activities' },
                       { code: 'A', name: 'Availability', description: 'System operations, monitoring, disaster recovery, and business continuity' },
                       { code: 'C', name: 'Confidentiality', description: 'Information classification, handling, and data protection controls' },
                       { code: 'PI', name: 'Processing Integrity', description: 'System processing accuracy, completeness, and data quality controls' },
