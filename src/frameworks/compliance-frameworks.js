@@ -7708,11 +7708,65 @@ export const sox = {
 };
 
 // Export all frameworks for use in the application
+export const soc1 = {
+  name: "SOC 1",
+  description: "AICPA's framework for reporting on controls at service organizations related to financial reporting",
+  categories: [
+    {
+      name: "Control Environment (CC1)",
+      description: "The organization demonstrates a commitment to integrity and ethical values",
+      results: [
+        { id: "CC1.1", control: "The organization demonstrates a commitment to integrity and ethical values", status: "gap", details: "Control environment not established", recommendation: "Establish and communicate organizational values and ethical standards" },
+        { id: "CC1.2", control: "The board of directors demonstrates independence and exercises oversight", status: "gap", details: "Board oversight not established", recommendation: "Establish independent board oversight of financial reporting" },
+        { id: "CC1.3", control: "Management establishes oversight responsibilities for financial reporting", status: "gap", details: "Management oversight not established", recommendation: "Establish management oversight responsibilities for financial reporting" },
+        { id: "CC1.4", control: "The organization demonstrates a commitment to competence", status: "gap", details: "Competence commitment not demonstrated", recommendation: "Establish and maintain organizational competence in financial reporting" },
+        { id: "CC1.5", control: "The organization holds individuals accountable for their internal control responsibilities", status: "gap", details: "Accountability not established", recommendation: "Establish accountability for internal control responsibilities" }
+      ]
+    },
+    {
+      name: "Communication and Information (CC2)",
+      description: "The organization obtains, generates, and uses relevant, quality information to support internal control",
+      results: [
+        { id: "CC2.1", control: "The organization obtains or generates and uses relevant, quality information to support internal control", status: "gap", details: "Information quality not established", recommendation: "Establish processes to obtain and use quality information" },
+        { id: "CC2.2", control: "The organization internally communicates information, including objectives and responsibilities for internal control", status: "gap", details: "Internal communication not established", recommendation: "Establish internal communication processes for control objectives" },
+        { id: "CC2.3", control: "The organization communicates with external parties regarding matters affecting internal control", status: "gap", details: "External communication not established", recommendation: "Establish external communication processes for control matters" }
+      ]
+    },
+    {
+      name: "Risk Assessment (CC3)",
+      description: "The organization specifies suitable objectives and identifies and analyzes risks to achievement of those objectives",
+      results: [
+        { id: "CC3.1", control: "The organization specifies suitable objectives", status: "gap", details: "Objectives not specified", recommendation: "Specify suitable objectives for financial reporting" },
+        { id: "CC3.2", control: "The organization identifies and analyzes risks to achievement of objectives", status: "gap", details: "Risk identification not performed", recommendation: "Establish risk identification and analysis processes" },
+        { id: "CC3.3", control: "The organization analyzes risks to achievement of objectives", status: "gap", details: "Risk analysis not performed", recommendation: "Establish comprehensive risk analysis processes" }
+      ]
+    },
+    {
+      name: "Monitoring Activities (CC4)",
+      description: "The organization selects, develops, and performs ongoing and/or separate evaluations to ascertain whether components of internal control are present and functioning",
+      results: [
+        { id: "CC4.1", control: "The organization selects, develops, and performs ongoing and/or separate evaluations", status: "gap", details: "Monitoring activities not established", recommendation: "Establish ongoing and separate evaluation processes" },
+        { id: "CC4.2", control: "The organization evaluates and communicates deficiencies in internal control", status: "gap", details: "Deficiency evaluation not established", recommendation: "Establish processes to evaluate and communicate control deficiencies" }
+      ]
+    },
+    {
+      name: "Control Activities (CC5)",
+      description: "The organization selects and develops control activities that contribute to the mitigation of risks to achievement of objectives",
+      results: [
+        { id: "CC5.1", control: "The organization selects and develops control activities", status: "gap", details: "Control activities not selected", recommendation: "Select and develop appropriate control activities" },
+        { id: "CC5.2", control: "The organization develops general controls over technology", status: "gap", details: "Technology controls not developed", recommendation: "Develop general controls over technology systems" },
+        { id: "CC5.3", control: "The organization deploys control activities through policies and procedures", status: "gap", details: "Control deployment not established", recommendation: "Deploy control activities through policies and procedures" }
+      ]
+    }
+  ]
+};
+
 export const allFrameworks = {
   NIST_CSF: nistCSF,
   NIST_800_53: nist80053,
   PCI_DSS: pciDSS,
   ISO_27001: iso27001,
+  SOC_1: soc1,
   SOC_2: soc2,
   NIST_800_63B: nist80063b,
   NYDFS_500: nydfs500,

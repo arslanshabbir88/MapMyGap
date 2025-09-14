@@ -243,6 +243,50 @@ const Frameworks = ({ onShowLogin }) => {
         "Financial services"
       ]
     },
+    'soc1': {
+      name: "SOC 1",
+      fullName: "System and Organization Controls 1",
+      version: "Type II",
+      description: "AICPA's framework for reporting on controls at service organizations related to financial reporting (13 controls)",
+      overview: "SOC 1 is designed for service organizations that provide services to user entities that are relevant to those user entities' internal control over financial reporting. It focuses on controls that are likely to be relevant to an audit of a user entity's financial statements.",
+      icon: "📋",
+      color: "from-blue-600 to-blue-700",
+      categories: [
+        {
+          name: "Control Environment (CC1)",
+          description: "The organization demonstrates a commitment to integrity and ethical values (5 controls)",
+          controls: ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5"]
+        },
+        {
+          name: "Communication and Information (CC2)",
+          description: "The organization obtains, generates, and uses relevant, quality information to support internal control (3 controls)",
+          controls: ["CC2.1", "CC2.2", "CC2.3"]
+        },
+        {
+          name: "Risk Assessment (CC3)",
+          description: "The organization specifies suitable objectives and identifies and analyzes risks to achievement of those objectives (3 controls)",
+          controls: ["CC3.1", "CC3.2", "CC3.3"]
+        },
+        {
+          name: "Monitoring Activities (CC4)",
+          description: "The organization selects, develops, and performs ongoing and/or separate evaluations to ascertain whether components of internal control are present and functioning (2 controls)",
+          controls: ["CC4.1", "CC4.2"]
+        },
+        {
+          name: "Control Activities (CC5)",
+          description: "The organization selects and develops control activities that contribute to the mitigation of risks to achievement of objectives (3 controls)",
+          controls: ["CC5.1", "CC5.2", "CC5.3"]
+        }
+      ],
+      useCases: [
+        "Service organizations",
+        "Outsourced financial services",
+        "Payroll processors",
+        "Benefit administrators",
+        "Financial institutions",
+        "Technology service providers"
+      ]
+    },
     'iso-27001': {
       name: "ISO 27001",
       fullName: "ISO/IEC 27001 Information Security Management",
