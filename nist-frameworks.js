@@ -39,14 +39,14 @@ export const nistCSF = {
       name: "PROTECT",
       description: "Develop and implement appropriate safeguards to ensure delivery of critical services",
       results: [
-        // Identity Management, Authentication, and Access Control (PR.AC) - 7 controls
-        { id: "PR.AC-01", control: "Identities and credentials are managed", status: "gap", details: "Identity and credential management not implemented", recommendation: "Implement centralized identity and credential management system" },
-        { id: "PR.AC-02", control: "Physical access is controlled", status: "gap", details: "Physical access controls not implemented", recommendation: "Deploy physical access control systems" },
-        { id: "PR.AC-03", control: "Remote access is managed", status: "gap", details: "Remote access management not implemented", recommendation: "Implement secure remote access solutions" },
-        { id: "PR.AC-04", control: "Access permissions are managed", status: "gap", details: "Access permission management not implemented", recommendation: "Establish role-based access control system" },
-        { id: "PR.AC-05", control: "Network integrity is protected", status: "gap", details: "Network integrity protection not implemented", recommendation: "Deploy network monitoring and protection tools" },
-        { id: "PR.AC-06", control: "Identities are proofed and bound", status: "gap", details: "Identity proofing and binding not implemented", recommendation: "Implement multi-factor authentication and identity verification" },
-        { id: "PR.AC-07", control: "Users, devices, and other assets are authenticated", status: "gap", details: "Authentication systems not implemented", recommendation: "Deploy enterprise authentication solution" },
+        // Identity Management, Authentication, and Access Control (PR.AA) - 7 controls
+        { id: "PR.AA-01", control: "Identities and credentials are managed", status: "gap", details: "Identity and credential management not implemented", recommendation: "Implement centralized identity and credential management system" },
+        { id: "PR.AA-02", control: "Physical access is controlled", status: "gap", details: "Physical access controls not implemented", recommendation: "Deploy physical access control systems" },
+        { id: "PR.AA-03", control: "Remote access is managed", status: "gap", details: "Remote access management not implemented", recommendation: "Implement secure remote access solutions" },
+        { id: "PR.AA-04", control: "Access permissions are managed", status: "gap", details: "Access permission management not implemented", recommendation: "Establish role-based access control system" },
+        { id: "PR.AA-05", control: "Network integrity is protected", status: "gap", details: "Network integrity protection not implemented", recommendation: "Deploy network monitoring and protection tools" },
+        { id: "PR.AA-06", control: "Identities are proofed and bound", status: "gap", details: "Identity proofing and binding not implemented", recommendation: "Implement multi-factor authentication and identity verification" },
+        { id: "PR.AA-07", control: "Users, devices, and other assets are authenticated", status: "gap", details: "Authentication systems not implemented", recommendation: "Deploy enterprise authentication solution" },
         
         // Awareness and Training (PR.AT) - 5 controls
         { id: "PR.AT-01", control: "All users are informed and trained", status: "gap", details: "User training and awareness not implemented", recommendation: "Implement comprehensive user training program" },

@@ -24,7 +24,7 @@ const Frameworks = ({ onShowLogin }) => {
         {
           name: "Protect (PR)",
           description: "Develop and implement appropriate safeguards (28 controls)",
-          controls: ["PR.AC-01", "PR.AC-02", "PR.AC-03", "PR.AC-04", "PR.AC-05", "PR.AC-06", "PR.AC-07", "PR.AT-01", "PR.AT-02", "PR.AT-03", "PR.AT-04", "PR.AT-05", "PR.DS-01", "PR.DS-02", "PR.DS-03", "PR.DS-04", "PR.DS-05", "PR.DS-06", "PR.DS-07", "PR.DS-08", "PR.PT-01", "PR.PT-02", "PR.PT-03", "PR.PT-04", "PR.IT-01", "PR.IT-02", "PR.IT-03", "PR.IT-04"]
+          controls: ["PR.AA-01", "PR.AA-02", "PR.AA-03", "PR.AA-04", "PR.AA-05", "PR.AA-06", "PR.AA-07", "PR.AT-01", "PR.AT-02", "PR.AT-03", "PR.AT-04", "PR.AT-05", "PR.DS-01", "PR.DS-02", "PR.DS-03", "PR.DS-04", "PR.DS-05", "PR.DS-06", "PR.DS-07", "PR.DS-08", "PR.PT-01", "PR.PT-02", "PR.PT-03", "PR.PT-04", "PR.IT-01", "PR.IT-02", "PR.IT-03", "PR.IT-04"]
         },
         {
           name: "Detect (DE)",
