@@ -11,39 +11,39 @@ const Frameworks = ({ onShowLogin }) => {
       name: "NIST CSF",
       fullName: "NIST Cybersecurity Framework",
       version: "Version 2.0",
-      description: "A voluntary framework for managing and reducing cybersecurity risk.",
+      description: "A voluntary framework for managing and reducing cybersecurity risk (108 controls across 6 functions).",
       overview: "The NIST Cybersecurity Framework provides a common language for understanding, managing, and expressing cybersecurity risk both internally and externally. It can be used to help identify and prioritize actions for reducing cybersecurity risk.",
       icon: "🔄",
       color: "from-green-600 to-green-700",
       categories: [
         {
           name: "Identify (ID)",
-          description: "Develop an organizational understanding to manage cybersecurity risk",
-          controls: ["ID.AM-1", "ID.AM-2", "ID.AM-3", "ID.AM-4", "ID.AM-5", "ID.AM-6", "ID.BE-1", "ID.BE-2", "ID.BE-3", "ID.BE-4", "ID.BE-5", "ID.GV-1", "ID.GV-2", "ID.GV-3", "ID.GV-4", "ID.RA-1", "ID.RA-2", "ID.RA-3", "ID.RA-4", "ID.RA-5", "ID.RM-1", "ID.RM-2", "ID.RM-3", "ID.SC-1", "ID.SC-2", "ID.SC-3", "ID.SC-4", "ID.SC-5"]
+          description: "Develop an organizational understanding to manage cybersecurity risk (14 controls)",
+          controls: ["ID.AM-1", "ID.AM-2", "ID.AM-3", "ID.AM-4", "ID.AM-5", "ID.AM-6", "ID.RA-1", "ID.RA-2", "ID.RA-3", "ID.RA-4", "ID.RA-5", "ID.IM-1", "ID.IM-2", "ID.IM-3"]
         },
         {
           name: "Protect (PR)",
-          description: "Develop and implement appropriate safeguards",
-          controls: ["PR.AC-1", "PR.AC-2", "PR.AC-3", "PR.AC-4", "PR.AC-5", "PR.AC-6", "PR.AC-7", "PR.AT-1", "PR.AT-2", "PR.AT-3", "PR.AT-4", "PR.AT-5", "PR.DS-1", "PR.DS-2", "PR.DS-3", "PR.DS-4", "PR.DS-5", "PR.DS-6", "PR.DS-7", "PR.DS-8", "PR.IP-1", "PR.IP-2", "PR.IP-3", "PR.IP-4", "PR.IP-5", "PR.IP-6", "PR.IP-7", "PR.IP-8", "PR.IP-9", "PR.IP-10", "PR.IP-11", "PR.IP-12", "PR.MA-1", "PR.MA-2", "PR.MA-3", "PR.MA-4", "PR.MA-5", "PR.PT-1", "PR.PT-2", "PR.PT-3", "PR.PT-4"]
+          description: "Develop and implement appropriate safeguards (28 controls)",
+          controls: ["PR.AC-1", "PR.AC-2", "PR.AC-3", "PR.AC-4", "PR.AC-5", "PR.AC-6", "PR.AC-7", "PR.AT-1", "PR.AT-2", "PR.AT-3", "PR.AT-4", "PR.AT-5", "PR.DS-1", "PR.DS-2", "PR.DS-3", "PR.DS-4", "PR.DS-5", "PR.DS-6", "PR.DS-7", "PR.DS-8", "PR.PT-1", "PR.PT-2", "PR.PT-3", "PR.PT-4", "PR.IT-1", "PR.IT-2", "PR.IT-3", "PR.IT-4"]
         },
         {
           name: "Detect (DE)",
-          description: "Develop and implement appropriate activities to identify cybersecurity events",
-          controls: ["DE.AE-1", "DE.AE-2", "DE.AE-3", "DE.AE-4", "DE.AE-5", "DE.CM-1", "DE.CM-2", "DE.CM-3", "DE.CM-4", "DE.CM-5", "DE.CM-6", "DE.CM-7", "DE.CM-8", "DE.DP-1", "DE.DP-2", "DE.DP-3", "DE.DP-4", "DE.DP-5"]
+          description: "Develop and implement appropriate activities to identify cybersecurity events (13 controls)",
+          controls: ["DE.CM-1", "DE.CM-2", "DE.CM-3", "DE.CM-4", "DE.CM-5", "DE.CM-6", "DE.CM-7", "DE.CM-8", "DE.AE-1", "DE.AE-2", "DE.AE-3", "DE.AE-4", "DE.AE-5"]
         },
         {
           name: "Respond (RS)",
-          description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events",
-          controls: ["RS.RP-1", "RS.RP-2", "RS.RP-3", "RS.RP-4", "RS.RP-5", "RS.CO-1", "RS.CO-2", "RS.CO-3", "RS.CO-4", "RS.CO-5", "RS.AN-1", "RS.AN-2", "RS.AN-3", "RS.AN-4", "RS.AN-5", "RS.MI-1", "RS.MI-2", "RS.MI-3", "RS.MI-4", "RS.MI-5", "RS.IM-1", "RS.IM-2"]
+          description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events (18 controls)",
+          controls: ["RS.MA-1", "RS.MA-2", "RS.MA-3", "RS.AN-1", "RS.AN-2", "RS.AN-3", "RS.AN-4", "RS.AN-5", "RS.CO-1", "RS.CO-2", "RS.CO-3", "RS.CO-4", "RS.CO-5", "RS.MI-1", "RS.MI-2", "RS.MI-3", "RS.MI-4", "RS.MI-5"]
         },
         {
           name: "Recover (RC)",
-          description: "Develop and implement appropriate activities to maintain plans for resilience",
-          controls: ["RC.RP-1", "RC.IM-1", "RC.IM-2", "RC.IM-3", "RC.IM-4", "RC.IM-5", "RC.IM-6"]
+          description: "Develop and implement appropriate activities to maintain plans for resilience (10 controls)",
+          controls: ["RC.RP-1", "RC.RP-2", "RC.RP-3", "RC.RP-4", "RC.RP-5", "RC.RP-6", "RC.CO-1", "RC.CO-2", "RC.CO-3", "RC.CO-4"]
         },
         {
           name: "Govern (GV)",
-          description: "Establish, communicate, and monitor the organization's cybersecurity risk management strategy",
+          description: "Establish, communicate, and monitor the organization's cybersecurity risk management strategy (25 controls)",
           controls: ["GV.OC-1", "GV.OC-2", "GV.OC-3", "GV.OC-4", "GV.OC-5", "GV.RM-1", "GV.RM-2", "GV.RM-3", "GV.RM-4", "GV.RM-5", "GV.RM-6", "GV.RM-7", "GV.RR-1", "GV.RR-2", "GV.RR-3", "GV.RR-4", "GV.PO-1", "GV.PO-2", "GV.OV-1", "GV.OV-2", "GV.SC-1", "GV.SC-2", "GV.SC-3", "GV.SC-4"]
         }
       ],
