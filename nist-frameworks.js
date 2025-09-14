@@ -328,7 +328,5 @@ export const nist80053 = {
 // Export all frameworks
 export const allFrameworks = {
   "NIST CSF": nistCSF,
-  "NIST 800-53": nist80053,
-  "ISO 27001": iso27001,
-  "SOC 2": soc2
+  "NIST 800-53": nist80053
 };
