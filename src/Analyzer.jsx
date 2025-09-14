@@ -1442,6 +1442,7 @@ function Analyzer() {
     { id: 'SOC_2', name: 'SOC 2 Type II', enabled: true },
     { id: 'NYDFS_500', name: 'NYDFS Part 500', enabled: true },
     { id: 'HIPAA', name: 'HIPAA - Health Insurance Portability and Accountability Act', enabled: true },
+    { id: 'SOX', name: 'SOX - Sarbanes-Oxley Act of 2002', enabled: true },
   ];
   
   return (
@@ -2429,6 +2430,68 @@ function Analyzer() {
                    {selectedCategories.filter(cat => ['AS', 'PS', 'TS', 'OR', 'PD', 'PR', 'BN', 'ER'].includes(cat)).length === 0 && (
                      <div className="mt-2 text-sm text-red-400">
                        Please select one HIPAA rule to analyze.
+                     </div>
+                   )}
+                 </div>
+               )}
+
+               {selectedFramework === 'SOX' && (
+                 <div className="mb-6">
+                   <div className="mb-3">
+                     <label className="block text-sm font-medium text-slate-300">
+                       SOX Title to Analyze
+                     </label>
+                   </div>
+                   
+                   <div className="mb-3 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                     <div className="flex items-center space-x-2 text-sm text-blue-300">
+                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                       </svg>
+                       <span>Select one SOX title to analyze</span>
+                     </div>
+                   </div>
+                   
+                   <div className="space-y-2">
+                     {[
+                       { code: 'T1', name: 'Title I - Public Company Accounting Oversight Board (PCAOB)', description: 'Establishment and oversight of the PCAOB, auditing standards, and quality control requirements' },
+                       { code: 'T2', name: 'Title II - Auditor Independence', description: 'Requirements for auditor independence, non-audit services restrictions, and conflict of interest prevention' },
+                       { code: 'T3', name: 'Title III - Corporate Responsibility', description: 'Corporate governance requirements, audit committee responsibilities, and officer accountability' },
+                       { code: 'T4', name: 'Title IV - Enhanced Financial Disclosures', description: 'Enhanced financial reporting requirements, internal controls, and real-time disclosures' },
+                       { code: 'T5', name: 'Title V - Analyst Conflicts of Interest', description: 'Requirements for securities analysts and conflict of interest management' },
+                       { code: 'T6', name: 'Title VI - Commission Resources and Authority', description: 'SEC resources, enforcement authority, and regulatory oversight' },
+                       { code: 'T7', name: 'Title VII - Studies and Reports', description: 'Required studies and reports on accounting industry consolidation and enforcement' },
+                       { code: 'T8', name: 'Title VIII - Corporate and Criminal Fraud Accountability', description: 'Criminal penalties, document protection, and whistleblower protection' },
+                       { code: 'T9', name: 'Title IX - White-Collar Crime Penalty Enhancements', description: 'Enhanced penalties for white-collar crimes and sentencing guidelines' },
+                       { code: 'T10', name: 'Title X - Corporate Tax Returns', description: 'Requirements for corporate tax return signatures and accountability' },
+                       { code: 'T11', name: 'Title XI - Corporate Fraud and Accountability', description: 'Additional fraud accountability measures and enhanced enforcement' }
+                     ].map(category => (
+                       <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
+                         <input
+                           type="radio"
+                           name="sox-category"
+                           value={category.code}
+                           checked={selectedCategories.includes(category.code)}
+                           onChange={(e) => {
+                             setSelectedCategories([e.target.value]);
+                           }}
+                           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-600 rounded bg-slate-700"
+                         />
+                         <div className="flex-1 min-w-0">
+                           <div className="flex items-center space-x-2">
+                             <span className="font-medium text-slate-200">{category.code}</span>
+                             <span className="text-slate-300">-</span>
+                             <span className="text-slate-300">{category.name}</span>
+                           </div>
+                           <div className="text-slate-400 text-xs mt-1">{category.description}</div>
+                         </div>
+                       </label>
+                     ))}
+                   </div>
+                   
+                   {selectedCategories.filter(cat => ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11'].includes(cat)).length === 0 && (
+                     <div className="mt-2 text-sm text-red-400">
+                       Please select one SOX title to analyze.
                      </div>
                    )}
                  </div>

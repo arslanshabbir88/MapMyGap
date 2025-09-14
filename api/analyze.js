@@ -513,12 +513,17 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.ISO_27001;
         console.log('✅ Successfully loaded ISO 27001 framework data');
-      } else if (framework === 'HIPAA') {
-        // Import HIPAA framework data from compliance-frameworks.js
-        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
-        frameworkData = allFrameworks.HIPAA;
-        console.log('✅ Successfully loaded HIPAA framework data');
-      }
+       } else if (framework === 'HIPAA') {
+         // Import HIPAA framework data from compliance-frameworks.js
+         const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
+         frameworkData = allFrameworks.HIPAA;
+         console.log('✅ Successfully loaded HIPAA framework data');
+       } else if (framework === 'SOX') {
+         // Import SOX framework data from compliance-frameworks.js
+         const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
+         frameworkData = allFrameworks.SOX;
+         console.log('✅ Successfully loaded SOX framework data');
+       }
       // Add other frameworks as needed
     } catch (importError) {
       console.log('⚠️ Could not load framework data, proceeding with standard analysis');
@@ -902,10 +907,47 @@ CRITICAL REQUIREMENTS:
 2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
 3. Return results ONLY for the categories and controls shown above
 4. Do NOT create or add any additional categories not listed here`;
-      } else {
-        frameworkPrompt = `\n\nFor HIPAA, analyze ALL rules in the selected areas. Include comprehensive coverage of privacy, security, breach notification, and enforcement requirements.`;
-      }
-    }
+         } else {
+           frameworkPrompt = `\n\nFor HIPAA, analyze ALL rules in the selected areas. Include comprehensive coverage of privacy, security, breach notification, and enforcement requirements.`;
+         }
+       } else if (framework === 'SOX') {
+         if (frameworkData) {
+           let filteredCategories = frameworkData.categories;
+           if (selectedCategories && selectedCategories.length > 0) {
+             console.log('🔍 Original selectedCategories for SOX:', selectedCategories);
+             console.log('🔍 Available SOX categories:', frameworkData.categories.map(c => c.name));
+             
+             // Map user-friendly category codes to framework category names
+             const categoryMapping = {
+               'T1': 'Title I - Public Company Accounting Oversight Board (PCAOB)',
+               'T2': 'Title II - Auditor Independence',
+               'T3': 'Title III - Corporate Responsibility',
+               'T4': 'Title IV - Enhanced Financial Disclosures',
+               'T5': 'Title V - Analyst Conflicts of Interest',
+               'T6': 'Title VI - Commission Resources and Authority',
+               'T7': 'Title VII - Studies and Reports',
+               'T8': 'Title VIII - Corporate and Criminal Fraud Accountability',
+               'T9': 'Title IX - White-Collar Crime Penalty Enhancements',
+               'T10': 'Title X - Corporate Tax Returns',
+               'T11': 'Title XI - Corporate Fraud and Accountability'
+             };
+             
+             // Filter to only selected categories
+             filteredCategories = frameworkData.categories.filter(cat => 
+               selectedCategories.some(selected => 
+                 categoryMapping[selected] === cat.name || selected === cat.name
+               )
+             );
+             
+             console.log('🎯 Filtered categories for SOX:', filteredCategories.map(c => c.name));
+             console.log('🎯 Number of SOX categories being sent to AI:', filteredCategories.length);
+           }
+
+           frameworkPrompt = `\n\nFor SOX, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:\n\n${JSON.stringify(filteredCategories, null, 2)}\n\nCRITICAL REQUIREMENTS:\n1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls\n2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls\n3. Return results ONLY for the categories and controls shown above\n4. Do NOT create or add any additional categories not listed here`;
+         } else {
+           frameworkPrompt = `\n\nFor SOX, analyze ALL titles in the selected areas. Include comprehensive coverage of corporate governance, financial reporting, internal controls, and enforcement requirements.`;
+         }
+       }
 
                 // Create the prompt for the AI
             const prompt = `Analyze this document for ${framework} compliance and return a structured JSON response.

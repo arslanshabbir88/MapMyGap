@@ -7161,6 +7161,552 @@ export const hipaa = {
   ]
 };
 
+// SOX (Sarbanes-Oxley Act of 2002) - Complete Official Framework
+export const sox = {
+  name: "SOX",
+  description: "Sarbanes-Oxley Act of 2002 - Complete Compliance Framework (Public Law 107-204)",
+  definitions: {
+    "Issuer": "A company whose securities are registered under section 12 of the Securities Exchange Act of 1934 or required to file reports under section 15(d)",
+    "Audit Committee": "A committee established by the board of directors for overseeing accounting and financial reporting processes and audits",
+    "PCAOB": "Public Company Accounting Oversight Board - established to oversee the audits of public companies",
+    "Internal Controls": "Processes designed to provide reasonable assurance regarding the reliability of financial reporting and compliance with applicable laws",
+    "ICFR": "Internal Control over Financial Reporting - controls specifically designed to ensure reliable financial reporting",
+    "Whistleblower": "An employee who reports violations of securities laws or fraud to appropriate authorities",
+    "Material Weakness": "A deficiency in internal control such that there is a reasonable possibility that a material misstatement will not be prevented or detected",
+    "Significant Deficiency": "A deficiency in internal control that is less severe than a material weakness but important enough to merit attention"
+  },
+  categories: [
+    {
+      name: "Title I - Public Company Accounting Oversight Board (PCAOB)",
+      description: "Establishment and oversight of the PCAOB, auditing standards, and quality control requirements",
+      results: [
+        {
+          id: "101",
+          control: "PCAOB Establishment and Administrative Provisions",
+          status: "gap",
+          details: "PCAOB establishment requirements not implemented",
+          recommendation: "Ensure proper establishment and administrative structure of the Public Company Accounting Oversight Board"
+        },
+        {
+          id: "102",
+          control: "Registration with the Board",
+          status: "gap",
+          details: "Public accounting firm registration not completed",
+          recommendation: "Complete registration of public accounting firms with the PCAOB as required"
+        },
+        {
+          id: "103",
+          control: "Auditing, Quality Control, and Independence Standards",
+          status: "gap",
+          details: "Auditing standards and quality control procedures not established",
+          recommendation: "Implement comprehensive auditing standards, quality control, and independence standards"
+        },
+        {
+          id: "104",
+          control: "Inspections of Registered Public Accounting Firms",
+          status: "gap",
+          details: "Firm inspection procedures not implemented",
+          recommendation: "Establish procedures for regular inspections of registered public accounting firms"
+        },
+        {
+          id: "105",
+          control: "Investigations and Disciplinary Proceedings",
+          status: "gap",
+          details: "Investigation and disciplinary procedures not established",
+          recommendation: "Implement comprehensive investigation and disciplinary procedures for accounting firms"
+        },
+        {
+          id: "106",
+          control: "Foreign Public Accounting Firms",
+          status: "gap",
+          details: "Foreign firm oversight requirements not implemented",
+          recommendation: "Establish oversight procedures for foreign public accounting firms"
+        },
+        {
+          id: "107",
+          control: "Commission Oversight of the Board",
+          status: "gap",
+          details: "SEC oversight procedures not established",
+          recommendation: "Implement SEC oversight procedures for the PCAOB"
+        },
+        {
+          id: "108",
+          control: "Accounting Standards",
+          status: "gap",
+          details: "Accounting standards compliance not ensured",
+          recommendation: "Ensure compliance with established accounting standards and principles"
+        },
+        {
+          id: "109",
+          control: "Funding Requirements",
+          status: "gap",
+          details: "PCAOB funding requirements not met",
+          recommendation: "Establish proper funding mechanisms for PCAOB operations"
+        }
+      ]
+    },
+    {
+      name: "Title II - Auditor Independence",
+      description: "Requirements for auditor independence, non-audit services restrictions, and conflict of interest prevention",
+      results: [
+        {
+          id: "201",
+          control: "Services Outside the Scope of Practice of Auditors",
+          status: "gap",
+          details: "Non-audit services restrictions not implemented",
+          recommendation: "Implement restrictions on non-audit services provided by auditing firms"
+        },
+        {
+          id: "202",
+          control: "Preapproval Requirements",
+          status: "gap",
+          details: "Preapproval procedures not established",
+          recommendation: "Establish preapproval procedures for all audit and non-audit services"
+        },
+        {
+          id: "203",
+          control: "Audit Partner Rotation",
+          status: "gap",
+          details: "Partner rotation requirements not implemented",
+          recommendation: "Implement mandatory audit partner rotation requirements"
+        },
+        {
+          id: "204",
+          control: "Auditor Reports to Audit Committees",
+          status: "gap",
+          details: "Auditor reporting procedures not established",
+          recommendation: "Establish procedures for auditor reports to audit committees"
+        },
+        {
+          id: "205",
+          control: "Conforming Amendments",
+          status: "gap",
+          details: "Conforming amendments not implemented",
+          recommendation: "Implement necessary conforming amendments to existing regulations"
+        },
+        {
+          id: "206",
+          control: "Conflicts of Interest",
+          status: "gap",
+          details: "Conflict of interest prevention not implemented",
+          recommendation: "Establish procedures to prevent and address conflicts of interest"
+        },
+        {
+          id: "207",
+          control: "Study of Mandatory Rotation of Registered Public Accounting Firms",
+          status: "gap",
+          details: "Firm rotation study requirements not met",
+          recommendation: "Complete study of mandatory rotation of registered public accounting firms"
+        },
+        {
+          id: "208",
+          control: "Commission Authority",
+          status: "gap",
+          details: "SEC authority implementation not complete",
+          recommendation: "Ensure proper implementation of SEC authority under SOX"
+        },
+        {
+          id: "209",
+          control: "Considerations by Appropriate State Regulatory Authorities",
+          status: "gap",
+          details: "State regulatory coordination not established",
+          recommendation: "Establish coordination with appropriate state regulatory authorities"
+        }
+      ]
+    },
+    {
+      name: "Title III - Corporate Responsibility",
+      description: "Corporate governance requirements, audit committee responsibilities, and officer accountability",
+      results: [
+        {
+          id: "301",
+          control: "Public Company Audit Committees",
+          status: "gap",
+          details: "Audit committee requirements not implemented",
+          recommendation: "Establish independent audit committees with proper composition and responsibilities"
+        },
+        {
+          id: "302",
+          control: "Corporate Responsibility for Financial Reports",
+          status: "gap",
+          details: "CEO/CFO certification requirements not implemented",
+          recommendation: "Implement CEO/CFO certification requirements for financial reports"
+        },
+        {
+          id: "303",
+          control: "Improper Influence on Conduct of Audits",
+          status: "gap",
+          details: "Audit influence prevention not implemented",
+          recommendation: "Establish procedures to prevent improper influence on audit conduct"
+        },
+        {
+          id: "304",
+          control: "Forfeiture of Certain Bonuses and Profits",
+          status: "gap",
+          details: "Forfeiture procedures not established",
+          recommendation: "Implement procedures for forfeiture of bonuses and profits in case of misconduct"
+        },
+        {
+          id: "305",
+          control: "Officer and Director Bars and Penalties",
+          status: "gap",
+          details: "Officer and director penalty procedures not established",
+          recommendation: "Establish procedures for officer and director bars and penalties"
+        },
+        {
+          id: "306",
+          control: "Insider Trades During Pension Fund Blackout Periods",
+          status: "gap",
+          details: "Blackout period trading restrictions not implemented",
+          recommendation: "Implement restrictions on insider trading during pension fund blackout periods"
+        },
+        {
+          id: "307",
+          control: "Rules of Professional Responsibility for Attorneys",
+          status: "gap",
+          details: "Attorney professional responsibility rules not implemented",
+          recommendation: "Establish rules of professional responsibility for attorneys"
+        },
+        {
+          id: "308",
+          control: "Fair Funds for Investors",
+          status: "gap",
+          details: "Fair funds procedures not established",
+          recommendation: "Establish procedures for fair funds for investors"
+        }
+      ]
+    },
+    {
+      name: "Title IV - Enhanced Financial Disclosures",
+      description: "Enhanced financial reporting requirements, internal controls, and real-time disclosures",
+      results: [
+        {
+          id: "401",
+          control: "Disclosures in Periodic Reports",
+          status: "gap",
+          details: "Enhanced periodic report disclosures not implemented",
+          recommendation: "Implement enhanced disclosures in periodic reports including off-balance sheet transactions"
+        },
+        {
+          id: "402",
+          control: "Enhanced Conflict of Interest Provisions",
+          status: "gap",
+          details: "Conflict of interest provisions not enhanced",
+          recommendation: "Implement enhanced conflict of interest provisions and disclosures"
+        },
+        {
+          id: "403",
+          control: "Disclosures of Transactions Involving Management and Principal Stockholders",
+          status: "gap",
+          details: "Management transaction disclosures not implemented",
+          recommendation: "Implement disclosures of transactions involving management and principal stockholders"
+        },
+        {
+          id: "404",
+          control: "Management Assessment of Internal Controls",
+          status: "gap",
+          details: "Internal control assessment requirements not implemented",
+          recommendation: "Implement management assessment of internal controls over financial reporting (ICFR)"
+        },
+        {
+          id: "405",
+          control: "Exemption Provisions",
+          status: "gap",
+          details: "Exemption procedures not established",
+          recommendation: "Establish proper exemption procedures where applicable"
+        },
+        {
+          id: "406",
+          control: "Code of Ethics for Senior Financial Officers",
+          status: "gap",
+          details: "Code of ethics not established",
+          recommendation: "Establish and implement code of ethics for senior financial officers"
+        },
+        {
+          id: "407",
+          control: "Disclosure of Audit Committee Financial Expert",
+          status: "gap",
+          details: "Financial expert disclosure requirements not met",
+          recommendation: "Implement disclosure requirements for audit committee financial experts"
+        },
+        {
+          id: "408",
+          control: "Enhanced Review of Periodic Disclosures by Issuers",
+          status: "gap",
+          details: "Enhanced review procedures not implemented",
+          recommendation: "Implement enhanced review procedures for periodic disclosures"
+        },
+        {
+          id: "409",
+          control: "Real Time Issuer Disclosures",
+          status: "gap",
+          details: "Real-time disclosure requirements not implemented",
+          recommendation: "Implement real-time disclosure requirements for material changes"
+        }
+      ]
+    },
+    {
+      name: "Title V - Analyst Conflicts of Interest",
+      description: "Requirements for securities analysts and conflict of interest management",
+      results: [
+        {
+          id: "501",
+          control: "Treatment of Securities Analysts by Registered Securities Associations",
+          status: "gap",
+          details: "Securities analyst treatment requirements not implemented",
+          recommendation: "Implement proper treatment of securities analysts by registered securities associations and exchanges"
+        }
+      ]
+    },
+    {
+      name: "Title VI - Commission Resources and Authority",
+      description: "SEC resources, enforcement authority, and regulatory oversight",
+      results: [
+        {
+          id: "601",
+          control: "Authorization of Appropriations",
+          status: "gap",
+          details: "SEC funding authorization not properly implemented",
+          recommendation: "Ensure proper authorization of appropriations for SEC operations"
+        },
+        {
+          id: "602",
+          control: "Appearance and Practice Before the Commission",
+          status: "gap",
+          details: "Practice before commission rules not established",
+          recommendation: "Establish rules for appearance and practice before the SEC"
+        },
+        {
+          id: "603",
+          control: "Federal Court Authority to Impose Penny Stock Bars",
+          status: "gap",
+          details: "Penny stock bar authority not implemented",
+          recommendation: "Implement federal court authority to impose penny stock bars"
+        },
+        {
+          id: "604",
+          control: "Qualifications of Associated Persons of Brokers and Dealers",
+          status: "gap",
+          details: "Broker-dealer qualification requirements not implemented",
+          recommendation: "Establish qualification requirements for associated persons of brokers and dealers"
+        }
+      ]
+    },
+    {
+      name: "Title VII - Studies and Reports",
+      description: "Required studies and reports on accounting industry consolidation and enforcement",
+      results: [
+        {
+          id: "701",
+          control: "GAO Study and Report Regarding Consolidation of Public Accounting Firms",
+          status: "gap",
+          details: "GAO consolidation study not completed",
+          recommendation: "Complete GAO study and report on consolidation of public accounting firms"
+        },
+        {
+          id: "702",
+          control: "Commission Study and Report Regarding Credit Rating Agencies",
+          status: "gap",
+          details: "Credit rating agency study not completed",
+          recommendation: "Complete SEC study and report on credit rating agencies"
+        },
+        {
+          id: "703",
+          control: "Study and Report on Violators and Violations",
+          status: "gap",
+          details: "Violator study not completed",
+          recommendation: "Complete study and report on violators and violations"
+        },
+        {
+          id: "704",
+          control: "Study of Enforcement Actions",
+          status: "gap",
+          details: "Enforcement action study not completed",
+          recommendation: "Complete study of enforcement actions and their effectiveness"
+        },
+        {
+          id: "705",
+          control: "Study of Investment Banks",
+          status: "gap",
+          details: "Investment bank study not completed",
+          recommendation: "Complete study of investment banks and their practices"
+        }
+      ]
+    },
+    {
+      name: "Title VIII - Corporate and Criminal Fraud Accountability",
+      description: "Criminal penalties, document protection, and whistleblower protection",
+      results: [
+        {
+          id: "801",
+          control: "Corporate and Criminal Fraud Accountability Act",
+          status: "gap",
+          details: "Fraud accountability act implementation not complete",
+          recommendation: "Implement comprehensive corporate and criminal fraud accountability measures"
+        },
+        {
+          id: "802",
+          control: "Criminal Penalties for Altering Documents",
+          status: "gap",
+          details: "Document alteration penalties not established",
+          recommendation: "Establish criminal penalties for altering, destroying, or concealing documents"
+        },
+        {
+          id: "803",
+          control: "Debts Nondischargeable if Incurred in Violation of Securities Fraud Laws",
+          status: "gap",
+          details: "Debt discharge restrictions not implemented",
+          recommendation: "Implement restrictions on debt discharge for securities fraud violations"
+        },
+        {
+          id: "804",
+          control: "Statute of Limitations for Securities Fraud",
+          status: "gap",
+          details: "Statute of limitations not properly established",
+          recommendation: "Establish appropriate statute of limitations for securities fraud cases"
+        },
+        {
+          id: "805",
+          control: "Review of Federal Sentencing Guidelines for Obstruction of Justice",
+          status: "gap",
+          details: "Sentencing guidelines review not completed",
+          recommendation: "Complete review and update of federal sentencing guidelines for obstruction of justice"
+        },
+        {
+          id: "806",
+          control: "Protection for Employees of Publicly Traded Companies Who Provide Evidence of Fraud",
+          status: "gap",
+          details: "Whistleblower protection not implemented",
+          recommendation: "Implement comprehensive whistleblower protection for employees reporting fraud"
+        },
+        {
+          id: "807",
+          control: "Criminal Penalties for Defrauding Shareholders of Publicly Traded Companies",
+          status: "gap",
+          details: "Shareholder fraud penalties not established",
+          recommendation: "Establish criminal penalties for defrauding shareholders of publicly traded companies"
+        }
+      ]
+    },
+    {
+      name: "Title IX - White-Collar Crime Penalty Enhancements",
+      description: "Enhanced penalties for white-collar crimes and sentencing guidelines",
+      results: [
+        {
+          id: "901",
+          control: "White-Collar Crime Penalty Enhancement Act",
+          status: "gap",
+          details: "Penalty enhancement act not implemented",
+          recommendation: "Implement white-collar crime penalty enhancement measures"
+        },
+        {
+          id: "902",
+          control: "Attempts and Conspiracies to Commit Criminal Fraud Offenses",
+          status: "gap",
+          details: "Conspiracy penalties not established",
+          recommendation: "Establish penalties for attempts and conspiracies to commit criminal fraud offenses"
+        },
+        {
+          id: "903",
+          control: "Criminal Penalties for Mail and Wire Fraud",
+          status: "gap",
+          details: "Mail and wire fraud penalties not enhanced",
+          recommendation: "Implement enhanced criminal penalties for mail and wire fraud"
+        },
+        {
+          id: "904",
+          control: "Criminal Penalties for Violations of ERISA",
+          status: "gap",
+          details: "ERISA violation penalties not established",
+          recommendation: "Establish criminal penalties for violations of the Employee Retirement Income Security Act"
+        },
+        {
+          id: "905",
+          control: "Amendment to Sentencing Guidelines Relating to Certain White-Collar Offenses",
+          status: "gap",
+          details: "Sentencing guidelines amendments not implemented",
+          recommendation: "Implement amendments to sentencing guidelines for white-collar offenses"
+        },
+        {
+          id: "906",
+          control: "Corporate Responsibility for Financial Reports",
+          status: "gap",
+          details: "Corporate responsibility penalties not established",
+          recommendation: "Establish criminal penalties for corporate responsibility violations in financial reports"
+        }
+      ]
+    },
+    {
+      name: "Title X - Corporate Tax Returns",
+      description: "Requirements for corporate tax return signatures and accountability",
+      results: [
+        {
+          id: "1001",
+          control: "Sense of the Senate Regarding the Signing of Corporate Tax Returns by Chief Executive Officers",
+          status: "gap",
+          details: "CEO tax return signature requirements not implemented",
+          recommendation: "Implement requirements for CEO signatures on corporate tax returns"
+        }
+      ]
+    },
+    {
+      name: "Title XI - Corporate Fraud and Accountability",
+      description: "Additional fraud accountability measures and enhanced enforcement",
+      results: [
+        {
+          id: "1101",
+          control: "Corporate Fraud Accountability Act",
+          status: "gap",
+          details: "Corporate fraud accountability act not implemented",
+          recommendation: "Implement comprehensive corporate fraud accountability measures"
+        },
+        {
+          id: "1102",
+          control: "Tampering with a Record or Otherwise Impeding an Official Proceeding",
+          status: "gap",
+          details: "Record tampering penalties not established",
+          recommendation: "Establish criminal penalties for tampering with records or impeding official proceedings"
+        },
+        {
+          id: "1103",
+          control: "Temporary Freeze Authority for the Securities and Exchange Commission",
+          status: "gap",
+          details: "SEC freeze authority not implemented",
+          recommendation: "Implement temporary freeze authority for the SEC in appropriate circumstances"
+        },
+        {
+          id: "1104",
+          control: "Amendment to the Federal Sentencing Guidelines",
+          status: "gap",
+          details: "Sentencing guidelines amendments not completed",
+          recommendation: "Complete amendments to federal sentencing guidelines for corporate fraud"
+        },
+        {
+          id: "1105",
+          control: "Authority of the Commission to Prohibit Persons from Serving as Officers or Directors",
+          status: "gap",
+          details: "Officer and director prohibition authority not established",
+          recommendation: "Establish SEC authority to prohibit persons from serving as officers or directors"
+        },
+        {
+          id: "1106",
+          control: "Increased Criminal Penalties under Securities Exchange Act of 1934",
+          status: "gap",
+          details: "Enhanced criminal penalties not implemented",
+          recommendation: "Implement increased criminal penalties under the Securities Exchange Act"
+        },
+        {
+          id: "1107",
+          control: "Retaliation Against Informants",
+          status: "gap",
+          details: "Informant protection not implemented",
+          recommendation: "Implement protection against retaliation for informants and whistleblowers"
+        }
+      ]
+    }
+  ]
+};
+
 // Export all frameworks for use in the application
 export const allFrameworks = {
   NIST_CSF: nistCSF,
@@ -7170,5 +7716,6 @@ export const allFrameworks = {
   SOC_2: soc2,
   NIST_800_63B: nist80063b,
   NYDFS_500: nydfs500,
-  HIPAA: hipaa
+  HIPAA: hipaa,
+  SOX: sox
 };
