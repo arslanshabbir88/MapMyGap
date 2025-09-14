@@ -11,7 +11,7 @@ const Frameworks = ({ onShowLogin }) => {
       name: "NIST CSF",
       fullName: "NIST Cybersecurity Framework",
       version: "Version 2.0",
-      description: "A voluntary framework for managing and reducing cybersecurity risk (121 controls across 6 functions).",
+      description: "A voluntary framework for managing and reducing cybersecurity risk (97 controls across 6 functions).",
       overview: "The NIST Cybersecurity Framework provides a common language for understanding, managing, and expressing cybersecurity risk both internally and externally. It can be used to help identify and prioritize actions for reducing cybersecurity risk.",
       icon: "🔄",
       color: "from-green-600 to-green-700",
@@ -23,23 +23,23 @@ const Frameworks = ({ onShowLogin }) => {
         },
         {
           name: "Protect (PR)",
-          description: "Develop and implement appropriate safeguards (28 controls)",
-          controls: ["PR.AA-01", "PR.AA-02", "PR.AA-03", "PR.AA-04", "PR.AA-05", "PR.AA-06", "PR.AA-07", "PR.AT-01", "PR.AT-02", "PR.AT-03", "PR.AT-04", "PR.AT-05", "PR.DS-01", "PR.DS-02", "PR.DS-03", "PR.DS-04", "PR.DS-05", "PR.DS-06", "PR.DS-07", "PR.DS-08", "PR.PT-01", "PR.PT-02", "PR.PT-03", "PR.PT-04", "PR.IT-01", "PR.IT-02", "PR.IT-03", "PR.IT-04"]
+          description: "Safeguards to manage the organization's cybersecurity risks are used (22 controls)",
+          controls: ["PR.AA-01", "PR.AA-02", "PR.AA-03", "PR.AA-04", "PR.AA-05", "PR.AA-06", "PR.AT-01", "PR.AT-02", "PR.DS-01", "PR.DS-02", "PR.DS-10", "PR.DS-11", "PR.PS-01", "PR.PS-02", "PR.PS-03", "PR.PS-04", "PR.PS-05", "PR.PS-06", "PR.IR-01", "PR.IR-02", "PR.IR-03", "PR.IR-04"]
         },
         {
           name: "Detect (DE)",
-          description: "Develop and implement appropriate activities to identify cybersecurity events (13 controls)",
-          controls: ["DE.CM-01", "DE.CM-02", "DE.CM-03", "DE.CM-04", "DE.CM-05", "DE.CM-06", "DE.CM-07", "DE.CM-08", "DE.AE-01", "DE.AE-02", "DE.AE-03", "DE.AE-04", "DE.AE-05"]
+          description: "Possible cybersecurity attacks and compromises are found and analyzed (9 controls)",
+          controls: ["DE.CM-01", "DE.CM-02", "DE.CM-03", "DE.CM-06", "DE.CM-09", "DE.AE-02", "DE.AE-03", "DE.AE-04", "DE.AE-06", "DE.AE-07", "DE.AE-08"]
         },
         {
           name: "Respond (RS)",
-          description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events (18 controls)",
-          controls: ["RS.MA-01", "RS.MA-02", "RS.MA-03", "RS.AN-01", "RS.AN-02", "RS.AN-03", "RS.AN-04", "RS.AN-05", "RS.CO-01", "RS.CO-02", "RS.CO-03", "RS.CO-04", "RS.CO-05", "RS.MI-01", "RS.MI-02", "RS.MI-03", "RS.MI-04", "RS.MI-05"]
+          description: "Actions regarding a detected cybersecurity incident are taken (8 controls)",
+          controls: ["RS.MA-01", "RS.MA-02", "RS.MA-03", "RS.MA-04", "RS.MA-05", "RS.AN-03", "RS.AN-06", "RS.AN-07", "RS.AN-08"]
         },
         {
           name: "Recover (RC)",
-          description: "Develop and implement appropriate activities to maintain plans for resilience (10 controls)",
-          controls: ["RC.RP-01", "RC.RP-02", "RC.RP-03", "RC.RP-04", "RC.RP-05", "RC.RP-06", "RC.CO-01", "RC.CO-02", "RC.CO-03", "RC.CO-04"]
+          description: "Assets and operations affected by a cybersecurity incident are restored (6 controls)",
+          controls: ["RC.RP-01", "RC.RP-02", "RC.RP-03", "RC.RP-04", "RC.RP-05", "RC.RP-06"]
         },
         {
           name: "Govern (GV)",
