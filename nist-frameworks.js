@@ -139,6 +139,47 @@ export const nistCSF = {
         { id: "RC.IM-5", control: "Reputation is repaired after an incident", status: "gap", details: "Reputation repair", recommendation: "Implement reputation repair strategies" },
         { id: "RC.IM-6", control: "Recovery activities are communicated to external stakeholders", status: "gap", details: "External stakeholder communication", recommendation: "Communicate recovery activities to external stakeholders" }
       ]
+    },
+    {
+      name: "GOVERN",
+      description: "Establish, communicate, and monitor the organization's cybersecurity risk management strategy, expectations, and policies",
+      results: [
+        // Organizational Context (GV.OC)
+        { id: "GV.OC-1", control: "The organization's mission, objectives, stakeholders, and obligations are understood and communicated", status: "gap", details: "Organizational context understanding", recommendation: "Document and communicate organizational mission, objectives, and stakeholder obligations" },
+        { id: "GV.OC-2", control: "Legal, regulatory, and contractual requirements are understood and managed", status: "gap", details: "Legal and regulatory compliance", recommendation: "Establish processes to understand and manage legal, regulatory, and contractual requirements" },
+        { id: "GV.OC-3", control: "The organization's role in the supply chain is understood and communicated", status: "gap", details: "Supply chain role identification", recommendation: "Document and communicate the organization's role and responsibilities in the supply chain" },
+        { id: "GV.OC-4", control: "Dependencies and critical functions for delivery of services are identified and communicated", status: "gap", details: "Critical function identification", recommendation: "Identify and communicate dependencies and critical functions for service delivery" },
+        { id: "GV.OC-5", control: "Outcomes, capabilities, and services that the organization depends on are understood and communicated", status: "gap", details: "External dependency identification", recommendation: "Identify and communicate external outcomes, capabilities, and services the organization depends on" },
+        
+        // Risk Management Strategy (GV.RM)
+        { id: "GV.RM-1", control: "Risk management objectives are established and agreed to by organizational stakeholders", status: "gap", details: "Risk management objectives", recommendation: "Establish and gain stakeholder agreement on risk management objectives" },
+        { id: "GV.RM-2", control: "Risk appetite and risk tolerance statements are established, communicated, and maintained", status: "gap", details: "Risk appetite and tolerance", recommendation: "Develop, communicate, and maintain risk appetite and tolerance statements" },
+        { id: "GV.RM-3", control: "Cybersecurity risk management activities and outcomes are included in enterprise risk management processes", status: "gap", details: "Enterprise risk management integration", recommendation: "Integrate cybersecurity risk management into enterprise risk management processes" },
+        { id: "GV.RM-4", control: "Strategic direction that describes appropriate risk response options is established and communicated", status: "gap", details: "Risk response strategy", recommendation: "Establish and communicate strategic direction for risk response options" },
+        { id: "GV.RM-5", control: "Lines of communication across the organization are established for cybersecurity risks, including risks from suppliers and other third parties", status: "gap", details: "Risk communication channels", recommendation: "Establish communication channels for cybersecurity risks across the organization and with third parties" },
+        { id: "GV.RM-6", control: "A standardized method for calculating, documenting, categorizing, and prioritizing cybersecurity risks is established and communicated", status: "gap", details: "Risk assessment methodology", recommendation: "Develop and communicate standardized risk assessment methodology" },
+        { id: "GV.RM-7", control: "Strategic opportunities (i.e., positive risks) are characterized and are included in organizational cybersecurity risk discussions", status: "gap", details: "Positive risk management", recommendation: "Include strategic opportunities and positive risks in cybersecurity risk discussions" },
+        
+        // Roles, Responsibilities, and Authorities (GV.RR)
+        { id: "GV.RR-1", control: "Organizational leadership is responsible and accountable for cybersecurity risk and fosters a culture that is risk-aware, ethical, and continually improving", status: "gap", details: "Leadership accountability", recommendation: "Establish leadership accountability for cybersecurity risk and foster risk-aware culture" },
+        { id: "GV.RR-2", control: "Roles, responsibilities, and authorities related to cybersecurity risk management are established, communicated, understood, and enforced", status: "gap", details: "Role definition and enforcement", recommendation: "Define, communicate, and enforce cybersecurity risk management roles and responsibilities" },
+        { id: "GV.RR-3", control: "Adequate resources are allocated commensurate with the cybersecurity risk strategy, roles, responsibilities, and policies", status: "gap", details: "Resource allocation", recommendation: "Allocate adequate resources to support cybersecurity risk management strategy" },
+        { id: "GV.RR-4", control: "Cybersecurity is included in human resources practices", status: "gap", details: "HR cybersecurity integration", recommendation: "Integrate cybersecurity considerations into human resources practices" },
+        
+        // Policy (GV.PO)
+        { id: "GV.PO-1", control: "Policy for managing cybersecurity risks is established based on organizational context, cybersecurity strategy, and priorities and is communicated and enforced", status: "gap", details: "Cybersecurity policy establishment", recommendation: "Develop, communicate, and enforce cybersecurity risk management policy" },
+        { id: "GV.PO-2", control: "Policy for managing cybersecurity risks is reviewed, updated, communicated, and enforced to reflect changes in requirements, threats, technology, and organizational mission", status: "gap", details: "Policy maintenance", recommendation: "Establish process for regular policy review, updates, and communication" },
+        
+        // Oversight (GV.OV)
+        { id: "GV.OV-1", control: "Cybersecurity risk management strategy outcomes are reviewed to inform and adjust strategy and direction", status: "gap", details: "Strategy outcome review", recommendation: "Implement regular review of cybersecurity risk management strategy outcomes" },
+        { id: "GV.OV-2", control: "The cybersecurity risk management strategy is reviewed and adjusted to ensure coverage of organizational requirements and risks", status: "gap", details: "Strategy adjustment", recommendation: "Review and adjust cybersecurity risk management strategy to ensure comprehensive coverage" },
+        
+        // Cybersecurity Supply Chain Risk Management (GV.SC)
+        { id: "GV.SC-1", control: "Processes to identify, assess, and manage supply chain risks are established and implemented", status: "gap", details: "Supply chain risk management", recommendation: "Establish and implement supply chain risk identification, assessment, and management processes" },
+        { id: "GV.SC-2", control: "Suppliers and third-party partners are evaluated and selected based on their ability to meet cybersecurity requirements", status: "gap", details: "Supplier evaluation", recommendation: "Evaluate and select suppliers based on cybersecurity capability" },
+        { id: "GV.SC-3", control: "Contracts with suppliers and third-party partners include cybersecurity requirements", status: "gap", details: "Contract cybersecurity requirements", recommendation: "Include cybersecurity requirements in supplier and third-party contracts" },
+        { id: "GV.SC-4", control: "Supply chain risks are monitored and managed throughout the supplier relationship", status: "gap", details: "Ongoing supply chain monitoring", recommendation: "Implement ongoing monitoring and management of supply chain risks" }
+      ]
     }
   ]
 };

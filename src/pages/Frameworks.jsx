@@ -40,6 +40,11 @@ const Frameworks = ({ onShowLogin }) => {
           name: "Recover (RC)",
           description: "Develop and implement appropriate activities to maintain plans for resilience",
           controls: ["RC.RP-1", "RC.IM-1", "RC.IM-2", "RC.IM-3", "RC.IM-4", "RC.IM-5", "RC.IM-6"]
+        },
+        {
+          name: "Govern (GV)",
+          description: "Establish, communicate, and monitor the organization's cybersecurity risk management strategy",
+          controls: ["GV.OC-1", "GV.OC-2", "GV.OC-3", "GV.OC-4", "GV.OC-5", "GV.RM-1", "GV.RM-2", "GV.RM-3", "GV.RM-4", "GV.RM-5", "GV.RM-6", "GV.RM-7", "GV.RR-1", "GV.RR-2", "GV.RR-3", "GV.RR-4", "GV.PO-1", "GV.PO-2", "GV.OV-1", "GV.OV-2", "GV.SC-1", "GV.SC-2", "GV.SC-3", "GV.SC-4"]
         }
       ],
       useCases: [
