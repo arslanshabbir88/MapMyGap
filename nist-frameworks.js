@@ -120,7 +120,11 @@ export const nistCSF = {
         { id: "RC.RP-03", control: "The integrity of backups and other restoration assets is verified before using them for restoration", status: "gap", details: "Backup integrity verification not performed", recommendation: "Verify backup and restoration asset integrity before use" },
         { id: "RC.RP-04", control: "Critical mission functions and cybersecurity risk management are considered to establish post-incident operational norms", status: "gap", details: "Post-incident operational norms not established", recommendation: "Establish post-incident operational norms considering critical functions" },
         { id: "RC.RP-05", control: "The integrity of restored assets is verified, systems and services are restored, and normal operating status is confirmed", status: "gap", details: "Asset restoration verification not performed", recommendation: "Verify restored asset integrity and confirm normal operating status" },
-        { id: "RC.RP-06", control: "The end of incident recovery is declared based on criteria, and incident-related documentation is completed", status: "gap", details: "Recovery completion declaration not implemented", recommendation: "Establish criteria for declaring recovery completion and document incidents" }
+        { id: "RC.RP-06", control: "The end of incident recovery is declared based on criteria, and incident-related documentation is completed", status: "gap", details: "Recovery completion declaration not implemented", recommendation: "Establish criteria for declaring recovery completion and document incidents" },
+        
+        // Incident Recovery Communication (RC.CO) - 2 controls
+        { id: "RC.CO-03", control: "Recovery activities and progress in restoring operational capabilities are communicated to designated internal and external stakeholders", status: "gap", details: "Recovery progress communication not implemented", recommendation: "Communicate recovery activities and progress to stakeholders" },
+        { id: "RC.CO-04", control: "Public updates on incident recovery are shared using approved methods and messaging", status: "gap", details: "Public recovery updates not implemented", recommendation: "Share public updates on incident recovery using approved methods" }
       ]
     },
     {
