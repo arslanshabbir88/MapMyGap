@@ -11,7 +11,7 @@ const Frameworks = ({ onShowLogin }) => {
       name: "NIST CSF",
       fullName: "NIST Cybersecurity Framework",
       version: "Version 2.0",
-      description: "A voluntary framework for managing and reducing cybersecurity risk (108 controls across 6 functions).",
+      description: "A voluntary framework for managing and reducing cybersecurity risk (121 controls across 6 functions).",
       overview: "The NIST Cybersecurity Framework provides a common language for understanding, managing, and expressing cybersecurity risk both internally and externally. It can be used to help identify and prioritize actions for reducing cybersecurity risk.",
       icon: "🔄",
       color: "from-green-600 to-green-700",
@@ -43,8 +43,8 @@ const Frameworks = ({ onShowLogin }) => {
         },
         {
           name: "Govern (GV)",
-          description: "Establish, communicate, and monitor the organization's cybersecurity risk management strategy (25 controls)",
-          controls: ["GV.OC-1", "GV.OC-2", "GV.OC-3", "GV.OC-4", "GV.OC-5", "GV.RM-1", "GV.RM-2", "GV.RM-3", "GV.RM-4", "GV.RM-5", "GV.RM-6", "GV.RM-7", "GV.RR-1", "GV.RR-2", "GV.RR-3", "GV.RR-4", "GV.PO-1", "GV.PO-2", "GV.OV-1", "GV.OV-2", "GV.SC-1", "GV.SC-2", "GV.SC-3", "GV.SC-4"]
+          description: "The organization's cybersecurity risk management strategy, expectations, and policy are established, communicated, and monitored (31 controls)",
+          controls: ["GV.OC-01", "GV.OC-02", "GV.OC-03", "GV.OC-04", "GV.OC-05", "GV.RM-01", "GV.RM-02", "GV.RM-03", "GV.RM-04", "GV.RM-05", "GV.RM-06", "GV.RM-07", "GV.RR-01", "GV.RR-02", "GV.RR-03", "GV.RR-04", "GV.PO-01", "GV.PO-02", "GV.OV-01", "GV.OV-02", "GV.OV-03", "GV.SC-01", "GV.SC-02", "GV.SC-03", "GV.SC-04", "GV.SC-05", "GV.SC-06", "GV.SC-07", "GV.SC-08", "GV.SC-09", "GV.SC-10"]
         }
       ],
       useCases: [
