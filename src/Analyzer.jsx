@@ -2394,14 +2394,14 @@ function Analyzer() {
                    
                    <div className="space-y-2">
                      {[
-                       { code: 'AS', name: 'Administrative Safeguards (45 CFR 164.308)', description: '9 Standards, 22 Implementation Specifications - Administrative policies and procedures' },
-                       { code: 'PS', name: 'Physical Safeguards (45 CFR 164.310)', description: '4 Standards, 8 Implementation Specifications - Physical measures and procedures' },
-                       { code: 'TS', name: 'Technical Safeguards (45 CFR 164.312)', description: '5 Standards, 9 Implementation Specifications - Technology and procedures' },
-                       { code: 'OR', name: 'Organizational Requirements (45 CFR 164.314)', description: '2 Standards, 2 Implementation Specifications - Business associate requirements' },
-                       { code: 'PD', name: 'Policies & Documentation (45 CFR 164.316)', description: '1 Standard, 2 Implementation Specifications - Documentation requirements' },
-                       { code: 'PR', name: 'Privacy Rule (45 CFR 164 Subpart E)', description: 'Standards for protection of individuals\' medical records and personal health information' },
-                       { code: 'BN', name: 'Breach Notification Rule (45 CFR 164 Subpart D)', description: 'Requirements for notification following a breach of unsecured PHI' },
-                       { code: 'ER', name: 'Enforcement Rule (45 CFR 160 Subpart C)', description: 'Procedures for investigations and civil money penalties for HIPAA violations' }
+                       { code: 'AS', name: 'Administrative Safeguards', description: 'Administrative policies and procedures' },
+                       { code: 'PS', name: 'Physical Safeguards', description: 'Physical measures and procedures' },
+                       { code: 'TS', name: 'Technical Safeguards', description: 'Technology and procedures' },
+                       { code: 'OR', name: 'Organizational Requirements', description: 'Business associate requirements' },
+                       { code: 'PD', name: 'Policies & Documentation', description: 'Documentation requirements' },
+                       { code: 'PR', name: 'Privacy Rule', description: 'Standards for protection of individuals\' medical records and personal health information' },
+                       { code: 'BN', name: 'Breach Notification Rule', description: 'Requirements for notification following a breach of unsecured PHI' },
+                       { code: 'ER', name: 'Enforcement Rule', description: 'Procedures for investigations and civil money penalties for HIPAA violations' }
                      ].map(category => (
                        <label key={category.code} className="flex items-start space-x-3 cursor-pointer p-2 rounded-lg hover:bg-slate-600/50 transition-colors">
                          <input
