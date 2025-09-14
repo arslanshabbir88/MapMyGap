@@ -19,32 +19,32 @@ const Frameworks = ({ onShowLogin }) => {
         {
           name: "Identify (ID)",
           description: "Develop an organizational understanding to manage cybersecurity risk",
-          controls: ["ID.AM-1", "ID.AM-2", "ID.AM-3", "ID.AM-4", "ID.AM-5"]
+          controls: ["ID.AM", "ID.BE", "ID.GV", "ID.RA", "ID.RM", "ID.SC", "ID.SE"]
         },
         {
           name: "Protect (PR)",
-          description: "Develop and implement appropriate safeguards to ensure delivery of critical services",
-          controls: ["PR.AC-1", "PR.AC-2", "PR.AC-3", "PR.AC-4", "PR.AC-5"]
+          description: "Develop and implement appropriate safeguards",
+          controls: ["PR.AC", "PR.AT", "PR.DS", "PR.IP", "PR.MA", "PR.PT"]
         },
         {
           name: "Detect (DE)",
-          description: "Develop and implement appropriate activities to identify the occurrence of a cybersecurity event",
-          controls: ["DE.AE-1", "DE.AE-2", "DE.CM-1", "DE.CM-2", "DE.DP-1"]
+          description: "Develop and implement appropriate activities to identify cybersecurity events",
+          controls: ["DE.AE", "DE.CM", "DE.DP"]
         },
         {
           name: "Respond (RS)",
           description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events",
-          controls: ["RS.RP-1", "RS.CO-1", "RS.AN-1", "RS.MI-1", "RS.IM-1"]
+          controls: ["RS.RP", "RS.CO", "RS.AN", "RS.MI", "RS.IM"]
         },
         {
           name: "Recover (RC)",
           description: "Develop and implement appropriate activities to maintain plans for resilience",
-          controls: ["RC.RP-1", "RC.IM-1", "RC.CO-1"]
+          controls: ["RC.RP", "RC.IM", "RC.CO"]
         },
         {
           name: "Govern (GV)",
           description: "Establish and monitor cybersecurity risk management strategy, expectations, and policy",
-          controls: ["GV.OC-1", "GV.RO-1", "GV.IR-1"]
+          controls: ["GV.OC", "GV.RO", "GV.IR", "GV.RE", "GV.AC", "GV.SC", "GV.IM", "GV.AS", "GV.RM", "GV.PO", "GV.PR", "GV.ED", "GV.TA", "GV.ST"]
         }
       ],
       useCases: [
