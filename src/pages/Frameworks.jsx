@@ -19,32 +19,32 @@ const Frameworks = ({ onShowLogin }) => {
         {
           name: "Identify (ID)",
           description: "Develop an organizational understanding to manage cybersecurity risk",
-          controls: ["ID.AM", "ID.BE", "ID.GV", "ID.RA", "ID.RM", "ID.SC", "ID.SE"]
+          controls: ["ID.AM-1", "ID.AM-2", "ID.AM-3", "ID.AM-4", "ID.AM-5"]
         },
         {
           name: "Protect (PR)",
-          description: "Develop and implement appropriate safeguards",
-          controls: ["PR.AC", "PR.AT", "PR.DS", "PR.IP", "PR.MA", "PR.PT"]
+          description: "Develop and implement appropriate safeguards to ensure delivery of critical services",
+          controls: ["PR.AC-1", "PR.AC-2", "PR.AC-3", "PR.AC-4", "PR.AC-5"]
         },
         {
           name: "Detect (DE)",
-          description: "Develop and implement appropriate activities to identify cybersecurity events",
-          controls: ["DE.AE", "DE.CM", "DE.DP"]
+          description: "Develop and implement appropriate activities to identify the occurrence of a cybersecurity event",
+          controls: ["DE.AE-1", "DE.AE-2", "DE.CM-1", "DE.CM-2", "DE.DP-1"]
         },
         {
           name: "Respond (RS)",
           description: "Develop and implement appropriate activities to take action regarding detected cybersecurity events",
-          controls: ["RS.RP", "RS.CO", "RS.AN", "RS.MI", "RS.IM"]
+          controls: ["RS.RP-1", "RS.CO-1", "RS.AN-1", "RS.MI-1", "RS.IM-1"]
         },
         {
           name: "Recover (RC)",
           description: "Develop and implement appropriate activities to maintain plans for resilience",
-          controls: ["RC.RP", "RC.IM", "RC.CO"]
+          controls: ["RC.RP-1", "RC.IM-1", "RC.CO-1"]
         },
         {
           name: "Govern (GV)",
           description: "Establish and monitor cybersecurity risk management strategy, expectations, and policy",
-          controls: ["GV.OC", "GV.RO", "GV.IR", "GV.RE", "GV.AC", "GV.SC", "GV.IM", "GV.AS", "GV.RM", "GV.PO", "GV.PR", "GV.ED", "GV.TA", "GV.ST"]
+          controls: ["GV.OC-1", "GV.RO-1", "GV.IR-1"]
         }
       ],
       useCases: [
@@ -197,49 +197,6 @@ const Frameworks = ({ onShowLogin }) => {
         "Educational institutions",
         "Cloud service providers",
         "Any organization with digital identity systems"
-      ]
-    },
-    'soc1': {
-      name: "SOC 1",
-      fullName: "System and Organization Controls 1",
-      version: "Type II",
-      description: "AICPA's framework for reporting on controls at service organizations that impact user entities' financial reporting.",
-      overview: "SOC 1 is designed for service organizations that impact their clients' financial reporting. It focuses on internal control over financial reporting (ICFR) and is based on the COSO framework with five components: Control Environment, Risk Assessment, Control Activities, Information and Communication, and Monitoring.",
-      icon: "📈",
-      color: "from-purple-600 to-purple-700",
-      categories: [
-        {
-          name: "Control Environment (CE)",
-          description: "Tone at the top, integrity, ethical values, and organizational structure",
-          controls: ["CE1.1", "CE1.2", "CE1.3", "CE1.4", "CE1.5", "CE1.6", "CE1.7"]
-        },
-        {
-          name: "Risk Assessment (RA)",
-          description: "Risk identification, analysis, and fraud risk assessment for financial reporting",
-          controls: ["RA1.1", "RA1.2", "RA1.3", "RA1.4", "RA1.5", "RA1.6"]
-        },
-        {
-          name: "Control Activities (CA)",
-          description: "Policies, procedures, segregation of duties, and authorization controls",
-          controls: ["CA1.1", "CA1.2", "CA1.3", "CA1.4", "CA1.5", "CA1.6", "CA1.7", "CA1.8"]
-        },
-        {
-          name: "Information and Communication (IC)",
-          description: "Information quality, internal/external communication, and documentation",
-          controls: ["IC1.1", "IC1.2", "IC1.3", "IC1.4", "IC1.5", "IC1.6"]
-        },
-        {
-          name: "Monitoring (M)",
-          description: "Ongoing monitoring, separate evaluations, and deficiency management",
-          controls: ["M1.1", "M1.2", "M1.3", "M1.4", "M1.5", "M1.6"]
-        }
-      ],
-      useCases: [
-        "Service organizations processing financial data",
-        "Payroll service providers",
-        "Financial data processors",
-        "Organizations supporting user entities' financial reporting",
-        "Third-party service providers with financial impact"
       ]
     },
     'soc2': {
@@ -487,6 +444,139 @@ const Frameworks = ({ onShowLogin }) => {
         "Money transmitters",
         "Virtual currency businesses",
         "Any NYDFS-regulated entity"
+      ]
+    },
+    'hipaa': {
+      name: "HIPAA",
+      fullName: "Health Insurance Portability and Accountability Act",
+      version: "2022",
+      description: "Federal law protecting health information privacy and security.",
+      overview: "HIPAA establishes national standards for the protection of certain health information. It includes the Privacy Rule, Security Rule, Breach Notification Rule, and Enforcement Rule, with comprehensive requirements for administrative, physical, and technical safeguards.",
+      icon: "🏥",
+      color: "from-emerald-600 to-emerald-700",
+      categories: [
+        {
+          name: "Administrative Safeguards",
+          description: "Administrative policies and procedures for protecting health information",
+          controls: ["164.308(a)(1)", "164.308(a)(2)", "164.308(a)(3)", "164.308(a)(4)", "164.308(a)(5)", "164.308(a)(6)", "164.308(a)(7)", "164.308(a)(8)", "164.308(b)(1)", "164.308(b)(2)", "164.308(b)(3)", "164.308(b)(4)", "164.308(b)(5)", "164.308(b)(6)", "164.308(b)(7)", "164.308(b)(8)", "164.308(b)(9)", "164.308(b)(10)", "164.308(b)(11)", "164.308(b)(12)", "164.308(b)(13)", "164.308(b)(14)", "164.308(b)(15)", "164.308(b)(16)", "164.308(b)(17)", "164.308(b)(18)", "164.308(b)(19)", "164.308(b)(20)", "164.308(b)(21)", "164.308(b)(22)", "164.308(b)(23)"]
+        },
+        {
+          name: "Physical Safeguards",
+          description: "Physical measures to protect health information systems",
+          controls: ["164.310(a)(1)", "164.310(a)(2)", "164.310(a)(3)", "164.310(a)(4)", "164.310(b)", "164.310(c)", "164.310(d)(1)", "164.310(d)(2)", "164.310(d)(3)", "164.310(d)(4)", "164.310(d)(5)", "164.310(d)(6)"]
+        },
+        {
+          name: "Technical Safeguards",
+          description: "Technology-based measures to protect health information",
+          controls: ["164.312(a)(1)", "164.312(a)(2)", "164.312(a)(3)", "164.312(a)(4)", "164.312(b)", "164.312(c)(1)", "164.312(c)(2)", "164.312(d)", "164.312(e)(1)", "164.312(e)(2)", "164.312(e)(3)", "164.312(f)", "164.312(g)", "164.312(h)"]
+        },
+        {
+          name: "Organizational Requirements",
+          description: "Requirements for business associate agreements and group health plans",
+          controls: ["164.314(a)(1)", "164.314(a)(2)", "164.314(b)(1)", "164.314(b)(2)"]
+        },
+        {
+          name: "Policies and Procedures",
+          description: "Documentation requirements for policies and procedures",
+          controls: ["164.316(a)", "164.316(b)(1)", "164.316(b)(2)"]
+        },
+        {
+          name: "Privacy Rule",
+          description: "Requirements for protecting individually identifiable health information",
+          controls: ["164.502", "164.504", "164.506", "164.508", "164.510", "164.512", "164.514", "164.516", "164.518", "164.520", "164.522", "164.524"]
+        },
+        {
+          name: "Breach Notification Rule",
+          description: "Requirements for notifying individuals and HHS of breaches",
+          controls: ["164.400", "164.402", "164.404", "164.406", "164.408", "164.410", "164.412", "164.414", "164.416", "164.418"]
+        },
+        {
+          name: "Enforcement Rule",
+          description: "Procedures for investigating and enforcing HIPAA violations",
+          controls: ["160.300", "160.302", "160.304", "160.306", "160.308", "160.310", "160.312", "160.314"]
+        }
+      ],
+      useCases: [
+        "Healthcare providers",
+        "Health plans",
+        "Healthcare clearinghouses",
+        "Business associates",
+        "Covered entities",
+        "Any organization handling health information"
+      ]
+    },
+    'sox': {
+      name: "SOX",
+      fullName: "Sarbanes-Oxley Act of 2002",
+      version: "Public Law 107-204",
+      description: "Federal law establishing corporate governance and financial reporting requirements.",
+      overview: "The Sarbanes-Oxley Act establishes requirements for public companies regarding financial reporting, internal controls, and corporate governance. It includes 11 titles covering everything from audit committee requirements to criminal penalties for corporate fraud.",
+      icon: "⚖️",
+      color: "from-amber-600 to-amber-700",
+      categories: [
+        {
+          name: "Title I - PCAOB",
+          description: "Public Company Accounting Oversight Board establishment and oversight",
+          controls: ["101", "102", "103", "104", "105", "106", "107", "108", "109"]
+        },
+        {
+          name: "Title II - Auditor Independence",
+          description: "Requirements for auditor independence and non-audit services",
+          controls: ["201", "202", "203", "204", "205", "206", "207", "208", "209"]
+        },
+        {
+          name: "Title III - Corporate Responsibility",
+          description: "Corporate governance and audit committee requirements",
+          controls: ["301", "302", "303", "304", "305", "306", "307", "308", "309"]
+        },
+        {
+          name: "Title IV - Enhanced Financial Disclosures",
+          description: "Enhanced financial reporting and internal control requirements",
+          controls: ["401", "402", "403", "404", "405", "406", "407", "408", "409"]
+        },
+        {
+          name: "Title V - Analyst Conflicts of Interest",
+          description: "Requirements for securities analysts and conflict management",
+          controls: ["501", "502", "503", "504", "505", "506", "507", "508", "509"]
+        },
+        {
+          name: "Title VI - Commission Resources and Authority",
+          description: "SEC resources, enforcement authority, and regulatory oversight",
+          controls: ["601", "602", "603", "604", "605", "606", "607", "608", "609"]
+        },
+        {
+          name: "Title VII - Studies and Reports",
+          description: "Required studies and reports on accounting industry",
+          controls: ["701", "702", "703", "704", "705", "706", "707", "708", "709"]
+        },
+        {
+          name: "Title VIII - Corporate and Criminal Fraud Accountability",
+          description: "Criminal penalties and document protection requirements",
+          controls: ["801", "802", "803", "804", "805", "806", "807", "808", "809"]
+        },
+        {
+          name: "Title IX - White-Collar Crime Penalty Enhancements",
+          description: "Enhanced penalties for white-collar crimes and sentencing",
+          controls: ["901", "902", "903", "904", "905", "906", "907", "908", "909"]
+        },
+        {
+          name: "Title X - Corporate Tax Returns",
+          description: "Requirements for corporate tax return signatures",
+          controls: ["1001", "1002", "1003", "1004", "1005", "1006", "1007", "1008", "1009"]
+        },
+        {
+          name: "Title XI - Corporate Fraud and Accountability",
+          description: "Additional fraud accountability measures and enforcement",
+          controls: ["1101", "1102", "1103", "1104", "1105", "1106", "1107", "1108", "1109"]
+        }
+      ],
+      useCases: [
+        "Public companies",
+        "Audit firms",
+        "Corporate boards",
+        "Audit committees",
+        "Financial institutions",
+        "Any publicly traded organization"
       ]
     }
   };
