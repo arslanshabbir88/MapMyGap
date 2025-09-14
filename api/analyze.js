@@ -379,8 +379,19 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
   try {
     // Import framework data to enforce consistent control structure
     let frameworkData;
+    
+    // Feature flag for NIST CSF structured analysis (can be easily disabled)
+    // TO REVERT TO ORIGINAL BEHAVIOR: Change this to false
+    // TO ENABLE STRUCTURED ANALYSIS: Change this to true
+    const USE_NIST_CSF_STRUCTURED_ANALYSIS = true;
+    
     try {
-      if (framework === 'NIST_800_63B') {
+      if (framework === 'NIST_CSF' && USE_NIST_CSF_STRUCTURED_ANALYSIS) {
+        // Import comprehensive NIST CSF framework data from nist-frameworks.js
+        const { nistCSF } = await import('../nist-frameworks.js');
+        frameworkData = nistCSF;
+        console.log('✅ Successfully loaded comprehensive NIST CSF framework data (107 controls)');
+      } else if (framework === 'NIST_800_63B') {
         // Inline the comprehensive NIST 800-63B-4 category structure to avoid import issues
         frameworkData = {
           categories: [
@@ -540,8 +551,49 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     // Add comprehensive framework-specific instructions
     let frameworkPrompt = '';
     if (framework === 'NIST_CSF') {
-      // Use lightweight approach for NIST_CSF to avoid token limits
-      frameworkPrompt = `\n\nFor NIST CSF v2.0, analyze ALL controls in the selected functions (IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER, GOVERN). Include detailed analysis of asset management, access control, awareness training, and all relevant controls.`;
+      if (USE_NIST_CSF_STRUCTURED_ANALYSIS && frameworkData) {
+        // Use structured approach with comprehensive framework data
+        let filteredCategories = frameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          console.log('🔍 Original selectedCategories for NIST CSF:', selectedCategories);
+          console.log('🔍 Available NIST CSF categories:', frameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category codes to framework category names
+          const categoryMapping = {
+            'ID': 'IDENTIFY',
+            'PR': 'PROTECT', 
+            'DE': 'DETECT',
+            'RS': 'RESPOND',
+            'RC': 'RECOVER',
+            'GV': 'GOVERN'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = frameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          console.log('🎯 Filtered categories for NIST CSF:', filteredCategories.map(c => c.name));
+          console.log('🎯 Number of NIST CSF categories being sent to AI:', filteredCategories.length);
+        }
+
+        // Use the filtered framework data to enforce consistent control structure
+        frameworkPrompt = `\n\nFor NIST CSF v2.0, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        // FALLBACK: Use lightweight approach for NIST_CSF to avoid token limits (ORIGINAL BEHAVIOR)
+        console.log('⚠️ Using fallback lightweight NIST CSF analysis (original behavior)');
+        frameworkPrompt = `\n\nFor NIST CSF v2.0, analyze ALL controls in the selected functions (IDENTIFY, PROTECT, DETECT, RESPOND, RECOVER, GOVERN). Include detailed analysis of asset management, access control, awareness training, and all relevant controls.`;
+      }
     } else if (framework === 'NIST_800_53') {
       frameworkPrompt = `\n\nFor NIST SP 800-53, analyze ALL controls in the selected families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, SR). Provide comprehensive coverage of all controls within selected families.`;
     } else if (framework === 'NIST_800_63B') {
