@@ -259,23 +259,23 @@ const Frameworks = ({ onShowLogin }) => {
         },
         {
           name: "Availability (A)",
-          description: "System availability for operation and use (38 Common Criteria + 5 Availability controls)",
-          controls: ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5", "CC2.1", "CC2.2", "CC2.3", "CC3.1", "CC3.2", "CC3.3", "CC3.4", "CC4.1", "CC4.2", "CC5.1", "CC5.2", "CC5.3", "CC6.1", "CC6.2", "CC6.3", "CC6.4", "CC6.5", "CC6.6", "CC6.7", "CC6.8", "CC7.1", "CC7.2", "CC7.3", "CC7.4", "CC7.5", "CC8.1", "CC8.2", "CC8.3", "CC8.4", "CC8.5", "CC9.1", "CC9.2", "CC9.3", "A1.1", "A1.2", "A1.3", "A1.4", "A1.5"]
+          description: "System availability for operation and use (5 Availability controls)",
+          controls: ["A1.1", "A1.2", "A1.3", "A1.4", "A1.5"]
         },
         {
           name: "Processing Integrity (PI)",
-          description: "System processing is complete, accurate, timely, and authorized (38 Common Criteria + 5 PI controls)",
-          controls: ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5", "CC2.1", "CC2.2", "CC2.3", "CC3.1", "CC3.2", "CC3.3", "CC3.4", "CC4.1", "CC4.2", "CC5.1", "CC5.2", "CC5.3", "CC6.1", "CC6.2", "CC6.3", "CC6.4", "CC6.5", "CC6.6", "CC6.7", "CC6.8", "CC7.1", "CC7.2", "CC7.3", "CC7.4", "CC7.5", "CC8.1", "CC8.2", "CC8.3", "CC8.4", "CC8.5", "CC9.1", "CC9.2", "CC9.3", "PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"]
+          description: "System processing is complete, accurate, timely, and authorized (5 PI controls)",
+          controls: ["PI1.1", "PI1.2", "PI1.3", "PI1.4", "PI1.5"]
         },
         {
           name: "Confidentiality (C)",
-          description: "Information designated as confidential is protected (38 Common Criteria + 5 Confidentiality controls)",
-          controls: ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5", "CC2.1", "CC2.2", "CC2.3", "CC3.1", "CC3.2", "CC3.3", "CC3.4", "CC4.1", "CC4.2", "CC5.1", "CC5.2", "CC5.3", "CC6.1", "CC6.2", "CC6.3", "CC6.4", "CC6.5", "CC6.6", "CC6.7", "CC6.8", "CC7.1", "CC7.2", "CC7.3", "CC7.4", "CC7.5", "CC8.1", "CC8.2", "CC8.3", "CC8.4", "CC8.5", "CC9.1", "CC9.2", "CC9.3", "C1.1", "C1.2", "C1.3", "C1.4", "C1.5"]
+          description: "Information designated as confidential is protected (5 Confidentiality controls)",
+          controls: ["C1.1", "C1.2", "C1.3", "C1.4", "C1.5"]
         },
         {
           name: "Privacy (P)",
-          description: "Personal information is collected, used, retained, disclosed, and disposed of in conformity with commitments (38 Common Criteria + 5 Privacy controls)",
-          controls: ["CC1.1", "CC1.2", "CC1.3", "CC1.4", "CC1.5", "CC2.1", "CC2.2", "CC2.3", "CC3.1", "CC3.2", "CC3.3", "CC3.4", "CC4.1", "CC4.2", "CC5.1", "CC5.2", "CC5.3", "CC6.1", "CC6.2", "CC6.3", "CC6.4", "CC6.5", "CC6.6", "CC6.7", "CC6.8", "CC7.1", "CC7.2", "CC7.3", "CC7.4", "CC7.5", "CC8.1", "CC8.2", "CC8.3", "CC8.4", "CC8.5", "CC9.1", "CC9.2", "CC9.3", "P1.1", "P1.2", "P1.3", "P1.4", "P1.5"]
+          description: "Personal information is collected, used, retained, disclosed, and disposed of in conformity with commitments (5 Privacy controls)",
+          controls: ["P1.1", "P1.2", "P1.3", "P1.4", "P1.5"]
         }
       ],
       useCases: [
