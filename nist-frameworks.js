@@ -5,27 +5,34 @@ export const nistCSF = {
   categories: [
     {
       name: "IDENTIFY",
-      description: "Develop an organizational understanding to manage cybersecurity risk",
+      description: "The organization's current cybersecurity risks are understood",
       results: [
-        // Asset Management (ID.AM) - 6 controls
-        { id: "ID.AM-1", control: "Physical devices and systems within the organization are inventoried", status: "gap", details: "Physical asset inventory not maintained", recommendation: "Implement comprehensive physical device and system inventory" },
-        { id: "ID.AM-2", control: "Software platforms and applications within the organization are inventoried", status: "gap", details: "Software inventory not maintained", recommendation: "Deploy software discovery and inventory tools" },
-        { id: "ID.AM-3", control: "Organizational communication and data flows are mapped", status: "gap", details: "Data flow mapping not performed", recommendation: "Create data flow diagrams and communication maps" },
-        { id: "ID.AM-4", control: "External information systems are catalogued", status: "gap", details: "External system catalog not maintained", recommendation: "Document all external system connections and dependencies" },
-        { id: "ID.AM-5", control: "Resources are prioritized based on their classification", status: "gap", details: "Resource prioritization not implemented", recommendation: "Implement risk-based resource classification system" },
-        { id: "ID.AM-6", control: "Cybersecurity roles and responsibilities are established", status: "gap", details: "Cybersecurity roles not defined", recommendation: "Define and document cybersecurity roles and responsibilities" },
+        // Asset Management (ID.AM) - 7 controls
+        { id: "ID.AM-01", control: "Inventories of hardware managed by the organization are maintained", status: "gap", details: "Hardware inventory not maintained", recommendation: "Implement comprehensive hardware inventory management system" },
+        { id: "ID.AM-02", control: "Inventories of software, services, and systems managed by the organization are maintained", status: "gap", details: "Software inventory not maintained", recommendation: "Deploy software discovery and inventory tools for all managed systems" },
+        { id: "ID.AM-03", control: "Representations of the organization's authorized network communication and internal and external network data flows are maintained", status: "gap", details: "Network data flow documentation not maintained", recommendation: "Create and maintain network communication and data flow diagrams" },
+        { id: "ID.AM-04", control: "Inventories of services provided by suppliers are maintained", status: "gap", details: "Supplier service inventory not maintained", recommendation: "Document all services provided by suppliers and third parties" },
+        { id: "ID.AM-05", control: "Assets are prioritized based on classification, criticality, resources, and impact on the mission", status: "gap", details: "Asset prioritization not implemented", recommendation: "Implement risk-based asset prioritization system" },
+        { id: "ID.AM-07", control: "Inventories of data and corresponding metadata for designated data types are maintained", status: "gap", details: "Data inventory not maintained", recommendation: "Implement comprehensive data inventory and metadata management" },
+        { id: "ID.AM-08", control: "Systems, hardware, software, services, and data are managed throughout their life cycles", status: "gap", details: "Lifecycle management not implemented", recommendation: "Implement comprehensive asset lifecycle management processes" },
         
-        // Risk Assessment (ID.RA) - 5 controls
-        { id: "ID.RA-1", control: "Asset vulnerabilities are identified and documented", status: "gap", details: "Vulnerability identification not performed", recommendation: "Implement vulnerability assessment process" },
-        { id: "ID.RA-2", control: "Cyber threat intelligence is received from information sharing forums", status: "gap", details: "Threat intelligence sharing not implemented", recommendation: "Participate in threat intelligence sharing" },
-        { id: "ID.RA-3", control: "Threats to assets are identified and documented", status: "gap", details: "Threat identification not performed", recommendation: "Document identified threats to assets" },
-        { id: "ID.RA-4", control: "Potential business impacts are identified", status: "gap", details: "Business impact assessment not performed", recommendation: "Assess potential business impacts" },
-        { id: "ID.RA-5", control: "Risks are identified and documented", status: "gap", details: "Risk identification not performed", recommendation: "Document identified risks" },
+        // Risk Assessment (ID.RA) - 10 controls
+        { id: "ID.RA-01", control: "Vulnerabilities in assets are identified, validated, and recorded", status: "gap", details: "Vulnerability identification not performed", recommendation: "Implement vulnerability assessment and management process" },
+        { id: "ID.RA-02", control: "Cyber threat intelligence is received from information sharing forums and sources", status: "gap", details: "Threat intelligence sharing not implemented", recommendation: "Participate in threat intelligence sharing forums and sources" },
+        { id: "ID.RA-03", control: "Internal and external threats to the organization are identified and recorded", status: "gap", details: "Threat identification not performed", recommendation: "Implement threat identification and documentation process" },
+        { id: "ID.RA-04", control: "Potential impacts and likelihoods of threats exploiting vulnerabilities are identified and recorded", status: "gap", details: "Risk impact assessment not performed", recommendation: "Implement risk impact and likelihood assessment process" },
+        { id: "ID.RA-05", control: "Threats, vulnerabilities, likelihoods, and impacts are used to understand inherent risk and inform risk response prioritization", status: "gap", details: "Risk analysis not performed", recommendation: "Implement comprehensive risk analysis and prioritization process" },
+        { id: "ID.RA-06", control: "Risk responses are chosen, prioritized, planned, tracked, and communicated", status: "gap", details: "Risk response management not implemented", recommendation: "Implement risk response selection, planning, and tracking process" },
+        { id: "ID.RA-07", control: "Changes and exceptions are managed, assessed for risk impact, recorded, and tracked", status: "gap", details: "Change and exception management not implemented", recommendation: "Implement change and exception risk assessment process" },
+        { id: "ID.RA-08", control: "Processes for receiving, analyzing, and responding to vulnerability disclosures are established", status: "gap", details: "Vulnerability disclosure process not established", recommendation: "Establish vulnerability disclosure response process" },
+        { id: "ID.RA-09", control: "The authenticity and integrity of hardware and software are assessed prior to acquisition and use", status: "gap", details: "Hardware/software authenticity assessment not performed", recommendation: "Implement pre-acquisition authenticity and integrity assessment" },
+        { id: "ID.RA-10", control: "Critical suppliers are assessed prior to acquisition", status: "gap", details: "Supplier assessment not performed", recommendation: "Implement critical supplier pre-acquisition assessment process" },
         
-        // Improvement (ID.IM) - 3 controls
-        { id: "ID.IM-1", control: "Cybersecurity risk management processes are established", status: "gap", details: "Risk management processes not established", recommendation: "Establish formal risk management processes" },
-        { id: "ID.IM-2", control: "Cybersecurity risk management processes are updated", status: "gap", details: "Risk process updates not implemented", recommendation: "Establish process for updating risk management" },
-        { id: "ID.IM-3", control: "Cybersecurity risk management processes are improved", status: "gap", details: "Risk process improvement not implemented", recommendation: "Implement continuous improvement for risk management processes" }
+        // Improvement (ID.IM) - 4 controls
+        { id: "ID.IM-01", control: "Improvements are identified from evaluations", status: "gap", details: "Evaluation-based improvements not identified", recommendation: "Implement process to identify improvements from evaluations" },
+        { id: "ID.IM-02", control: "Improvements are identified from security tests and exercises, including those done in coordination with suppliers and relevant third parties", status: "gap", details: "Test-based improvements not identified", recommendation: "Implement process to identify improvements from security tests and exercises" },
+        { id: "ID.IM-03", control: "Improvements are identified from execution of operational processes, procedures, and activities", status: "gap", details: "Operational improvements not identified", recommendation: "Implement process to identify improvements from operational execution" },
+        { id: "ID.IM-04", control: "Incident response plans and other cybersecurity plans are improved", status: "gap", details: "Plan improvements not implemented", recommendation: "Implement process to improve incident response and cybersecurity plans" }
       ]
     },
     {

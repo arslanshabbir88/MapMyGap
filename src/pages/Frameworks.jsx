@@ -18,8 +18,8 @@ const Frameworks = ({ onShowLogin }) => {
       categories: [
         {
           name: "Identify (ID)",
-          description: "Develop an organizational understanding to manage cybersecurity risk (14 controls)",
-          controls: ["ID.AM-1", "ID.AM-2", "ID.AM-3", "ID.AM-4", "ID.AM-5", "ID.AM-6", "ID.RA-1", "ID.RA-2", "ID.RA-3", "ID.RA-4", "ID.RA-5", "ID.IM-1", "ID.IM-2", "ID.IM-3"]
+          description: "The organization's current cybersecurity risks are understood (21 controls)",
+          controls: ["ID.AM-01", "ID.AM-02", "ID.AM-03", "ID.AM-04", "ID.AM-05", "ID.AM-07", "ID.AM-08", "ID.RA-01", "ID.RA-02", "ID.RA-03", "ID.RA-04", "ID.RA-05", "ID.RA-06", "ID.RA-07", "ID.RA-08", "ID.RA-09", "ID.RA-10", "ID.IM-01", "ID.IM-02", "ID.IM-03", "ID.IM-04"]
         },
         {
           name: "Protect (PR)",
