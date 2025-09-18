@@ -496,18 +496,31 @@ export default async function handler(req, res) {
     if (!rateLimitResult.allowed) {
       res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX_REQUESTS);
       res.setHeader('X-RateLimit-Remaining', rateLimitResult.remaining);
-      res.setHeader('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString());
+      
+      const resetTime = rateLimitResult.resetTime && !isNaN(rateLimitResult.resetTime) 
+        ? new Date(rateLimitResult.resetTime).toISOString()
+        : new Date(Date.now() + RATE_LIMIT_WINDOW_MS).toISOString();
+      res.setHeader('X-RateLimit-Reset', resetTime);
+      
+      const retryAfter = rateLimitResult.resetTime && !isNaN(rateLimitResult.resetTime)
+        ? Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
+        : Math.ceil(RATE_LIMIT_WINDOW_MS / 1000);
       
       return res.status(429).json({ 
         error: 'Rate limit exceeded',
-        retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
+        retryAfter
       });
     }
 
     // Set rate limit headers
     res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX_REQUESTS);
     res.setHeader('X-RateLimit-Remaining', rateLimitResult.remaining);
-    res.setHeader('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString());
+    
+    // Safely handle reset time
+    const resetTime = rateLimitResult.resetTime && !isNaN(rateLimitResult.resetTime) 
+      ? new Date(rateLimitResult.resetTime).toISOString()
+      : new Date(Date.now() + RATE_LIMIT_WINDOW_MS).toISOString();
+    res.setHeader('X-RateLimit-Reset', resetTime);
 
     // Parse multipart form data
     const Busboy = (await import('busboy')).default;
