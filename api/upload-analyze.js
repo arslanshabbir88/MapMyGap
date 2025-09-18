@@ -1,8 +1,6 @@
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const crypto = require('crypto');
-
-// Import busboy for file parsing
-const Busboy = require('busboy');
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import crypto from 'crypto';
+import Busboy from 'busboy';
 
 // Initialize Google AI
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
@@ -2782,7 +2780,6 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     }
     
     // Initialize Google AI with service account credentials
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || 'dummy-key', {
       credentials: credentials
     });
@@ -3405,20 +3402,20 @@ module.exports = async function handler(req, res) {
           break;
         case 'docx':
           // Use mammoth for real DOCX processing
-          const mammoth = require('mammoth');
+          const mammoth = await import('mammoth');
           const docxResult = await mammoth.extractRawText({ buffer: file.buffer });
           extractedText = docxResult.value;
           break;
         case 'pdf':
           // Use pdf-parse for real PDF processing
-          const pdfParse = require('pdf-parse');
-          const pdfResult = await pdfParse(file.buffer);
+          const pdfParse = await import('pdf-parse');
+          const pdfResult = await pdfParse.default(file.buffer);
           extractedText = pdfResult.text;
           break;
         case 'xlsx':
         case 'xls':
           // Use xlsx for real Excel processing
-          const XLSX = require('xlsx');
+          const XLSX = await import('xlsx');
           const workbook = XLSX.read(file.buffer, { type: 'buffer' });
           const sheetNames = workbook.SheetNames;
           const sheets = {};
