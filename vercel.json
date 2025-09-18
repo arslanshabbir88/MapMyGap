@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/upload-analyze.js": {
-      "maxDuration": 60
+      "maxDuration": 300
     },
     "api/analyze.js": {
       "maxDuration": 300
