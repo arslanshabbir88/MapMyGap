@@ -34,7 +34,7 @@
 
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import Busboy from 'busboy';
+const Busboy = require('busboy');
 import { createClient } from '@supabase/supabase-js';
 import { 
   generateRequestId, 
