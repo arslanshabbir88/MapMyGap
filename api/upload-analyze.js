@@ -446,10 +446,17 @@ async function processFile(file, filename) {
       case 'xlsx':
       case 'xls':
         const XLSX = await import('xlsx');
-        const workbook = XLSX.read(file, { type: 'buffer' });
+        const workbook = XLSX.read(file, { type: 'buffer', cellDates: false, cellNF: false, cellStyles: false });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+        
+        // Limit to first 1000 rows to prevent timeout
+        const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+        const maxRows = Math.min(range.e.r + 1, 1000);
+        const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+          header: 1, 
+          range: `A1:${XLSX.utils.encode_col(range.e.c)}${maxRows}`
+        });
         
         // Convert to text format
         let text = '';
@@ -598,17 +605,27 @@ export default async function handler(req, res) {
           }
         }
 
-        // Process file
+        // Process file with timeout protection
         logInfo(`Processing file: ${filename} (${file.length} bytes)`);
-        const documentText = await processFile(file, filename);
+        const documentText = await Promise.race([
+          processFile(file, filename),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('File processing timeout')), 30000)
+          )
+        ]);
         
         if (!documentText || documentText.trim().length === 0) {
           return res.status(400).json({ error: 'No text content found in file' });
         }
 
-        // Analyze with AI
+        // Analyze with AI with timeout protection
         logInfo(`Starting analysis for framework: ${framework}`);
-        const aiResponse = await analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId);
+        const aiResponse = await Promise.race([
+          analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId),
+          new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('AI analysis timeout')), 25000)
+          )
+        ]);
         
         // Parse AI response
         let analysisResult;
