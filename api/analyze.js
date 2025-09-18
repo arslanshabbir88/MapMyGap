@@ -34,6 +34,22 @@
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { createClient } from '@supabase/supabase-js';
+import { 
+  generateRequestId, 
+  extractClientInfo,
+  logApiRequest, 
+  logApiResponse, 
+  logApiError, 
+  logInfo, 
+  logError, 
+  logWarn, 
+  logDebug,
+  logSecurityEvent,
+  logPerformance 
+} from '../utils/logger.js';
+import { checkRateLimit } from '../utils/rateLimiter.js';
+import { validateAnalyzeRequest } from '../utils/validation.js';
+import { initializeEnvironment } from '../utils/env.js';
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -45,14 +61,19 @@ let accessToken = null;
 let tokenExpiry = 0;
 
 // Internal usage checking function (no tracking, just validation)
-async function checkUsageLimits(userId, documentSize, controlTextSize = 0) {
+async function checkUsageLimits(userId, documentSize, controlTextSize = 0, requestId = null) {
   try {
     if (!userId) {
-      console.log('⚠️ No user ID provided, skipping usage check');
+      logWarn('No user ID provided, skipping usage check', { requestId });
       return { success: true, usage: null };
     }
 
-    console.log('🔍 Checking usage limits for user:', userId);
+    logDebug('Checking usage limits for user', { 
+      userId: userId ? 'present' : 'missing',
+      documentSize,
+      controlTextSize,
+      requestId 
+    });
     
     // Get current subscription and usage
     const dbStartTime = Date.now();
@@ -363,7 +384,7 @@ async function callVertexAI(prompt, checkCancellation = null) {
 }
 
 // Main analysis function using direct Vertex AI API
-async function analyzeWithAI(fileContent, framework, selectedCategories = null, checkCancellation = null) {
+async function analyzeWithAI(fileContent, framework, selectedCategories = null, checkCancellation = null, requestId = null) {
   // Generate deterministic hash for logging - use beginning and end of document
   const documentHash = crypto.createHash('sha256').update(
     fileContent.substring(0, 100) + 
@@ -371,10 +392,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     framework
   ).digest('hex');
   
-       console.log('🚀 Starting AI analysis with Gemini 2.5 Flash via direct Vertex AI API');
-     console.log('📄 Document length:', fileContent.length, 'characters');
-     console.log('🔍 Framework:', framework);
-     console.log('🔑 Document hash:', documentHash.substring(0, 16) + '...');
+  logInfo('Starting AI analysis with Gemini 2.5 Flash via direct Vertex AI API', {
+    documentLength: fileContent.length,
+    framework,
+    documentHash: documentHash.substring(0, 16) + '...',
+    selectedCategoriesCount: selectedCategories?.length || 0,
+    requestId
+  });
   
   try {
     // Import framework data to enforce consistent control structure
@@ -1107,23 +1131,66 @@ CRITICAL REQUIREMENTS:
   }
 }
 
+// Initialize environment validation on module load
+try {
+  initializeEnvironment();
+} catch (error) {
+  console.error('❌ Failed to initialize environment:', error.message);
+  // Don't throw here - let individual requests handle it
+}
+
 // Main handler function
 export default async function handler(req, res) {
+  // Generate unique request ID for correlation
+  const requestId = generateRequestId();
+  
   // Set aggressive cache control headers to prevent any caching
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
   
   if (req.method !== 'POST') {
+    logApiError(req, new Error('Method not allowed'), requestId);
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  // Log API request start
+  logApiRequest(req, requestId);
+
+  // Check rate limiting
+  const clientInfo = extractClientInfo(req);
+  const rateLimitResult = checkRateLimit(clientInfo.ip, 'ip');
+  
+  if (!rateLimitResult.allowed) {
+    logSecurityEvent('Rate limit exceeded', {
+      ip: clientInfo.ip,
+      remaining: rateLimitResult.remaining,
+      resetTime: rateLimitResult.resetTime,
+      limit: rateLimitResult.limit
+    }, requestId);
+    
+    res.setHeader('X-RateLimit-Limit', rateLimitResult.limit);
+    res.setHeader('X-RateLimit-Remaining', rateLimitResult.remaining);
+    res.setHeader('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString());
+    
+    return res.status(429).json({ 
+      error: 'Rate limit exceeded', 
+      retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000),
+      requestId 
+    });
+  }
+
+  // Set rate limit headers
+  res.setHeader('X-RateLimit-Limit', rateLimitResult.limit);
+  res.setHeader('X-RateLimit-Remaining', rateLimitResult.remaining);
+  res.setHeader('X-RateLimit-Reset', new Date(rateLimitResult.resetTime).toISOString());
 
   // Set up request cancellation detection
   let isRequestCancelled = false;
   const checkCancellation = () => {
     if (req.destroyed || req.aborted) {
       isRequestCancelled = true;
-      console.log('🚫 Request was cancelled by client');
+      logWarn('Request was cancelled by client', { requestId });
       return true;
     }
     return false;
@@ -1131,52 +1198,79 @@ export default async function handler(req, res) {
   
   try {
     const startTime = Date.now();
-    console.log('🚀 Starting compliance analysis request');
+    logInfo('Starting compliance analysis request', { requestId });
     
     // Parse request body
     const { fileContent, framework, selectedCategories, userId } = req.body;
     
-    // Debug logging for selectedCategories
-    console.log('🔍 DEBUG - selectedCategories received:', selectedCategories);
-    console.log('🔍 DEBUG - selectedCategories type:', typeof selectedCategories);
-    console.log('🔍 DEBUG - selectedCategories length:', selectedCategories?.length);
-    console.log('🔍 DEBUG - selectedCategories is array:', Array.isArray(selectedCategories));
-    
-    if (!fileContent || !framework) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    // Validate request body
+    const validation = validateAnalyzeRequest(req.body);
+    if (!validation.valid) {
+      logSecurityEvent('Invalid request body', {
+        errors: validation.errors,
+        hasFileContent: !!fileContent,
+        hasFramework: !!framework,
+        selectedCategoriesCount: selectedCategories?.length || 0
+      }, requestId);
+      return res.status(400).json({ 
+        error: 'Invalid request', 
+        details: validation.errors,
+        requestId 
+      });
     }
+    
+    // Debug logging for selectedCategories
+    logDebug('Request parameters received', {
+      framework,
+      selectedCategoriesCount: selectedCategories?.length || 0,
+      selectedCategoriesType: typeof selectedCategories,
+      userId: userId ? 'present' : 'missing',
+      documentSize: fileContent?.length || 0
+    }, requestId);
 
     // Check usage limits before starting analysis (but don't track yet)
     const usageStartTime = Date.now();
-    const usageCheck = await checkUsageLimits(userId, fileContent.length, 0);
+    const usageCheck = await checkUsageLimits(userId, fileContent.length, 0, requestId);
     const usageTime = Date.now() - usageStartTime;
-    console.log(`⏱️ Usage check completed in ${usageTime}ms`);
+    logPerformance('Usage check', usageTime, { requestId });
     
     if (!usageCheck.success) {
+      logSecurityEvent('Usage limit exceeded', {
+        userId: userId ? 'present' : 'missing',
+        documentSize: fileContent.length,
+        error: usageCheck.error
+      }, requestId);
       throw new Error(usageCheck.error);
     }
     
-    // Generate unique request identifier to prevent caching
-    const requestId = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-    console.log('🆔 Unique request ID:', requestId);
-    
     // Check for cancellation before starting AI analysis
     if (checkCancellation()) {
-      console.log('🚫 Request cancelled before AI analysis, skipping');
+      logWarn('Request cancelled before AI analysis', { requestId });
       return res.status(499).json({ error: 'Request cancelled by client' });
     }
 
     // Perform AI analysis
     const aiStartTime = Date.now();
-    const result = await analyzeWithAI(fileContent, framework, selectedCategories, checkCancellation);
+    const result = await analyzeWithAI(fileContent, framework, selectedCategories, checkCancellation, requestId);
     const aiTime = Date.now() - aiStartTime;
-    console.log(`⏱️ AI analysis completed in ${aiTime}ms`);
+    logPerformance('AI analysis', aiTime, { 
+      framework, 
+      documentSize: fileContent.length,
+      selectedCategoriesCount: selectedCategories?.length || 0
+    }, requestId);
     
     // NOTE: Usage tracking moved to frontend to handle cancellation properly
     // Backend no longer tracks usage - frontend will handle this after successful response
     
     const totalTime = Date.now() - startTime;
-    console.log(`⏱️ Total function time: ${totalTime}ms`);
+    logPerformance('Total request processing', totalTime, { requestId });
+    
+    // Log successful completion
+    logApiResponse(req, res, requestId, {
+      framework,
+      documentSize: fileContent.length,
+      analysisSuccess: true
+    });
     
     // Return results in the format the frontend expects
     return res.status(200).json({
@@ -1195,10 +1289,14 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.log('❌ Handler error:', error.message);
+    logApiError(req, error, requestId, {
+      framework: req.body?.framework,
+      documentSize: req.body?.fileContent?.length || 0
+    });
     return res.status(500).json({ 
       error: 'Analysis failed', 
-      details: error.message 
+      details: error.message,
+      requestId: requestId
     });
   }
 }
