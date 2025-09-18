@@ -523,7 +523,7 @@ export default async function handler(req, res) {
     res.setHeader('X-RateLimit-Reset', resetTime);
 
     // Parse multipart form data
-    const Busboy = (await import('busboy')).default;
+    const { default: Busboy } = await import('busboy');
     const busboy = new Busboy({ headers: req.headers });
     
     let file = null;
