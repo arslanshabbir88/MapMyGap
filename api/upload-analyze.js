@@ -1,12 +1,6 @@
-import { VertexAI } from '@google-cloud/vertexai';
 import crypto from 'crypto';
 import Busboy from 'busboy';
-
-// Initialize Vertex AI
-const vertexAI = new VertexAI({
-  project: process.env.GCP_PROJECT_ID,
-  location: process.env.GCP_LOCATION || 'us-central1'
-});
+import jwt from 'jsonwebtoken';
 
 // NIST OSCAL API endpoint for live control fetching
 const NIST_OSCAL_URL = 'https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/catalog.json';
@@ -15,6 +9,121 @@ const NIST_OSCAL_URL = 'https://raw.githubusercontent.com/usnistgov/oscal-conten
 let nistControlsCache = null;
 let nistControlsCacheTime = 0;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+// Access token caching
+let accessToken = null;
+let tokenExpiry = 0;
+
+// Get access token for Vertex AI
+async function getAccessToken() {
+  try {
+    // Check if we have a valid cached token
+    if (accessToken && Date.now() < tokenExpiry) {
+      return accessToken;
+    }
+
+    const serviceKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceKey) {
+      throw new Error('GCP_SERVICE_KEY environment variable not set');
+    }
+
+    // Parse the service account key
+    let credentials;
+    try {
+      credentials = JSON.parse(
+        Buffer.from(serviceKey, 'base64').toString()
+      );
+    } catch (error) {
+      throw new Error(`Failed to parse service account key: ${error.message}`);
+    }
+
+    // Create JWT token
+    const now = Math.floor(Date.now() / 1000);
+    const payload = {
+      iss: credentials.client_email,
+      sub: credentials.client_email,
+      aud: 'https://oauth2.googleapis.com/token',
+      iat: now,
+      exp: now + 3600,
+      scope: 'https://www.googleapis.com/auth/cloud-platform'
+    };
+
+    const jwtToken = jwt.sign(payload, credentials.private_key, { algorithm: 'RS256' });
+
+    // Exchange JWT for access token
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: jwtToken
+      })
+    });
+
+    if (!tokenResponse.ok) {
+      const errorText = await tokenResponse.text();
+      throw new Error(`Token exchange failed: ${tokenResponse.status} ${errorText}`);
+    }
+
+    const tokenData = await tokenResponse.json();
+    accessToken = tokenData.access_token;
+    tokenExpiry = Date.now() + (tokenData.expires_in * 1000) - 60000; // 1 minute buffer
+
+    console.log('✅ Access token obtained successfully');
+    return accessToken;
+  } catch (error) {
+    console.log('❌ Failed to get access token:', error.message);
+    throw error;
+  }
+}
+
+// Direct call to Vertex AI API
+async function callVertexAI(prompt) {
+  try {
+    const accessToken = await getAccessToken();
+    const projectId = process.env.GCP_PROJECT_ID;
+    const location = process.env.GCP_LOCATION || 'us-central1';
+
+    const url = `https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-2.5-flash:generateContent`;
+
+    const requestBody = {
+      contents: [{
+        role: "user",
+        parts: [{
+          text: prompt
+        }]
+      }],
+      generationConfig: {
+        maxOutputTokens: 32768,
+        temperature: 0.0,
+        topP: 1.0,
+        topK: 1
+      }
+    };
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Vertex AI API error: ${response.status} ${errorText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Vertex AI call failed:', error);
+    throw error;
+  }
+}
 
 // Inline framework control structures to avoid import issues
 console.log('=== FILE LOADING DEBUG ===');
@@ -2782,14 +2891,7 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       throw new Error(`Failed to parse service account key: ${error.message}`);
     }
     
-    // Initialize Vertex AI with service account credentials
-    const vertexAI = new VertexAI({
-      project: process.env.GCP_PROJECT_ID,
-      location: process.env.GCP_LOCATION || 'us-central1',
-      credentials: credentials
-    });
-    
-    const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    // Use direct HTTP call to Vertex AI (no SDK initialization needed)
     
     // Map framework IDs to display names
     const frameworkNames = {
@@ -2827,63 +2929,15 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
     console.log('🔍 DEBUG: Number of categories in prompt:', filteredFrameworkData.categories.length);
     console.log('🔍 DEBUG: Total controls in prompt:', filteredFrameworkData.categories.reduce((sum, cat) => sum + cat.results.length, 0));
     
-    // Add timeout to prevent hanging
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('AI analysis timeout - taking too long')), 45000); // Increased from 25s to 45s
-    });
+    console.log('🚀 Starting AI analysis with direct HTTP call...');
     
-    console.log('🚀 Starting AI analysis with timeout...');
+    // Use direct HTTP call to Vertex AI
+    let result, text;
     
-    // Retry function with exponential backoff for API overload
-    async function retryAIWithBackoff(prompt, maxRetries = 3) {
-      for (let attempt = 1; attempt <= maxRetries; attempt++) {
-        try {
-          console.log(`🔄 AI Attempt ${attempt}/${maxRetries}...`);
-          
-          const aiPromise = model.generateContent(prompt);
-          const result = await Promise.race([aiPromise, timeoutPromise]);
-          
-          console.log(`✅ AI analysis completed successfully on attempt ${attempt}`);
-          return result;
-          
-        } catch (error) {
-          console.log(`❌ AI Attempt ${attempt} failed:`, error.message);
-          
-          // Check if it's an API overload error
-          if (error.message.includes('overloaded') || error.message.includes('503') || error.message.includes('Service Unavailable')) {
-            if (attempt < maxRetries) {
-              const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000); // Exponential backoff: 1s, 2s, 4s, max 10s
-              console.log(`⏳ API overloaded, waiting ${delay}ms before retry ${attempt + 1}...`);
-              await new Promise(resolve => setTimeout(resolve, delay));
-              continue;
-            } else {
-              console.error('🚨 All AI attempts failed due to API overload');
-              throw new Error('Google AI API is currently overloaded. Please try again in a few minutes.');
-            }
-          } else if (error.message.includes('timeout')) {
-            if (attempt < maxRetries) {
-              console.log(`⏰ Timeout on attempt ${attempt}, retrying...`);
-              continue;
-            } else {
-              console.error('🚨 All AI attempts timed out');
-              throw new Error('AI analysis is taking too long. Please try again later.');
-            }
-          } else {
-            // Other errors, don't retry
-            console.error('🚨 Non-retryable error:', error.message);
-            throw error;
-          }
-        }
-      }
-    }
-    
-    let result, response, text;
     try {
-      // Try with full prompt first
-      result = await retryAIWithBackoff(prompt);
-      response = await result.response;
-      text = response.text();
-      console.log('✅ Full prompt AI analysis completed successfully');
+      result = await callVertexAI(prompt);
+      text = result.candidates[0].content.parts[0].text;
+      console.log('✅ AI analysis completed successfully');
       
     } catch (aiError) {
       console.log('⏰ Full prompt failed, trying with shorter prompt...');
@@ -2900,9 +2954,8 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
  Return JSON with same structure, mark controls as "covered", "partial", or "gap" based on evidence.`;
       
       try {
-        result = await retryAIWithBackoff(shortPrompt);
-        response = await result.response;
-        text = response.text();
+        result = await callVertexAI(shortPrompt);
+        text = result.candidates[0].content.parts[0].text;
         console.log('✅ Short prompt AI analysis completed successfully');
       } catch (secondError) {
         console.error('🚨 Both AI attempts failed:', secondError.message);
