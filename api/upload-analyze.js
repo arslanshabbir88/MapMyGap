@@ -1,9 +1,12 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { VertexAI } from '@google-cloud/vertexai';
 import crypto from 'crypto';
 import Busboy from 'busboy';
 
-// Initialize Google AI
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+// Initialize Vertex AI
+const vertexAI = new VertexAI({
+  project: process.env.GCP_PROJECT_ID,
+  location: process.env.GCP_LOCATION || 'us-central1'
+});
 
 // NIST OSCAL API endpoint for live control fetching
 const NIST_OSCAL_URL = 'https://raw.githubusercontent.com/usnistgov/oscal-content/main/nist.gov/SP800-53/rev5/catalog.json';
@@ -2299,7 +2302,7 @@ async function identifyRelevantControls(fileContent, framework) {
   try {
     console.log('=== SMART FILTERING: Identifying relevant controls ===');
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     
     // First, do a high-level content analysis to identify relevant areas
     const contentAnalysisPrompt = `Analyze this document content and identify which cybersecurity control families are most relevant.
@@ -2779,12 +2782,14 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
       throw new Error(`Failed to parse service account key: ${error.message}`);
     }
     
-    // Initialize Google AI with service account credentials
-    const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || 'dummy-key', {
+    // Initialize Vertex AI with service account credentials
+    const vertexAI = new VertexAI({
+      project: process.env.GCP_PROJECT_ID,
+      location: process.env.GCP_LOCATION || 'us-central1',
       credentials: credentials
     });
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+    const model = vertexAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
     
     // Map framework IDs to display names
     const frameworkNames = {
