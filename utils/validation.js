@@ -10,9 +10,12 @@
 
 // Supported file types and their MIME types
 const SUPPORTED_FILE_TYPES = {
+  'text/plain': { extension: 'txt', maxSize: 10 * 1024 * 1024 }, // 10MB
   'application/pdf': { extension: 'pdf', maxSize: 10 * 1024 * 1024 }, // 10MB
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document': { extension: 'docx', maxSize: 10 * 1024 * 1024 }, // 10MB
   'application/msword': { extension: 'doc', maxSize: 10 * 1024 * 1024 }, // 10MB
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': { extension: 'xlsx', maxSize: 10 * 1024 * 1024 }, // 10MB
+  'application/vnd.ms-excel': { extension: 'xls', maxSize: 10 * 1024 * 1024 }, // 10MB
 };
 
 // Supported frameworks
@@ -91,14 +94,24 @@ export function validateFileUpload(file) {
     return { valid: false, errors };
   }
   
-  // Check file type
-  if (!SUPPORTED_FILE_TYPES[file.mimetype]) {
-    errors.push(`Unsupported file type: ${file.mimetype}. Supported types: ${Object.keys(SUPPORTED_FILE_TYPES).join(', ')}`);
+  // Get file extension from filename as fallback
+  const fileExt = file.originalname ? file.originalname.split('.').pop().toLowerCase() : '';
+  const supportedExtensions = Object.values(SUPPORTED_FILE_TYPES).map(type => type.extension);
+  
+  // Check file type by MIME type first, then by extension
+  let fileType = SUPPORTED_FILE_TYPES[file.mimetype];
+  if (!fileType && fileExt && supportedExtensions.includes(fileExt)) {
+    // Fallback: find file type by extension
+    fileType = Object.values(SUPPORTED_FILE_TYPES).find(type => type.extension === fileExt);
+  }
+  
+  if (!fileType) {
+    errors.push(`Unsupported file type: ${file.mimetype || 'unknown'}. Supported types: ${Object.keys(SUPPORTED_FILE_TYPES).join(', ')} or extensions: ${supportedExtensions.join(', ')}`);
   }
   
   // Check file size
-  if (file.size > SUPPORTED_FILE_TYPES[file.mimetype]?.maxSize) {
-    const maxSizeMB = SUPPORTED_FILE_TYPES[file.mimetype]?.maxSize / (1024 * 1024);
+  if (fileType && file.size > fileType.maxSize) {
+    const maxSizeMB = fileType.maxSize / (1024 * 1024);
     errors.push(`File size exceeds maximum allowed size of ${maxSizeMB}MB`);
   }
   
