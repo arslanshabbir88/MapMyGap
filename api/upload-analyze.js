@@ -445,27 +445,32 @@ async function processFile(file, filename) {
         
       case 'xlsx':
       case 'xls':
-        const XLSX = await import('xlsx');
-        const workbook = XLSX.read(file, { type: 'buffer', cellDates: false, cellNF: false, cellStyles: false });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        
-        // Process full Excel file with 5-minute timeout
-        const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
-        const maxRows = range.e.r + 1; // Process all rows
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
-          header: 1, 
-          range: `A1:${XLSX.utils.encode_col(range.e.c)}${maxRows}`
-        });
-        
-        // Convert to text format
-        let text = '';
-        jsonData.forEach(row => {
-          if (Array.isArray(row)) {
-            text += row.filter(cell => cell !== undefined && cell !== null).join(' ') + '\n';
-          }
-        });
-        return text;
+        try {
+          const XLSX = await import('xlsx');
+          const workbook = XLSX.read(file, { type: 'buffer', cellDates: false, cellNF: false, cellStyles: false });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          
+          // Process full Excel file with 5-minute timeout
+          const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
+          const maxRows = range.e.r + 1; // Process all rows
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+            header: 1, 
+            range: `A1:${XLSX.utils.encode_col(range.e.c)}${maxRows}`
+          });
+          
+          // Convert to text format
+          let text = '';
+          jsonData.forEach(row => {
+            if (Array.isArray(row)) {
+              text += row.filter(cell => cell !== undefined && cell !== null).join(' ') + '\n';
+            }
+          });
+          return text;
+        } catch (excelError) {
+          logError('Excel processing error:', excelError);
+          throw new Error(`Excel processing failed: ${excelError.message}`);
+        }
         
       default:
         throw new Error(`Unsupported file type: ${fileExtension}`);
@@ -617,7 +622,13 @@ export default async function handler(req, res) {
 
         // Analyze with AI with 5-minute timeout
         logInfo(`Starting analysis for framework: ${framework}`);
-        const aiResponse = await analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId);
+        let aiResponse;
+        try {
+          aiResponse = await analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId);
+        } catch (aiError) {
+          logError('AI analysis error:', aiError);
+          throw new Error(`AI analysis failed: ${aiError.message}`);
+        }
         
         // Parse AI response
         let analysisResult;
