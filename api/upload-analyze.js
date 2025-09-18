@@ -34,11 +34,7 @@
 
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { createRequire } from 'module';
 import { createClient } from '@supabase/supabase-js';
-
-const require = createRequire(import.meta.url);
-const Busboy = require('busboy');
 import { 
   generateRequestId, 
   extractClientInfo,
@@ -526,154 +522,152 @@ export default async function handler(req, res) {
       : new Date(Date.now() + RATE_LIMIT_WINDOW_MS).toISOString();
     res.setHeader('X-RateLimit-Reset', resetTime);
 
-    // Parse multipart form data
-    const busboy = new Busboy({ headers: req.headers });
-    
-    let file = null;
-    let filename = '';
-    let framework = '';
-    let selectedCategories = [];
-    let strictness = 'standard';
-    let userId = '';
+    // Parse multipart form data using built-in Node.js capabilities
+    const boundary = req.headers['content-type']?.split('boundary=')[1];
+    if (!boundary) {
+      return res.status(400).json({ error: 'No multipart boundary found' });
+    }
 
-    return new Promise((resolve, reject) => {
-      busboy.on('file', (fieldname, fileStream, fileInfo) => {
-        if (fieldname === 'file') {
-          const chunks = [];
-          fileStream.on('data', (chunk) => {
-            chunks.push(chunk);
-          });
-          fileStream.on('end', () => {
-            file = Buffer.concat(chunks);
-            filename = fileInfo.filename;
-          });
-        }
-      });
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
 
-      busboy.on('field', (fieldname, value) => {
-        switch (fieldname) {
-          case 'framework':
-            framework = value;
-            break;
-          case 'selectedCategories':
-            try {
-              selectedCategories = JSON.parse(value);
-            } catch (e) {
-              selectedCategories = [];
+    req.on('end', async () => {
+      try {
+        // Parse multipart data manually
+        const parts = body.split(`--${boundary}`);
+        let file = null;
+        let filename = '';
+        let framework = '';
+        let selectedCategories = [];
+        let strictness = 'standard';
+        let userId = '';
+
+        for (const part of parts) {
+          if (part.includes('Content-Disposition: form-data')) {
+            if (part.includes('name="file"')) {
+              // Extract file data
+              const fileStart = part.indexOf('\r\n\r\n') + 4;
+              const fileEnd = part.lastIndexOf('\r\n');
+              const fileData = part.substring(fileStart, fileEnd);
+              file = Buffer.from(fileData, 'binary');
+              
+              // Extract filename
+              const filenameMatch = part.match(/filename="([^"]+)"/);
+              if (filenameMatch) {
+                filename = filenameMatch[1];
+              }
+            } else if (part.includes('name="framework"')) {
+              const valueStart = part.indexOf('\r\n\r\n') + 4;
+              const valueEnd = part.lastIndexOf('\r\n');
+              framework = part.substring(valueStart, valueEnd);
+            } else if (part.includes('name="selectedCategories"')) {
+              const valueStart = part.indexOf('\r\n\r\n') + 4;
+              const valueEnd = part.lastIndexOf('\r\n');
+              try {
+                selectedCategories = JSON.parse(part.substring(valueStart, valueEnd));
+              } catch (e) {
+                selectedCategories = [];
+              }
+            } else if (part.includes('name="strictness"')) {
+              const valueStart = part.indexOf('\r\n\r\n') + 4;
+              const valueEnd = part.lastIndexOf('\r\n');
+              strictness = part.substring(valueStart, valueEnd) || 'standard';
+            } else if (part.includes('name="userId"')) {
+              const valueStart = part.indexOf('\r\n\r\n') + 4;
+              const valueEnd = part.lastIndexOf('\r\n');
+              userId = part.substring(valueStart, valueEnd);
             }
-            break;
-          case 'strictness':
-            strictness = value || 'standard';
-            break;
-          case 'userId':
-            userId = value;
-            break;
+          }
         }
-      });
 
-      busboy.on('finish', async () => {
+        if (!file) {
+          return res.status(400).json({ error: 'No file uploaded' });
+        }
+
+        if (!framework) {
+          return res.status(400).json({ error: 'Framework not specified' });
+        }
+
+        // Check usage limits
+        if (userId) {
+          const usageCheck = await checkUsageLimits(userId, requestId);
+          if (!usageCheck.allowed) {
+            return res.status(403).json({ error: usageCheck.message });
+          }
+        }
+
+        // Process file
+        logInfo(`Processing file: ${filename} (${file.length} bytes)`);
+        const documentText = await processFile(file, filename);
+        
+        if (!documentText || documentText.trim().length === 0) {
+          return res.status(400).json({ error: 'No text content found in file' });
+        }
+
+        // Analyze with AI
+        logInfo(`Starting analysis for framework: ${framework}`);
+        const aiResponse = await analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId);
+        
+        // Parse AI response
+        let analysisResult;
         try {
-          if (!file) {
-            return res.status(400).json({ error: 'No file uploaded' });
-          }
-
-          if (!framework) {
-            return res.status(400).json({ error: 'Framework not specified' });
-          }
-
-          // Check usage limits
-          if (userId) {
-            const usageCheck = await checkUsageLimits(userId, requestId);
-            if (!usageCheck.allowed) {
-              return res.status(403).json({ error: usageCheck.message });
-            }
-          }
-
-          // Process file
-          logInfo(`Processing file: ${filename} (${file.length} bytes)`);
-          const documentText = await processFile(file, filename);
-          
-          if (!documentText || documentText.trim().length === 0) {
-            return res.status(400).json({ error: 'No text content found in file' });
-          }
-
-          // Analyze with AI
-          logInfo(`Starting analysis for framework: ${framework}`);
-          const aiResponse = await analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId);
-          
-          // Parse AI response
-          let analysisResult;
-          try {
-            analysisResult = JSON.parse(aiResponse);
-          } catch (parseError) {
-            logError('Failed to parse AI response as JSON:', parseError);
-            // Fallback to text response
-            analysisResult = {
-              summary: {
-                totalControls: 0,
-                implemented: 0,
-                partial: 0,
-                notImplemented: 0,
-                complianceScore: 0
-              },
-              results: [],
-              rawResponse: aiResponse
-            };
-          }
-
-          // Update usage
-          if (userId) {
-            await supabase
-              .from('subscriptions')
-              .update({ 
-                runs_used: supabase.raw('runs_used + 1'),
-                last_analysis_date: new Date().toISOString()
-              })
-              .eq('user_id', userId);
-          }
-
-          // Log successful analysis
-          logApiResponse(requestId, {
-            framework,
-            filename,
-            fileSize: file.length,
-            analysisResult: {
-              totalControls: analysisResult.summary?.totalControls || 0,
-              complianceScore: analysisResult.summary?.complianceScore || 0
-            }
-          });
-
-          res.status(200).json({
-            success: true,
-            analysis: analysisResult,
-            framework,
-            filename,
-            requestId
-          });
-
-          resolve();
-        } catch (error) {
-          logError('Analysis failed:', error);
-          res.status(500).json({ 
-            error: 'Analysis failed', 
-            message: error.message,
-            requestId 
-          });
-          resolve();
+          analysisResult = JSON.parse(aiResponse);
+        } catch (parseError) {
+          logError('Failed to parse AI response as JSON:', parseError);
+          // Fallback to text response
+          analysisResult = {
+            summary: {
+              totalControls: 0,
+              implemented: 0,
+              partial: 0,
+              notImplemented: 0,
+              complianceScore: 0
+            },
+            results: [],
+            rawResponse: aiResponse
+          };
         }
-      });
 
-      busboy.on('error', (error) => {
-        logError('File upload failed:', error);
+        // Update usage
+        if (userId) {
+          await supabase
+            .from('subscriptions')
+            .update({ 
+              runs_used: supabase.raw('runs_used + 1'),
+              last_analysis_date: new Date().toISOString()
+            })
+            .eq('user_id', userId);
+        }
+
+        // Log successful analysis
+        logApiResponse(requestId, {
+          framework,
+          filename,
+          fileSize: file.length,
+          analysisResult: {
+            totalControls: analysisResult.summary?.totalControls || 0,
+            complianceScore: analysisResult.summary?.complianceScore || 0
+          }
+        });
+
+        res.status(200).json({
+          success: true,
+          analysis: analysisResult,
+          framework,
+          filename,
+          requestId
+        });
+
+      } catch (error) {
+        logError('File processing failed:', error);
         res.status(500).json({ 
-          error: 'File upload failed', 
+          error: 'File processing failed', 
           message: error.message,
           requestId 
         });
-        resolve();
-      });
-
-      req.pipe(busboy);
+      }
     });
 
   } catch (error) {
