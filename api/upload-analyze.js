@@ -491,7 +491,7 @@ export default async function handler(req, res) {
 
     // Rate limiting
     const clientInfo = extractClientInfo(req);
-    const rateLimitResult = checkRateLimit(clientInfo.ip, RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS);
+    const rateLimitResult = checkRateLimit(clientInfo?.ip || 'unknown', RATE_LIMIT_WINDOW_MS, RATE_LIMIT_MAX_REQUESTS);
     
     if (!rateLimitResult.allowed) {
       res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX_REQUESTS);
@@ -637,7 +637,7 @@ export default async function handler(req, res) {
 
           resolve();
         } catch (error) {
-          logApiError(requestId, error);
+          logError('Analysis failed:', error);
           res.status(500).json({ 
             error: 'Analysis failed', 
             message: error.message,
@@ -648,7 +648,7 @@ export default async function handler(req, res) {
       });
 
       busboy.on('error', (error) => {
-        logApiError(requestId, error);
+        logError('File upload failed:', error);
         res.status(500).json({ 
           error: 'File upload failed', 
           message: error.message,
@@ -661,7 +661,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    logApiError(requestId, error);
+    logError('Upload handler error:', error);
     res.status(500).json({ 
       error: 'Server error', 
       message: error.message,
