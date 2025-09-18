@@ -3414,20 +3414,49 @@ module.exports = async function handler(req, res) {
           break;
         case 'xlsx':
         case 'xls':
-          // Use xlsx for real Excel processing
-          const XLSX = await import('xlsx');
-          const workbook = XLSX.default.read(file.buffer, { type: 'buffer' });
-          const sheetNames = workbook.SheetNames;
-          const sheets = {};
-          
-          sheetNames.forEach(sheetName => {
-            const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.default.utils.sheet_to_json(worksheet, { header: 1 });
-            sheets[sheetName] = jsonData;
-          });
-          
-          // Convert to readable text format
-          extractedText = JSON.stringify(sheets, null, 2);
+          // Simplified Excel processing for serverless environment
+          try {
+            console.log('Processing Excel file:', fileName, 'Size:', file.buffer.length);
+            
+            // Try to import xlsx with timeout
+            const xlsxPromise = import('xlsx');
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('XLSX import timeout')), 5000)
+            );
+            
+            const XLSX = await Promise.race([xlsxPromise, timeoutPromise]);
+            console.log('XLSX imported successfully');
+            
+            const workbook = XLSX.default.read(file.buffer, { type: 'buffer' });
+            console.log('Workbook read successfully, sheets:', workbook.SheetNames.length);
+            
+            const sheetNames = workbook.SheetNames;
+            let allText = '';
+            
+            // Process only the first sheet to avoid memory issues
+            const firstSheet = workbook.Sheets[sheetNames[0]];
+            const jsonData = XLSX.default.utils.sheet_to_json(firstSheet, { header: 1 });
+            
+            // Convert to readable text
+            jsonData.forEach(row => {
+              if (Array.isArray(row)) {
+                row.forEach(cell => {
+                  if (cell && cell.toString().trim()) {
+                    allText += cell.toString().trim() + ' ';
+                  }
+                });
+                allText += '\n';
+              }
+            });
+            
+            extractedText = allText.trim() || `[Excel Document: ${fileName}] No readable content found.`;
+            console.log('Excel processing completed, extracted length:', extractedText.length);
+            
+          } catch (xlsxError) {
+            console.error('XLSX processing error:', xlsxError);
+            // Fallback: return a basic message
+            extractedText = `[Excel Document: ${fileName}] - Excel file detected but processing failed. Please try converting to PDF or DOCX format for analysis. Error: ${xlsxError.message}`;
+          }
           break;
         default:
           return res.status(400).json({ error: 'Unsupported file type.' });
@@ -3466,6 +3495,15 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error('Error in /upload-analyze:', error);
-    res.status(500).json({ error: `Server error: ${error.message}` });
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', {
+      message: error.message,
+      name: error.name,
+      cause: error.cause
+    });
+    res.status(500).json({ 
+      error: `Server error: ${error.message}`,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
