@@ -1050,10 +1050,16 @@ function Analyzer() {
         setFileContent('');
       }
     } else {
-      // For other file types (Excel), we'll need to implement similar logic
-      // For now, show an error
-      setError('File type not yet supported for text extraction. Please convert to .txt, .docx, or .pdf format.');
-      setFileContent('');
+      // For Excel files (.xls, .xlsx), we'll let the server handle the processing
+      // Set a placeholder content and let the server extract the text
+      console.log('=== EXCEL FILE DETECTED ===');
+      console.log('File name:', file.name);
+      console.log('File size:', file.size);
+      console.log('File type:', file.type);
+      console.log('Will be processed by server during analysis');
+      
+      // Set a placeholder - the server will extract the actual text
+      setFileContent('EXCEL_FILE_PLACEHOLDER');
     }
   };
 
@@ -1397,9 +1403,140 @@ function Analyzer() {
       } else {
           throw new Error("Invalid response structure from API.");
         }
+      } else if (getFileExt(uploadedFile.name) === 'xlsx' || getFileExt(uploadedFile.name) === 'xls') {
+        // Handle Excel files using server-side processing
+        console.log('=== EXCEL FILE ANALYSIS DEBUG ===');
+        console.log('File type:', getFileExt(uploadedFile.name));
+        console.log('File name:', uploadedFile.name);
+        console.log('File size:', uploadedFile.size);
+        console.log('Selected framework:', selectedFramework);
+        console.log('Selected categories:', selectedCategories);
+        
+        // Use FormData to upload the file to the server
+        const formData = new FormData();
+        formData.append('file', uploadedFile);
+        formData.append('framework', selectedFramework);
+        formData.append('categories', JSON.stringify(selectedCategories));
+        formData.append('strictness', 'comprehensive');
+        
+        console.log('Uploading Excel file to server for processing...');
+        
+        const response = await fetch('/api/upload-analyze', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          try {
+            const errorData = JSON.parse(errorText);
+            throw new Error(errorData.error || errorText);
+          } catch (parseError) {
+            throw new Error(errorText);
+          }
+        }
+        
+        result = await response.json();
+        
+        // Process the result similar to the text file processing
+        if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+          let rawJson = result.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
+          console.log('Raw AI response from Excel processing:', rawJson);
+          
+          if (!rawJson.trim().startsWith('{') && !rawJson.trim().startsWith('[')) {
+            console.error('Response does not appear to be JSON:', rawJson);
+            throw new Error('AI response is not in valid JSON format. Please try again.');
+          }
+          
+          let parsedJson;
+          try {
+            parsedJson = JSON.parse(rawJson);
+            console.log('Parsed JSON structure from Excel:', parsedJson);
+          } catch (parseError) {
+            console.error('JSON parsing failed:', parseError);
+            throw new Error(`Failed to parse AI response: ${parseError.message}`);
+          }
+          
+          // Handle different response structures
+          if (Array.isArray(parsedJson)) {
+            console.log('Response is array, using directly');
+          } else if (parsedJson.categories && Array.isArray(parsedJson.categories)) {
+            console.log('Found categories array in response object, using that');
+            parsedJson = parsedJson.categories;
+          } else if (parsedJson.categories && !Array.isArray(parsedJson.categories)) {
+            console.log('Found categories object, converting to array format');
+            parsedJson = [parsedJson.categories];
+          } else {
+            console.log('Unexpected response structure:', parsedJson);
+            throw new Error("AI response structure is not recognized. Please try again.");
+          }
+          
+          let covered = 0, partial = 0, gaps = 0;
+          
+          // Safely iterate through categories
+          parsedJson.forEach(cat => {
+            if (cat && cat.results && Array.isArray(cat.results)) {
+              cat.results.forEach(result => {
+                if (result.status === 'covered') covered++;
+                else if (result.status === 'partial') partial++;
+                else if (result.status === 'gap') gaps++;
+              });
+            }
+          });
+          
+          const total = covered + partial + gaps;
+          const score = total > 0 ? Math.round(((covered + partial * 0.5) / total) * 100) : 0;
+          
+          const results = {
+            categories: parsedJson,
+            summary: {
+              score,
+              covered,
+              partial,
+              gaps,
+              total
+            }
+          };
+          
+          console.log('Excel analysis results:', results);
+          setAnalysisResults(results);
+          
+          // Save to history for authenticated users
+          if (user) {
+            await saveAnalysisToHistory(results, uploadedFile.name);
+            
+            // Track usage after successful analysis
+            try {
+              const trackResponse = await fetch('/api/track-usage', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  userId: user.id,
+                  analysisType: 'comprehensive',
+                  documentSize: uploadedFile.size,
+                  framework: selectedFramework
+                })
+              });
+              
+              if (trackResponse.ok) {
+                const trackData = await trackResponse.json();
+                if (trackData.success && trackData.usage) {
+                  setUsage(trackData.usage);
+                  console.log('✅ Usage tracked successfully for Excel file');
+                }
+              } else {
+                console.error('❌ Failed to track usage:', await trackResponse.text());
+              }
+            } catch (error) {
+              console.error('❌ Error tracking usage:', error);
+            }
+          }
+        } else {
+          throw new Error("Invalid response structure from Excel processing API.");
+        }
       } else {
         // Handle case where file is not a supported type
-        throw new Error('Unsupported file type. Please upload a text file, DOCX, or PDF.');
+        throw new Error('Unsupported file type. Please upload a text file, DOCX, PDF, or Excel file.');
       }
     } catch (e) {
       console.error(e);
