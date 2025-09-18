@@ -3403,7 +3403,7 @@ module.exports = async function handler(req, res) {
         case 'docx':
           // Use mammoth for real DOCX processing
           const mammoth = await import('mammoth');
-          const docxResult = await mammoth.extractRawText({ buffer: file.buffer });
+          const docxResult = await mammoth.default.extractRawText({ buffer: file.buffer });
           extractedText = docxResult.value;
           break;
         case 'pdf':
@@ -3416,13 +3416,13 @@ module.exports = async function handler(req, res) {
         case 'xls':
           // Use xlsx for real Excel processing
           const XLSX = await import('xlsx');
-          const workbook = XLSX.read(file.buffer, { type: 'buffer' });
+          const workbook = XLSX.default.read(file.buffer, { type: 'buffer' });
           const sheetNames = workbook.SheetNames;
           const sheets = {};
           
           sheetNames.forEach(sheetName => {
             const worksheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            const jsonData = XLSX.default.utils.sheet_to_json(worksheet, { header: 1 });
             sheets[sheetName] = jsonData;
           });
           
