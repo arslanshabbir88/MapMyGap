@@ -448,10 +448,12 @@ async function processFile(file, filename) {
       case 'xlsx':
       case 'xls':
         try {
+          logInfo('About to import XLSX library...');
           const XLSX = await import('xlsx');
           logInfo('XLSX library imported successfully');
           
           // Read workbook with minimal memory usage
+          logInfo('About to read Excel workbook...');
           const workbook = XLSX.read(file, { 
             type: 'buffer', 
             cellDates: false, 
@@ -475,6 +477,7 @@ async function processFile(file, filename) {
           // Process in chunks to avoid memory issues
           const chunkSize = 100; // Process 100 rows at a time
           let text = '';
+          logInfo(`Starting chunk processing: ${totalRows} rows in chunks of ${chunkSize}`);
           
           for (let startRow = 0; startRow < totalRows; startRow += chunkSize) {
             const endRow = Math.min(startRow + chunkSize, totalRows);
@@ -499,6 +502,7 @@ async function processFile(file, filename) {
           }
           
           logInfo(`Excel processing completed. Text length: ${text.length} characters`);
+          logInfo('processFile function completed successfully');
           return text;
         } catch (excelError) {
           logError('Excel processing error:', excelError);
