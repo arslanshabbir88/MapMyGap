@@ -155,8 +155,10 @@ async function callVertexAI(prompt, maxRetries = 3) {
  */
 async function loadFrameworkData(framework) {
   try {
+    logInfo(`Loading framework data for: ${framework}`);
     if (framework === 'NIST_CSF') {
       // Import comprehensive NIST CSF framework data from nist-frameworks.js
+      logInfo('About to import NIST CSF framework...');
       const { nistCSF } = await import('../nist-frameworks.js');
       logInfo('✅ Successfully loaded comprehensive NIST CSF framework data');
       return nistCSF;
@@ -645,12 +647,14 @@ export default async function handler(req, res) {
 
         // Process file with 5-minute timeout
         logInfo(`Processing file: ${filename} (${file.length} bytes)`);
+        logInfo('About to call processFile...');
         const documentText = await Promise.race([
           processFile(file, filename),
           new Promise((_, reject) => 
             setTimeout(() => reject(new Error('File processing timeout after 2 minutes')), 120000)
           )
         ]);
+        logInfo('processFile completed successfully');
         
         if (!documentText || documentText.trim().length === 0) {
           return res.status(400).json({ error: 'No text content found in file' });
@@ -658,6 +662,7 @@ export default async function handler(req, res) {
 
         // Analyze with AI with 5-minute timeout
         logInfo(`Starting analysis for framework: ${framework}`);
+        logInfo('About to call analyzeWithAI...');
         let aiResponse;
         try {
           aiResponse = await Promise.race([
@@ -666,6 +671,7 @@ export default async function handler(req, res) {
               setTimeout(() => reject(new Error('AI analysis timeout after 2 minutes')), 120000)
             )
           ]);
+          logInfo('analyzeWithAI completed successfully');
         } catch (aiError) {
           logError('AI analysis error:', aiError);
           throw new Error(`AI analysis failed: ${aiError.message}`);
