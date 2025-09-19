@@ -185,7 +185,7 @@ async function callVertexAI(prompt, maxRetries = 3) {
           }],
           generationConfig: {
             temperature: 0.1,
-            maxOutputTokens: 32768,
+            maxOutputTokens: 8192,
             topP: 0.8,
             topK: 40
           }
