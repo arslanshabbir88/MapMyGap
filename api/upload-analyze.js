@@ -61,9 +61,14 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Google Cloud configuration
-const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID;
+const PROJECT_ID = process.env.GCP_PROJECT_ID;
 const LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 const MODEL_NAME = process.env.GOOGLE_CLOUD_MODEL || 'gemini-2.0-flash-exp';
+
+// Validate required environment variables
+if (!PROJECT_ID) {
+  throw new Error('GCP_PROJECT_ID environment variable is required');
+}
 
 // Service account key configuration
 const GCP_SERVICE_KEY = process.env.GCP_SERVICE_KEY;
