@@ -742,7 +742,30 @@ export default async function handler(req, res) {
           }
         });
 
-        res.status(200).json(analysisResult);
+        // Ensure the response has the structure the frontend expects
+        let responseData;
+        if (Array.isArray(analysisResult)) {
+          // If it's already an array of categories, use it directly
+          responseData = analysisResult;
+        } else if (analysisResult.categories && Array.isArray(analysisResult.categories)) {
+          // If it has a categories property, use that
+          responseData = analysisResult.categories;
+        } else {
+          // Fallback: wrap in categories structure
+          responseData = [{
+            name: "Compliance Analysis",
+            description: "AI-generated compliance assessment",
+            results: [{
+              id: "ANALYSIS_001",
+              control: "Document Compliance Review",
+              status: "partial",
+              details: "Analysis completed but response format was unexpected",
+              recommendation: "Review the generated analysis"
+            }]
+          }];
+        }
+        
+        res.status(200).json(responseData);
 
       } catch (error) {
         logError('File processing failed:', error);
