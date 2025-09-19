@@ -447,25 +447,56 @@ async function processFile(file, filename) {
       case 'xls':
         try {
           const XLSX = await import('xlsx');
-          const workbook = XLSX.read(file, { type: 'buffer', cellDates: false, cellNF: false, cellStyles: false });
+          logInfo('XLSX library imported successfully');
+          
+          // Read workbook with minimal memory usage
+          const workbook = XLSX.read(file, { 
+            type: 'buffer', 
+            cellDates: false, 
+            cellNF: false, 
+            cellStyles: false,
+            cellFormula: false,
+            cellHTML: false
+          });
+          logInfo('Workbook read successfully');
+          
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
+          logInfo(`Processing sheet: ${sheetName}`);
           
-          // Process full Excel file with 5-minute timeout
+          // Get range info
           const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
-          const maxRows = range.e.r + 1; // Process all rows
-          const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
-            header: 1, 
-            range: `A1:${XLSX.utils.encode_col(range.e.c)}${maxRows}`
-          });
+          const totalRows = range.e.r + 1;
+          const totalCols = range.e.c + 1;
+          logInfo(`Excel dimensions: ${totalRows} rows x ${totalCols} columns`);
           
-          // Convert to text format
+          // Process in chunks to avoid memory issues
+          const chunkSize = 100; // Process 100 rows at a time
           let text = '';
-          jsonData.forEach(row => {
-            if (Array.isArray(row)) {
-              text += row.filter(cell => cell !== undefined && cell !== null).join(' ') + '\n';
-            }
-          });
+          
+          for (let startRow = 0; startRow < totalRows; startRow += chunkSize) {
+            const endRow = Math.min(startRow + chunkSize, totalRows);
+            const rangeStr = `A${startRow + 1}:${XLSX.utils.encode_col(totalCols - 1)}${endRow}`;
+            
+            logInfo(`Processing rows ${startRow + 1}-${endRow}`);
+            
+            const chunkData = XLSX.utils.sheet_to_json(worksheet, { 
+              header: 1, 
+              range: rangeStr
+            });
+            
+            // Convert chunk to text
+            chunkData.forEach(row => {
+              if (Array.isArray(row)) {
+                text += row.filter(cell => cell !== undefined && cell !== null).join(' ') + '\n';
+              }
+            });
+            
+            // Clear chunk data to free memory
+            chunkData.length = 0;
+          }
+          
+          logInfo(`Excel processing completed. Text length: ${text.length} characters`);
           return text;
         } catch (excelError) {
           logError('Excel processing error:', excelError);
