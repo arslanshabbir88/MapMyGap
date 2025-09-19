@@ -161,7 +161,11 @@ async function callVertexAI(prompt, maxRetries = 3) {
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      const response = await fetch(`https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL_NAME}:generateContent`, {
+      const apiUrl = `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT_ID}/locations/${LOCATION}/publishers/google/models/${MODEL_NAME}:generateContent`;
+      logInfo(`Calling Vertex AI API: ${apiUrl}`);
+      logInfo(`Project ID: ${PROJECT_ID}, Location: ${LOCATION}, Model: ${MODEL_NAME}`);
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${accessToken}`,
@@ -183,7 +187,9 @@ async function callVertexAI(prompt, maxRetries = 3) {
       });
 
       if (!response.ok) {
-        throw new Error(`Vertex AI API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        logError(`Vertex AI API error: ${response.status} ${response.statusText}`, errorText);
+        throw new Error(`Vertex AI API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const data = await response.json();
