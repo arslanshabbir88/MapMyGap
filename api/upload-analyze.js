@@ -452,16 +452,24 @@ async function processFile(file, filename) {
           const XLSX = await import('xlsx');
           logInfo('XLSX library imported successfully');
           
-          // Read workbook with minimal memory usage
+          // Read workbook with minimal memory usage and timeout
           logInfo('About to read Excel workbook...');
-          const workbook = XLSX.read(file, { 
-            type: 'buffer', 
-            cellDates: false, 
-            cellNF: false, 
-            cellStyles: false,
-            cellFormula: false,
-            cellHTML: false
-          });
+          const workbook = await Promise.race([
+            new Promise((resolve) => {
+              const result = XLSX.read(file, { 
+                type: 'buffer', 
+                cellDates: false, 
+                cellNF: false, 
+                cellStyles: false,
+                cellFormula: false,
+                cellHTML: false
+              });
+              resolve(result);
+            }),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('XLSX.read() timeout after 30 seconds')), 30000)
+            )
+          ]);
           logInfo('Workbook read successfully');
           
           const sheetName = workbook.SheetNames[0];
@@ -506,6 +514,13 @@ async function processFile(file, filename) {
           return text;
         } catch (excelError) {
           logError('Excel processing error:', excelError);
+          
+          // If XLSX.read() times out, provide a fallback response
+          if (excelError.message.includes('XLSX.read() timeout')) {
+            logWarn('XLSX.read() timed out, providing fallback response');
+            return `Excel file processing timed out. File: ${filename} (${file.length} bytes). This may be due to file size or complexity. Please try with a smaller file or convert to a different format.`;
+          }
+          
           throw new Error(`Excel processing failed: ${excelError.message}`);
         }
         
