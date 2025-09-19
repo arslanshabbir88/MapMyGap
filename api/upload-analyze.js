@@ -65,9 +65,8 @@ const PROJECT_ID = process.env.GOOGLE_CLOUD_PROJECT_ID;
 const LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
 const MODEL_NAME = process.env.GOOGLE_CLOUD_MODEL || 'gemini-2.0-flash-exp';
 
-// JWT configuration
-const JWT_PRIVATE_KEY = process.env.GOOGLE_CLOUD_PRIVATE_KEY?.replace(/\\n/g, '\n');
-const JWT_CLIENT_EMAIL = process.env.GOOGLE_CLOUD_CLIENT_EMAIL;
+// Service account key configuration
+const GCP_SERVICE_KEY = process.env.GCP_SERVICE_KEY;
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
@@ -81,27 +80,84 @@ let nistControlsCacheTime = 0;
 // Request correlation
 let requestId = null;
 
-/**
- * Generate JWT token for Google Cloud authentication
- */
-function getAccessToken() {
-  const now = Math.floor(Date.now() / 1000);
-  const payload = {
-    iss: JWT_CLIENT_EMAIL,
-    aud: 'https://oauth2.googleapis.com/token',
-    iat: now,
-    exp: now + 3600, // 1 hour
-    scope: 'https://www.googleapis.com/auth/cloud-platform'
-  };
+// Token caching
+let accessToken = null;
+let tokenExpiry = 0;
 
-  return jwt.sign(payload, JWT_PRIVATE_KEY, { algorithm: 'RS256' });
+/**
+ * Get access token from service account key
+ */
+async function getAccessToken() {
+  try {
+    // Check if we have a valid token
+    if (accessToken && Date.now() < tokenExpiry) {
+      return accessToken;
+    }
+
+    const serviceKey = process.env.GCP_SERVICE_KEY;
+    if (!serviceKey) {
+      throw new Error('GCP_SERVICE_KEY environment variable not set');
+    }
+
+    // Parse the service account key JSON
+    let credentials;
+    try {
+      // Handle base64 encoded service key
+      let decodedKey = serviceKey;
+      if (serviceKey.length > 1000 && /^[A-Za-z0-9+/=]+$/.test(serviceKey)) {
+        decodedKey = Buffer.from(serviceKey, 'base64').toString('utf-8');
+      }
+      credentials = JSON.parse(decodedKey);
+    } catch (parseError) {
+      throw new Error(`Failed to parse service account key: ${parseError.message}`);
+    }
+
+    // Create JWT token
+    const now = Math.floor(Date.now() / 1000);
+    const payload = {
+      iss: credentials.client_email,
+      aud: 'https://oauth2.googleapis.com/token',
+      iat: now,
+      exp: now + 3600, // 1 hour
+      scope: 'https://www.googleapis.com/auth/cloud-platform'
+    };
+
+    const privateKey = credentials.private_key.replace(/\\n/g, '\n');
+    const token = jwt.sign(payload, privateKey, { algorithm: 'RS256' });
+
+    // Exchange JWT for access token
+    const response = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        assertion: token,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Token exchange failed: ${response.status} ${errorText}`);
+    }
+
+    const tokenData = await response.json();
+    accessToken = tokenData.access_token;
+    tokenExpiry = Date.now() + (tokenData.expires_in * 1000) - 60000; // 1 minute buffer
+
+    return accessToken;
+  } catch (error) {
+    logError('Failed to get access token:', error);
+    throw error;
+  }
 }
 
 /**
  * Call Vertex AI API directly
  */
 async function callVertexAI(prompt, maxRetries = 3) {
-  const accessToken = getAccessToken();
+  const accessToken = await getAccessToken();
   
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
