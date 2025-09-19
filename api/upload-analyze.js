@@ -178,6 +178,7 @@ async function callVertexAI(prompt, maxRetries = 3) {
         },
         body: JSON.stringify({
           contents: [{
+            role: "user",
             parts: [{
               text: prompt
             }]
