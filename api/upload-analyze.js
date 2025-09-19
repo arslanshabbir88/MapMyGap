@@ -691,10 +691,19 @@ export default async function handler(req, res) {
           throw new Error(`AI analysis failed: ${aiError.message}`);
         }
         
-        // Parse AI response
+        // Parse AI response - handle markdown-wrapped JSON
         let analysisResult;
         try {
-          analysisResult = JSON.parse(aiResponse);
+          // Remove markdown code blocks if present
+          let cleanResponse = aiResponse;
+          if (cleanResponse.includes('```json')) {
+            cleanResponse = cleanResponse.replace(/```json\n?/g, '').replace(/\n?```/g, '');
+          }
+          if (cleanResponse.includes('```')) {
+            cleanResponse = cleanResponse.replace(/```\n?/g, '').replace(/\n?```/g, '');
+          }
+          
+          analysisResult = JSON.parse(cleanResponse);
         } catch (parseError) {
           logError('Failed to parse AI response as JSON:', parseError);
           // Fallback to text response
@@ -723,7 +732,7 @@ export default async function handler(req, res) {
         }
 
         // Log successful analysis
-        logApiResponse(requestId, {
+        logInfo('Analysis completed successfully', {
           framework,
           filename,
           fileSize: file.length,
