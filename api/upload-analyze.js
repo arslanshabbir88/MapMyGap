@@ -742,13 +742,7 @@ export default async function handler(req, res) {
           }
         });
 
-        res.status(200).json({
-          success: true,
-          analysis: analysisResult,
-          framework,
-          filename,
-          requestId
-        });
+        res.status(200).json(analysisResult);
 
       } catch (error) {
         logError('File processing failed:', error);
