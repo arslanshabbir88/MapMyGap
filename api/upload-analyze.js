@@ -63,7 +63,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // Google Cloud configuration
 const PROJECT_ID = process.env.GCP_PROJECT_ID;
 const LOCATION = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
-const MODEL_NAME = process.env.GOOGLE_CLOUD_MODEL || 'gemini-2.0-flash-exp';
+const MODEL_NAME = process.env.GOOGLE_CLOUD_MODEL || 'gemini-2.5-flash';
 
 // Validate required environment variables
 if (!PROJECT_ID) {
@@ -184,10 +184,10 @@ async function callVertexAI(prompt, maxRetries = 3) {
             }]
           }],
           generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 8192,
-            topP: 0.8,
-            topK: 40
+            maxOutputTokens: 32768,
+            temperature: 0.0,
+            topP: 1.0,
+            topK: 1
           }
         })
       });
