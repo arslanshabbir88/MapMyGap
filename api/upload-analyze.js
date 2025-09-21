@@ -532,39 +532,50 @@ async function processFile(file, filename) {
               // This is a very basic approach that might work for simple files
               let extractedText = '';
               
-              // Look for text content in the Excel file with better patterns
-              // Try multiple approaches to extract meaningful content
+              // Look for readable text content in the Excel file
+              // Focus on extracting only human-readable text, not binary data
               let textMatches = [];
               
-              // Method 1: Look for longer text sequences
-              const longTextMatches = fileText.match(/[a-zA-Z0-9\s\-_.,;:!?()]{20,}/g);
-              if (longTextMatches) {
-                textMatches = textMatches.concat(longTextMatches);
-              }
-              
-              // Method 2: Look for text between XML tags (Excel uses XML internally)
+              // Method 1: Look for text between XML tags (Excel uses XML internally)
               const xmlTextMatches = fileText.match(/<t[^>]*>([^<]+)<\/t>/g);
               if (xmlTextMatches) {
                 const xmlContent = xmlTextMatches.map(match => 
                   match.replace(/<[^>]*>/g, '').trim()
-                ).filter(content => content.length > 3);
+                ).filter(content => 
+                  content.length > 3 && 
+                  /^[a-zA-Z0-9\s\-_.,;:!?()]+$/.test(content) // Only readable characters
+                );
                 textMatches = textMatches.concat(xmlContent);
               }
               
-              // Method 3: Look for text in shared strings
-              const sharedStringMatches = fileText.match(/"([^"]{10,})"/g);
+              // Method 2: Look for text in shared strings (quoted content)
+              const sharedStringMatches = fileText.match(/"([^"]{5,})"/g);
               if (sharedStringMatches) {
                 const stringContent = sharedStringMatches.map(match => 
                   match.replace(/"/g, '').trim()
-                ).filter(content => content.length > 3);
+                ).filter(content => 
+                  content.length > 3 && 
+                  /^[a-zA-Z0-9\s\-_.,;:!?()]+$/.test(content) // Only readable characters
+                );
                 textMatches = textMatches.concat(stringContent);
+              }
+              
+              // Method 3: Look for readable text sequences (avoid binary data)
+              const readableTextMatches = fileText.match(/[a-zA-Z][a-zA-Z0-9\s\-_.,;:!?()]{10,}[a-zA-Z0-9]/g);
+              if (readableTextMatches) {
+                const readableContent = readableTextMatches.filter(content => 
+                  content.length > 10 && 
+                  /^[a-zA-Z0-9\s\-_.,;:!?()]+$/.test(content) && // Only readable characters
+                  !content.match(/^[0-9\s\-_.,;:!?()]+$/) // Not pure numbers/symbols
+                );
+                textMatches = textMatches.concat(readableContent);
               }
               
               if (textMatches.length > 0) {
                 extractedText = textMatches
                   .filter(match => match && match.length > 5) // Filter out very short matches
                   .filter(match => !match.match(/^[0-9\s\-_.,;:!?()]+$/)) // Filter out pure numbers/symbols
-                  .slice(0, 100) // Increase limit to get more content
+                  .slice(0, 50) // Limit to avoid too much content
                   .join(' ');
               }
               
@@ -795,6 +806,20 @@ export default async function handler(req, res) {
           }
           if (cleanResponse.includes('```')) {
             cleanResponse = cleanResponse.replace(/```\n?/g, '').replace(/\n?```/g, '');
+          }
+          
+          // Try to find JSON object in the response
+          const jsonMatch = cleanResponse.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            cleanResponse = jsonMatch[0];
+          }
+          
+          // If still not JSON, try to find array
+          if (!cleanResponse.trim().startsWith('{') && !cleanResponse.trim().startsWith('[')) {
+            const arrayMatch = cleanResponse.match(/\[[\s\S]*\]/);
+            if (arrayMatch) {
+              cleanResponse = arrayMatch[0];
+            }
           }
           
           analysisResult = JSON.parse(cleanResponse);
