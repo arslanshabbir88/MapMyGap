@@ -531,36 +531,48 @@ async function processFile(file, filename) {
             
             // Read workbook with aggressive timeout and minimal options
             logInfo('Step 4: Starting Promise.race for workbook read...');
-            const workbook = await Promise.race([
-              new Promise((resolve) => {
-                logInfo('Step 5: Inside workbook read Promise, calling XLSX.read...');
-                try {
-                  const result = XLSX.read(file, { 
-                    type: 'buffer',
-                    cellDates: false,
-                    cellNF: false,
-                    cellStyles: false,
-                    cellFormula: false,
-                    cellHTML: false,
-                    cellText: false,
-                    raw: false,
-                    rawNumbers: false,
-                    dense: false
-                  });
-                  logInfo('Step 6: XLSX.read completed successfully');
-                  resolve(result);
-                } catch (readError) {
-                  logError('Step 6: XLSX.read failed:', readError);
-                  reject(readError);
-                }
-              }),
-              new Promise((_, reject) => 
+            
+            // Create timeout promise first
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => {
+                logError('Step 6: Excel read timeout after 10 seconds');
+                reject(new Error('Excel read timeout after 10 seconds'));
+              }, 10000) // Reduced to 10 seconds for faster failure
+            );
+            
+            // Create read promise
+            const readPromise = new Promise((resolve, reject) => {
+              logInfo('Step 5: Inside workbook read Promise, calling XLSX.read...');
+              try {
+                // Use setTimeout to make XLSX.read non-blocking
                 setTimeout(() => {
-                  logError('Step 6: Excel read timeout after 30 seconds');
-                  reject(new Error('Excel read timeout after 30 seconds'));
-                }, 30000)
-              )
-            ]);
+                  try {
+                    const result = XLSX.read(file, { 
+                      type: 'buffer',
+                      cellDates: false,
+                      cellNF: false,
+                      cellStyles: false,
+                      cellFormula: false,
+                      cellHTML: false,
+                      cellText: false,
+                      raw: false,
+                      rawNumbers: false,
+                      dense: false
+                    });
+                    logInfo('Step 6: XLSX.read completed successfully');
+                    resolve(result);
+                  } catch (readError) {
+                    logError('Step 6: XLSX.read failed:', readError);
+                    reject(readError);
+                  }
+                }, 0);
+              } catch (error) {
+                logError('Step 5: Error setting up XLSX.read:', error);
+                reject(error);
+              }
+            });
+            
+            const workbook = await Promise.race([readPromise, timeoutPromise]);
             logInfo('Step 7: Workbook read completed successfully');
             
             if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
