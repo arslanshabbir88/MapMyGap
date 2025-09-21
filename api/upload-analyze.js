@@ -515,26 +515,44 @@ async function processFile(file, filename) {
         
         case 'xlsx':
         case 'xls':
-          logInfo('Processing Excel file with memory-optimized approach');
+          logInfo('Processing Excel file with aggressive timeout protection');
           try {
             // Import xlsx with timeout protection
             const xlsxModule = await Promise.race([
               import('xlsx'),
               new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('XLSX import timeout')), 5000)
+                setTimeout(() => reject(new Error('XLSX import timeout')), 3000)
               )
             ]);
             const XLSX = xlsxModule.default;
             
-            // Read workbook with minimal memory usage
-            const workbook = XLSX.read(file, { 
-              type: 'buffer',
-              cellDates: false,
-              cellNF: false,
-              cellStyles: false,
-              cellFormula: false,
-              cellHTML: false
-            });
+            // Read workbook with aggressive timeout and minimal options
+            const workbook = await Promise.race([
+              new Promise((resolve) => {
+                const result = XLSX.read(file, { 
+                  type: 'buffer',
+                  cellDates: false,
+                  cellNF: false,
+                  cellStyles: false,
+                  cellFormula: false,
+                  cellHTML: false,
+                  cellText: false,
+                  cellDates: false,
+                  cellNF: false,
+                  cellStyles: false,
+                  cellFormula: false,
+                  cellHTML: false,
+                  cellText: false,
+                  raw: false,
+                  rawNumbers: false,
+                  dense: false
+                });
+                resolve(result);
+              }),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Excel read timeout after 30 seconds')), 30000)
+              )
+            ]);
             
             if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
               throw new Error('No sheets found in Excel file');
@@ -610,6 +628,12 @@ async function processFile(file, filename) {
             
           } catch (error) {
             logError('Excel processing failed:', error);
+            
+            // If it's a timeout error, provide a more helpful message
+            if (error.message.includes('timeout')) {
+              return `Excel file processing timed out due to file complexity. The file may be too large or complex for processing. Please try converting to .txt, .docx, or .pdf format for analysis, or contact support for assistance with large Excel files.`;
+            }
+            
             return `Excel file processing failed: ${error.message}. Please try converting to .txt, .docx, or .pdf format for analysis.`;
           }
         
