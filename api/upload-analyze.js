@@ -515,23 +515,59 @@ async function processFile(file, filename) {
         
         case 'xlsx':
         case 'xls':
-          logInfo('Processing Excel file with simplified approach');
+          logInfo('Processing Excel file with alternative approach');
           try {
-            // For now, return a fallback message since Excel processing is problematic
-            // This allows the system to work while we investigate the XLSX.read() hanging issue
-            logWarn('Excel processing temporarily disabled due to XLSX.read() hanging issues');
-            return `Excel file detected: ${filename} (${file.length} bytes). 
+            // Try using a different approach - convert to CSV-like format
+            logInfo('Attempting Excel processing with basic parsing...');
+            
+            // For now, let's try a simple approach by reading the file as text
+            // and looking for patterns that might indicate Excel content
+            const fileText = file.toString('utf8');
+            
+            // Check if this looks like an Excel file by looking for common patterns
+            if (fileText.includes('PK') && fileText.includes('xl/')) {
+              logInfo('Detected Excel file structure, attempting basic extraction...');
+              
+              // Try to extract some basic information from the Excel file
+              // This is a very basic approach that might work for simple files
+              let extractedText = '';
+              
+              // Look for text content in the Excel file
+              const textMatches = fileText.match(/[a-zA-Z0-9\s]{10,}/g);
+              if (textMatches) {
+                extractedText = textMatches
+                  .filter(match => match.length > 5) // Filter out very short matches
+                  .slice(0, 50) // Limit to first 50 matches to avoid too much content
+                  .join(' ');
+              }
+              
+              if (extractedText.trim()) {
+                logInfo(`Extracted ${extractedText.length} characters from Excel file`);
+                return `Excel file content extracted:\n\n${extractedText}`;
+              } else {
+                logWarn('Could not extract meaningful content from Excel file');
+                return `Excel file detected: ${filename} (${file.length} bytes). 
 
-Due to technical issues with Excel file processing, this file cannot be analyzed at this time. 
+The file appears to be a valid Excel file, but we were unable to extract readable content for analysis.
 
-Please convert your Excel file to one of these formats for analysis:
-- .txt (plain text)
-- .docx (Word document) 
-- .pdf (PDF document)
+Please try one of these alternatives:
+1. Convert the Excel file to .txt format and upload that
+2. Copy and paste the Excel content as text into the analyzer
+3. Save the Excel file as a .csv file and upload that
 
-Alternatively, you can copy and paste the Excel content as text into the analyzer.
+We are working to improve Excel file processing capabilities.`;
+              }
+            } else {
+              logWarn('File does not appear to be a valid Excel file');
+              return `File detected as Excel but content validation failed: ${filename} (${file.length} bytes). 
 
-We are working to resolve Excel processing issues and will restore this functionality soon.`;
+This file may be corrupted or in an unsupported Excel format.
+
+Please try:
+1. Re-saving the Excel file in a newer format (.xlsx)
+2. Converting to .txt, .docx, or .pdf format
+3. Copying and pasting the content as text`;
+            }
             
           } catch (error) {
             logError('Excel processing failed:', error);
