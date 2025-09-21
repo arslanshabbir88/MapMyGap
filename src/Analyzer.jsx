@@ -1516,7 +1516,7 @@ function Analyzer() {
                 body: JSON.stringify({
                   userId: user.id,
                   analysisType: 'comprehensive',
-                  documentSize: uploadedFile?.size || 0,
+                  documentLength: uploadedFile?.size || 0,
                   framework: selectedFramework
                 })
               });
