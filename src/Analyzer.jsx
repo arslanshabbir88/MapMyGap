@@ -1060,6 +1060,7 @@ function Analyzer() {
       
       // Set a placeholder - the server will extract the actual text
       setFileContent('EXCEL_FILE_PLACEHOLDER');
+      setUploadedFile(file);
     }
   };
 
