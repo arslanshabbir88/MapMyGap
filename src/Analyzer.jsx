@@ -1508,13 +1508,15 @@ function Analyzer() {
             
             // Track usage after successful analysis
             try {
+              console.log('🔍 Usage tracking debug - uploadedFile:', uploadedFile);
+              console.log('🔍 Usage tracking debug - uploadedFile.size:', uploadedFile?.size);
               const trackResponse = await fetch('/api/track-usage', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   userId: user.id,
                   analysisType: 'comprehensive',
-                  documentSize: uploadedFile.size,
+                  documentSize: uploadedFile?.size || 0,
                   framework: selectedFramework
                 })
               });
