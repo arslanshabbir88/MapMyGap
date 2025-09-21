@@ -517,6 +517,7 @@ async function processFile(file, filename) {
         case 'xls':
           logInfo('Processing Excel file with aggressive timeout protection');
           try {
+            logInfo('Step 1: Starting XLSX import...');
             // Import xlsx with timeout protection
             const xlsxModule = await Promise.race([
               import('xlsx'),
@@ -524,29 +525,43 @@ async function processFile(file, filename) {
                 setTimeout(() => reject(new Error('XLSX import timeout')), 3000)
               )
             ]);
+            logInfo('Step 2: XLSX import successful, getting default export...');
             const XLSX = xlsxModule.default;
+            logInfo('Step 3: XLSX default export obtained, starting workbook read...');
             
             // Read workbook with aggressive timeout and minimal options
+            logInfo('Step 4: Starting Promise.race for workbook read...');
             const workbook = await Promise.race([
               new Promise((resolve) => {
-                const result = XLSX.read(file, { 
-                  type: 'buffer',
-                  cellDates: false,
-                  cellNF: false,
-                  cellStyles: false,
-                  cellFormula: false,
-                  cellHTML: false,
-                  cellText: false,
-                  raw: false,
-                  rawNumbers: false,
-                  dense: false
-                });
-                resolve(result);
+                logInfo('Step 5: Inside workbook read Promise, calling XLSX.read...');
+                try {
+                  const result = XLSX.read(file, { 
+                    type: 'buffer',
+                    cellDates: false,
+                    cellNF: false,
+                    cellStyles: false,
+                    cellFormula: false,
+                    cellHTML: false,
+                    cellText: false,
+                    raw: false,
+                    rawNumbers: false,
+                    dense: false
+                  });
+                  logInfo('Step 6: XLSX.read completed successfully');
+                  resolve(result);
+                } catch (readError) {
+                  logError('Step 6: XLSX.read failed:', readError);
+                  reject(readError);
+                }
               }),
               new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Excel read timeout after 30 seconds')), 30000)
+                setTimeout(() => {
+                  logError('Step 6: Excel read timeout after 30 seconds');
+                  reject(new Error('Excel read timeout after 30 seconds'));
+                }, 30000)
               )
             ]);
+            logInfo('Step 7: Workbook read completed successfully');
             
             if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
               throw new Error('No sheets found in Excel file');
