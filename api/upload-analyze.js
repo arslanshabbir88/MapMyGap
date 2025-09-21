@@ -515,77 +515,56 @@ async function processFile(file, filename) {
         
         case 'xlsx':
         case 'xls':
-          logInfo('Processing Excel file with alternative approach');
+          logInfo('Processing Excel file with proper library approach');
           try {
-            // Try using a different approach - convert to CSV-like format
-            logInfo('Attempting Excel processing with basic parsing...');
+            // Use a different Excel library that's more reliable
+            logInfo('Attempting Excel processing with exceljs library...');
             
-            // For now, let's try a simple approach by reading the file as text
-            // and looking for patterns that might indicate Excel content
-            const fileText = file.toString('utf8');
+            // Try using exceljs instead of xlsx to avoid hanging issues
+            const ExcelJS = await import('exceljs');
+            const workbook = new ExcelJS.Workbook();
             
-            // Check if this looks like an Excel file by looking for common patterns
-            if (fileText.includes('PK') && fileText.includes('xl/')) {
-              logInfo('Detected Excel file structure, attempting basic extraction...');
+            // Read the Excel file
+            await workbook.xlsx.load(file);
+            
+            let extractedText = '';
+            let rowCount = 0;
+            const maxRows = 100; // Limit to prevent overwhelming the AI
+            
+            // Process each worksheet
+            workbook.eachSheet((worksheet, sheetId) => {
+              if (rowCount >= maxRows) return; // Stop if we've processed enough rows
               
-              // Try to extract some basic information from the Excel file
-              // This is a very basic approach that might work for simple files
-              let extractedText = '';
+              logInfo(`Processing worksheet: ${worksheet.name}`);
               
-              // Look for readable text content in the Excel file
-              // Focus on extracting only human-readable text, not binary data
-              let textMatches = [];
-              
-              // Method 1: Look for text between XML tags (Excel uses XML internally)
-              const xmlTextMatches = fileText.match(/<t[^>]*>([^<]+)<\/t>/g);
-              if (xmlTextMatches) {
-                const xmlContent = xmlTextMatches.map(match => 
-                  match.replace(/<[^>]*>/g, '').trim()
-                ).filter(content => 
-                  content.length > 3 && 
-                  /^[a-zA-Z0-9\s\-_.,;:!?()]+$/.test(content) // Only readable characters
-                );
-                textMatches = textMatches.concat(xmlContent);
-              }
-              
-              // Method 2: Look for text in shared strings (quoted content)
-              const sharedStringMatches = fileText.match(/"([^"]{5,})"/g);
-              if (sharedStringMatches) {
-                const stringContent = sharedStringMatches.map(match => 
-                  match.replace(/"/g, '').trim()
-                ).filter(content => 
-                  content.length > 3 && 
-                  /^[a-zA-Z0-9\s\-_.,;:!?()]+$/.test(content) // Only readable characters
-                );
-                textMatches = textMatches.concat(stringContent);
-              }
-              
-              // Method 3: Look for readable text sequences (avoid binary data)
-              const readableTextMatches = fileText.match(/[a-zA-Z][a-zA-Z0-9\s\-_.,;:!?()]{10,}[a-zA-Z0-9]/g);
-              if (readableTextMatches) {
-                const readableContent = readableTextMatches.filter(content => 
-                  content.length > 10 && 
-                  /^[a-zA-Z0-9\s\-_.,;:!?()]+$/.test(content) && // Only readable characters
-                  !content.match(/^[0-9\s\-_.,;:!?()]+$/) // Not pure numbers/symbols
-                );
-                textMatches = textMatches.concat(readableContent);
-              }
-              
-              if (textMatches.length > 0) {
-                extractedText = textMatches
-                  .filter(match => match && match.length > 5) // Filter out very short matches
-                  .filter(match => !match.match(/^[0-9\s\-_.,;:!?()]+$/)) // Filter out pure numbers/symbols
-                  .slice(0, 50) // Limit to avoid too much content
-                  .join(' ');
-              }
-              
-              if (extractedText.trim()) {
-                logInfo(`Extracted ${extractedText.length} characters from Excel file`);
-                logInfo(`First 200 characters of extracted content: ${extractedText.substring(0, 200)}`);
-                return `Excel file content extracted:\n\n${extractedText}`;
-              } else {
-                logWarn('Could not extract meaningful content from Excel file');
-                return `Excel file detected: ${filename} (${file.length} bytes). 
+              // Get all rows
+              worksheet.eachRow((row, rowNumber) => {
+                if (rowCount >= maxRows) return; // Stop if we've processed enough rows
+                
+                const rowData = [];
+                row.eachCell((cell, colNumber) => {
+                  if (cell.value !== null && cell.value !== undefined) {
+                    rowData.push(cell.value.toString());
+                  }
+                });
+                
+                if (rowData.length > 0) {
+                  const rowText = rowData.join(' | ');
+                  if (rowText.trim()) {
+                    extractedText += rowText.trim() + '\n';
+                    rowCount++;
+                  }
+                }
+              });
+            });
+            
+            if (extractedText.trim()) {
+              logInfo(`Extracted ${extractedText.length} characters from Excel file (${rowCount} rows)`);
+              logInfo(`First 200 characters of extracted content: ${extractedText.substring(0, 200)}`);
+              return `Excel file content extracted:\n\n${extractedText}`;
+            } else {
+              logWarn('Could not extract meaningful content from Excel file');
+              return `Excel file detected: ${filename} (${file.length} bytes). 
 
 The file appears to be a valid Excel file, but we were unable to extract readable content for analysis.
 
@@ -595,17 +574,6 @@ Please try one of these alternatives:
 3. Save the Excel file as a .csv file and upload that
 
 We are working to improve Excel file processing capabilities.`;
-              }
-            } else {
-              logWarn('File does not appear to be a valid Excel file');
-              return `File detected as Excel but content validation failed: ${filename} (${file.length} bytes). 
-
-This file may be corrupted or in an unsupported Excel format.
-
-Please try:
-1. Re-saving the Excel file in a newer format (.xlsx)
-2. Converting to .txt, .docx, or .pdf format
-3. Copying and pasting the content as text`;
             }
             
           } catch (error) {
