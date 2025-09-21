@@ -744,12 +744,22 @@ export default async function handler(req, res) {
 
         // Ensure the response has the structure the frontend expects
         let responseData;
+        logInfo('Raw analysisResult structure:', {
+          isArray: Array.isArray(analysisResult),
+          hasCategories: analysisResult.categories ? true : false,
+          categoriesIsArray: analysisResult.categories ? Array.isArray(analysisResult.categories) : false,
+          keys: Object.keys(analysisResult || {}),
+          type: typeof analysisResult
+        });
+        
         if (Array.isArray(analysisResult)) {
           // If it's already an array of categories, use it directly
           responseData = analysisResult;
+          logInfo('Using analysisResult as array directly');
         } else if (analysisResult.categories && Array.isArray(analysisResult.categories)) {
           // If it has a categories property, use that
           responseData = analysisResult.categories;
+          logInfo('Using analysisResult.categories array');
         } else {
           // Fallback: wrap in categories structure
           responseData = [{
@@ -763,7 +773,18 @@ export default async function handler(req, res) {
               recommendation: "Review the generated analysis"
             }]
           }];
+          logInfo('Using fallback categories structure');
         }
+        
+        logInfo('Final responseData structure:', {
+          isArray: Array.isArray(responseData),
+          length: Array.isArray(responseData) ? responseData.length : 'N/A',
+          firstItem: Array.isArray(responseData) && responseData.length > 0 ? {
+            hasName: !!responseData[0].name,
+            hasResults: !!responseData[0].results,
+            resultsIsArray: responseData[0].results ? Array.isArray(responseData[0].results) : false
+          } : 'N/A'
+        });
         
         res.status(200).json(responseData);
 
