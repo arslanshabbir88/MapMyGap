@@ -515,137 +515,23 @@ async function processFile(file, filename) {
         
         case 'xlsx':
         case 'xls':
-          logInfo('Processing Excel file with aggressive timeout protection');
+          logInfo('Processing Excel file with simplified approach');
           try {
-            logInfo('Step 1: Starting XLSX import...');
-            // Import xlsx with timeout protection
-            const xlsxModule = await Promise.race([
-              import('xlsx'),
-              new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('XLSX import timeout')), 3000)
-              )
-            ]);
-            logInfo('Step 2: XLSX import successful, getting default export...');
-            const XLSX = xlsxModule.default;
-            logInfo('Step 3: XLSX default export obtained, starting workbook read...');
-            
-            // Read workbook with aggressive timeout and minimal options
-            logInfo('Step 4: Starting Promise.race for workbook read...');
-            
-            // Create timeout promise first
-            const timeoutPromise = new Promise((_, reject) => 
-              setTimeout(() => {
-                logError('Step 6: Excel read timeout after 10 seconds');
-                reject(new Error('Excel read timeout after 10 seconds'));
-              }, 10000) // Reduced to 10 seconds for faster failure
-            );
-            
-            // Create read promise
-            const readPromise = new Promise((resolve, reject) => {
-              logInfo('Step 5: Inside workbook read Promise, calling XLSX.read...');
-              try {
-                // Use setTimeout to make XLSX.read non-blocking
-                setTimeout(() => {
-                  try {
-                    const result = XLSX.read(file, { 
-                      type: 'buffer',
-                      cellDates: false,
-                      cellNF: false,
-                      cellStyles: false,
-                      cellFormula: false,
-                      cellHTML: false,
-                      cellText: false,
-                      raw: false,
-                      rawNumbers: false,
-                      dense: false
-                    });
-                    logInfo('Step 6: XLSX.read completed successfully');
-                    resolve(result);
-                  } catch (readError) {
-                    logError('Step 6: XLSX.read failed:', readError);
-                    reject(readError);
-                  }
-                }, 0);
-              } catch (error) {
-                logError('Step 5: Error setting up XLSX.read:', error);
-                reject(error);
-              }
-            });
-            
-            const workbook = await Promise.race([readPromise, timeoutPromise]);
-            logInfo('Step 7: Workbook read completed successfully');
-            
-            if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
-              throw new Error('No sheets found in Excel file');
-            }
-            
-            // Process only the first sheet to avoid memory issues
-            const sheetName = workbook.SheetNames[0];
-            const worksheet = workbook.Sheets[sheetName];
-            
-            if (!worksheet) {
-              throw new Error(`Sheet "${sheetName}" not found`);
-            }
-            
-            // Get sheet dimensions
-            const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1:A1');
-            const totalRows = range.e.r + 1;
-            const totalCols = range.e.c + 1;
-            
-            logInfo(`Excel sheet dimensions: ${totalRows} rows x ${totalCols} columns`);
-            
-            // Process in small chunks to avoid memory issues
-            const chunkSize = 50; // Smaller chunks for better memory management
-            let extractedText = '';
-            let processedRows = 0;
-            
-            for (let startRow = 0; startRow < totalRows; startRow += chunkSize) {
-              const endRow = Math.min(startRow + chunkSize, totalRows);
-              const rangeStr = XLSX.utils.encode_range({
-                s: { c: 0, r: startRow },
-                e: { c: totalCols - 1, r: endRow - 1 }
-              });
-              
-              try {
-                const chunkData = XLSX.utils.sheet_to_json(worksheet, { 
-                  header: 1, 
-                  range: rangeStr,
-                  defval: ''
-                });
-                
-                // Convert chunk to text
-                for (const row of chunkData) {
-                  if (Array.isArray(row)) {
-                    const rowText = row.filter(cell => cell !== null && cell !== undefined && cell !== '').join(' ');
-                    if (rowText.trim()) {
-                      extractedText += rowText.trim() + '\n';
-                    }
-                  }
-                }
-                
-                processedRows += chunkData.length;
-                logInfo(`Processed ${processedRows}/${totalRows} rows (${Math.round(processedRows/totalRows*100)}%)`);
-                
-                // Clear chunk data to free memory
-                chunkData.length = 0;
-                
-                // Add small delay to prevent overwhelming the system
-                if (startRow + chunkSize < totalRows) {
-                  await new Promise(resolve => setTimeout(resolve, 10));
-                }
-                
-              } catch (chunkError) {
-                logWarn(`Error processing chunk ${startRow}-${endRow}:`, chunkError.message);
-                // Continue with next chunk
-              }
-            }
-            
-            if (!extractedText.trim()) {
-              throw new Error('No readable content found in Excel file');
-            }
-            
-            logInfo(`Excel processing completed: ${extractedText.length} characters extracted from ${processedRows} rows`);
-            return extractedText.trim();
+            // For now, return a fallback message since Excel processing is problematic
+            // This allows the system to work while we investigate the XLSX.read() hanging issue
+            logWarn('Excel processing temporarily disabled due to XLSX.read() hanging issues');
+            return `Excel file detected: ${filename} (${file.length} bytes). 
+
+Due to technical issues with Excel file processing, this file cannot be analyzed at this time. 
+
+Please convert your Excel file to one of these formats for analysis:
+- .txt (plain text)
+- .docx (Word document) 
+- .pdf (PDF document)
+
+Alternatively, you can copy and paste the Excel content as text into the analyzer.
+
+We are working to resolve Excel processing issues and will restore this functionality soon.`;
             
           } catch (error) {
             logError('Excel processing failed:', error);
