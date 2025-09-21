@@ -786,7 +786,16 @@ export default async function handler(req, res) {
           } : 'N/A'
         });
         
-        res.status(200).json(responseData);
+        // Return response in the format the frontend expects
+        res.status(200).json({
+          candidates: [{
+            content: {
+              parts: [{
+                text: JSON.stringify(responseData)
+              }]
+            }
+          }]
+        });
 
       } catch (error) {
         logError('File processing failed:', error);
