@@ -532,17 +532,45 @@ async function processFile(file, filename) {
               // This is a very basic approach that might work for simple files
               let extractedText = '';
               
-              // Look for text content in the Excel file
-              const textMatches = fileText.match(/[a-zA-Z0-9\s]{10,}/g);
-              if (textMatches) {
+              // Look for text content in the Excel file with better patterns
+              // Try multiple approaches to extract meaningful content
+              let textMatches = [];
+              
+              // Method 1: Look for longer text sequences
+              const longTextMatches = fileText.match(/[a-zA-Z0-9\s\-_.,;:!?()]{20,}/g);
+              if (longTextMatches) {
+                textMatches = textMatches.concat(longTextMatches);
+              }
+              
+              // Method 2: Look for text between XML tags (Excel uses XML internally)
+              const xmlTextMatches = fileText.match(/<t[^>]*>([^<]+)<\/t>/g);
+              if (xmlTextMatches) {
+                const xmlContent = xmlTextMatches.map(match => 
+                  match.replace(/<[^>]*>/g, '').trim()
+                ).filter(content => content.length > 3);
+                textMatches = textMatches.concat(xmlContent);
+              }
+              
+              // Method 3: Look for text in shared strings
+              const sharedStringMatches = fileText.match(/"([^"]{10,})"/g);
+              if (sharedStringMatches) {
+                const stringContent = sharedStringMatches.map(match => 
+                  match.replace(/"/g, '').trim()
+                ).filter(content => content.length > 3);
+                textMatches = textMatches.concat(stringContent);
+              }
+              
+              if (textMatches.length > 0) {
                 extractedText = textMatches
-                  .filter(match => match.length > 5) // Filter out very short matches
-                  .slice(0, 50) // Limit to first 50 matches to avoid too much content
+                  .filter(match => match && match.length > 5) // Filter out very short matches
+                  .filter(match => !match.match(/^[0-9\s\-_.,;:!?()]+$/)) // Filter out pure numbers/symbols
+                  .slice(0, 100) // Increase limit to get more content
                   .join(' ');
               }
               
               if (extractedText.trim()) {
                 logInfo(`Extracted ${extractedText.length} characters from Excel file`);
+                logInfo(`First 200 characters of extracted content: ${extractedText.substring(0, 200)}`);
                 return `Excel file content extracted:\n\n${extractedText}`;
               } else {
                 logWarn('Could not extract meaningful content from Excel file');
