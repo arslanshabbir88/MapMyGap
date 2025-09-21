@@ -537,12 +537,6 @@ async function processFile(file, filename) {
                   cellFormula: false,
                   cellHTML: false,
                   cellText: false,
-                  cellDates: false,
-                  cellNF: false,
-                  cellStyles: false,
-                  cellFormula: false,
-                  cellHTML: false,
-                  cellText: false,
                   raw: false,
                   rawNumbers: false,
                   dense: false
@@ -628,6 +622,11 @@ async function processFile(file, filename) {
             
           } catch (error) {
             logError('Excel processing failed:', error);
+            logError('Excel processing error details:', {
+              message: error.message,
+              stack: error.stack,
+              name: error.name
+            });
             
             // If it's a timeout error, provide a more helpful message
             if (error.message.includes('timeout')) {
