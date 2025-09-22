@@ -867,7 +867,69 @@ export default async function handler(req, res) {
           // If it has a categories property, use that
           responseData = analysisResult.categories;
           logInfo('Using analysisResult.categories array');
-        } else {
+        } else if (analysisResult && Array.isArray(analysisResult.results)) {
+          // Normalize flat results back into the known framework category/control structure
+          try {
+            const frameworkData = await loadFrameworkData(framework);
+            let normalizedFramework = frameworkData;
+            if (selectedCategories && selectedCategories.length > 0 && frameworkData?.categories) {
+              if (framework === 'NIST_CSF') {
+                normalizedFramework = {
+                  ...frameworkData,
+                  categories: frameworkData.categories.filter(cat => 
+                    selectedCategories.some(selected => 
+                      cat.name.toLowerCase().includes(selected.toLowerCase())
+                    )
+                  )
+                };
+              } else {
+                normalizedFramework = {
+                  ...frameworkData,
+                  categories: frameworkData.categories.filter(cat => 
+                    selectedCategories.includes(cat.name)
+                  )
+                };
+              }
+            }
+
+            const flatResults = analysisResult.results;
+            const byId = new Map();
+            const byControl = new Map();
+            for (const r of flatResults) {
+              if (r?.id) byId.set(String(r.id).trim(), r);
+              if (r?.control) byControl.set(String(r.control).trim().toLowerCase(), r);
+            }
+
+            const mapped = (normalizedFramework.categories || []).map(cat => {
+              const mappedResults = (cat.results || []).map(ctrl => {
+                const ctrlId = (ctrl.id || ctrl.control || '').toString().trim();
+                const ctrlName = (ctrl.control || ctrl.name || '').toString().trim();
+                const match = byId.get(ctrlId) || byControl.get(ctrlName.toLowerCase());
+                return {
+                  id: ctrlId || undefined,
+                  control: ctrlName,
+                  status: match?.status || 'gap',
+                  evidence: match?.evidence || match?.details || undefined,
+                  recommendation: match?.recommendation || undefined
+                };
+              });
+              return {
+                name: cat.name,
+                description: cat.description,
+                results: mappedResults
+              };
+            });
+
+            if (Array.isArray(mapped) && mapped.length > 0) {
+              responseData = mapped;
+              logInfo('Using normalized categories structure from flat results');
+            }
+          } catch (normErr) {
+            logWarn('Normalization to categories failed, will use fallback', normErr?.message || normErr);
+          }
+        }
+        
+        if (!responseData) {
           // Fallback: wrap in categories structure
           responseData = [{
             name: "Compliance Analysis",
