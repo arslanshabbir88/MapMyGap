@@ -949,11 +949,23 @@ export default async function handler(req, res) {
         if (Array.isArray(responseData) && selectedCategories && selectedCategories.length > 0) {
           let filtered;
           if (framework === 'NIST_CSF') {
-            // Match by function names like IDENTIFY, PROTECT, etc., and allow partial matches from UI labels
+            // Normalize selected categories: map short codes to full function names
+            const csfMap = {
+              'ID': 'IDENTIFY',
+              'PR': 'PROTECT',
+              'DE': 'DETECT',
+              'RS': 'RESPOND',
+              'RC': 'RECOVER',
+              'GV': 'GOVERN'
+            };
+            const normalizedSelected = selectedCategories.map(s => csfMap[s] || s).map(s => s.toLowerCase());
+
+            // Match by function names like IDENTIFY, PROTECT, etc., allow partial matches from UI labels
             filtered = responseData.filter(cat => 
-              selectedCategories.some(selected => 
-                cat.name?.toLowerCase().includes(selected.toLowerCase()) ||
-                selected.toLowerCase().includes(cat.name?.toLowerCase())
+              normalizedSelected.some(sel => 
+                cat.name?.toLowerCase() === sel ||
+                cat.name?.toLowerCase().includes(sel) ||
+                sel.includes(cat.name?.toLowerCase())
               )
             );
           } else {
@@ -962,6 +974,8 @@ export default async function handler(req, res) {
           if (filtered.length > 0) {
             responseData = filtered;
             logInfo('Applied post-filter to responseData by selectedCategories', { count: responseData.length });
+          } else {
+            logWarn('Post-filter found no matching categories; returning unfiltered responseData for safety');
           }
         }
 
