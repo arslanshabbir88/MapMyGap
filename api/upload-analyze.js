@@ -945,6 +945,26 @@ export default async function handler(req, res) {
           logInfo('Using fallback categories structure');
         }
         
+        // Enforce category selection on the final response if provided
+        if (Array.isArray(responseData) && selectedCategories && selectedCategories.length > 0) {
+          let filtered;
+          if (framework === 'NIST_CSF') {
+            // Match by function names like IDENTIFY, PROTECT, etc., and allow partial matches from UI labels
+            filtered = responseData.filter(cat => 
+              selectedCategories.some(selected => 
+                cat.name?.toLowerCase().includes(selected.toLowerCase()) ||
+                selected.toLowerCase().includes(cat.name?.toLowerCase())
+              )
+            );
+          } else {
+            filtered = responseData.filter(cat => selectedCategories.includes(cat.name));
+          }
+          if (filtered.length > 0) {
+            responseData = filtered;
+            logInfo('Applied post-filter to responseData by selectedCategories', { count: responseData.length });
+          }
+        }
+
         logInfo('Final responseData structure:', {
           isArray: Array.isArray(responseData),
           length: Array.isArray(responseData) ? responseData.length : 'N/A',
