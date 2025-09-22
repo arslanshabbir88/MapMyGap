@@ -655,17 +655,23 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'No multipart boundary found' });
     }
 
-    let body = '';
-    req.on('data', chunk => {
-      body += chunk.toString();
+    // Accumulate raw buffers to avoid corrupting binary content
+    const chunks = [];
+    req.on('data', (chunk) => {
+      chunks.push(Buffer.from(chunk));
     });
 
     req.on('end', async () => {
       // Process with 5-minute Vercel timeout
 
       try {
-        // Parse multipart data manually
-        const parts = body.split(`--${boundary}`);
+        const fullBuffer = Buffer.concat(chunks);
+        // Use latin1 to maintain 1:1 byte mapping between string indices and Buffer
+        const bodyStr = fullBuffer.toString('latin1');
+
+        const delimiter = `--${boundary}`;
+        const parts = bodyStr.split(delimiter);
+
         let file = null;
         let filename = '';
         let framework = '';
@@ -673,50 +679,69 @@ export default async function handler(req, res) {
         let strictness = 'standard';
         let userId = '';
 
-        for (const part of parts) {
-          if (part.includes('Content-Disposition: form-data')) {
-            if (part.includes('name="file"')) {
-              // Extract file data
-              const fileStart = part.indexOf('\r\n\r\n') + 4;
-              const fileEnd = part.lastIndexOf('\r\n');
-              const fileData = part.substring(fileStart, fileEnd);
-              file = Buffer.from(fileData, 'binary');
-              
-              // Extract filename
-              const filenameMatch = part.match(/filename="([^"]+)"/);
-              if (filenameMatch) {
-                filename = filenameMatch[1];
-              }
-            } else if (part.includes('name="framework"')) {
-              const valueStart = part.indexOf('\r\n\r\n') + 4;
-              const valueEnd = part.lastIndexOf('\r\n');
-              framework = part.substring(valueStart, valueEnd);
-            } else if (part.includes('name="selectedCategories"')) {
-              const valueStart = part.indexOf('\r\n\r\n') + 4;
-              const valueEnd = part.lastIndexOf('\r\n');
+        // Cursor to keep track of absolute offsets in the buffer while iterating parts
+        let cursor = 0;
+        for (const partStr of parts) {
+          // Advance cursor by current part length plus delimiter length for next iteration
+          const partStart = cursor;
+          const partEnd = partStart + partStr.length;
+          cursor = partEnd + delimiter.length;
+
+          if (!partStr.includes('Content-Disposition: form-data')) {
+            continue;
+          }
+
+          // Find header end and potential CRLFs
+          const headerEndRel = partStr.indexOf('\r\n\r\n');
+          if (headerEndRel === -1) {
+            continue;
+          }
+          const headersStr = partStr.slice(0, headerEndRel);
+          const contentRelStart = headerEndRel + 4; // skip CRLFCRLF
+          // Content usually ends before the trailing CRLF in the part
+          const contentRelEnd = partStr.lastIndexOf('\r\n');
+          const hasContent = contentRelEnd > contentRelStart;
+
+          // Extract common metadata
+          const nameMatch = headersStr.match(/name="([^"]+)"/);
+          const fileNameMatch = headersStr.match(/filename="([^"]+)"/);
+          const fieldName = nameMatch ? nameMatch[1] : '';
+
+          if (fileNameMatch && fieldName === 'file' && hasContent) {
+            filename = fileNameMatch[1];
+            // Map relative indices to absolute buffer indices
+            const absContentStart = partStart + contentRelStart;
+            const absContentEnd = partStart + contentRelEnd;
+            file = fullBuffer.slice(absContentStart, absContentEnd);
+          } else if (hasContent) {
+            // For text fields, decode as utf8 safely from buffer slice
+            const absContentStart = partStart + contentRelStart;
+            const absContentEnd = partStart + contentRelEnd;
+            const valueBuf = fullBuffer.slice(absContentStart, absContentEnd);
+            const value = valueBuf.toString('utf8');
+
+            if (fieldName === 'framework') {
+              framework = value;
+            } else if (fieldName === 'selectedCategories') {
               try {
-                selectedCategories = JSON.parse(part.substring(valueStart, valueEnd));
-              } catch (e) {
+                selectedCategories = JSON.parse(value);
+              } catch {
                 selectedCategories = [];
               }
-            } else if (part.includes('name="strictness"')) {
-              const valueStart = part.indexOf('\r\n\r\n') + 4;
-              const valueEnd = part.lastIndexOf('\r\n');
-              strictness = part.substring(valueStart, valueEnd) || 'standard';
-            } else if (part.includes('name="userId"')) {
-              const valueStart = part.indexOf('\r\n\r\n') + 4;
-              const valueEnd = part.lastIndexOf('\r\n');
-              userId = part.substring(valueStart, valueEnd);
+            } else if (fieldName === 'strictness') {
+              strictness = value;
+            } else if (fieldName === 'userId') {
+              userId = value;
             }
           }
         }
 
-        if (!file) {
+        // Validate required fields
+        if (!file || !filename) {
           return res.status(400).json({ error: 'No file uploaded' });
         }
-
         if (!framework) {
-          return res.status(400).json({ error: 'Framework not specified' });
+          framework = 'NIST_CSF';
         }
 
         // Check usage limits
