@@ -521,7 +521,8 @@ async function processFile(file, filename) {
             logInfo('Attempting Excel processing with exceljs library...');
             
             // Try using exceljs instead of xlsx to avoid hanging issues
-            const ExcelJS = await import('exceljs');
+            const exceljsModule = await import('exceljs');
+            const ExcelJS = exceljsModule.default || exceljsModule;
             const workbook = new ExcelJS.Workbook();
             
             // Read the Excel file
@@ -580,16 +581,10 @@ We are working to improve Excel file processing capabilities.`;
             logError('Excel processing failed:', error);
             logError('Excel processing error details:', {
               message: error.message,
-              stack: error.stack,
-              name: error.name
+              stack: error.stack
             });
-            
-            // If it's a timeout error, provide a more helpful message
-            if (error.message.includes('timeout')) {
-              return `Excel file processing timed out due to file complexity. The file may be too large or complex for processing. Please try converting to .txt, .docx, or .pdf format for analysis, or contact support for assistance with large Excel files.`;
-            }
-            
-            return `Excel file processing failed: ${error.message}. Please try converting to .txt, .docx, or .pdf format for analysis.`;
+            // Fall through to generic handling below
+            return `Excel file detected: ${filename} (${file.length} bytes). \n\nWe encountered an error reading this Excel file. Please try converting to .csv/.txt or re-saving the workbook and retry.`;
           }
         
       default:
