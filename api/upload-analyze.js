@@ -744,6 +744,15 @@ export default async function handler(req, res) {
           framework = 'NIST_CSF';
         }
 
+        // Debug log the parsed values
+        logInfo('DEBUG: Parsed multipart values:', {
+          filename,
+          framework,
+          selectedCategories,
+          strictness,
+          userId
+        });
+
         // Check usage limits
         if (userId) {
           const usageCheck = await checkUsageLimits(userId, requestId);
