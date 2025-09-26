@@ -723,9 +723,22 @@ export default async function handler(req, res) {
             if (fieldName === 'framework') {
               framework = value;
             } else if (fieldName === 'selectedCategories') {
+              logInfo('DEBUG: Raw selectedCategories value:', value);
               try {
                 selectedCategories = JSON.parse(value);
-              } catch {
+                logInfo('DEBUG: Parsed selectedCategories:', selectedCategories);
+              } catch (e) {
+                logWarn('DEBUG: Failed to parse selectedCategories:', e.message);
+                selectedCategories = [];
+              }
+            } else if (fieldName === 'categories') {
+              // Alias: client may send 'categories' instead of 'selectedCategories'
+              logInfo('DEBUG: Raw categories value:', value);
+              try {
+                selectedCategories = JSON.parse(value);
+                logInfo('DEBUG: Parsed categories as selectedCategories:', selectedCategories);
+              } catch (e) {
+                logWarn('DEBUG: Failed to parse categories:', e.message);
                 selectedCategories = [];
               }
             } else if (fieldName === 'strictness') {
