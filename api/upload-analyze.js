@@ -545,7 +545,24 @@ async function processFile(file, filename) {
                 const rowData = [];
                 row.eachCell((cell, colNumber) => {
                   if (cell.value !== null && cell.value !== undefined) {
-                    rowData.push(cell.value.toString());
+                    // Handle different cell value types properly
+                    let cellValue = '';
+                    if (typeof cell.value === 'object') {
+                      // For rich text, formulas, or other objects, try to get the text representation
+                      if (cell.value.text) {
+                        cellValue = cell.value.text;
+                      } else if (cell.value.result) {
+                        cellValue = cell.value.result.toString();
+                      } else if (cell.value.formula) {
+                        cellValue = cell.value.formula;
+                      } else {
+                        // Fallback: try to stringify the object
+                        cellValue = JSON.stringify(cell.value);
+                      }
+                    } else {
+                      cellValue = cell.value.toString();
+                    }
+                    rowData.push(cellValue);
                   }
                 });
                 
