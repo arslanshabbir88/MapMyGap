@@ -909,8 +909,9 @@ export default async function handler(req, res) {
                   id: ctrlId || undefined,
                   control: ctrlName,
                   status: match?.status || 'gap',
-                  evidence: match?.evidence || match?.details || undefined,
-                  recommendation: match?.recommendation || undefined
+                  evidence: match?.evidence || match?.details || match?.text || undefined,
+                  recommendation: match?.recommendation || match?.suggestion || undefined,
+                  details: match?.details || match?.evidence || match?.text || undefined
                 };
               });
               return {
@@ -947,6 +948,8 @@ export default async function handler(req, res) {
         
         // Enforce category selection on the final response if provided
         if (Array.isArray(responseData) && selectedCategories && selectedCategories.length > 0) {
+          logInfo('DEBUG: selectedCategories received:', selectedCategories);
+          logInfo('DEBUG: responseData before filtering:', responseData.map(c => c.name));
           let filtered;
           if (framework === 'NIST_CSF') {
             // Normalize selected categories: map short codes to full function names
@@ -959,6 +962,7 @@ export default async function handler(req, res) {
               'GV': 'GOVERN'
             };
             const normalizedSelected = selectedCategories.map(s => csfMap[s] || s).map(s => s.toLowerCase());
+            logInfo('DEBUG: normalizedSelected:', normalizedSelected);
 
             // Match by function names like IDENTIFY, PROTECT, etc., allow partial matches from UI labels
             filtered = responseData.filter(cat => 
@@ -968,6 +972,7 @@ export default async function handler(req, res) {
                 sel.includes(cat.name?.toLowerCase())
               )
             );
+            logInfo('DEBUG: filtered categories:', filtered.map(c => c.name));
           } else {
             filtered = responseData.filter(cat => selectedCategories.includes(cat.name));
           }
