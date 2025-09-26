@@ -809,6 +809,8 @@ export default async function handler(req, res) {
         // Parse AI response - handle markdown-wrapped JSON
         let analysisResult;
         try {
+          logInfo('DEBUG: Raw AI response:', aiResponse.substring(0, 500));
+          
           // Remove markdown code blocks if present
           let cleanResponse = aiResponse;
           if (cleanResponse.includes('```json')) {
@@ -832,21 +834,57 @@ export default async function handler(req, res) {
             }
           }
           
+          logInfo('DEBUG: Cleaned response for JSON parsing:', cleanResponse.substring(0, 200));
           analysisResult = JSON.parse(cleanResponse);
+          logInfo('DEBUG: Successfully parsed JSON');
         } catch (parseError) {
           logError('Failed to parse AI response as JSON:', parseError);
-          // Fallback to text response
-          analysisResult = {
-            summary: {
-              totalControls: 0,
-              implemented: 0,
-              partial: 0,
-              notImplemented: 0,
-              complianceScore: 0
-            },
-            results: [],
-            rawResponse: aiResponse
-          };
+          logError('DEBUG: Raw response that failed to parse:', aiResponse);
+          
+          // Try to extract any structured data from the response
+          try {
+            // Look for any JSON-like structures in the response
+            const jsonPatterns = [
+              /\{[\s\S]*?\}/g,
+              /\[[\s\S]*?\]/g
+            ];
+            
+            for (const pattern of jsonPatterns) {
+              const matches = aiResponse.match(pattern);
+              if (matches) {
+                for (const match of matches) {
+                  try {
+                    const parsed = JSON.parse(match);
+                    if (parsed && (parsed.categories || parsed.results || Array.isArray(parsed))) {
+                      analysisResult = parsed;
+                      logInfo('DEBUG: Successfully extracted JSON from partial match');
+                      break;
+                    }
+                  } catch (e) {
+                    // Continue trying other matches
+                  }
+                }
+                if (analysisResult) break;
+              }
+            }
+          } catch (e) {
+            // Fall through to fallback
+          }
+          
+          // Final fallback
+          if (!analysisResult) {
+            analysisResult = {
+              summary: {
+                totalControls: 0,
+                implemented: 0,
+                partial: 0,
+                notImplemented: 0,
+                complianceScore: 0
+              },
+              results: [],
+              rawResponse: aiResponse
+            };
+          }
         }
 
         // Update usage
