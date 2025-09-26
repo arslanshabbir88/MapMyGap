@@ -525,8 +525,15 @@ async function processFile(file, filename) {
             const ExcelJS = exceljsModule.default || exceljsModule;
             const workbook = new ExcelJS.Workbook();
             
-            // Read the Excel file
-            await workbook.xlsx.load(file);
+            // Read the Excel file with timeout
+            logInfo('About to load Excel workbook with timeout...');
+            const loadPromise = workbook.xlsx.load(file);
+            const timeoutPromise = new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Excel load timeout after 10 seconds')), 10000)
+            );
+            
+            await Promise.race([loadPromise, timeoutPromise]);
+            logInfo('Excel workbook loaded successfully');
             
             let extractedText = '';
             let rowCount = 0;
@@ -595,13 +602,76 @@ We are working to improve Excel file processing capabilities.`;
             }
             
           } catch (error) {
-            logError('Excel processing failed:', error);
-            logError('Excel processing error details:', {
+            logError('ExcelJS processing failed:', error);
+            logError('ExcelJS processing error details:', {
               message: error.message,
               stack: error.stack
             });
-            // Fall through to generic handling below
-            return `Excel file detected: ${filename} (${file.length} bytes). \n\nWe encountered an error reading this Excel file. Please try converting to .csv/.txt or re-saving the workbook and retry.`;
+            
+            // Fallback to xlsx library with timeout
+            logInfo('Falling back to xlsx library with timeout...');
+            try {
+              const XLSX = await import('xlsx');
+              logInfo('XLSX library imported successfully for fallback');
+              
+              const parsePromise = new Promise((resolve, reject) => {
+                try {
+                  const workbook = XLSX.read(file, { 
+                    type: 'buffer',
+                    cellDates: false,
+                    cellNF: false,
+                    cellStyles: false,
+                    sheetStubs: false
+                  });
+                  resolve(workbook);
+                } catch (err) {
+                  reject(err);
+                }
+              });
+              
+              const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('XLSX fallback timeout after 15 seconds')), 15000)
+              );
+              
+              const workbook = await Promise.race([parsePromise, timeoutPromise]);
+              logInfo('XLSX fallback parsing completed successfully');
+              
+              let extractedText = '';
+              let rowCount = 0;
+              const maxRows = 50; // Smaller limit for fallback
+              
+              // Process each sheet
+              workbook.SheetNames.forEach(sheetName => {
+                if (rowCount >= maxRows) return;
+                
+                logInfo(`Processing fallback sheet: ${sheetName}`);
+                const worksheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                
+                jsonData.forEach(row => {
+                  if (rowCount >= maxRows) return;
+                  if (Array.isArray(row) && row.length > 0) {
+                    const rowText = row.filter(cell => cell !== null && cell !== undefined).join(' | ');
+                    if (rowText.trim()) {
+                      extractedText += rowText.trim() + '\n';
+                      rowCount++;
+                    }
+                  }
+                });
+              });
+              
+              if (extractedText.trim()) {
+                logInfo(`Fallback extracted ${extractedText.length} characters from Excel file (${rowCount} rows)`);
+                logInfo(`First 200 characters of fallback content: ${extractedText.substring(0, 200)}`);
+                return `Excel file content extracted (fallback method):\n\n${extractedText}`;
+              } else {
+                throw new Error('No content extracted with fallback method');
+              }
+              
+            } catch (fallbackError) {
+              logError('XLSX fallback also failed:', fallbackError);
+              return `Excel file detected: ${filename} (${file.length} bytes). \n\nWe encountered errors reading this Excel file with both ExcelJS and XLSX libraries. Please try converting to .csv/.txt or re-saving the workbook and retry.`;
+            }
           }
         
       default:
