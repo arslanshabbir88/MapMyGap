@@ -924,9 +924,15 @@ export default async function handler(req, res) {
 
             const mapped = (normalizedFramework.categories || []).map(cat => {
               const mappedResults = (cat.results || []).map(ctrl => {
+                // Handle different control ID formats across frameworks
                 const ctrlId = (ctrl.id || ctrl.control || '').toString().trim();
-                const ctrlName = (ctrl.control || ctrl.name || '').toString().trim();
-                const match = byId.get(ctrlId) || byControl.get(ctrlName.toLowerCase());
+                const ctrlName = (ctrl.control || ctrl.name || ctrl.description || '').toString().trim();
+                
+                // Try multiple matching strategies
+                const match = byId.get(ctrlId) || 
+                             byControl.get(ctrlName.toLowerCase()) ||
+                             byControl.get(ctrlId.toLowerCase());
+                
                 return {
                   id: ctrlId || undefined,
                   control: ctrlName,
