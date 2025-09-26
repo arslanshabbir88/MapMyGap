@@ -884,7 +884,7 @@ export default async function handler(req, res) {
           aiResponse = await Promise.race([
             analyzeWithAI(documentText, framework, selectedCategories, strictness, requestId),
             new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('AI analysis timeout after 2 minutes')), 120000)
+              setTimeout(() => reject(new Error('AI analysis timeout after 4 minutes')), 240000)
             )
           ]);
           logInfo('analyzeWithAI completed successfully');
@@ -1182,8 +1182,8 @@ export default async function handler(req, res) {
                 }
               ]
             },
-            framework: framework || 'NIST_CSF',
-            filename: filename || 'timeout',
+            framework: 'NIST_CSF',
+            filename: 'timeout',
             requestId
           });
         } else {
