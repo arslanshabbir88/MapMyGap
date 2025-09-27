@@ -266,61 +266,10 @@ async function loadFrameworkData(framework) {
       logInfo('✅ Successfully loaded SOX framework data');
       return allFrameworks.SOX;
     } else if (framework === 'NIST_800_63B') {
-      // Inline the comprehensive NIST 800-63B-4 category structure to avoid import issues
-      const frameworkData = {
-        categories: [
-          {
-            name: "AAL1 - Minimal Assurance",
-            description: "Minimal assurance level for low-risk applications",
-            results: [
-              {
-                control: "AAL1.1",
-                description: "Use of a single authentication factor",
-                implementation: "Implement single-factor authentication using passwords or PINs"
-              },
-              {
-                control: "AAL1.2",
-                description: "Password-based authentication",
-                implementation: "Use passwords with minimum complexity requirements"
-              }
-            ]
-          },
-          {
-            name: "AAL2 - Moderate Assurance", 
-            description: "Moderate assurance level for medium-risk applications",
-            results: [
-              {
-                control: "AAL2.1",
-                description: "Use of two authentication factors",
-                implementation: "Implement two-factor authentication using two different factors"
-              },
-              {
-                control: "AAL2.2",
-                description: "Cryptographic authentication",
-                implementation: "Use cryptographic authentication mechanisms"
-              }
-            ]
-          },
-          {
-            name: "AAL3 - High Assurance",
-            description: "High assurance level for high-risk applications", 
-            results: [
-              {
-                control: "AAL3.1",
-                description: "Use of three authentication factors",
-                implementation: "Implement three-factor authentication using three different factors"
-              },
-              {
-                control: "AAL3.2",
-                description: "Hardware-based authenticators",
-                implementation: "Use hardware-based authenticators for enhanced security"
-              }
-            ]
-          }
-        ]
-      };
-      logInfo('✅ Successfully loaded inline NIST 800-63B framework data');
-      return frameworkData;
+      // Import comprehensive NIST 800-63B framework data from compliance-frameworks.js
+      const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
+      logInfo('✅ Successfully loaded comprehensive NIST 800-63B framework data');
+      return allFrameworks.NIST_800_63B;
     } else {
       throw new Error(`Framework ${framework} not supported. Available frameworks: NIST_CSF, SOC_1, SOC_2, ISO_27001, PCI_DSS, HIPAA, SOX, NYDFS_500, NIST_800_63B`);
     }
@@ -436,6 +385,7 @@ async function analyzeWithAI(documentText, framework, selectedCategories, strict
     const frameworkName = {
       'NIST_CSF': 'NIST Cybersecurity Framework (CSF)',
       'NIST_800_53': 'NIST SP 800-53',
+      'NIST_800_63B': 'NIST SP 800-63B-4',
       'PCI_DSS': 'PCI DSS v4.0',
       'ISO_27001': 'ISO/IEC 27001:2022',
       'SOC_2': 'SOC 2 Type II',
@@ -451,7 +401,7 @@ FRAMEWORK STRUCTURE:
 ${JSON.stringify(filteredFrameworkData, null, 2)}
 
 ANALYSIS REQUIREMENTS:
-1. For each control in the framework, determine if it's implemented, partially implemented, or not implemented
+1. For each control in the framework, determine if it's covered, partial, or gap
 2. Provide specific evidence from the document for each assessment
 3. Give actionable recommendations for gaps
 4. Be thorough but concise
@@ -460,25 +410,71 @@ ANALYSIS REQUIREMENTS:
 RESPONSE FORMAT:
 Return a JSON object with this structure:
 {
-  "summary": {
-    "totalControls": number,
-    "implemented": number,
-    "partial": number,
-    "notImplemented": number,
-    "complianceScore": number
-  },
-  "results": [
+  "categories": [
     {
-      "control": "control_id",
-      "status": "implemented|partial|not_implemented",
-      "evidence": "specific evidence from document",
-      "recommendation": "actionable recommendation"
+      "name": "Category Name",
+      "description": "Category description",
+      "results": [
+        {
+          "id": "Control ID",
+          "control": "Control description",
+          "status": "covered|partial|gap",
+          "details": "Specific details about compliance status",
+          "recommendation": "Actionable recommendation"
+        }
+      ]
     }
   ]
 }`;
 
+    // Add framework-specific requirements
+    if (framework === 'NIST_800_63B') {
+      if (filteredFrameworkData) {
+        // Filter framework data to only include selected categories
+        let filteredCategories = filteredFrameworkData.categories;
+        if (selectedCategories && selectedCategories.length > 0) {
+          logInfo('🔍 Original selectedCategories:', selectedCategories);
+          logInfo('🔍 Available framework categories:', filteredFrameworkData.categories.map(c => c.name));
+          
+          // Map user-friendly category names to framework category names
+          const categoryMapping = {
+            'IAL': 'Identity Assurance Level (IAL)',
+            'AAL': 'Authentication Assurance Level (AAL)',
+            'FAL': 'Federation Assurance Level (FAL)',
+            'AUTH_TYPE': 'Authenticator Type Requirements',
+            'TECH': 'Technical Requirements',
+            'EVENT': 'Authenticator Event Management',
+            'SESSION': 'Session Management'
+          };
+          
+          // Filter to only selected categories
+          filteredCategories = filteredFrameworkData.categories.filter(cat => 
+            selectedCategories.some(selected => 
+              categoryMapping[selected] === cat.name || selected === cat.name
+            )
+          );
+          
+          logInfo('🎯 Filtered categories for NIST 800-63B:', filteredCategories.map(c => c.name));
+          logInfo('🎯 Number of categories being sent to AI:', filteredCategories.length);
+        }
+        
+        // Use the filtered framework data to enforce consistent control structure
+        prompt += `\n\nFor NIST SP 800-63B-4, you MUST analyze ONLY the controls in the following structure. Use EXACTLY these control IDs and names:
+
+${JSON.stringify(filteredCategories, null, 2)}
+
+CRITICAL REQUIREMENTS:
+1. You MUST analyze ONLY the controls listed above - do NOT add any other categories or controls
+2. You MUST analyze EVERY SINGLE control listed above - do NOT skip any controls
+3. Return results ONLY for the categories and controls shown above
+4. Do NOT create or add any additional categories not listed here`;
+      } else {
+        prompt += `\n\nFor NIST SP 800-63B-4, analyze ALL controls in the selected categories (AAL, Authenticator Type Requirements, Technical Requirements, Authenticator Event Management, Session Management). Include detailed analysis of authentication assurance levels, authenticator types, technical requirements, event management, and session management controls.`;
+      }
+    }
+
     if (strictness === 'strict') {
-      prompt += '\n\nSTRICT MODE: Be more critical in your assessment. Only mark as "implemented" if there is clear, comprehensive evidence.';
+      prompt += '\n\nSTRICT MODE: Be more critical in your assessment. Only mark as "covered" if there is clear, comprehensive evidence.';
     }
 
     logInfo('Calling Vertex AI for analysis...');
