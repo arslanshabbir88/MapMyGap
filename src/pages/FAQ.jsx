@@ -21,7 +21,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "Is my data secure?",
-        answer: "Yes, we take data security seriously. We use enterprise-grade encryption, don't permanently store your documents, and implement strict access controls. Your compliance data is protected with bank-level security measures."
+        answer: "Yes, we take data security seriously. We use enterprise-grade TLS encryption, don't permanently store your documents, and implement strict access controls through Google OAuth. Your compliance data is protected with bank-level security measures including rate limiting, security headers, in-memory processing only, and comprehensive audit logging. Documents are processed securely and discarded immediately after analysis."
       }
     ],
     technical: [
@@ -36,6 +36,10 @@ const FAQ = ({ onShowLogin }) => {
       {
         question: "Can I customize the analysis?",
         answer: "Yes, you can select specific control categories or families to focus your analysis. This allows you to target areas of particular concern or interest for your organization."
+      },
+      {
+        question: "What security certifications or standards do you follow?",
+        answer: "We follow industry best practices and are designed to meet enterprise security requirements. Our platform implements security controls aligned with SOC 2, NIST CSF, and ISO 27001 standards. We use Google OAuth for authentication, Vercel's enterprise-grade infrastructure, and maintain comprehensive audit logs. For specific compliance requirements, contact us at admin@mapmygap.com."
       },
       {
         question: "Do you support custom frameworks?",
