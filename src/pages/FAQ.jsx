@@ -17,7 +17,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "What document formats do you support?",
-        answer: "We support PDF, DOCX, and TXT files. Our AI can read and analyze text content from these formats to perform compliance analysis."
+        answer: "We support PDF, DOCX, TXT, XLSX, and XLS files. Our AI can read and analyze text content from these formats to perform compliance analysis. Excel files are processed by extracting text content from cells and worksheets."
       },
       {
         question: "Is my data secure?",
