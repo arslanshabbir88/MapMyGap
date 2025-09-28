@@ -18,7 +18,7 @@ const Header = () => {
 
   const handleSupport = () => {
     // You can replace this with your actual support contact
-    window.open('mailto:support@mapmygap.com', '_blank');
+    window.open('mailto:admin@mapmygap.com', '_blank');
   };
 
   const getUserInitials = () => {

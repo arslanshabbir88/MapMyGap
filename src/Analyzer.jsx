@@ -6,7 +6,7 @@
  * This software is proprietary and confidential. Unauthorized copying, distribution,
  * or use is strictly prohibited.
  * 
- * For licensing inquiries, contact: legal@mapmygap.com
+ * For licensing inquiries, contact: admin@mapmygap.com
  */
 
 /**

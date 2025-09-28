@@ -63,19 +63,19 @@ const FAQ = ({ onShowLogin }) => {
     pricing: [
       {
         question: "How much does MapMyGap cost?",
-        answer: "We're currently finalizing our pricing structure to ensure it provides the best value for organizations of all sizes. We're offering early access to select organizations. Contact us to learn more about our pilot program."
+        answer: "MapMyGap offers flexible pricing plans to fit organizations of all sizes. We have a free 14-day trial, Starter plan at $49/month, Professional plan at $149/month, and Enterprise plan at $499/month. All plans include access to every feature - we only limit usage, not capabilities."
       },
       {
         question: "Is there a free trial?",
-        answer: "We're working on offering a free tier for small organizations. In the meantime, we're providing early access to select organizations to demonstrate the platform's value."
+        answer: "Yes! We offer a free 14-day trial that includes 3 analyses, 1000 character upload limit, basic compliance frameworks, and email support. This is perfect for testing the platform and seeing the value it provides."
       },
       {
         question: "Do you offer discounts for nonprofits?",
-        answer: "Yes, we plan to offer special pricing for educational institutions, nonprofits, and government agencies. Contact us for details once our pricing structure is finalized."
+        answer: "Yes, we offer special pricing for educational institutions, nonprofits, and government agencies. Contact us at admin@mapmygap.com for details on our nonprofit discount program."
       },
       {
         question: "Can I change plans later?",
-        answer: "Yes, our goal is to provide flexible plans that grow with your organization. You'll be able to upgrade, downgrade, or cancel your plan as needed."
+        answer: "Absolutely! Our flexible plans are designed to grow with your organization. You can upgrade, downgrade, or cancel your plan at any time through your account settings."
       }
     ],
     support: [
@@ -175,7 +175,7 @@ const FAQ = ({ onShowLogin }) => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="mailto:support@mapmygap.com"
+                href="mailto:admin@mapmygap.com"
                 className="inline-flex items-center px-8 py-4 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-500 transition-colors rounded-lg text-lg font-semibold"
               >
                 Email Support

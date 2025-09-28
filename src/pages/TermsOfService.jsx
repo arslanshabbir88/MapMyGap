@@ -118,7 +118,7 @@ const TermsOfService = ({ onShowLogin }) => {
                 <p>For questions about these Terms of Service, please contact us at:</p>
                 <div className="bg-slate-700/50 p-4 rounded-lg mt-4">
                   <p className="font-semibold text-slate-200">Legal Department</p>
-                  <p>Email: legal@mapmygap.com</p>
+                  <p>Email: admin@mapmygap.com</p>
                   <p>Website: https://mapmygap.com</p>
                 </div>
 

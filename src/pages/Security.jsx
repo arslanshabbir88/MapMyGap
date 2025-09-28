@@ -236,7 +236,7 @@ const Security = ({ onShowLogin }) => {
                 View FAQ
               </Link>
               <a
-                href="mailto:support@mapmygap.com"
+                href="mailto:admin@mapmygap.com"
                 className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
               >
                 Contact Support

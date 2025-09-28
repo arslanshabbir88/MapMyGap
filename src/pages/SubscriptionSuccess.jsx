@@ -145,7 +145,7 @@ const SubscriptionSuccess = ({ onShowLogin }) => {
 
           {/* Support Info */}
           <div className="mt-12 text-gray-400">
-            <p>Need help? Contact us at <a href="mailto:support@mapmygap.com" className="text-blue-400 hover:text-blue-300">support@mapmygap.com</a></p>
+            <p>Need help? Contact us at <a href="mailto:admin@mapmygap.com" className="text-blue-400 hover:text-blue-300">admin@mapmygap.com</a></p>
           </div>
         </div>
       </main>
