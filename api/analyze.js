@@ -532,13 +532,13 @@ async function analyzeWithAI(fileContent, framework, selectedCategories = null, 
         };
         console.log('✅ Successfully loaded inline NIST 800-63B framework data');
       } else if (framework === 'SOC_2') {
-        // Import SOC 2 framework data from frameworks-data.js
-        const { allFrameworks } = await import('./frameworks-data.js');
+        // Import SOC 2 framework data from compliance-frameworks.js
+        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.SOC_2;
         console.log('✅ Successfully loaded SOC 2 framework data');
       } else if (framework === 'SOC_1') {
-        // Import SOC 1 framework data from frameworks-data.js
-        const { allFrameworks } = await import('./frameworks-data.js');
+        // Import SOC 1 framework data from compliance-frameworks.js
+        const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
         frameworkData = allFrameworks.SOC_1;
         console.log('✅ Successfully loaded SOC 1 framework data');
       } else if (framework === 'NYDFS_500') {

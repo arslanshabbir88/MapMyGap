@@ -231,13 +231,13 @@ async function loadFrameworkData(framework) {
       logInfo('✅ Successfully loaded comprehensive NIST CSF framework data');
       return nistCSF;
     } else if (framework === 'SOC_2') {
-      // Import SOC 2 framework data from frameworks-data.js
-      const { allFrameworks } = await import('./frameworks-data.js');
+      // Import SOC 2 framework data from compliance-frameworks.js
+      const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
       logInfo('✅ Successfully loaded SOC 2 framework data');
       return allFrameworks.SOC_2;
     } else if (framework === 'SOC_1') {
-      // Import SOC 1 framework data from frameworks-data.js
-      const { allFrameworks } = await import('./frameworks-data.js');
+      // Import SOC 1 framework data from compliance-frameworks.js
+      const { allFrameworks } = await import('../src/frameworks/compliance-frameworks.js');
       logInfo('✅ Successfully loaded SOC 1 framework data');
       return allFrameworks.SOC_1;
     } else if (framework === 'NYDFS_500') {
