@@ -7709,60 +7709,268 @@ export const sox = {
 
 // Export all frameworks for use in the application
 export const soc1 = {
-  name: "SOC 1",
-  description: "AICPA's framework for reporting on controls at service organizations related to financial reporting",
+  name: "SOC 1 Type II",
+  description: "Service Organization Control 1 - Internal Control Over Financial Reporting (ICFR)",
   categories: [
     {
-      name: "Control Environment (CC1)",
-      description: "The organization demonstrates a commitment to integrity and ethical values",
+      name: "Control Environment",
+      description: "Establishes the foundation for internal control by setting the tone at the top and influencing control consciousness",
       results: [
-        { id: "CC1.1", control: "The organization demonstrates a commitment to integrity and ethical values", status: "gap", details: "Control environment not established", recommendation: "Establish and communicate organizational values and ethical standards" },
-        { id: "CC1.2", control: "The board of directors demonstrates independence and exercises oversight", status: "gap", details: "Board oversight not established", recommendation: "Establish independent board oversight of financial reporting" },
-        { id: "CC1.3", control: "Management establishes oversight responsibilities for financial reporting", status: "gap", details: "Management oversight not established", recommendation: "Establish management oversight responsibilities for financial reporting" },
-        { id: "CC1.4", control: "The organization demonstrates a commitment to competence", status: "gap", details: "Competence commitment not demonstrated", recommendation: "Establish and maintain organizational competence in financial reporting" },
-        { id: "CC1.5", control: "The organization holds individuals accountable for their internal control responsibilities", status: "gap", details: "Accountability not established", recommendation: "Establish accountability for internal control responsibilities" },
-        { id: "CC1.6", control: "The organization establishes appropriate organizational structure and reporting lines", status: "gap", details: "Organizational structure not defined", recommendation: "Define clear organizational structure with appropriate reporting lines and responsibilities" },
-        { id: "CC1.7", control: "The organization assigns authority and responsibility for internal control", status: "gap", details: "Authority and responsibility not assigned", recommendation: "Clearly assign authority and responsibility for internal control activities" },
-        { id: "CC1.8", control: "The organization establishes human resource policies and procedures", status: "gap", details: "HR policies not established", recommendation: "Develop comprehensive human resource policies including hiring, training, and disciplinary procedures" },
-        { id: "CC1.9", control: "The organization performs due diligence in hiring and onboarding", status: "gap", details: "Due diligence processes not implemented", recommendation: "Implement background checks, reference verification, and comprehensive onboarding processes" },
-        { id: "CC1.10", control: "The organization evaluates employee performance and adjusts compensation", status: "gap", details: "Performance evaluation not established", recommendation: "Establish regular performance evaluations and objective compensation adjustment criteria" },
-        { id: "CC1.11", control: "The organization provides ethics training and maintains code of conduct", status: "gap", details: "Ethics training not provided", recommendation: "Develop and deliver regular ethics training and maintain an updated code of conduct" },
-        { id: "CC1.12", control: "The organization establishes whistleblower and reporting mechanisms", status: "gap", details: "Whistleblower mechanisms not established", recommendation: "Implement confidential reporting mechanisms for ethical violations and concerns" }
+        {
+          id: "CE1.1",
+          control: "The entity demonstrates a commitment to integrity and ethical values",
+          status: "gap",
+          details: "Code of conduct and ethical values not established or communicated",
+          recommendation: "Develop and communicate a comprehensive code of conduct that emphasizes integrity and ethical values"
+        },
+        {
+          id: "CE1.2",
+          control: "The board of directors demonstrates independence and exercises oversight",
+          status: "gap",
+          details: "Board independence and oversight not established",
+          recommendation: "Ensure board independence and establish clear oversight responsibilities for financial reporting controls"
+        },
+        {
+          id: "CE1.3",
+          control: "Management establishes oversight responsibilities for the system of internal control",
+          status: "gap",
+          details: "Management oversight responsibilities not defined",
+          recommendation: "Define and assign clear management oversight responsibilities for internal controls over financial reporting"
+        },
+        {
+          id: "CE1.4",
+          control: "The entity demonstrates a commitment to attract, develop, and retain competent individuals",
+          status: "gap",
+          details: "Competency management program not implemented",
+          recommendation: "Implement programs to attract, develop, and retain competent personnel for financial reporting functions"
+        },
+        {
+          id: "CE1.5",
+          control: "The entity holds individuals accountable for their internal control responsibilities",
+          status: "gap",
+          details: "Accountability mechanisms not established",
+          recommendation: "Establish clear accountability mechanisms and performance measures for internal control responsibilities"
+        },
+        {
+          id: "CE1.6",
+          control: "The entity establishes appropriate organizational structure and reporting lines",
+          status: "gap",
+          details: "Organizational structure and reporting lines not clearly defined",
+          recommendation: "Establish clear organizational structure and reporting lines for financial reporting functions"
+        },
+        {
+          id: "CE1.7",
+          control: "The entity establishes appropriate authority and responsibility for financial reporting",
+          status: "gap",
+          details: "Authority and responsibility for financial reporting not clearly defined",
+          recommendation: "Define and communicate authority and responsibility for financial reporting processes"
+        }
       ]
     },
     {
-      name: "Communication and Information (CC2)",
-      description: "The organization obtains, generates, and uses relevant, quality information to support internal control",
+      name: "Risk Assessment",
+      description: "Identifies and analyzes risks that could affect the achievement of financial reporting objectives",
       results: [
-        { id: "CC2.1", control: "The organization obtains or generates and uses relevant, quality information to support internal control", status: "gap", details: "Information quality not established", recommendation: "Establish processes to obtain and use quality information" },
-        { id: "CC2.2", control: "The organization internally communicates information, including objectives and responsibilities for internal control", status: "gap", details: "Internal communication not established", recommendation: "Establish internal communication processes for control objectives" },
-        { id: "CC2.3", control: "The organization communicates with external parties regarding matters affecting internal control", status: "gap", details: "External communication not established", recommendation: "Establish external communication processes for control matters" }
+        {
+          id: "RA1.1",
+          control: "The entity specifies suitable financial reporting objectives",
+          status: "gap",
+          details: "Financial reporting objectives not specified",
+          recommendation: "Define clear, measurable, and achievable financial reporting objectives"
+        },
+        {
+          id: "RA1.2",
+          control: "The entity identifies and analyzes risks to the achievement of financial reporting objectives",
+          status: "gap",
+          details: "Risk identification and analysis processes not implemented",
+          recommendation: "Implement comprehensive risk identification and analysis processes for financial reporting"
+        },
+        {
+          id: "RA1.3",
+          control: "The entity analyzes fraud risk in financial reporting",
+          status: "gap",
+          details: "Fraud risk analysis not conducted",
+          recommendation: "Conduct regular fraud risk assessments and implement appropriate controls for financial reporting"
+        },
+        {
+          id: "RA1.4",
+          control: "The entity identifies and analyzes changes that could significantly affect financial reporting",
+          status: "gap",
+          details: "Change impact analysis not performed",
+          recommendation: "Implement processes to identify and analyze changes affecting financial reporting"
+        },
+        {
+          id: "RA1.5",
+          control: "The entity assesses risks related to user entities' financial reporting",
+          status: "gap",
+          details: "User entity risk assessment not conducted",
+          recommendation: "Assess risks related to how services impact user entities' financial reporting"
+        },
+        {
+          id: "RA1.6",
+          control: "The entity evaluates the likelihood and impact of identified risks",
+          status: "gap",
+          details: "Risk evaluation processes not implemented",
+          recommendation: "Implement processes to evaluate the likelihood and impact of identified risks"
+        }
       ]
     },
     {
-      name: "Risk Assessment (CC3)",
-      description: "The organization specifies suitable objectives and identifies and analyzes risks to achievement of those objectives",
+      name: "Control Activities",
+      description: "Implements policies and procedures to address identified risks and achieve financial reporting objectives",
       results: [
-        { id: "CC3.1", control: "The organization specifies suitable objectives", status: "gap", details: "Objectives not specified", recommendation: "Specify suitable objectives for financial reporting" },
-        { id: "CC3.2", control: "The organization identifies and analyzes risks to achievement of objectives", status: "gap", details: "Risk identification not performed", recommendation: "Establish risk identification and analysis processes" },
-        { id: "CC3.3", control: "The organization analyzes risks to achievement of objectives", status: "gap", details: "Risk analysis not performed", recommendation: "Establish comprehensive risk analysis processes" }
+        {
+          id: "CA1.1",
+          control: "The entity selects and develops control activities for financial reporting",
+          status: "gap",
+          details: "Control activity selection and development processes not implemented",
+          recommendation: "Implement processes to select and develop appropriate control activities for financial reporting"
+        },
+        {
+          id: "CA1.2",
+          control: "The entity implements general controls over technology for financial reporting",
+          status: "gap",
+          details: "General IT controls not implemented",
+          recommendation: "Implement comprehensive general controls over technology systems used in financial reporting"
+        },
+        {
+          id: "CA1.3",
+          control: "The entity deploys control activities through policies and procedures",
+          status: "gap",
+          details: "Control deployment through policies not implemented",
+          recommendation: "Deploy control activities through comprehensive policies and procedures"
+        },
+        {
+          id: "CA1.4",
+          control: "The entity implements segregation of duties for financial reporting",
+          status: "gap",
+          details: "Segregation of duties not implemented",
+          recommendation: "Implement appropriate segregation of duties for financial reporting processes"
+        },
+        {
+          id: "CA1.5",
+          control: "The entity implements authorization and approval controls",
+          status: "gap",
+          details: "Authorization and approval controls not established",
+          recommendation: "Implement authorization and approval controls for financial reporting transactions"
+        },
+        {
+          id: "CA1.6",
+          control: "The entity implements reconciliation and review controls",
+          status: "gap",
+          details: "Reconciliation and review controls not implemented",
+          recommendation: "Implement reconciliation and review controls for financial reporting data"
+        },
+        {
+          id: "CA1.7",
+          control: "The entity implements data processing controls",
+          status: "gap",
+          details: "Data processing controls not established",
+          recommendation: "Implement controls over data processing activities related to financial reporting"
+        },
+        {
+          id: "CA1.8",
+          control: "The entity implements controls over system access",
+          status: "gap",
+          details: "System access controls not implemented",
+          recommendation: "Implement comprehensive controls over access to financial reporting systems"
+        }
       ]
     },
     {
-      name: "Monitoring Activities (CC4)",
-      description: "The organization selects, develops, and performs ongoing and/or separate evaluations to ascertain whether components of internal control are present and functioning",
+      name: "Information and Communication",
+      description: "Ensures relevant information is identified, captured, and communicated to support financial reporting",
       results: [
-        { id: "CC4.1", control: "The organization selects, develops, and performs ongoing and/or separate evaluations", status: "gap", details: "Monitoring activities not established", recommendation: "Establish ongoing and separate evaluation processes" },
-        { id: "CC4.2", control: "The organization evaluates and communicates deficiencies in internal control", status: "gap", details: "Deficiency evaluation not established", recommendation: "Establish processes to evaluate and communicate control deficiencies" }
+        {
+          id: "IC1.1",
+          control: "The entity obtains or generates and uses relevant, quality information for financial reporting",
+          status: "gap",
+          details: "Information quality management not implemented",
+          recommendation: "Implement processes to ensure information quality, relevance, and accuracy for financial reporting"
+        },
+        {
+          id: "IC1.2",
+          control: "The entity internally communicates information necessary to support financial reporting",
+          status: "gap",
+          details: "Internal communication processes not established",
+          recommendation: "Establish effective internal communication processes for financial reporting information"
+        },
+        {
+          id: "IC1.3",
+          control: "The entity communicates with user entities regarding financial reporting matters",
+          status: "gap",
+          details: "User entity communication procedures not implemented",
+          recommendation: "Develop procedures for communicating with user entities about financial reporting matters"
+        },
+        {
+          id: "IC1.4",
+          control: "The entity communicates with external parties regarding financial reporting",
+          status: "gap",
+          details: "External communication procedures not established",
+          recommendation: "Develop procedures for communicating with external parties about financial reporting"
+        },
+        {
+          id: "IC1.5",
+          control: "The entity implements information systems to support financial reporting",
+          status: "gap",
+          details: "Information systems for financial reporting not implemented",
+          recommendation: "Implement appropriate information systems to support financial reporting processes"
+        },
+        {
+          id: "IC1.6",
+          control: "The entity maintains documentation of financial reporting processes",
+          status: "gap",
+          details: "Financial reporting process documentation not maintained",
+          recommendation: "Maintain comprehensive documentation of financial reporting processes and controls"
+        }
       ]
     },
     {
-      name: "Control Activities (CC5)",
-      description: "The organization selects and develops control activities that contribute to the mitigation of risks to achievement of objectives",
+      name: "Monitoring",
+      description: "Assesses the quality of internal control performance over financial reporting",
       results: [
-        { id: "CC5.1", control: "The organization selects and develops control activities", status: "gap", details: "Control activities not selected", recommendation: "Select and develop appropriate control activities" },
-        { id: "CC5.2", control: "The organization develops general controls over technology", status: "gap", details: "Technology controls not developed", recommendation: "Develop general controls over technology systems" },
-        { id: "CC5.3", control: "The organization deploys control activities through policies and procedures", status: "gap", details: "Control deployment not established", recommendation: "Deploy control activities through policies and procedures" }
+        {
+          id: "M1.1",
+          control: "The entity selects, develops, and performs ongoing and separate evaluations of financial reporting controls",
+          status: "gap",
+          details: "Monitoring and evaluation processes not implemented",
+          recommendation: "Implement ongoing and periodic evaluation processes for financial reporting controls"
+        },
+        {
+          id: "M1.2",
+          control: "The entity evaluates and communicates deficiencies in financial reporting controls",
+          status: "gap",
+          details: "Deficiency evaluation and communication processes not established",
+          recommendation: "Establish processes to evaluate and communicate control deficiencies in financial reporting"
+        },
+        {
+          id: "M1.3",
+          control: "The entity implements ongoing monitoring of financial reporting processes",
+          status: "gap",
+          details: "Ongoing monitoring not implemented",
+          recommendation: "Implement continuous monitoring of financial reporting processes and controls"
+        },
+        {
+          id: "M1.4",
+          control: "The entity conducts periodic assessments of financial reporting controls",
+          status: "gap",
+          details: "Periodic assessments not conducted",
+          recommendation: "Conduct regular periodic assessments of financial reporting controls"
+        },
+        {
+          id: "M1.5",
+          control: "The entity implements corrective actions for identified deficiencies",
+          status: "gap",
+          details: "Corrective action processes not implemented",
+          recommendation: "Implement processes to take corrective actions for identified control deficiencies"
+        },
+        {
+          id: "M1.6",
+          control: "The entity monitors changes in financial reporting requirements",
+          status: "gap",
+          details: "Change monitoring not implemented",
+          recommendation: "Implement processes to monitor changes in financial reporting requirements and standards"
+        }
       ]
     }
   ]

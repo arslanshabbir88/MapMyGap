@@ -728,17 +728,17 @@ CRITICAL REQUIREMENTS:
           
           // Map user-friendly category names to framework category names
           const categoryMapping = {
-            'CE': 'Control Environment (CC1)',
-            'RA': 'Risk Assessment (CC3)',
-            'CA': 'Control Activities (CC5)',
-            'IC': 'Communication and Information (CC2)',
-            'M': 'Monitoring Activities (CC4)',
+            'CE': 'Control Environment',
+            'RA': 'Risk Assessment',
+            'CA': 'Control Activities',
+            'IC': 'Information and Communication',
+            'M': 'Monitoring',
             // Also support full names for backward compatibility
-            'Control Environment': 'Control Environment (CC1)',
-            'Risk Assessment': 'Risk Assessment (CC3)',
-            'Control Activities': 'Control Activities (CC5)',
-            'Information and Communication': 'Communication and Information (CC2)',
-            'Monitoring': 'Monitoring Activities (CC4)'
+            'Control Environment': 'Control Environment',
+            'Risk Assessment': 'Risk Assessment',
+            'Control Activities': 'Control Activities',
+            'Information and Communication': 'Information and Communication',
+            'Monitoring': 'Monitoring'
           };
           
           // Filter to only selected categories
