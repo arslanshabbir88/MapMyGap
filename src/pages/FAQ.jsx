@@ -63,7 +63,7 @@ const FAQ = ({ onShowLogin }) => {
     pricing: [
       {
         question: "How much does MapMyGap cost?",
-        answer: "MapMyGap offers flexible pricing plans to fit organizations of all sizes. We have a free 14-day trial, Starter plan at $49/month, Professional plan at $149/month, and Enterprise plan at $499/month. All plans include access to every feature - we only limit usage, not capabilities."
+        answer: "MapMyGap offers flexible pricing plans to fit organizations of all sizes. We have a free 14-day trial, Starter plan at $49/month, Professional plan at $149/month, and Enterprise plan at $499/month. Higher-tier plans include additional features like control text generation and priority support."
       },
       {
         question: "Is there a free trial?",
@@ -76,6 +76,10 @@ const FAQ = ({ onShowLogin }) => {
       {
         question: "Can I change plans later?",
         answer: "Absolutely! Our flexible plans are designed to grow with your organization. You can upgrade, downgrade, or cancel your plan at any time through your account settings."
+      },
+      {
+        question: "What is control text generation and which plans include it?",
+        answer: "Control text generation is our AI-powered feature that creates specific, actionable implementation guidance for compliance gaps. This feature is included in our Trial (1000 characters), Professional (included), and Enterprise (unlimited) plans. The Starter plan focuses on core analysis capabilities."
       }
     ],
     support: [
