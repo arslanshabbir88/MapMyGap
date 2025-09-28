@@ -282,7 +282,7 @@ async function loadFrameworkData(framework) {
 /**
  * Check usage limits for the user
  */
-async function checkUsageLimits(userId, requestId) {
+async function checkUsageLimits(userId, documentSize = 0, requestId) {
   try {
     const { data: subscription, error } = await supabase
       .from('subscriptions')
@@ -320,23 +320,54 @@ async function checkUsageLimits(userId, requestId) {
       }
     }
 
-    const planLimits = {
-      free: 3,
-      trial: 10,
-      professional: 100,
-      enterprise: 1000
+    // Get tier limits based on user's exact specifications (same as analyze.js)
+    const tierLimits = {
+      trial: { 
+        runs: 3, 
+        characters: 1000, 
+        control_text: 1000,
+        control_text_enabled: true
+      },
+      starter: { 
+        runs: 5, 
+        characters: -1, // unlimited
+        control_text: 0,
+        control_text_enabled: false
+      },
+      professional: { 
+        runs: 25, 
+        characters: -1, // unlimited
+        control_text: -1, // unlimited
+        control_text_enabled: true
+      },
+      enterprise: { 
+        runs: -1, // unlimited
+        characters: -1, // unlimited
+        control_text: -1, // unlimited
+        control_text_enabled: true
+      }
     };
 
-    const limit = planLimits[subscription.plan] || 0;
+    const limits = tierLimits[subscription.plan_type?.toLowerCase()] || tierLimits.trial;
     
-    if (subscription.runs_used >= limit) {
+    // Check if user has runs remaining
+    const runsRemaining = limits.runs === -1 ? -1 : Math.max(0, limits.runs - subscription.runs_used);
+    if (runsRemaining === 0) {
       return { 
         allowed: false, 
-        message: `Usage limit reached. You have used ${subscription.runs_used}/${limit} analyses this month. Upgrade your plan for more analyses.` 
+        message: `Analysis limit reached. You have used ${subscription.runs_used}/${limits.runs} analyses this month. Please upgrade your plan to continue.` 
+      };
+    }
+    
+    // Check document size limit (skip if unlimited)
+    if (limits.characters !== -1 && documentSize > limits.characters) {
+      return { 
+        allowed: false, 
+        message: `Document exceeds ${limits.characters} character limit for your plan. Please upgrade or reduce document size.` 
       };
     }
 
-    return { allowed: true, subscription };
+    return { allowed: true, subscription, limits };
   } catch (error) {
     logError('Error checking usage limits:', error);
     return { allowed: false, message: 'Unable to verify usage limits' };
@@ -849,14 +880,6 @@ export default async function handler(req, res) {
           userId
         });
 
-        // Check usage limits
-        if (userId) {
-          const usageCheck = await checkUsageLimits(userId, requestId);
-          if (!usageCheck.allowed) {
-            return res.status(403).json({ error: usageCheck.message });
-          }
-        }
-
         // Process file with 5-minute timeout
         logInfo(`Processing file: ${filename} (${file.length} bytes)`);
         logInfo('About to call processFile...');
@@ -870,6 +893,14 @@ export default async function handler(req, res) {
         
         if (!documentText || documentText.trim().length === 0) {
           return res.status(400).json({ error: 'No text content found in file' });
+        }
+
+        // Check usage limits AFTER file processing to get accurate character count
+        if (userId) {
+          const usageCheck = await checkUsageLimits(userId, documentText.length, requestId);
+          if (!usageCheck.allowed) {
+            return res.status(403).json({ error: usageCheck.message });
+          }
         }
 
         // Analyze with AI with 5-minute timeout
