@@ -30,7 +30,7 @@ const Pricing = ({ onShowLogin }) => {
       description: 'Ideal for small teams getting started',
       features: [
         '5 analyses per month',
-        '1000 character upload limit',
+        'Unlimited character upload limit',
         'Basic compliance frameworks',
         'Email support',
         'Analysis history'
@@ -46,7 +46,7 @@ const Pricing = ({ onShowLogin }) => {
       description: 'For growing compliance teams',
       features: [
         '25 analyses per month',
-        '1000 character upload limit',
+        'Unlimited character upload limit',
         'Control text generation included',
         'All compliance frameworks',
         'Priority email support',
@@ -64,7 +64,7 @@ const Pricing = ({ onShowLogin }) => {
       description: 'For large organizations',
       features: [
         'Unlimited analyses',
-        '1000 character upload limit',
+        'Unlimited character upload limit',
         'Unlimited control text generation',
         'All compliance frameworks',
         'Priority support',
