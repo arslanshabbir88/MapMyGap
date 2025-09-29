@@ -49,10 +49,15 @@ export default async function handler(req, res) {
       type: typeof stripeSubscription.current_period_end
     });
 
-    // Handle case where subscription has no current_period_end (one-time payments, etc.)
+    // Determine the correct renewal date
     let currentPeriodEndDate;
     
-    if (!stripeSubscription.current_period_end) {
+    // For this specific user, set to October 7th as requested
+    if (userId === '2600ec5e-f3e4-40ce-9ccc-ecf75aa1e0fc') {
+      console.log('🔧 Setting specific renewal date for Enterprise user: October 7th');
+      currentPeriodEndDate = new Date('2024-10-07T00:00:00.000Z');
+      console.log('🔧 Using October 7th date:', currentPeriodEndDate.toISOString());
+    } else if (!stripeSubscription.current_period_end) {
       console.log('⚠️ Stripe subscription has no current_period_end, checking for alternative fields');
       
       // Check if we have billing_cycle_anchor or other date fields

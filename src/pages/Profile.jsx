@@ -241,6 +241,16 @@ const Profile = () => {
                           </button>
                         </div>
                       )}
+                      
+                      {/* Always show fix button for debugging */}
+                      <div className="mt-2">
+                        <button
+                          onClick={handleFixSubscriptionDates}
+                          className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded transition-colors"
+                        >
+                          Update to October 7th
+                        </button>
+                      </div>
                     </div>
                     <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
                   </div>
