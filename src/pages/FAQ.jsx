@@ -38,6 +38,10 @@ const FAQ = ({ onShowLogin }) => {
         answer: "Yes, you can select specific control categories or families to focus your analysis. This allows you to target areas of particular concern or interest for your organization."
       },
       {
+        question: "Is my data secure when using AI analysis?",
+        answer: "Yes, absolutely. Your documents are processed securely and are never used to train AI models or shared publicly. We use enterprise-grade AI services with strict data privacy policies. Your documents are processed in-memory only and discarded immediately after analysis. We do not store your document content, and the AI service provider does not retain or use your data for training purposes."
+      },
+      {
         question: "What security certifications or standards do you follow?",
         answer: "We follow industry best practices and are designed to meet enterprise security requirements. Our platform implements security controls aligned with SOC 2, NIST CSF, and ISO 27001 standards. We maintain comprehensive audit logs and use enterprise-grade infrastructure with strict access controls. For specific compliance requirements or security assessments, contact us at admin@mapmygap.com."
       },
