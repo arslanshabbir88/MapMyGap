@@ -33,10 +33,33 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'No active subscription found' });
     }
 
-    console.log('🔍 Found subscription:', subscription.stripe_subscription_id);
+    console.log('🔍 Found subscription in database:', subscription.stripe_subscription_id);
+    console.log('🔍 Customer ID:', subscription.stripe_customer_id);
 
-    // Fetch current subscription data from Stripe
-    const stripeSubscription = await stripe.subscriptions.retrieve(subscription.stripe_subscription_id);
+    // Fetch ALL subscriptions for this customer from Stripe
+    const stripeSubscriptions = await stripe.subscriptions.list({
+      customer: subscription.stripe_customer_id,
+      status: 'all', // Get all subscriptions, not just active ones
+      limit: 10
+    });
+
+    console.log('🔍 All Stripe subscriptions for customer:', stripeSubscriptions.data.length);
+    stripeSubscriptions.data.forEach((sub, index) => {
+      console.log(`  ${index + 1}. ID: ${sub.id}, Status: ${sub.status}, Created: ${new Date(sub.created * 1000).toISOString()}`);
+    });
+
+    // Find the active subscription
+    const activeStripeSubscription = stripeSubscriptions.data.find(sub => sub.status === 'active');
+    
+    if (!activeStripeSubscription) {
+      console.log('❌ No active subscription found in Stripe');
+      return res.status(404).json({ error: 'No active subscription found in Stripe' });
+    }
+
+    console.log('✅ Found active Stripe subscription:', activeStripeSubscription.id);
+    
+    // Use the active subscription from Stripe
+    const stripeSubscription = activeStripeSubscription;
     
     console.log('🔍 Stripe subscription data:', {
       id: stripeSubscription.id,
@@ -124,14 +147,22 @@ export default async function handler(req, res) {
       }
     }
 
-    // Update the database with the correct current_period_end
+    // Update the database with the correct current_period_end and subscription ID
+    const updateData = {
+      current_period_end: finalPeriodEndDate.toISOString(),
+      status: stripeSubscription.status,
+      updated_at: new Date().toISOString()
+    };
+
+    // If the Stripe subscription ID is different, update it too
+    if (stripeSubscription.id !== subscription.stripe_subscription_id) {
+      console.log('🔄 Updating subscription ID from', subscription.stripe_subscription_id, 'to', stripeSubscription.id);
+      updateData.stripe_subscription_id = stripeSubscription.id;
+    }
+
     const { error: updateError } = await supabase
       .from('subscriptions')
-      .update({
-        current_period_end: finalPeriodEndDate.toISOString(),
-        status: stripeSubscription.status,
-        updated_at: new Date().toISOString()
-      })
+      .update(updateData)
       .eq('id', subscription.id);
 
     if (updateError) {
