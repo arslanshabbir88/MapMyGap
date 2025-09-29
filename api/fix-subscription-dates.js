@@ -46,22 +46,33 @@ export default async function handler(req, res) {
       type: typeof stripeSubscription.current_period_end
     });
 
-    // Validate that we have a valid current_period_end
-    if (!stripeSubscription.current_period_end) {
-      console.error('❌ Stripe subscription has no current_period_end');
-      return res.status(400).json({ error: 'Stripe subscription has no expiration date' });
-    }
-
-    // Convert Unix timestamp to ISO string
-    const currentPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
+    // Handle case where subscription has no current_period_end (one-time payments, etc.)
+    let currentPeriodEndDate;
     
-    // Validate the date
-    if (isNaN(currentPeriodEndDate.getTime())) {
-      console.error('❌ Invalid date conversion:', stripeSubscription.current_period_end);
-      return res.status(400).json({ error: 'Invalid date from Stripe subscription' });
+    if (!stripeSubscription.current_period_end) {
+      console.log('⚠️ Stripe subscription has no current_period_end, using fallback');
+      
+      // For Enterprise plans without recurring billing, set expiration to 1 year from now
+      if (subscription.plan_type === 'Enterprise') {
+        currentPeriodEndDate = new Date();
+        currentPeriodEndDate.setFullYear(currentPeriodEndDate.getFullYear() + 1);
+        console.log('🔧 Using 1-year fallback for Enterprise plan:', currentPeriodEndDate.toISOString());
+      } else {
+        console.error('❌ Cannot determine expiration date for non-Enterprise plan');
+        return res.status(400).json({ error: 'Cannot determine subscription expiration date' });
+      }
+    } else {
+      // Convert Unix timestamp to ISO string
+      currentPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
+      
+      // Validate the date
+      if (isNaN(currentPeriodEndDate.getTime())) {
+        console.error('❌ Invalid date conversion:', stripeSubscription.current_period_end);
+        return res.status(400).json({ error: 'Invalid date from Stripe subscription' });
+      }
+      
+      console.log('🔍 Converted date:', currentPeriodEndDate.toISOString());
     }
-
-    console.log('🔍 Converted date:', currentPeriodEndDate.toISOString());
 
     // Update the database with the correct current_period_end
     const { error: updateError } = await supabase
