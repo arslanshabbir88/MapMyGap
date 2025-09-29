@@ -39,24 +39,18 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-slate-800 border-b border-slate-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+    <header className="lg:sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <div className="flex justify-between items-center py-2 sm:py-3 lg:py-4">
           {/* Logo/Brand */}
           <div 
-            className="flex items-center cursor-pointer group"
+            className="flex flex-col sm:flex-row sm:items-center space-y-0.5 sm:space-y-0 sm:space-x-4 cursor-pointer group"
             onClick={() => navigate('/')}
           >
-            {/* Logo Icon */}
-            <div className="relative mr-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">M</span>
-              </div>
-              <div className="absolute inset-0 bg-blue-400/30 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            </div>
-            <h1 className="text-xl font-bold text-white group-hover:text-blue-300 transition-colors">
+            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">
               MapMyGap
             </h1>
+            <span className="text-xs text-slate-400 hidden sm:block">AI-Powered Compliance Analysis</span>
           </div>
 
           {/* Navigation */}
