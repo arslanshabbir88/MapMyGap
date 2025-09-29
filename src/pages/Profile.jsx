@@ -248,7 +248,7 @@ const Profile = () => {
                           onClick={handleFixSubscriptionDates}
                           className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded transition-colors"
                         >
-                          Update to October 7th
+                          Fix Subscription Date
                         </button>
                       </div>
                     </div>
