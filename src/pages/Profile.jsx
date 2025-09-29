@@ -8,20 +8,6 @@ const Profile = () => {
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Debug subscription data
-  useEffect(() => {
-    console.log('🔍 Profile subscription data:', subscription);
-    console.log('🔍 Profile subscription currentPeriodEnd:', subscription?.currentPeriodEnd);
-    console.log('🔍 Profile subscription plan_type:', subscription?.plan_type);
-    console.log('🔍 Profile subscription status:', subscription?.status);
-    console.log('🔍 Profile subscription keys:', subscription ? Object.keys(subscription) : 'No subscription');
-    
-    // Check if subscription exists but currentPeriodEnd is missing
-    if (subscription && !subscription.currentPeriodEnd) {
-      console.log('⚠️ Subscription exists but currentPeriodEnd is missing!');
-      console.log('🔍 Full subscription object:', JSON.stringify(subscription, null, 2));
-    }
-  }, [subscription]);
 
   useEffect(() => {
     const fetchUsage = async () => {
@@ -202,25 +188,6 @@ const Profile = () => {
                     return null;
                   })()}
 
-                  {/* Debug Subscription Data */}
-                  <div className="p-4 bg-slate-700/30 rounded-xl">
-                    <h4 className="font-medium text-yellow-400 mb-2">Subscription Debug Info</h4>
-                    <div className="text-xs text-slate-300 space-y-1">
-                      <div><strong>Has Subscription:</strong> {subscription ? 'Yes' : 'No'}</div>
-                      <div><strong>Plan Type:</strong> {subscription?.plan_type || 'None'}</div>
-                      <div><strong>Status:</strong> {subscription?.status || 'None'}</div>
-                      <div><strong>Current Period End:</strong> {subscription?.currentPeriodEnd || 'Missing'}</div>
-                      <div><strong>All Keys:</strong> {subscription ? Object.keys(subscription).join(', ') : 'None'}</div>
-                    </div>
-                    {subscription && (
-                      <details className="mt-2">
-                        <summary className="text-xs text-blue-400 cursor-pointer">Show Full Object</summary>
-                        <pre className="text-xs text-slate-300 overflow-auto mt-1">
-                          {JSON.stringify(subscription, null, 2)}
-                        </pre>
-                      </details>
-                    )}
-                  </div>
 
                   {/* Plan Status */}
                   <div className="flex items-center justify-between p-4 bg-slate-700/30 rounded-xl">
