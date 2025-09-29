@@ -238,7 +238,9 @@ const Profile = () => {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-slate-400">Billing Cycle:</span>
-                          <span className="text-white font-medium">Monthly</span>
+                          <span className="text-white font-medium">
+                            {subscription?.interval || 'Monthly'}
+                          </span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400">Next Billing Date:</span>

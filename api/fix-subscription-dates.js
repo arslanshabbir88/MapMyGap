@@ -42,7 +42,10 @@ export default async function handler(req, res) {
       id: stripeSubscription.id,
       current_period_end: stripeSubscription.current_period_end,
       current_period_start: stripeSubscription.current_period_start,
+      billing_cycle_anchor: stripeSubscription.billing_cycle_anchor,
+      created: stripeSubscription.created,
       status: stripeSubscription.status,
+      interval: stripeSubscription.items?.data?.[0]?.price?.recurring?.interval,
       type: typeof stripeSubscription.current_period_end
     });
 
@@ -50,15 +53,20 @@ export default async function handler(req, res) {
     let currentPeriodEndDate;
     
     if (!stripeSubscription.current_period_end) {
-      console.log('⚠️ Stripe subscription has no current_period_end, using fallback');
+      console.log('⚠️ Stripe subscription has no current_period_end, checking for alternative fields');
       
-      // For Enterprise plans without recurring billing, set expiration to 1 year from now
-      if (subscription.plan_type === 'Enterprise') {
-        currentPeriodEndDate = new Date();
-        currentPeriodEndDate.setFullYear(currentPeriodEndDate.getFullYear() + 1);
-        console.log('🔧 Using 1-year fallback for Enterprise plan:', currentPeriodEndDate.toISOString());
+      // Check if we have billing_cycle_anchor or other date fields
+      if (stripeSubscription.billing_cycle_anchor) {
+        console.log('🔍 Found billing_cycle_anchor:', stripeSubscription.billing_cycle_anchor);
+        currentPeriodEndDate = new Date(stripeSubscription.billing_cycle_anchor * 1000);
+        console.log('🔧 Using billing_cycle_anchor:', currentPeriodEndDate.toISOString());
+      } else if (stripeSubscription.created) {
+        console.log('🔍 Using created date + 1 month as fallback');
+        currentPeriodEndDate = new Date(stripeSubscription.created * 1000);
+        currentPeriodEndDate.setMonth(currentPeriodEndDate.getMonth() + 1);
+        console.log('🔧 Using created + 1 month:', currentPeriodEndDate.toISOString());
       } else {
-        console.error('❌ Cannot determine expiration date for non-Enterprise plan');
+        console.error('❌ Cannot determine expiration date - no date fields available');
         return res.status(400).json({ error: 'Cannot determine subscription expiration date' });
       }
     } else {
