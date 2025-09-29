@@ -99,7 +99,7 @@ const Profile = () => {
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm text-slate-400 font-medium">Member Since</label>
+                  <label className="text-sm text-slate-400 font-medium">Account Created</label>
                   <p className="text-white font-medium mt-1">
                     {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { 
                       year: 'numeric', 
@@ -126,6 +126,39 @@ const Profile = () => {
               
               {usage ? (
                 <div className="space-y-6">
+                  {/* Subscription Expiration Warning */}
+                  {subscription?.currentPeriodEnd && (() => {
+                    const expirationDate = new Date(subscription.currentPeriodEnd);
+                    const now = new Date();
+                    const daysUntilExpiration = Math.ceil((expirationDate - now) / (1000 * 60 * 60 * 24));
+                    
+                    if (daysUntilExpiration <= 7 && daysUntilExpiration > 0) {
+                      return (
+                        <div className="p-4 bg-gradient-to-r from-orange-500/20 to-red-500/20 border border-orange-500/30 rounded-xl">
+                          <div className="flex items-center space-x-3">
+                            <div className="flex-shrink-0">
+                              <svg className="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+                              </svg>
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="text-sm font-medium text-orange-200">
+                                {subscription.plan_type?.toLowerCase() === 'trial' ? 'Trial Expiring Soon' : 'Subscription Expiring Soon'}
+                              </h4>
+                              <p className="text-xs text-orange-300 mt-1">
+                                {subscription.plan_type?.toLowerCase() === 'trial' 
+                                  ? `Your trial expires in ${daysUntilExpiration} day${daysUntilExpiration !== 1 ? 's' : ''}. Upgrade to continue using MapMyGap.`
+                                  : `Your subscription expires in ${daysUntilExpiration} day${daysUntilExpiration !== 1 ? 's' : ''}. Renew to avoid service interruption.`
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
+
                   {/* Plan Status */}
                   <div className="flex items-center justify-between p-4 bg-slate-700/30 rounded-xl">
                     <div>
@@ -137,9 +170,59 @@ const Profile = () => {
                           {subscription?.status || 'Active'}
                         </span>
                       </p>
+                      {subscription?.currentPeriodEnd && (
+                        <p className="text-sm text-slate-400 mt-1">
+                          {subscription.plan_type?.toLowerCase() === 'trial' ? 'Trial expires' : 'Renews'} on{' '}
+                          <span className="text-blue-400 font-medium">
+                            {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            })}
+                          </span>
+                        </p>
+                      )}
                     </div>
                     <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
                   </div>
+
+                  {/* Billing Information */}
+                  {subscription?.currentPeriodEnd && subscription.plan_type?.toLowerCase() !== 'trial' && (
+                    <div className="p-4 bg-slate-700/30 rounded-xl">
+                      <h4 className="font-medium text-white mb-3 flex items-center">
+                        <svg className="w-4 h-4 text-blue-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Billing Information
+                      </h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Billing Cycle:</span>
+                          <span className="text-white font-medium">Monthly</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Next Billing Date:</span>
+                          <span className="text-blue-400 font-medium">
+                            {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'long', 
+                              day: 'numeric' 
+                            })}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400">Plan Status:</span>
+                          <span className={`font-medium ${
+                            subscription.status === 'active' ? 'text-emerald-400' : 
+                            subscription.status === 'past_due' ? 'text-orange-400' : 
+                            'text-red-400'
+                          }`}>
+                            {subscription.status?.charAt(0).toUpperCase() + subscription.status?.slice(1) || 'Active'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Usage Stats */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
