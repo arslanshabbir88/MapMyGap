@@ -8,6 +8,15 @@ const Profile = () => {
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Temporary debug logging
+  useEffect(() => {
+    if (subscription) {
+      console.log('🔍 Current subscription data:', subscription);
+      console.log('🔍 Current Period End:', subscription.currentPeriodEnd);
+      console.log('🔍 Plan Type:', subscription.plan_type);
+    }
+  }, [subscription]);
+
 
   useEffect(() => {
     const fetchUsage = async () => {
@@ -188,6 +197,16 @@ const Profile = () => {
                     return null;
                   })()}
 
+                  {/* Temporary Debug Info */}
+                  <div className="p-4 bg-yellow-500/20 border border-yellow-500/30 rounded-xl">
+                    <h4 className="font-medium text-yellow-200 mb-2">Current Subscription Status</h4>
+                    <div className="text-xs text-yellow-100 space-y-1">
+                      <div><strong>Current Period End:</strong> {subscription?.currentPeriodEnd || 'null'}</div>
+                      <div><strong>Plan Type:</strong> {subscription?.plan_type || 'null'}</div>
+                      <div><strong>Status:</strong> {subscription?.status || 'null'}</div>
+                      <div><strong>Has Fix Button:</strong> {!subscription?.currentPeriodEnd ? 'Yes' : 'No'}</div>
+                    </div>
+                  </div>
 
                   {/* Plan Status */}
                   <div className="flex items-center justify-between p-4 bg-slate-700/30 rounded-xl">
