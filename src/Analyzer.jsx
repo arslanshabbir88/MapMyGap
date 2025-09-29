@@ -388,8 +388,23 @@ function Analyzer() {
   // Usage tracking state
   const [usage, setUsage] = useState(null);
   const [usageLoading, setUsageLoading] = useState(true);
+  const [showExportDropdown, setShowExportDropdown] = useState(false);
 
   const { user, supabase, subscription } = useAuth();
+  
+  // Close export dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showExportDropdown && !event.target.closest('.export-dropdown-container')) {
+        setShowExportDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showExportDropdown]);
   
   // Debug subscription data
   useEffect(() => {
@@ -2902,28 +2917,51 @@ function Analyzer() {
                          >
                            New Analysis
                          </button>
-                        <div className="flex space-x-2">
+                        <div className="relative export-dropdown-container">
                           <button
-                            onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json')}
+                            onClick={() => setShowExportDropdown(!showExportDropdown)}
                             className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
                           >
                             <DownloadIcon />
-                            JSON
+                            Export
+                            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
                           </button>
-                          <button
-                            onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv')}
-                            className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
-                          >
-                            <DownloadIcon />
-                            CSV
-                          </button>
-                          <button
-                            onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.xlsx`, 'excel')}
-                            className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
-                          >
-                            <DownloadIcon />
-                            Excel
-                          </button>
+                          
+                          {showExportDropdown && (
+                            <div className="absolute right-0 mt-1 w-32 bg-slate-800 border border-slate-600 rounded-md shadow-lg z-10">
+                              <div className="py-1">
+                                <button
+                                  onClick={() => {
+                                    downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.json`, 'json');
+                                    setShowExportDropdown(false);
+                                  }}
+                                  className="block w-full text-left px-3 py-2 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                                >
+                                  JSON
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.csv`, 'csv');
+                                    setShowExportDropdown(false);
+                                  }}
+                                  className="block w-full text-left px-3 py-2 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                                >
+                                  CSV
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.xlsx`, 'excel');
+                                    setShowExportDropdown(false);
+                                  }}
+                                  className="block w-full text-left px-3 py-2 text-xs text-slate-300 hover:bg-slate-700 hover:text-white transition-colors"
+                                >
+                                  Excel
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </>
                     )}
