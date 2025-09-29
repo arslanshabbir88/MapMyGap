@@ -45,10 +45,7 @@ const Profile = () => {
   };
 
   const handleFixSubscriptionDates = async () => {
-    console.log('🔧 Debug button clicked - starting subscription fix...');
-    console.log('🔧 User ID:', user.id);
     try {
-      console.log('🔧 Sending request to /api/fix-subscription-dates...');
       const response = await fetch('/api/fix-subscription-dates', {
         method: 'POST',
         headers: {
@@ -58,9 +55,6 @@ const Profile = () => {
           userId: user.id,
         }),
       });
-
-      console.log('🔧 Response status:', response.status);
-      console.log('🔧 Response ok:', response.ok);
 
       if (response.ok) {
         const data = await response.json();
@@ -229,18 +223,6 @@ const Profile = () => {
                               })}
                             </span>
                           </p>
-                          {/* Debug info */}
-                          <div className="text-xs text-yellow-300 mt-1">
-                            Raw date: {subscription.currentPeriodEnd} | 
-                            Today: {new Date().toISOString()} | 
-                            Is expired: {new Date(subscription.currentPeriodEnd) < new Date() ? 'YES' : 'NO'}
-                          </div>
-                          <button
-                            onClick={handleFixSubscriptionDates}
-                            className="mt-2 px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
-                          >
-                            Debug: Check Stripe Data
-                          </button>
                         </div>
                       ) : (
                         <div className="text-sm text-slate-400 mt-1">
