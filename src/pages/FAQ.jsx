@@ -47,7 +47,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "Do you support custom frameworks?",
-        answer: "Currently we support major industry frameworks. Custom framework support is available for enterprise customers. Contact us to discuss your specific needs."
+        answer: "Currently we support major industry frameworks including NIST CSF, NIST 800-53, SOC 2, PCI DSS, ISO 27001, and others. We focus on providing comprehensive coverage of established compliance standards. If you have specific framework needs, please contact us at admin@mapmygap.com to discuss your requirements."
       }
     ],
     compliance: [
