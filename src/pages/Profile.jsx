@@ -212,16 +212,30 @@ const Profile = () => {
                         </span>
                       </p>
                       {subscription?.currentPeriodEnd ? (
-                        <p className="text-sm text-slate-400 mt-1">
-                          {subscription.plan_type?.toLowerCase() === 'trial' ? 'Trial expires' : 'Renews'} on{' '}
-                          <span className="text-blue-400 font-medium">
-                            {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
-                              year: 'numeric', 
-                              month: 'long', 
-                              day: 'numeric' 
-                            })}
-                          </span>
-                        </p>
+                        <div className="text-sm text-slate-400 mt-1">
+                          <p>
+                            {subscription.plan_type?.toLowerCase() === 'trial' ? 'Trial expires' : 'Renews'} on{' '}
+                            <span className="text-blue-400 font-medium">
+                              {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                                year: 'numeric', 
+                                month: 'long', 
+                                day: 'numeric' 
+                              })}
+                            </span>
+                          </p>
+                          {/* Debug info */}
+                          <div className="text-xs text-yellow-300 mt-1">
+                            Raw date: {subscription.currentPeriodEnd} | 
+                            Today: {new Date().toISOString()} | 
+                            Is expired: {new Date(subscription.currentPeriodEnd) < new Date() ? 'YES' : 'NO'}
+                          </div>
+                          <button
+                            onClick={handleFixSubscriptionDates}
+                            className="mt-2 px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white text-xs rounded transition-colors"
+                          >
+                            Debug: Check Stripe Data
+                          </button>
+                        </div>
                       ) : (
                         <div className="text-sm text-slate-400 mt-1">
                           <p className="text-yellow-400 mb-2">Expiration date not available</p>
