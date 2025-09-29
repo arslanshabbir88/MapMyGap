@@ -8,6 +8,13 @@ const Profile = () => {
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Debug subscription data
+  useEffect(() => {
+    console.log('🔍 Profile subscription data:', subscription);
+    console.log('🔍 Profile subscription currentPeriodEnd:', subscription?.currentPeriodEnd);
+    console.log('🔍 Profile subscription plan_type:', subscription?.plan_type);
+  }, [subscription]);
+
   useEffect(() => {
     const fetchUsage = async () => {
       if (!user) return;
@@ -159,6 +166,16 @@ const Profile = () => {
                     return null;
                   })()}
 
+                  {/* Debug Subscription Data */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className="p-4 bg-slate-700/30 rounded-xl">
+                      <h4 className="font-medium text-yellow-400 mb-2">Debug Info (Development Only)</h4>
+                      <pre className="text-xs text-slate-300 overflow-auto">
+                        {JSON.stringify(subscription, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+
                   {/* Plan Status */}
                   <div className="flex items-center justify-between p-4 bg-slate-700/30 rounded-xl">
                     <div>
@@ -170,7 +187,7 @@ const Profile = () => {
                           {subscription?.status || 'Active'}
                         </span>
                       </p>
-                      {subscription?.currentPeriodEnd && (
+                      {subscription?.currentPeriodEnd ? (
                         <p className="text-sm text-slate-400 mt-1">
                           {subscription.plan_type?.toLowerCase() === 'trial' ? 'Trial expires' : 'Renews'} on{' '}
                           <span className="text-blue-400 font-medium">
@@ -180,6 +197,10 @@ const Profile = () => {
                               day: 'numeric' 
                             })}
                           </span>
+                        </p>
+                      ) : (
+                        <p className="text-sm text-slate-400 mt-1">
+                          <span className="text-yellow-400">Expiration date not available</span>
                         </p>
                       )}
                     </div>
