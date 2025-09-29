@@ -131,7 +131,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>
+      </nav>
 
       {/* Click outside to close menu */}
       {showUserMenu && (
