@@ -41,14 +41,33 @@ export default async function handler(req, res) {
     console.log('🔍 Stripe subscription data:', {
       id: stripeSubscription.id,
       current_period_end: stripeSubscription.current_period_end,
-      status: stripeSubscription.status
+      current_period_start: stripeSubscription.current_period_start,
+      status: stripeSubscription.status,
+      type: typeof stripeSubscription.current_period_end
     });
+
+    // Validate that we have a valid current_period_end
+    if (!stripeSubscription.current_period_end) {
+      console.error('❌ Stripe subscription has no current_period_end');
+      return res.status(400).json({ error: 'Stripe subscription has no expiration date' });
+    }
+
+    // Convert Unix timestamp to ISO string
+    const currentPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
+    
+    // Validate the date
+    if (isNaN(currentPeriodEndDate.getTime())) {
+      console.error('❌ Invalid date conversion:', stripeSubscription.current_period_end);
+      return res.status(400).json({ error: 'Invalid date from Stripe subscription' });
+    }
+
+    console.log('🔍 Converted date:', currentPeriodEndDate.toISOString());
 
     // Update the database with the correct current_period_end
     const { error: updateError } = await supabase
       .from('subscriptions')
       .update({
-        current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString(),
+        current_period_end: currentPeriodEndDate.toISOString(),
         status: stripeSubscription.status,
         updated_at: new Date().toISOString()
       })
@@ -64,7 +83,7 @@ export default async function handler(req, res) {
     res.status(200).json({ 
       success: true, 
       message: 'Subscription dates updated successfully',
-      current_period_end: new Date(stripeSubscription.current_period_end * 1000).toISOString()
+      current_period_end: currentPeriodEndDate.toISOString()
     });
 
   } catch (error) {
