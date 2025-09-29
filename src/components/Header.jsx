@@ -40,21 +40,23 @@ const Header = () => {
 
   return (
     <header className="lg:sticky top-0 z-50 bg-slate-900/70 backdrop-blur-xl border-b border-slate-800">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
-        <div className="flex justify-between items-center py-2 sm:py-3 lg:py-4">
-          {/* Logo/Brand */}
-          <div 
-            className="flex flex-col sm:flex-row sm:items-center space-y-0.5 sm:space-y-0 sm:space-x-4 cursor-pointer group"
-            onClick={() => navigate('/')}
-          >
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">
-              MapMyGap
-            </h1>
-            <span className="text-xs text-slate-400 hidden sm:block">AI-Powered Compliance Analysis</span>
+      <nav className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-2 sm:py-3 lg:py-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-2 sm:space-y-0">
+          {/* Logo and Title - More compact on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-0.5 sm:space-y-0 sm:space-x-4">
+            <div 
+              className="flex flex-col sm:flex-row sm:items-center space-y-0.5 sm:space-y-0 sm:space-x-4 cursor-pointer group"
+              onClick={() => navigate('/')}
+            >
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white tracking-tight group-hover:text-blue-300 transition-colors">
+                MapMyGap
+              </h1>
+              <span className="text-xs text-slate-400 hidden sm:block">AI-Powered Compliance Analysis</span>
+            </div>
           </div>
 
-          {/* Navigation */}
-          <div className="flex items-center space-x-4">
+          {/* Navigation and User Actions - More compact on mobile */}
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
             {/* Help/Support Link */}
             <button
               onClick={handleSupport}
