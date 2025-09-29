@@ -15,7 +15,8 @@ const Pricing = ({ onShowLogin }) => {
         '3 analyses',
         '1000 character upload limit',
         '1000 character control text generation',
-        'Basic compliance frameworks',
+        'All compliance frameworks',
+        'Export capabilities',
         'Email support'
       ],
       priceId: STRIPE_CONFIG.prices.trial,
@@ -31,7 +32,8 @@ const Pricing = ({ onShowLogin }) => {
       features: [
         '5 analyses per month',
         'Unlimited character upload limit',
-        'Basic compliance frameworks',
+        'All compliance frameworks',
+        'Export capabilities',
         'Email support',
         'Analysis history'
       ],
@@ -69,9 +71,7 @@ const Pricing = ({ onShowLogin }) => {
         'All compliance frameworks',
         'Priority support',
         'Analysis history',
-        'Export capabilities',
-        'Custom integrations',
-        'Dedicated account manager'
+        'Export capabilities'
       ],
       priceId: STRIPE_CONFIG.prices.enterprise,
       buttonText: 'Contact Sales',
