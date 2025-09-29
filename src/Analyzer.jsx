@@ -116,7 +116,12 @@ const copyToClipboard = async (text) => {
   }
 };
 
-const downloadReport = (data, filename, type = 'json') => {
+const downloadReport = async (data, filename, type = 'json') => {
+  if (type === 'excel') {
+    await downloadExcelReport(data, filename);
+    return;
+  }
+  
   let content, mimeType;
   if (type === 'csv') {
     content = convertToCSV(data);
@@ -135,6 +140,192 @@ const downloadReport = (data, filename, type = 'json') => {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+};
+
+const downloadExcelReport = async (data, filename) => {
+  try {
+    // Dynamic import of ExcelJS
+    const ExcelJS = (await import('exceljs')).default;
+    const workbook = new ExcelJS.Workbook();
+    
+    // Set workbook properties
+    workbook.creator = 'MapMyGap';
+    workbook.created = new Date();
+    
+    // Calculate compliance score
+    const calculateScore = (data) => {
+      if (!data.categories) return 0;
+      let totalControls = 0;
+      let coveredControls = 0;
+      let partialControls = 0;
+      
+      data.categories.forEach(category => {
+        category.results.forEach(result => {
+          totalControls++;
+          if (result.status === 'covered') {
+            coveredControls++;
+          } else if (result.status === 'partial') {
+            partialControls++;
+          }
+        });
+      });
+      
+      return totalControls > 0 ? Math.round(((coveredControls + partialControls * 0.5) / totalControls) * 100) : 0;
+    };
+    
+    const complianceScore = calculateScore(data);
+    
+    // Summary Sheet
+    const summarySheet = workbook.addWorksheet('Summary');
+    summarySheet.columns = [
+      { header: 'Metric', key: 'metric', width: 25 },
+      { header: 'Value', key: 'value', width: 30 }
+    ];
+    
+    summarySheet.addRow({ metric: 'Compliance Score', value: `${complianceScore}%` });
+    summarySheet.addRow({ metric: 'Analysis Date', value: new Date().toLocaleDateString() });
+    summarySheet.addRow({ metric: 'Framework', value: data.framework || 'N/A' });
+    
+    // Add totals
+    let totalControls = 0;
+    let coveredControls = 0;
+    let partialControls = 0;
+    let gapControls = 0;
+    
+    if (data.categories) {
+      data.categories.forEach(category => {
+        category.results.forEach(result => {
+          totalControls++;
+          if (result.status === 'covered') coveredControls++;
+          else if (result.status === 'partial') partialControls++;
+          else if (result.status === 'gap') gapControls++;
+        });
+      });
+    }
+    
+    summarySheet.addRow({ metric: 'Total Controls', value: totalControls });
+    summarySheet.addRow({ metric: 'Covered Controls', value: coveredControls });
+    summarySheet.addRow({ metric: 'Partial Controls', value: partialControls });
+    summarySheet.addRow({ metric: 'Gap Controls', value: gapControls });
+    
+    // Style the summary sheet
+    summarySheet.getRow(1).font = { bold: true };
+    summarySheet.getColumn(1).font = { bold: true };
+    
+    // Details Sheet
+    const detailsSheet = workbook.addWorksheet('Control Details');
+    detailsSheet.columns = [
+      { header: 'Category', key: 'category', width: 20 },
+      { header: 'Control ID', key: 'controlId', width: 15 },
+      { header: 'Control', key: 'control', width: 40 },
+      { header: 'Status', key: 'status', width: 12 },
+      { header: 'Details', key: 'details', width: 50 },
+      { header: 'Recommendation', key: 'recommendation', width: 50 }
+    ];
+    
+    if (data.categories) {
+      data.categories.forEach(category => {
+        category.results.forEach(result => {
+          detailsSheet.addRow({
+            category: category.name,
+            controlId: result.id,
+            control: result.control,
+            status: result.status,
+            details: result.details || '',
+            recommendation: result.recommendation || ''
+          });
+        });
+      });
+    }
+    
+    // Style the details sheet
+    detailsSheet.getRow(1).font = { bold: true };
+    detailsSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE6E6FA' }
+    };
+    
+    // Add conditional formatting for status column
+    detailsSheet.eachRow((row, rowNumber) => {
+      if (rowNumber > 1) { // Skip header row
+        const statusCell = row.getCell('status');
+        const status = statusCell.value;
+        
+        if (status === 'covered') {
+          statusCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF90EE90' } // Light green
+          };
+        } else if (status === 'partial') {
+          statusCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFFFE0' } // Light yellow
+          };
+        } else if (status === 'gap') {
+          statusCell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFFFB6C1' } // Light pink
+          };
+        }
+      }
+    });
+    
+    // Recommendations Sheet
+    const recommendationsSheet = workbook.addWorksheet('Recommendations');
+    recommendationsSheet.columns = [
+      { header: 'Priority', key: 'priority', width: 15 },
+      { header: 'Category', key: 'category', width: 20 },
+      { header: 'Control ID', key: 'controlId', width: 15 },
+      { header: 'Recommendation', key: 'recommendation', width: 60 }
+    ];
+    
+    if (data.categories) {
+      data.categories.forEach(category => {
+        category.results.forEach(result => {
+          if (result.status === 'gap' || result.status === 'partial') {
+            const priority = result.status === 'gap' ? 'High' : 'Medium';
+            recommendationsSheet.addRow({
+              priority: priority,
+              category: category.name,
+              controlId: result.id,
+              recommendation: result.recommendation || ''
+            });
+          }
+        });
+      });
+    }
+    
+    // Style the recommendations sheet
+    recommendationsSheet.getRow(1).font = { bold: true };
+    recommendationsSheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE6E6FA' }
+    };
+    
+    // Generate Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { 
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename.replace('.xlsx', '') + '.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+  } catch (error) {
+    console.error('Error generating Excel report:', error);
+    alert('Error generating Excel report. Please try again.');
+  }
 };
 
 const convertToCSV = (data) => {
@@ -2725,6 +2916,13 @@ function Analyzer() {
                           >
                             <DownloadIcon />
                             CSV
+                          </button>
+                          <button
+                            onClick={() => downloadReport(analysisResults, `compliance-analysis-${selectedFramework}.xlsx`, 'excel')}
+                            className="inline-flex items-center px-3 py-2 text-xs font-medium text-slate-300 bg-slate-700 hover:bg-slate-600 rounded-md transition-colors border border-slate-600"
+                          >
+                            <DownloadIcon />
+                            Excel
                           </button>
                         </div>
                       </>
