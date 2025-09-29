@@ -110,12 +110,15 @@ function Homepage({ onShowLogin }) {
                 {user ? (
                   <>
                     <div className="flex flex-col sm:flex-row sm:items-center space-y-1.5 sm:space-y-0 sm:space-x-3">
-                      <div className="flex items-center space-x-2 text-slate-300">
+                      <button
+                        onClick={() => navigate('/profile')}
+                        className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+                      >
                         <UserIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                         <span className="text-xs font-medium">
                           {user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                         </span>
-                      </div>
+                      </button>
                       <button
                         onClick={handleLogout}
                         className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
