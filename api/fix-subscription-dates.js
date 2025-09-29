@@ -52,13 +52,29 @@ export default async function handler(req, res) {
     console.log('🔍 Date Analysis:');
     console.log('  - Current time:', new Date().toISOString());
     console.log('  - Current period end timestamp:', stripeSubscription.current_period_end);
-    console.log('  - Current period end date:', new Date(stripeSubscription.current_period_end * 1000).toISOString());
-    console.log('  - Is current_period_end in the past?', new Date(stripeSubscription.current_period_end * 1000) < new Date());
-    console.log('  - Days until expiration:', Math.ceil((new Date(stripeSubscription.current_period_end * 1000) - new Date()) / (1000 * 60 * 60 * 24)));
+    console.log('  - Type of current_period_end:', typeof stripeSubscription.current_period_end);
+    
+    // Safe date conversion with error handling
+    let currentPeriodEndDate;
+    try {
+      if (stripeSubscription.current_period_end) {
+        currentPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
+        console.log('  - Current period end date:', currentPeriodEndDate.toISOString());
+        console.log('  - Is current_period_end in the past?', currentPeriodEndDate < new Date());
+        console.log('  - Days until expiration:', Math.ceil((currentPeriodEndDate - new Date()) / (1000 * 60 * 60 * 24)));
+      } else {
+        console.log('  - No current_period_end available');
+      }
+    } catch (error) {
+      console.error('❌ Error in date analysis:', error);
+      console.log('  - Raw current_period_end value:', stripeSubscription.current_period_end);
+    }
 
     // Check if subscription appears expired but is still active
-    const currentPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
-    const isExpired = currentPeriodEndDate < new Date();
+    let isExpired = false;
+    if (currentPeriodEndDate && !isNaN(currentPeriodEndDate.getTime())) {
+      isExpired = currentPeriodEndDate < new Date();
+    }
     
     if (isExpired && stripeSubscription.status === 'active') {
       console.log('⚠️ WARNING: Subscription appears expired but is still active in Stripe!');
@@ -89,16 +105,23 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Cannot determine subscription expiration date' });
       }
     } else {
-      // Convert Unix timestamp to ISO string
-      finalPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
-      
-      // Validate the date
-      if (isNaN(finalPeriodEndDate.getTime())) {
-        console.error('❌ Invalid date conversion:', stripeSubscription.current_period_end);
-        return res.status(400).json({ error: 'Invalid date from Stripe subscription' });
-      }
+      // Convert Unix timestamp to ISO string with error handling
+      try {
+        finalPeriodEndDate = new Date(stripeSubscription.current_period_end * 1000);
+        
+        // Validate the date
+        if (isNaN(finalPeriodEndDate.getTime())) {
+          console.error('❌ Invalid date conversion:', stripeSubscription.current_period_end);
+          console.error('❌ Type of current_period_end:', typeof stripeSubscription.current_period_end);
+          return res.status(400).json({ error: 'Invalid date from Stripe subscription' });
+        }
 
-      console.log('🔍 Converted date:', finalPeriodEndDate.toISOString());
+        console.log('🔍 Converted date:', finalPeriodEndDate.toISOString());
+      } catch (error) {
+        console.error('❌ Error converting date:', error);
+        console.error('❌ Raw current_period_end:', stripeSubscription.current_period_end);
+        return res.status(400).json({ error: 'Failed to convert Stripe date', details: error.message });
+      }
     }
 
     // Update the database with the correct current_period_end
