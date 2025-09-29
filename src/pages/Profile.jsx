@@ -45,7 +45,10 @@ const Profile = () => {
   };
 
   const handleFixSubscriptionDates = async () => {
+    console.log('🔧 Debug button clicked - starting subscription fix...');
+    console.log('🔧 User ID:', user.id);
     try {
+      console.log('🔧 Sending request to /api/fix-subscription-dates...');
       const response = await fetch('/api/fix-subscription-dates', {
         method: 'POST',
         headers: {
@@ -55,6 +58,9 @@ const Profile = () => {
           userId: user.id,
         }),
       });
+
+      console.log('🔧 Response status:', response.status);
+      console.log('🔧 Response ok:', response.ok);
 
       if (response.ok) {
         const data = await response.json();
@@ -67,7 +73,7 @@ const Profile = () => {
         alert('Failed to fix subscription dates: ' + error.error);
       }
     } catch (error) {
-      console.error('Error fixing subscription dates:', error);
+      console.error('❌ Error fixing subscription dates:', error);
       alert('Error fixing subscription dates: ' + error.message);
     }
   };
