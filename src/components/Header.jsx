@@ -71,35 +71,43 @@ const Header = () => {
 
             {/* User Menu */}
             <div className="relative">
-              <button
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center space-x-2 text-white hover:bg-slate-700 rounded-lg px-3 py-2 transition-colors"
-              >
-                {/* User Avatar */}
-                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-semibold">
-                  {getUserInitials()}
-                </div>
-                
-                {/* User Info */}
-                <div className="text-left">
-                  <div className="text-sm font-medium">
-                    {user?.user_metadata?.full_name || user?.email}
-                  </div>
-                  <div className="text-xs text-slate-400">
-                    {getPlanDisplayName()} Plan
-                  </div>
-                </div>
-
-                {/* Dropdown Arrow */}
-                <svg
-                  className={`w-4 h-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="flex items-center space-x-2">
+                {/* Clickable User Info */}
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="flex items-center space-x-2 text-white hover:bg-slate-700 rounded-lg px-3 py-2 transition-colors"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
+                  {/* User Avatar */}
+                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-semibold">
+                    {getUserInitials()}
+                  </div>
+                  
+                  {/* User Info */}
+                  <div className="text-left">
+                    <div className="text-sm font-medium">
+                      {user?.user_metadata?.full_name || user?.email}
+                    </div>
+                    <div className="text-xs text-slate-400">
+                      {getPlanDisplayName()} Plan
+                    </div>
+                  </div>
+                </button>
+
+                {/* Dropdown Menu Button */}
+                <button
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="text-white hover:bg-slate-700 rounded-lg p-2 transition-colors"
+                >
+                  <svg
+                    className={`w-4 h-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
 
               {/* Dropdown Menu */}
               {showUserMenu && (
