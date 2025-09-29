@@ -65,7 +65,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "Can I export my analysis results?",
-        answer: "Yes, you can export results in multiple formats including PDF reports for stakeholders, Excel spreadsheets for tracking, and JSON data for integrations with other tools."
+        answer: "Yes, you can export your analysis results in JSON and CSV formats. JSON exports provide structured data for integrations with other tools, while CSV exports create spreadsheet-compatible files for tracking and analysis. These exports include all control assessments, recommendations, and implementation details from your compliance analysis."
       }
     ],
     pricing: [
