@@ -548,20 +548,31 @@ function Analyzer() {
       // Try to get content from current file or fetch from history
       let availableContent = fileContent;
       
-      if (!availableContent && result.document_content_id) {
+      if (!availableContent) {
         try {
-          // Fetch historical content from separate table
-          const { data: docData, error: docError } = await supabase
-            .from('document_content')
-            .select('content')
-            .eq('analysis_id', parseInt(result.id))
-            .single();
+          // For historical analyses, we need to find the analysis ID from the current analysis results
+          // The analysis results should have been loaded from history and contain the analysis ID
+          let analysisId = null;
           
-          if (docError) {
-            console.error('❌ Error fetching historical content:', docError);
-          } else {
-            availableContent = docData.content;
-            console.log('🔍 Fetched historical document content for control text generation');
+          // Check if we're viewing a historical analysis by looking for analysis ID in the results
+          if (analysisResults && analysisResults.analysis_id) {
+            analysisId = analysisResults.analysis_id;
+          }
+          
+          if (analysisId) {
+            // Fetch historical content from separate table using the analysis ID
+            const { data: docData, error: docError } = await supabase
+              .from('document_content')
+              .select('content')
+              .eq('analysis_id', parseInt(analysisId))
+              .single();
+            
+            if (docError) {
+              console.error('❌ Error fetching historical content:', docError);
+            } else {
+              availableContent = docData.content;
+              console.log('🔍 Fetched historical document content for control text generation, analysis ID:', analysisId);
+            }
           }
         } catch (error) {
           console.error('❌ Error fetching historical content:', error);
@@ -830,7 +841,7 @@ function Analyzer() {
                             })() && (
                             <button 
                                 onClick={handleGenerateText}
-                                    disabled={isGenerating || (!fileContent && !result.document_content_id)}
+                                    disabled={isGenerating}
                                 className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:shadow-blue-500/50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-500 disabled:bg-slate-500 disabled:from-slate-500 disabled:shadow-none transition-all duration-300"
                             >
                                 <SparklesIcon />
@@ -3050,7 +3061,8 @@ function Analyzer() {
                                   // Set the analysis results from history
                                   setAnalysisResults({ 
                                     summary: item.summary, 
-                                    categories: item.results 
+                                    categories: item.results,
+                                    analysis_id: item.id  // Include the analysis ID for document content retrieval
                                   });
                                   // Set the framework to match the historical analysis
                                   if (item.framework) {
