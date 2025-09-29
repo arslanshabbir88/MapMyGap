@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { user, subscription, signOut } = useAuth();
   const navigate = useNavigate();
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -31,11 +30,6 @@ const Header = () => {
         .slice(0, 2);
     }
     return user?.email?.slice(0, 2).toUpperCase() || 'U';
-  };
-
-  const getPlanDisplayName = () => {
-    if (!subscription) return 'Trial';
-    return subscription.plan_type || 'Trial';
   };
 
   return (
@@ -65,81 +59,32 @@ const Header = () => {
               Help & Support
             </button>
 
-            {/* User Menu */}
-            <div className="relative">
-              <div className="flex items-center space-x-2">
-                {/* Clickable User Info */}
-                <button
-                  onClick={() => navigate('/profile')}
-                  className="flex items-center space-x-2 text-white hover:bg-slate-700 rounded-lg px-3 py-2 transition-colors"
-                >
-                  {/* User Avatar */}
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-sm font-semibold">
-                    {getUserInitials()}
-                  </div>
-                  
-                  {/* User Info */}
-                  <div className="text-left">
-                    <div className="text-sm font-medium">
-                      {user?.user_metadata?.full_name || user?.email}
-                    </div>
-                    <div className="text-xs text-slate-400">
-                      {getPlanDisplayName()} Plan
-                    </div>
-                  </div>
-                </button>
-
-                {/* Dropdown Menu Button */}
-                <button
-                  onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="text-white hover:bg-slate-700 rounded-lg p-2 transition-colors"
-                >
-                  <svg
-                    className={`w-4 h-4 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Dropdown Menu */}
-              {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-slate-700 rounded-lg shadow-lg py-1 z-50">
-                  <button
-                    onClick={() => {
-                      navigate('/profile');
-                      setShowUserMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-white hover:bg-slate-600 transition-colors"
-                  >
-                    View Profile
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setShowUserMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-slate-600 transition-colors"
-                  >
-                    Logout
-                  </button>
+            {/* User Actions - Simplified like homepage */}
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-1.5 sm:space-y-0 sm:space-x-3">
+              <button
+                onClick={() => navigate('/profile')}
+                className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+              >
+                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-blue-600 rounded-full flex items-center justify-center text-xs font-semibold">
+                  {getUserInitials()}
                 </div>
-              )}
+                <span className="text-xs font-medium">
+                  {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'User'}
+                </span>
+              </button>
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+              >
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+                </svg>
+                <span className="text-xs">Logout</span>
+              </button>
             </div>
           </div>
         </div>
       </nav>
-
-      {/* Click outside to close menu */}
-      {showUserMenu && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setShowUserMenu(false)}
-        />
-      )}
     </header>
   );
 };

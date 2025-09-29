@@ -1917,8 +1917,8 @@ function Analyzer() {
                     </div>
                   )}
                   
-                  {/* Control Text Status */}
-                  {usage.control_text_enabled && (
+                  {/* Control Text Status - Only show for non-Enterprise plans */}
+                  {usage.control_text_enabled && usage.plan !== 'enterprise' && (
                     <div className="flex items-center space-x-1 text-slate-300">
                       <span className="text-xs">
                         {usage.control_text_remaining === -1 ? 'Unlimited' : `${usage.control_text_remaining} chars`}
