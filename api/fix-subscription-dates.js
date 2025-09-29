@@ -117,6 +117,13 @@ export default async function handler(req, res) {
       if (stripeSubscription.billing_cycle_anchor) {
         console.log('🔍 Found billing_cycle_anchor:', stripeSubscription.billing_cycle_anchor);
         finalPeriodEndDate = new Date(stripeSubscription.billing_cycle_anchor * 1000);
+        
+        // For monthly subscriptions, add 1 month to get the next billing date
+        if (stripeSubscription.items?.data?.[0]?.price?.recurring?.interval === 'month') {
+          finalPeriodEndDate.setMonth(finalPeriodEndDate.getMonth() + 1);
+          console.log('🔧 Monthly subscription - adding 1 month to billing_cycle_anchor');
+        }
+        
         console.log('🔧 Using billing_cycle_anchor:', finalPeriodEndDate.toISOString());
       } else if (stripeSubscription.created) {
         console.log('🔍 Using created date + 1 month as fallback');
