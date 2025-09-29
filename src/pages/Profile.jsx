@@ -8,14 +8,6 @@ const Profile = () => {
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Temporary debug logging
-  useEffect(() => {
-    if (subscription) {
-      console.log('🔍 Current subscription data:', subscription);
-      console.log('🔍 Current Period End:', subscription.currentPeriodEnd);
-      console.log('🔍 Plan Type:', subscription.plan_type);
-    }
-  }, [subscription]);
 
 
   useEffect(() => {
@@ -242,15 +234,6 @@ const Profile = () => {
                         </div>
                       )}
                       
-                      {/* Always show fix button for debugging */}
-                      <div className="mt-2">
-                        <button
-                          onClick={handleFixSubscriptionDates}
-                          className="px-3 py-1 bg-green-600 hover:bg-green-700 text-white text-xs rounded transition-colors"
-                        >
-                          Fix Subscription Date
-                        </button>
-                      </div>
                     </div>
                     <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
                   </div>

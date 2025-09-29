@@ -45,13 +45,8 @@ export default async function handler(req, res) {
       billing_cycle_anchor: stripeSubscription.billing_cycle_anchor,
       created: stripeSubscription.created,
       status: stripeSubscription.status,
-      interval: stripeSubscription.items?.data?.[0]?.price?.recurring?.interval,
-      type: typeof stripeSubscription.current_period_end
+      interval: stripeSubscription.items?.data?.[0]?.price?.recurring?.interval
     });
-
-    // Log ALL available fields to understand what Stripe is returning
-    console.log('🔍 ALL Stripe subscription fields:', Object.keys(stripeSubscription));
-    console.log('🔍 Full Stripe subscription object:', JSON.stringify(stripeSubscription, null, 2));
 
     // Determine the correct renewal date
     let currentPeriodEndDate;
