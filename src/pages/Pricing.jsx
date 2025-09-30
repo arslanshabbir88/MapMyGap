@@ -31,7 +31,7 @@ const Pricing = ({ onShowLogin }) => {
         export: true,
         support: true,
         prioritySupport: false,
-        history: false
+        history: true
       },
       priceId: STRIPE_CONFIG.prices.trial,
       buttonText: 'Start Free Trial',
