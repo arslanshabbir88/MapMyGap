@@ -149,7 +149,7 @@ const Pricing = ({ onShowLogin }) => {
                 )}
 
                          {/* Plan Header */}
-                         <div className="text-center mb-6">
+                         <div className={`text-center mb-6 ${(plan.name === 'Professional' || plan.name === 'Enterprise') ? 'mt-6' : ''}`}>
                            <h3 className="text-2xl font-bold mb-2 text-white">{plan.name}</h3>
                            <div className="mb-4">
                              <span className={`font-bold text-white ${plan.trial ? 'text-2xl' : 'text-4xl'}`}>{plan.price}</span>
