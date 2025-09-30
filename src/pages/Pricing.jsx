@@ -7,10 +7,10 @@ import { STRIPE_CONFIG } from '../config/stripe';
 const Pricing = ({ onShowLogin }) => {
   // Define all possible features
   const allFeatures = [
-    { key: 'analyses', text: 'Analyses' },
-    { key: 'characterLimit', text: 'Upload limit' },
+    { key: 'analyses', text: 'Analyses per month' },
+    { key: 'characterLimit', text: 'Document upload size' },
     { key: 'controlText', text: 'Control text generation' },
-    { key: 'frameworks', text: 'All frameworks' },
+    { key: 'frameworks', text: 'Compliance frameworks' },
     { key: 'export', text: 'Export capabilities' },
     { key: 'support', text: 'Email support' },
     { key: 'prioritySupport', text: 'Priority support' },
@@ -25,8 +25,8 @@ const Pricing = ({ onShowLogin }) => {
       description: 'Perfect for testing the platform',
       features: {
         analyses: '3',
-        characterLimit: '1K',
-        controlText: '1K',
+        characterLimit: '1K chars',
+        controlText: '1K chars',
         frameworks: true,
         export: true,
         support: true,
@@ -45,7 +45,7 @@ const Pricing = ({ onShowLogin }) => {
       description: 'Ideal for small teams getting started',
       features: {
         analyses: '5',
-        characterLimit: '∞',
+        characterLimit: 'Unlimited',
         controlText: false,
         frameworks: true,
         export: true,
@@ -64,8 +64,8 @@ const Pricing = ({ onShowLogin }) => {
       description: 'For growing compliance teams',
       features: {
         analyses: '25',
-        characterLimit: '∞',
-        controlText: '∞',
+        characterLimit: 'Unlimited',
+        controlText: 'Unlimited',
         frameworks: true,
         export: true,
         support: true,
@@ -82,9 +82,9 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: 'For large organizations',
       features: {
-        analyses: '∞',
-        characterLimit: '∞',
-        controlText: '∞',
+        analyses: 'Unlimited',
+        characterLimit: 'Unlimited',
+        controlText: 'Unlimited',
         frameworks: true,
         export: true,
         support: true,
@@ -174,10 +174,10 @@ const Pricing = ({ onShowLogin }) => {
                                {feature.text}
                              </span>
                                      {isAvailable && !isUnlimited && typeof planFeature === 'string' && (
-                                       <span className="text-blue-300 ml-2">{planFeature}</span>
+                                       <span className="text-blue-300 ml-2">({planFeature})</span>
                                      )}
                                      {isAvailable && isUnlimited && (
-                                       <span className="text-blue-300 ml-2">∞</span>
+                                       <span className="text-blue-300 ml-2">(Unlimited)</span>
                                      )}
                            </div>
                          </li>
