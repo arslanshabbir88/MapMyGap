@@ -46,7 +46,7 @@ const Pricing = ({ onShowLogin }) => {
       features: {
         analyses: '5 analyses',
         characterLimit: 'Unlimited',
-        controlText: false,
+        controlText: false, // No control text generation
         frameworks: true,
         export: true,
         support: true,
@@ -68,8 +68,8 @@ const Pricing = ({ onShowLogin }) => {
         controlText: 'Unlimited',
         frameworks: true,
         export: true,
-        support: false,
-        prioritySupport: true,
+        support: true, // Professional has email support
+        prioritySupport: true, // Plus priority support
         history: true
       },
       priceId: STRIPE_CONFIG.prices.professional,
@@ -87,8 +87,8 @@ const Pricing = ({ onShowLogin }) => {
         controlText: 'Unlimited',
         frameworks: true,
         export: true,
-        support: false,
-        prioritySupport: true,
+        support: true, // Enterprise has email support
+        prioritySupport: true, // Plus priority support
         history: true
       },
       priceId: STRIPE_CONFIG.prices.enterprise,
