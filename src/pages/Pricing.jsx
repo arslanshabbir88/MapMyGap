@@ -9,11 +9,11 @@ const Pricing = ({ onShowLogin }) => {
   const allFeatures = [
     { key: 'analyses', text: 'Analyses per month' },
     { key: 'characterLimit', text: 'Document upload size' },
-    { key: 'controlText', text: 'Control text generation' },
     { key: 'frameworks', text: 'Compliance frameworks' },
     { key: 'export', text: 'Export capabilities' },
     { key: 'support', text: 'Email support' },
-    { key: 'history', text: 'Analysis history' }
+    { key: 'history', text: 'Analysis history' },
+    { key: 'controlText', text: 'Control text generation' }
   ];
 
   const plans = [
@@ -40,15 +40,15 @@ const Pricing = ({ onShowLogin }) => {
       name: 'Starter',
       price: '$49',
       period: 'per month',
-      description: 'Ideal for small teams getting started',
+      description: '',
       features: {
-        analyses: '5',
-        characterLimit: 'Unlimited',
-        controlText: false,
-        frameworks: true,
-        export: true,
-        support: true,
-        history: true
+        analyses: '5 analyses',
+        characterLimit: 'No Document Character Limit',
+        frameworks: 'All Compliance Frameworks',
+        export: 'Export Capabilities',
+        support: 'Email Support',
+        history: 'Analysis History',
+        controlText: false
       },
       priceId: STRIPE_CONFIG.prices.starter,
       buttonText: 'Get Started',
@@ -159,9 +159,9 @@ const Pricing = ({ onShowLogin }) => {
                                const isAvailable = planFeature !== false && planFeature !== undefined;
                                const isUnlimited = planFeature === true || planFeature === 'Unlimited';
                                
-                               // Special handling for Trial plan - show custom text instead of feature labels
-                               const isTrialPlan = plan.trial;
-                               const displayText = isTrialPlan && typeof planFeature === 'string' ? planFeature : feature.text;
+                               // Special handling for Trial and Starter plans - show custom text instead of feature labels
+                               const isCustomPlan = plan.trial || plan.name === 'Starter';
+                               const displayText = isCustomPlan && typeof planFeature === 'string' ? planFeature : feature.text;
                                
                                return (
                                  <li key={featureIndex} className="text-base text-gray-200 flex items-start font-medium">
@@ -172,10 +172,10 @@ const Pricing = ({ onShowLogin }) => {
                                      <span className={isAvailable ? 'text-gray-200' : 'text-gray-500'}>
                                        {displayText}
                                      </span>
-                                     {!isTrialPlan && isAvailable && !isUnlimited && typeof planFeature === 'string' && (
+                                     {!isCustomPlan && isAvailable && !isUnlimited && typeof planFeature === 'string' && (
                                        <span className="text-blue-300 ml-2">({planFeature})</span>
                                      )}
-                                     {!isTrialPlan && isAvailable && isUnlimited && (
+                                     {!isCustomPlan && isAvailable && isUnlimited && (
                                        <span className="text-blue-300 ml-2">(Unlimited)</span>
                                      )}
                                    </div>
