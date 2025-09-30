@@ -76,15 +76,15 @@ const Pricing = ({ onShowLogin }) => {
       name: 'Enterprise',
       price: '$499',
       period: 'per month',
-      description: 'For large organizations',
+      description: '',
       features: {
-        analyses: 'Unlimited',
-        characterLimit: 'Unlimited',
-        controlText: 'Unlimited',
-        frameworks: true,
-        export: true,
-        support: true,
-        history: true
+        analyses: 'Unlimited analyses',
+        characterLimit: 'No Document Character Limit',
+        frameworks: 'All Compliance Frameworks',
+        export: 'Export Capabilities',
+        support: 'Email Support',
+        history: 'Analysis History',
+        controlText: 'Control Text Generation'
       },
       priceId: STRIPE_CONFIG.prices.enterprise,
       buttonText: 'Contact Sales',
@@ -159,8 +159,8 @@ const Pricing = ({ onShowLogin }) => {
                                const isAvailable = planFeature !== false && planFeature !== undefined;
                                const isUnlimited = planFeature === true || planFeature === 'Unlimited';
                                
-                               // Special handling for Trial, Starter, and Professional plans - show custom text instead of feature labels
-                               const isCustomPlan = plan.trial || plan.name === 'Starter' || plan.name === 'Professional';
+                               // Special handling for all plans - show custom text instead of feature labels
+                               const isCustomPlan = plan.trial || plan.name === 'Starter' || plan.name === 'Professional' || plan.name === 'Enterprise';
                                const displayText = isCustomPlan && typeof planFeature === 'string' ? planFeature : feature.text;
                                
                                return (
