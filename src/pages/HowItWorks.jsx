@@ -108,8 +108,8 @@ const HowItWorks = ({ onShowLogin }) => {
     },
     {
       icon: "🔄",
-      title: "Continuous Learning",
-      description: "Our AI continuously learns from new frameworks, regulations, and user feedback to provide increasingly accurate analysis."
+      title: "Cutting-Edge Technology",
+      description: "Powered by cutting-edge AI technology and regularly updated compliance frameworks to provide accurate, professional-grade analysis."
     },
     {
       icon: "💼",
