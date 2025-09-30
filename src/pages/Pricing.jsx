@@ -5,20 +5,34 @@ import StripeCheckout from '../components/StripeCheckout';
 import { STRIPE_CONFIG } from '../config/stripe';
 
 const Pricing = ({ onShowLogin }) => {
+  // Define all possible features
+  const allFeatures = [
+    { key: 'analyses', text: 'Monthly analyses' },
+    { key: 'characterLimit', text: 'Character upload limit' },
+    { key: 'controlText', text: 'Control text generation' },
+    { key: 'frameworks', text: 'All compliance frameworks' },
+    { key: 'export', text: 'Export capabilities (JSON, CSV, Excel)' },
+    { key: 'support', text: 'Email support' },
+    { key: 'prioritySupport', text: 'Priority support' },
+    { key: 'history', text: 'Analysis history' }
+  ];
+
   const plans = [
     {
       name: 'Trial',
       price: 'Free',
       period: '14 days',
       description: 'Perfect for testing the platform',
-      features: [
-        '3 analyses',
-        '1000 character upload limit',
-        '1000 character control text generation',
-        'All compliance frameworks',
-        'Export capabilities',
-        'Email support'
-      ],
+      features: {
+        analyses: '3 analyses',
+        characterLimit: '1,000 characters',
+        controlText: '1,000 characters',
+        frameworks: true,
+        export: true,
+        support: true,
+        prioritySupport: false,
+        history: false
+      },
       priceId: STRIPE_CONFIG.prices.trial,
       buttonText: 'Start Free Trial',
       popular: false,
@@ -29,14 +43,16 @@ const Pricing = ({ onShowLogin }) => {
       price: '$49',
       period: 'per month',
       description: 'Ideal for small teams getting started',
-      features: [
-        '5 analyses per month',
-        'Unlimited character upload limit',
-        'All compliance frameworks',
-        'Export capabilities',
-        'Email support',
-        'Analysis history'
-      ],
+      features: {
+        analyses: '5 analyses',
+        characterLimit: 'Unlimited',
+        controlText: false,
+        frameworks: true,
+        export: true,
+        support: true,
+        prioritySupport: false,
+        history: true
+      },
       priceId: STRIPE_CONFIG.prices.starter,
       buttonText: 'Get Started',
       popular: false
@@ -46,15 +62,16 @@ const Pricing = ({ onShowLogin }) => {
       price: '$149',
       period: 'per month',
       description: 'For growing compliance teams',
-      features: [
-        '25 analyses per month',
-        'Unlimited character upload limit',
-        'Control text generation included',
-        'All compliance frameworks',
-        'Priority email support',
-        'Analysis history',
-        'Export capabilities'
-      ],
+      features: {
+        analyses: '25 analyses',
+        characterLimit: 'Unlimited',
+        controlText: 'Unlimited',
+        frameworks: true,
+        export: true,
+        support: false,
+        prioritySupport: true,
+        history: true
+      },
       priceId: STRIPE_CONFIG.prices.professional,
       buttonText: 'Get Started',
       popular: true
@@ -64,15 +81,16 @@ const Pricing = ({ onShowLogin }) => {
       price: '$499',
       period: 'per month',
       description: 'For large organizations',
-      features: [
-        'Unlimited analyses',
-        'Unlimited character upload limit',
-        'Unlimited control text generation',
-        'All compliance frameworks',
-        'Priority support',
-        'Analysis history',
-        'Export capabilities'
-      ],
+      features: {
+        analyses: 'Unlimited',
+        characterLimit: 'Unlimited',
+        controlText: 'Unlimited',
+        frameworks: true,
+        export: true,
+        support: false,
+        prioritySupport: true,
+        history: true
+      },
       priceId: STRIPE_CONFIG.prices.enterprise,
       buttonText: 'Contact Sales',
       popular: false
@@ -141,12 +159,30 @@ const Pricing = ({ onShowLogin }) => {
                  <div className="mb-6">
                    <h4 className="font-semibold text-blue-400 mb-3 text-lg">What's Included:</h4>
                    <ul className="space-y-3">
-                     {plan.features.map((feature, featureIndex) => (
-                       <li key={featureIndex} className="text-base text-gray-200 flex items-start font-medium">
-                         <span className="text-green-400 mr-3 mt-1 text-lg">✓</span>
-                         {feature}
-                       </li>
-                     ))}
+                     {allFeatures.map((feature, featureIndex) => {
+                       const planFeature = plan.features[feature.key];
+                       const isAvailable = planFeature !== false && planFeature !== undefined;
+                       const isUnlimited = planFeature === true || planFeature === 'Unlimited';
+                       
+                       return (
+                         <li key={featureIndex} className="text-base text-gray-200 flex items-start font-medium">
+                           <span className={`mr-3 mt-1 text-lg ${isAvailable ? 'text-green-400' : 'text-red-400'}`}>
+                             {isAvailable ? '✓' : '✗'}
+                           </span>
+                           <div className="flex-1">
+                             <span className={isAvailable ? 'text-gray-200' : 'text-gray-500'}>
+                               {feature.text}
+                             </span>
+                             {isAvailable && !isUnlimited && typeof planFeature === 'string' && (
+                               <span className="text-blue-300 ml-2">({planFeature})</span>
+                             )}
+                             {isAvailable && isUnlimited && (
+                               <span className="text-blue-300 ml-2">(Unlimited)</span>
+                             )}
+                           </div>
+                         </li>
+                       );
+                     })}
                    </ul>
                  </div>
 
