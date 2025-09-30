@@ -138,6 +138,16 @@ const Pricing = ({ onShowLogin }) => {
                   </div>
                 )}
 
+                {/* AI Implementation Generator Badge for Pro & Enterprise */}
+                {(plan.name === 'Professional' || plan.name === 'Enterprise') && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-10">
+                    <span className="bg-gradient-to-r from-amber-400 to-orange-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center space-x-1">
+                      <span>⚡</span>
+                      <span>AI IMPLEMENTATION GENERATOR</span>
+                    </span>
+                  </div>
+                )}
+
                          {/* Plan Header */}
                          <div className="text-center mb-6">
                            <h3 className="text-2xl font-bold mb-2 text-white">{plan.name}</h3>

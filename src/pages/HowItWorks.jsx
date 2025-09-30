@@ -59,16 +59,18 @@ const HowItWorks = ({ onShowLogin }) => {
     },
     {
       number: "05",
-      title: "Generate Implementation Text",
-      description: "Use our AI to generate specific, actionable implementation text to address identified gaps and achieve compliance.",
+      title: "Generate Implementation Text ⭐",
+      description: "Our flagship feature: Use AI to instantly generate complete, ready-to-use implementation text that transforms gaps into covered controls. No more hours of research and writing.",
       details: [
-        "AI-generated implementation guidance",
-        "Framework-specific recommendations",
-        "Technical implementation details",
-        "Monitoring and evidence requirements"
+        "⚡ Instant AI-powered policy generation",
+        "✍️ Matches your organization's writing style",
+        "🎯 Framework-specific technical details",
+        "📋 Complete with roles, procedures & monitoring",
+        "📝 Ready to copy directly into your documents"
       ],
-      icon: "✍️",
-      color: "from-red-500 to-red-600"
+      icon: "🚀",
+      color: "from-amber-500 to-orange-600",
+      flagship: true
     },
     {
       number: "06",
@@ -150,18 +152,38 @@ const HowItWorks = ({ onShowLogin }) => {
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {steps.map((step, index) => (
-                <div key={index} className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-slate-600 transition-all duration-300">
+                <div 
+                  key={index} 
+                  className={`${
+                    step.flagship 
+                      ? 'bg-gradient-to-br from-amber-900/30 via-orange-900/20 to-amber-900/30 border-2 border-amber-500/50 shadow-2xl shadow-amber-500/20 relative overflow-hidden' 
+                      : 'bg-slate-800/50 border border-slate-700'
+                  } rounded-2xl p-8 hover:border-slate-600 transition-all duration-300`}
+                >
+                  {/* Flagship Feature Badge */}
+                  {step.flagship && (
+                    <div className="absolute top-4 right-4">
+                      <span className="bg-gradient-to-r from-amber-400 to-orange-400 text-gray-900 px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                        ⚡ FLAGSHIP FEATURE
+                      </span>
+                    </div>
+                  )}
+                  
                   <div className="flex items-start space-x-4">
-                    <div className={`flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r ${step.color} text-2xl font-bold text-white`}>
-                      {step.number}
+                    <div className={`flex-shrink-0 flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r ${step.color} text-2xl font-bold text-white ${step.flagship ? 'animate-pulse' : ''}`}>
+                      {step.flagship ? step.icon : step.number}
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
-                      <p className="text-slate-400 mb-4">{step.description}</p>
+                      <h3 className={`text-xl font-bold mb-3 ${step.flagship ? 'text-amber-300' : 'text-white'}`}>
+                        {step.title}
+                      </h3>
+                      <p className={`mb-4 ${step.flagship ? 'text-slate-200 font-medium' : 'text-slate-400'}`}>
+                        {step.description}
+                      </p>
                       <ul className="space-y-2">
                         {step.details.map((detail, detailIndex) => (
                           <li key={detailIndex} className="flex items-center space-x-2 text-slate-300">
-                            <span className="text-blue-400">•</span>
+                            <span className={step.flagship ? 'text-amber-400' : 'text-blue-400'}>•</span>
                             <span>{detail}</span>
                           </li>
                         ))}

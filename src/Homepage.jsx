@@ -229,6 +229,127 @@ function Homepage({ onShowLogin }) {
             </div>
           </section>
 
+          {/* Flagship Feature - AI Implementation Generator */}
+          <section className="py-20 relative overflow-hidden bg-gradient-to-br from-blue-900/20 via-purple-900/30 to-blue-900/20">
+            {/* Animated background */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,0.15),transparent_70%)]"></div>
+            <div className="absolute inset-0 opacity-30">
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+              <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+            </div>
+            
+            <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-12">
+                <div className="inline-flex items-center px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 mb-6">
+                  <span className="text-amber-300 font-semibold text-sm">⚡ FLAGSHIP FEATURE</span>
+                </div>
+                <h2 className="text-4xl sm:text-5xl font-bold text-white tracking-tight mb-6">
+                  AI-Powered Implementation Generator
+                </h2>
+                <p className="text-xl text-slate-200 max-w-3xl mx-auto leading-relaxed">
+                  Don't just identify gaps — <span className="text-blue-400 font-semibold">fix them instantly</span>. Our AI generates complete, 
+                  ready-to-use implementation text that transforms compliance gaps into covered controls.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                {/* Left side - Feature highlights */}
+                <div className="space-y-6">
+                  <div className="flex items-start space-x-4 group">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/30 transition-all duration-300">
+                      <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">Instant Policy Generation</h3>
+                      <p className="text-slate-300">Click any gap and watch as AI generates complete, framework-specific implementation text in seconds.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 group">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-all duration-300">
+                      <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">Ready-to-Use Implementation Text</h3>
+                      <p className="text-slate-300">No more hours of research. Get specific technical details, procedures, monitoring requirements, and roles — all ready to copy.</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-4 group">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-all duration-300">
+                      <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2">Matches Your Writing Style</h3>
+                      <p className="text-slate-300">AI analyzes your existing documents and generates text that matches your organization's tone and style.</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <Link
+                      to="/pricing"
+                      className="inline-flex items-center px-6 py-3 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/30"
+                    >
+                      Available on Professional & Enterprise Plans →
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right side - Visual example */}
+                <div className="relative">
+                  <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-6 shadow-2xl">
+                    <div className="flex items-center space-x-2 mb-4 pb-3 border-b border-slate-700">
+                      <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <span className="text-slate-400 text-sm ml-2">AI Implementation Generator</span>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="text-red-400 font-semibold text-sm">❌ GAP IDENTIFIED</span>
+                        </div>
+                        <p className="text-slate-300 text-sm">Access Control: User authentication mechanisms</p>
+                      </div>
+
+                      <div className="flex items-center justify-center py-2">
+                        <div className="flex items-center space-x-2 text-blue-400 animate-pulse">
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                          </svg>
+                          <span className="text-sm font-medium">AI Generating...</span>
+                        </div>
+                      </div>
+
+                      <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                        <div className="flex items-center space-x-2 mb-3">
+                          <span className="text-green-400 font-semibold text-sm">✓ IMPLEMENTATION TEXT</span>
+                        </div>
+                        <p className="text-slate-300 text-xs leading-relaxed">
+                          "The organization implements multi-factor authentication (MFA) using Azure AD for all user accounts accessing corporate systems. 
+                          Authentication tokens expire after 8 hours. Failed login attempts are logged in our SIEM system and trigger alerts after 5 consecutive failures..."
+                        </p>
+                        <button className="mt-3 text-blue-400 hover:text-blue-300 text-xs font-medium transition-colors">
+                          Copy to clipboard →
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Decorative glow */}
+                  <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl blur-2xl -z-10 opacity-50"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           {/* Features Section */}
           <section className="py-24 bg-gradient-to-br from-slate-900/50 to-slate-800/30">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
