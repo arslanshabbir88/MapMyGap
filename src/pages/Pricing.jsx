@@ -13,7 +13,6 @@ const Pricing = ({ onShowLogin }) => {
     { key: 'frameworks', text: 'Compliance frameworks' },
     { key: 'export', text: 'Export capabilities' },
     { key: 'support', text: 'Email support' },
-    { key: 'prioritySupport', text: 'Priority support' },
     { key: 'history', text: 'Analysis history' }
   ];
 
@@ -25,12 +24,11 @@ const Pricing = ({ onShowLogin }) => {
       description: '',
       features: {
         analyses: '3 analyses',
-        characterLimit: '1000 characters',
-        controlText: '1000 characters',
+        characterLimit: 'Document Size: 1000 characters',
+        controlText: 'Control Text Generation: 1000 characters',
         frameworks: 'All Compliance Frameworks',
         export: 'Export Capabilities',
         support: 'Email Support',
-        prioritySupport: false,
         history: 'Analysis History'
       },
       priceId: STRIPE_CONFIG.prices.trial,
@@ -50,7 +48,6 @@ const Pricing = ({ onShowLogin }) => {
         frameworks: true,
         export: true,
         support: true,
-        prioritySupport: false,
         history: true
       },
       priceId: STRIPE_CONFIG.prices.starter,
@@ -69,7 +66,6 @@ const Pricing = ({ onShowLogin }) => {
         frameworks: true,
         export: true,
         support: true,
-        prioritySupport: true,
         history: true
       },
       priceId: STRIPE_CONFIG.prices.professional,
@@ -88,7 +84,6 @@ const Pricing = ({ onShowLogin }) => {
         frameworks: true,
         export: true,
         support: true,
-        prioritySupport: true,
         history: true
       },
       priceId: STRIPE_CONFIG.prices.enterprise,
@@ -143,17 +138,17 @@ const Pricing = ({ onShowLogin }) => {
                   </div>
                 )}
 
-                                 {/* Plan Header */}
-                 <div className="text-center mb-6">
-                   <h3 className="text-2xl font-bold mb-2 text-white">{plan.name}</h3>
-                   <div className="mb-4">
-                     <span className="text-4xl font-bold text-white">{plan.price}</span>
-                     <span className="text-gray-400">{plan.period}</span>
-                   </div>
-                   <p className="text-gray-200 text-sm leading-relaxed font-medium">
-                     {plan.description}
-                   </p>
-                 </div>
+                         {/* Plan Header */}
+                         <div className="text-center mb-6">
+                           <h3 className="text-2xl font-bold mb-2 text-white">{plan.name}</h3>
+                           <div className="mb-4">
+                             <span className={`font-bold text-white ${plan.trial ? 'text-2xl' : 'text-4xl'}`}>{plan.price}</span>
+                             <span className="text-gray-400">{plan.period}</span>
+                           </div>
+                           <p className="text-gray-200 text-sm leading-relaxed font-medium">
+                             {plan.description}
+                           </p>
+                         </div>
 
                                  {/* Features */}
                  <div className="mb-6">
