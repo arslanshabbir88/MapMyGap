@@ -23,7 +23,7 @@ const Pricing = ({ onShowLogin }) => {
       period: '',
       description: '',
       features: {
-        analyses: '3 analyses',
+        analyses: '3 Analyses',
         characterLimit: 'Document Size: 1000 characters',
         controlText: 'Control Text Generation: 1000 characters',
         frameworks: 'All Compliance Frameworks',
@@ -42,7 +42,7 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: '',
       features: {
-        analyses: '5 analyses',
+        analyses: '5 Analyses',
         characterLimit: 'No Document Character Limit',
         frameworks: 'All Compliance Frameworks',
         export: 'Export Capabilities',
@@ -60,7 +60,7 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: '',
       features: {
-        analyses: '25 analyses',
+        analyses: '25 Analyses',
         characterLimit: 'No Document Character Limit',
         frameworks: 'All Compliance Frameworks',
         export: 'Export Capabilities',
@@ -78,7 +78,7 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: '',
       features: {
-        analyses: 'Unlimited analyses',
+        analyses: 'Unlimited Analyses',
         characterLimit: 'No Document Character Limit',
         frameworks: 'All Compliance Frameworks',
         export: 'Export Capabilities',
