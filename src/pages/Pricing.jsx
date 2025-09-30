@@ -20,18 +20,18 @@ const Pricing = ({ onShowLogin }) => {
   const plans = [
     {
       name: 'Trial',
-      price: 'Free',
-      period: '14 days',
-      description: 'Perfect for testing the platform',
+      price: 'Free 14 Day Trial',
+      period: '',
+      description: '',
       features: {
-        analyses: '3',
-        characterLimit: '1K chars',
-        controlText: '1K chars',
-        frameworks: true,
-        export: true,
-        support: true,
+        analyses: '3 analyses',
+        characterLimit: '1000 characters',
+        controlText: '1000 characters',
+        frameworks: 'All Compliance Frameworks',
+        export: 'Export Capabilities',
+        support: 'Email Support',
         prioritySupport: false,
-        history: true
+        history: 'Analysis History'
       },
       priceId: STRIPE_CONFIG.prices.trial,
       buttonText: 'Start Free Trial',
@@ -159,30 +159,34 @@ const Pricing = ({ onShowLogin }) => {
                  <div className="mb-6">
                    <h4 className="font-semibold text-blue-400 mb-3 text-lg">What's Included:</h4>
                    <ul className="space-y-3">
-                     {allFeatures.map((feature, featureIndex) => {
-                       const planFeature = plan.features[feature.key];
-                       const isAvailable = planFeature !== false && planFeature !== undefined;
-                       const isUnlimited = planFeature === true || planFeature === 'Unlimited';
-                       
-                       return (
-                         <li key={featureIndex} className="text-base text-gray-200 flex items-start font-medium">
-                           <span className={`mr-3 mt-1 text-lg ${isAvailable ? 'text-green-400' : 'text-red-400'}`}>
-                             {isAvailable ? '✓' : '✗'}
-                           </span>
-                           <div className="flex-1">
-                             <span className={isAvailable ? 'text-gray-200' : 'text-gray-500'}>
-                               {feature.text}
-                             </span>
-                                     {isAvailable && !isUnlimited && typeof planFeature === 'string' && (
+                             {allFeatures.map((feature, featureIndex) => {
+                               const planFeature = plan.features[feature.key];
+                               const isAvailable = planFeature !== false && planFeature !== undefined;
+                               const isUnlimited = planFeature === true || planFeature === 'Unlimited';
+                               
+                               // Special handling for Trial plan - show custom text instead of feature labels
+                               const isTrialPlan = plan.trial;
+                               const displayText = isTrialPlan && typeof planFeature === 'string' ? planFeature : feature.text;
+                               
+                               return (
+                                 <li key={featureIndex} className="text-base text-gray-200 flex items-start font-medium">
+                                   <span className={`mr-3 mt-1 text-lg ${isAvailable ? 'text-green-400' : 'text-red-400'}`}>
+                                     {isAvailable ? '✓' : '✗'}
+                                   </span>
+                                   <div className="flex-1">
+                                     <span className={isAvailable ? 'text-gray-200' : 'text-gray-500'}>
+                                       {displayText}
+                                     </span>
+                                     {!isTrialPlan && isAvailable && !isUnlimited && typeof planFeature === 'string' && (
                                        <span className="text-blue-300 ml-2">({planFeature})</span>
                                      )}
-                                     {isAvailable && isUnlimited && (
+                                     {!isTrialPlan && isAvailable && isUnlimited && (
                                        <span className="text-blue-300 ml-2">(Unlimited)</span>
                                      )}
-                           </div>
-                         </li>
-                       );
-                     })}
+                                   </div>
+                                 </li>
+                               );
+                             })}
                    </ul>
                  </div>
 
