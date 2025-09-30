@@ -7,11 +7,11 @@ import { STRIPE_CONFIG } from '../config/stripe';
 const Pricing = ({ onShowLogin }) => {
   // Define all possible features
   const allFeatures = [
-    { key: 'analyses', text: 'Monthly analyses' },
-    { key: 'characterLimit', text: 'Character upload limit' },
+    { key: 'analyses', text: 'Analyses' },
+    { key: 'characterLimit', text: 'Upload limit' },
     { key: 'controlText', text: 'Control text generation' },
-    { key: 'frameworks', text: 'All compliance frameworks' },
-    { key: 'export', text: 'Export capabilities (JSON, CSV, Excel)' },
+    { key: 'frameworks', text: 'All frameworks' },
+    { key: 'export', text: 'Export capabilities' },
     { key: 'support', text: 'Email support' },
     { key: 'prioritySupport', text: 'Priority support' },
     { key: 'history', text: 'Analysis history' }
@@ -24,9 +24,9 @@ const Pricing = ({ onShowLogin }) => {
       period: '14 days',
       description: 'Perfect for testing the platform',
       features: {
-        analyses: '3 analyses',
-        characterLimit: '1,000 characters',
-        controlText: '1,000 characters',
+        analyses: '3',
+        characterLimit: '1K',
+        controlText: '1K',
         frameworks: true,
         export: true,
         support: true,
@@ -44,9 +44,9 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: 'Ideal for small teams getting started',
       features: {
-        analyses: '5 analyses',
-        characterLimit: 'Unlimited',
-        controlText: false, // No control text generation
+        analyses: '5',
+        characterLimit: '∞',
+        controlText: false,
         frameworks: true,
         export: true,
         support: true,
@@ -63,13 +63,13 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: 'For growing compliance teams',
       features: {
-        analyses: '25 analyses',
-        characterLimit: 'Unlimited',
-        controlText: 'Unlimited',
+        analyses: '25',
+        characterLimit: '∞',
+        controlText: '∞',
         frameworks: true,
         export: true,
-        support: true, // Professional has email support
-        prioritySupport: true, // Plus priority support
+        support: true,
+        prioritySupport: true,
         history: true
       },
       priceId: STRIPE_CONFIG.prices.professional,
@@ -82,13 +82,13 @@ const Pricing = ({ onShowLogin }) => {
       period: 'per month',
       description: 'For large organizations',
       features: {
-        analyses: 'Unlimited',
-        characterLimit: 'Unlimited',
-        controlText: 'Unlimited',
+        analyses: '∞',
+        characterLimit: '∞',
+        controlText: '∞',
         frameworks: true,
         export: true,
-        support: true, // Enterprise has email support
-        prioritySupport: true, // Plus priority support
+        support: true,
+        prioritySupport: true,
         history: true
       },
       priceId: STRIPE_CONFIG.prices.enterprise,
@@ -173,12 +173,12 @@ const Pricing = ({ onShowLogin }) => {
                              <span className={isAvailable ? 'text-gray-200' : 'text-gray-500'}>
                                {feature.text}
                              </span>
-                             {isAvailable && !isUnlimited && typeof planFeature === 'string' && (
-                               <span className="text-blue-300 ml-2">({planFeature})</span>
-                             )}
-                             {isAvailable && isUnlimited && (
-                               <span className="text-blue-300 ml-2">(Unlimited)</span>
-                             )}
+                                     {isAvailable && !isUnlimited && typeof planFeature === 'string' && (
+                                       <span className="text-blue-300 ml-2">{planFeature}</span>
+                                     )}
+                                     {isAvailable && isUnlimited && (
+                                       <span className="text-blue-300 ml-2">∞</span>
+                                     )}
                            </div>
                          </li>
                        );
