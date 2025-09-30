@@ -58,15 +58,15 @@ const Pricing = ({ onShowLogin }) => {
       name: 'Professional',
       price: '$149',
       period: 'per month',
-      description: 'For growing compliance teams',
+      description: '',
       features: {
-        analyses: '25',
-        characterLimit: 'Unlimited',
-        controlText: 'Unlimited',
-        frameworks: true,
-        export: true,
-        support: true,
-        history: true
+        analyses: '25 analyses',
+        characterLimit: 'No Document Character Limit',
+        frameworks: 'All Compliance Frameworks',
+        export: 'Export Capabilities',
+        support: 'Email Support',
+        history: 'Analysis History',
+        controlText: 'Control Text Generation'
       },
       priceId: STRIPE_CONFIG.prices.professional,
       buttonText: 'Get Started',
@@ -159,8 +159,8 @@ const Pricing = ({ onShowLogin }) => {
                                const isAvailable = planFeature !== false && planFeature !== undefined;
                                const isUnlimited = planFeature === true || planFeature === 'Unlimited';
                                
-                               // Special handling for Trial and Starter plans - show custom text instead of feature labels
-                               const isCustomPlan = plan.trial || plan.name === 'Starter';
+                               // Special handling for Trial, Starter, and Professional plans - show custom text instead of feature labels
+                               const isCustomPlan = plan.trial || plan.name === 'Starter' || plan.name === 'Professional';
                                const displayText = isCustomPlan && typeof planFeature === 'string' ? planFeature : feature.text;
                                
                                return (
