@@ -29,7 +29,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "Is my data secure?",
-        answer: "Yes, we take data security seriously. We use enterprise-grade encryption, don't permanently store your documents, and implement strict access controls. Your compliance data is protected with bank-level security measures including rate limiting, security headers, in-memory processing only, and comprehensive audit logging. Documents are processed securely and discarded immediately after analysis."
+        answer: "Yes, we implement enterprise-grade security including encrypted connections, secure database storage with strict access controls, and role-based authentication. Your documents are stored securely to enable analysis history and control text generation. We follow industry-standard security practices and ensure user data isolation—you can only access your own content."
       }
     ],
     technical: [
