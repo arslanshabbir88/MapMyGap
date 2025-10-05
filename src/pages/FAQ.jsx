@@ -12,6 +12,10 @@ const FAQ = ({ onShowLogin }) => {
         answer: "MapMyGap is an AI-powered compliance gap analysis platform that helps organizations identify compliance gaps by analyzing their internal documents against industry frameworks like NIST 800-53, ISO 27001, SOC 2, and PCI DSS."
       },
       {
+        question: "How does MapMyGap compare to traditional compliance consulting?",
+        answer: "Traditional gap analysis is time-intensive and resource-heavy—requiring weeks of consultant scheduling, lengthy document reviews, and limited revision cycles. MapMyGap delivers the same professional-grade analysis in minutes, allowing you to:\n\n• Get immediate results\n• Option to re-run analyses unlimited times as you update your policies\n• Analyze multiple frameworks without multiplying costs or timelines\n• Free your team to focus on remediation instead of coordination\n• Maintain full control over your compliance timeline"
+      },
+      {
         question: "How does MapMyGap work?",
         answer: "You upload your compliance documents, select a framework and categories to analyze, and our AI performs a comprehensive gap analysis. The platform identifies covered controls, partial implementations, and gaps, then generates actionable recommendations and implementation text."
       },
@@ -27,11 +31,7 @@ const FAQ = ({ onShowLogin }) => {
     technical: [
       {
         question: "What AI technology does MapMyGap use?",
-        answer: "We use advanced natural language processing and machine learning models trained specifically on compliance frameworks and security standards. Our AI continuously learns and improves to provide more accurate analysis."
-      },
-      {
-        question: "How accurate is the AI analysis?",
-        answer: "Our AI provides professional-grade analysis accuracy, but we recommend human review for critical compliance decisions. The AI is trained on extensive compliance data and continuously improved with user feedback."
+        answer: "We use cutting-edge AI technology with advanced natural language processing, combined with comprehensive compliance framework data, to deliver accurate, professional-grade gap analysis."
       },
       {
         question: "Can I customize the analysis?",
@@ -43,7 +43,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "What security certifications or standards do you follow?",
-        answer: "We follow industry best practices and are designed to meet enterprise security requirements. Our platform implements security controls aligned with SOC 2, NIST CSF, and ISO 27001 standards. We maintain comprehensive audit logs and use enterprise-grade infrastructure with strict access controls. For specific compliance requirements or security assessments, contact us at admin@mapmygap.com."
+        answer: "We implement enterprise-grade security best practices including data encryption, comprehensive audit logging, secure authentication, and strict access controls. Our infrastructure partners maintain SOC 2 compliance and other certifications. We follow security principles from recognized frameworks like SOC 2, NIST CSF, and ISO 27001. For detailed security information or assessments, contact us at admin@mapmygap.com."
       },
       {
         question: "Do you support custom frameworks?",
@@ -75,11 +75,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "Is there a free trial?",
-        answer: "Yes! We offer a free 14-day trial that includes 3 analyses, 1000 character upload limit, basic compliance frameworks, and email support. This is perfect for testing the platform and seeing the value it provides."
-      },
-      {
-        question: "Do you offer discounts for nonprofits?",
-        answer: "Yes, we offer special pricing for educational institutions, nonprofits, and government agencies. Contact us at admin@mapmygap.com for details on our nonprofit discount program."
+        answer: "Yes! We offer a free 14-day trial that includes 3 analyses, 1000 character document size limit, Control Text Generation (1000 characters), all compliance frameworks, export capabilities, analysis history, and email support. This is perfect for testing the platform and seeing the value it provides."
       },
       {
         question: "Can I change plans later?",
@@ -87,25 +83,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "What is control text generation and which plans include it?",
-        answer: "Control text generation is our AI-powered feature that creates specific, actionable implementation guidance for compliance gaps. This feature is included in our Trial (1000 characters), Professional (included), and Enterprise (unlimited) plans. The Starter plan focuses on core analysis capabilities."
-      }
-    ],
-    support: [
-      {
-        question: "What support options are available?",
-        answer: "We provide comprehensive support including documentation, video tutorials, and direct support channels. Enterprise customers will have access to dedicated account managers and priority support."
-      },
-      {
-        question: "Do you provide training?",
-        answer: "Yes, we offer comprehensive training and onboarding to help your team get the most out of MapMyGap. This includes best practices for compliance analysis and platform optimization."
-      },
-      {
-        question: "Can you help with implementation?",
-        answer: "Yes, our team can help you implement the recommendations generated by our platform. We provide guidance on control implementation and can assist with policy development."
-      },
-      {
-        question: "What if I need help with a specific framework?",
-        answer: "Our team has deep expertise in all supported frameworks. We can provide guidance on framework-specific requirements and help you interpret analysis results."
+        answer: "Control text generation is our AI-powered feature that creates specific, actionable implementation guidance for compliance gaps. This feature is included in our Trial (1000 characters), Professional (unlimited), and Enterprise (unlimited) plans. The Starter plan focuses on core analysis capabilities without control text generation."
       }
     ]
   };
@@ -114,8 +92,7 @@ const FAQ = ({ onShowLogin }) => {
     { id: 'general', name: 'General Questions', icon: '❓' },
     { id: 'technical', name: 'Technical Details', icon: '⚙️' },
     { id: 'compliance', name: 'Compliance & Auditing', icon: '📋' },
-    { id: 'pricing', name: 'Pricing & Plans', icon: '💰' },
-    { id: 'support', name: 'Support & Training', icon: '🎓' }
+    { id: 'pricing', name: 'Pricing & Plans', icon: '💰' }
   ];
 
   return (

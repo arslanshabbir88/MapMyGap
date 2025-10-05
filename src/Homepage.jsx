@@ -201,12 +201,27 @@ function Homepage({ onShowLogin }) {
                   </span>
                 </h1>
                 
-                <p className="text-xl sm:text-2xl text-slate-200 max-w-4xl mx-auto leading-relaxed mb-8">
-                  MapMyGap uses AI to analyze your internal standards against industry frameworks, 
+                <p className="text-xl sm:text-2xl text-slate-200 max-w-4xl mx-auto leading-relaxed mb-12">
+                  Get professional-grade AI compliance analysis in <span className="text-blue-400 font-semibold">minutes, not weeks</span>. 
                   <br className="hidden sm:block" />
-                  <span className="text-blue-400 font-semibold">instantly identifying gaps</span> and generating the policy text you need to fix them.
+                  Transform 40+ hours of consultant work into instant, actionable insights.
                 </p>
                 
+                {/* Key Metrics Bar */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+                  <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-blue-500/50 transition-all duration-300">
+                    <div className="text-3xl sm:text-4xl font-bold text-blue-400 mb-2">100x Faster</div>
+                    <div className="text-slate-300">Than traditional consulting</div>
+                  </div>
+                  <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-green-500/50 transition-all duration-300">
+                    <div className="text-3xl sm:text-4xl font-bold text-green-400 mb-2">80+ Hours</div>
+                    <div className="text-slate-300">Saved per framework</div>
+                  </div>
+                  <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-purple-500/50 transition-all duration-300">
+                    <div className="text-3xl sm:text-4xl font-bold text-purple-400 mb-2">5 Minutes</div>
+                    <div className="text-slate-300">To complete analysis</div>
+                  </div>
+                </div>
 
               </div>
               
@@ -452,6 +467,104 @@ function Homepage({ onShowLogin }) {
                   </Link>
                 </div>
              </div>
+          </section>
+
+          {/* Why MapMyGap - Value Proposition */}
+          <section className="py-24 bg-gradient-to-b from-slate-800/50 to-slate-900">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="text-center mb-16">
+                <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+                  Why Organizations Choose MapMyGap
+                </h2>
+                <p className="text-xl text-slate-400 max-w-3xl mx-auto">
+                  Transform your compliance workflow from weeks of waiting to minutes of action
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8 mb-16">
+                {/* Speed Comparison */}
+                <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="text-5xl mr-4">⚡</div>
+                    <h3 className="text-2xl font-bold text-white">Lightning Fast Results</h3>
+                  </div>
+                  <div className="space-y-4 text-slate-300">
+                    <div className="flex justify-between items-center">
+                      <span>Traditional Consulting</span>
+                      <span className="text-red-400 font-semibold">6-8 weeks</span>
+                    </div>
+                    <div className="w-full h-3 bg-slate-700 rounded-lg overflow-hidden">
+                      <div className="h-3 bg-red-500 rounded-lg" style={{width: '100%'}}></div>
+                    </div>
+                    <div className="flex justify-between items-center mt-6">
+                      <span>MapMyGap</span>
+                      <span className="text-green-400 font-semibold">5 minutes</span>
+                    </div>
+                    <div className="w-full h-3 bg-slate-700 rounded-lg overflow-hidden">
+                      <div className="h-3 bg-green-500 rounded-lg" style={{width: '2%'}}></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Resource Liberation */}
+                <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="text-5xl mr-4">🎯</div>
+                    <h3 className="text-2xl font-bold text-white">Free Up Your Team</h3>
+                  </div>
+                  <div className="space-y-4 text-slate-300">
+                    <p className="text-lg">
+                      Stop spending <span className="text-blue-400 font-semibold">40-80 hours per framework</span> coordinating with consultants and waiting for results.
+                    </p>
+                    <p className="text-lg">
+                      Let your compliance team focus on <span className="text-green-400 font-semibold">closing gaps</span>, not managing consultant schedules.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Flexible Iterations */}
+                <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="text-5xl mr-4">🔄</div>
+                    <h3 className="text-2xl font-bold text-white">Iterate Freely</h3>
+                  </div>
+                  <div className="space-y-4 text-slate-300">
+                    <p className="text-lg">
+                      <span className="text-red-400 font-semibold">Traditional consulting:</span> Limited revisions, additional fees for changes
+                    </p>
+                    <p className="text-lg">
+                      <span className="text-green-400 font-semibold">MapMyGap:</span> Re-analyze as often as your plan allows as you update policies
+                    </p>
+                  </div>
+                </div>
+
+                {/* Multi-Framework */}
+                <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:border-blue-500 transition-all duration-300">
+                  <div className="flex items-center mb-6">
+                    <div className="text-5xl mr-4">🏆</div>
+                    <h3 className="text-2xl font-bold text-white">All Frameworks, One Platform</h3>
+                  </div>
+                  <div className="space-y-4 text-slate-300">
+                    <p className="text-lg">
+                      Analyze <span className="text-purple-400 font-semibold">NIST, ISO 27001, SOC 2, PCI DSS, HIPAA, GDPR</span>, and more
+                    </p>
+                    <p className="text-lg">
+                      No need for multiple consultants or tools—<span className="text-green-400 font-semibold">everything in one place</span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Line Summary */}
+              <div className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-8 text-center">
+                <h3 className="text-2xl font-bold text-white mb-4">
+                  The Bottom Line
+                </h3>
+                <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+                  MapMyGap delivers professional-grade AI analysis—<span className="text-blue-400 font-semibold">100x faster</span>, with <span className="text-green-400 font-semibold">flexible iterations</span>, and <span className="text-purple-400 font-semibold">complete control</span> over your timeline.
+                </p>
+              </div>
+            </div>
           </section>
 
           {/* Final CTA Section */}
