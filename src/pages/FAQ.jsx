@@ -16,6 +16,10 @@ const FAQ = ({ onShowLogin }) => {
         answer: "Traditional gap analysis is time-intensive and resource-heavy—requiring weeks of consultant scheduling, lengthy document reviews, and limited revision cycles. MapMyGap delivers the same professional-grade analysis in minutes, allowing you to:\n\n• Get immediate results\n• Option to re-run analyses unlimited times as you update your policies\n• Analyze multiple frameworks without multiplying costs or timelines\n• Free your team to focus on remediation instead of coordination\n• Maintain full control over your compliance timeline"
       },
       {
+        question: "What counts as an \"analysis\"?",
+        answer: "An analysis is a single gap assessment run. Each time you analyze your document against selected categories, families, or controls from a framework, it counts as one analysis toward your plan limit.\n\nFor example, with the Trial plan's 3 analyses, you could:\n• Analyze 3 different control categories from NIST CSF\n• Analyze 2 SOC 2 trust service categories and 1 PCI DSS requirement area\n• Run the same category multiple times as you update your policies\n\nYou choose which specific categories or control families to analyze each time, giving you flexibility to focus on your compliance priorities."
+      },
+      {
         question: "How does MapMyGap work?",
         answer: "You upload your compliance documents, select a framework and categories to analyze, and our AI performs a comprehensive gap analysis. The platform identifies covered controls, partial implementations, and gaps, then generates actionable recommendations and implementation text."
       },
