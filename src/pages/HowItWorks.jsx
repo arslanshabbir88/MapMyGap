@@ -77,10 +77,10 @@ const HowItWorks = ({ onShowLogin }) => {
       title: "Export & Take Action",
       description: "Export your results in multiple formats and integrate findings into your compliance program and remediation efforts.",
       details: [
-        "PDF reports for stakeholders",
-        "Excel spreadsheets for tracking",
+        "Excel reports with multiple sheets",
+        "CSV exports for tracking",
         "JSON data for integrations",
-        "Action plan templates"
+        "Prioritized recommendations sheet"
       ],
       icon: "📤",
       color: "from-indigo-500 to-indigo-600"
