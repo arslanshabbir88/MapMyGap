@@ -13,7 +13,7 @@ const HowItWorks = ({ onShowLogin }) => {
         "Drag and drop or click to upload files",
         "Support for multiple document types",
         "Secure, encrypted file transfer",
-        "No permanent storage of your content"
+        "Securely stored with enterprise-grade encryption"
       ],
       icon: "📄",
       color: "from-blue-500 to-blue-600"
