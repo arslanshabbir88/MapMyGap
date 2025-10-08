@@ -51,7 +51,7 @@ const HowItWorks = ({ onShowLogin }) => {
       details: [
         "Visual compliance dashboard",
         "Control-by-control analysis",
-        "Gap severity assessment",
+        "Status-based prioritization",
         "Comprehensive scoring system"
       ],
       icon: "📊",
