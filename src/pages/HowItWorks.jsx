@@ -36,7 +36,7 @@ const HowItWorks = ({ onShowLogin }) => {
       title: "AI Analysis & Processing",
       description: "Our advanced AI analyzes your documents against the selected framework, identifying compliance gaps and generating detailed insights.",
       details: [
-        "Real-time AI document processing",
+        "Fast AI-powered document analysis",
         "Natural language understanding",
         "Framework-specific analysis",
         "Comprehensive gap identification"
