@@ -26,7 +26,7 @@ const HowItWorks = ({ onShowLogin }) => {
         "NIST 800-53, ISO 27001, SOC 2, PCI DSS",
         "Target specific control families",
         "Customize analysis scope",
-        "Save preferences for future use"
+        "Flexible framework selection"
       ],
       icon: "🎯",
       color: "from-purple-500 to-purple-600"
