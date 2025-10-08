@@ -247,21 +247,35 @@ export default async function handler(req, res) {
     const timeoutDuration = getTimeoutDuration(originalDocument.length);
     console.log('⏱️ Using adaptive timeout:', timeoutDuration/1000, 'seconds for document size:', originalDocument.length, 'characters');
 
-    // Create a concise prompt for generating control text
-    const prompt = `Generate SPECIFIC, ACTIONABLE implementation text to make this control "covered":
+    // Create a prompt that analyzes and matches the document's writing style
+    const prompt = `You are a cybersecurity compliance expert. Analyze the writing style and tone of the following document, then generate comprehensive policy text that matches that exact style and tone.
 
-DOCUMENT: ${originalDocument.substring(0, 4000)}
-CONTROL: ${targetControl}
+ORIGINAL DOCUMENT CONTENT:
+${originalDocument.substring(0, 4000)}
+
+TARGET CONTROL TO ADDRESS:
+${targetControl}
+
 FRAMEWORK: ${framework}
 
-Requirements:
-- Specific technical details (tools, systems, configurations)
-- Implementation procedures with measurable actions
-- Monitoring and evidence collection
-- Roles and responsibilities
-- Integration with existing systems
+INSTRUCTIONS:
+1. First, analyze the writing style, tone, and language patterns of the original document
+2. Note the level of formality, technical detail, sentence structure, and terminology used
+3. Generate policy text that:
+   - Addresses the specific control requirement
+   - Matches the EXACT writing style and tone of the original document
+   - Uses similar sentence structure, vocabulary, and formality level
+   - Maintains consistency with the document's voice and approach
+   - Includes specific technical details (tools, systems, configurations)
+   - Provides implementation procedures with measurable actions
+   - Covers monitoring and evidence collection
+   - Defines roles and responsibilities
+   - Shows integration with existing systems
+   - Is comprehensive enough for "covered" status
 
-Return ONLY the implementation text, ready to copy. Make it comprehensive enough for "covered" status.`;
+IMPORTANT: The generated text must sound like it was written by the same person/organization as the original document. Match the tone, style, and language patterns exactly.
+
+Return ONLY the implementation text, ready to copy into the document.`;
 
     console.log('📤 Sending prompt to Gemini 2.5 Flash for control text generation...');
     console.log('📊 Prompt length:', prompt.length, 'characters');

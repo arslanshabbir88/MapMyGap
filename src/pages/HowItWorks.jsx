@@ -63,7 +63,7 @@ const HowItWorks = ({ onShowLogin }) => {
       description: "Our flagship feature: Use AI to instantly generate complete, ready-to-use implementation text that transforms gaps into covered controls. No more hours of research and writing.",
       details: [
         "⚡ Instant AI-powered policy generation",
-        "✍️ Context-aware implementation guidance",
+        "✍️ Matches your organization's writing style",
         "🎯 Framework-specific technical details",
         "📋 Complete with roles, procedures & monitoring",
         "📝 Ready to copy directly into your documents"
