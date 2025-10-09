@@ -65,7 +65,7 @@ const About = ({ onShowLogin }) => {
                 </h2>
                 <p className="text-lg text-slate-400 mb-6">
                   To transform how organizations approach compliance by providing AI-powered tools that 
-                  make gap analysis faster, more accurate, and more actionable than traditional methods.
+                  make gap analysis faster, more consistent, and more actionable than traditional methods.
                 </p>
                 <p className="text-lg text-slate-400">
                   We believe that compliance shouldn't be a barrier to business success, but rather a 
