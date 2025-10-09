@@ -101,7 +101,7 @@ const HowItWorks = ({ onShowLogin }) => {
     {
       icon: "🔒",
       title: "Enterprise Secure",
-      description: "Bank-level security with encryption, access controls, and compliance with industry standards. Your data security is our priority."
+      description: "Strong security with TLS encryption, OAuth authentication, and secure infrastructure. Built on security best practices to protect your sensitive data."
     },
     {
       icon: "📱",
