@@ -96,7 +96,7 @@ const HowItWorks = ({ onShowLogin }) => {
     {
       icon: "🎯",
       title: "Highly Accurate",
-      description: "Trained on extensive compliance frameworks and continuously improved with user feedback. Our AI provides professional-grade analysis."
+      description: "Powered by cutting-edge AI technology with comprehensive compliance framework data. Our system provides professional-grade analysis you can trust."
     },
     {
       icon: "🔒",
