@@ -116,7 +116,7 @@ const HowItWorks = ({ onShowLogin }) => {
     {
       icon: "💼",
       title: "Professional Results",
-      description: "Generate professional-grade compliance reports and implementation guidance that meets industry standards and auditor expectations."
+      description: "Generate comprehensive compliance reports and implementation guidance with professional formatting for audit preparation and compliance tracking."
     }
   ];
 
