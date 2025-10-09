@@ -111,7 +111,7 @@ const HowItWorks = ({ onShowLogin }) => {
     {
       icon: "🔄",
       title: "Cutting-Edge Technology",
-      description: "Powered by cutting-edge AI technology and regularly updated compliance frameworks to provide accurate, professional-grade analysis."
+      description: "Powered by cutting-edge AI technology with current versions of major compliance frameworks to provide accurate, professional-grade analysis."
     },
     {
       icon: "💼",
