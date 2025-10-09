@@ -13,7 +13,7 @@ const About = ({ onShowLogin }) => {
     {
       icon: "🔒",
       title: "Security",
-      description: "Security is at the core of our platform. We protect your data with enterprise-grade security measures."
+      description: "Security is at the core of our platform. We protect your data with strong encryption, authentication, and security best practices."
     },
     {
       icon: "🤝",
@@ -23,7 +23,7 @@ const About = ({ onShowLogin }) => {
     {
       icon: "💡",
       title: "Innovation",
-      description: "We continuously innovate to provide cutting-edge solutions that address evolving compliance challenges."
+      description: "We leverage cutting-edge AI technology to provide innovative solutions that address evolving compliance challenges."
     },
     {
       icon: "🌍",
