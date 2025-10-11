@@ -201,7 +201,7 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 </div>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">13. Data Protection Authority</h2>
-                <p>If you are in the EU and have concerns about our data processing, you have the right to lodge a complaint with your local data protection authority.</p>
+                <p>If you have concerns about our data processing practices, you may have the right to lodge a complaint with your local data protection authority or regulatory body, depending on your jurisdiction (e.g., EU Data Protection Authorities, UK ICO, California Attorney General, or other regional privacy regulators).</p>
 
                 <div className="mt-8 pt-6 border-t border-slate-600">
                   <p className="text-sm text-slate-400 text-center">
