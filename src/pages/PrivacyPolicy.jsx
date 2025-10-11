@@ -47,7 +47,7 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Account Information:</strong> Name, email address, company name, and role</li>
                   <li><strong>Documents:</strong> Compliance documents, policies, and procedures you upload</li>
-                  <li><strong>Usage Data:</strong> Framework selections, analysis preferences, and settings</li>
+                  <li><strong>Usage Data:</strong> Framework selections, analysis history, and usage statistics</li>
                   <li><strong>Communication:</strong> Support requests, feedback, and correspondence</li>
                 </ul>
 
@@ -64,7 +64,7 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Service Delivery:</strong> Providing compliance analysis and gap identification</li>
                   <li><strong>AI Processing:</strong> Analyzing documents using our AI models</li>
-                  <li><strong>User Experience:</strong> Personalizing and improving our service</li>
+                  <li><strong>Service Operations:</strong> Operating and maintaining our platform</li>
                   <li><strong>Communication:</strong> Sending important updates and support responses</li>
                 </ul>
 
@@ -123,19 +123,19 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">5.1 Security Measures</h3>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Encryption:</strong> All data is encrypted in transit and at rest</li>
-                  <li><strong>Access Controls:</strong> Strict access controls and authentication</li>
-                  <li><strong>Network Security:</strong> Secure infrastructure and firewalls</li>
-                  <li><strong>Regular Audits:</strong> Security assessments and penetration testing</li>
-                  <li><strong>Employee Training:</strong> Regular security awareness training</li>
+                  <li><strong>Encryption:</strong> All data is encrypted in transit (TLS) and at rest</li>
+                  <li><strong>Access Controls:</strong> OAuth authentication and role-based access controls</li>
+                  <li><strong>Infrastructure Security:</strong> Hosted on secure cloud infrastructure with DDoS protection</li>
+                  <li><strong>Data Isolation:</strong> Row-level security policies ensure users can only access their own data</li>
+                  <li><strong>Monitoring:</strong> Comprehensive logging and error tracking for security events</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">5.2 Data Protection Standards</h3>
+                <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">5.2 Data Protection Practices</h3>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li>Compliance with industry security standards</li>
-                  <li>Regular security updates and patches</li>
-                  <li>Incident response and breach notification procedures</li>
-                  <li>Business continuity and disaster recovery plans</li>
+                  <li>Security best practices following industry standards</li>
+                  <li>Infrastructure provided by SOC 2 compliant service providers</li>
+                  <li>Commitment to prompt breach notification if incidents occur</li>
+                  <li>Reliance on cloud provider infrastructure for availability and resilience</li>
                 </ul>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">6. Data Sharing and Disclosure</h2>
@@ -175,9 +175,9 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">8.1 Types of Cookies</h3>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Essential Cookies:</strong> Required for basic functionality</li>
-                  <li><strong>Analytics Cookies:</strong> Help us improve our service</li>
-                  <li><strong>Preference Cookies:</strong> Remember your settings and choices</li>
+                  <li><strong>Essential Cookies:</strong> Required for authentication and basic functionality</li>
+                  <li><strong>Session Cookies:</strong> Maintain your logged-in session</li>
+                  <li><strong>Analytics Cookies:</strong> Help us understand service usage and performance</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">8.2 Cookie Management</h3>
