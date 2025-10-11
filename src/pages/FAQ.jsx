@@ -43,7 +43,7 @@ const FAQ = ({ onShowLogin }) => {
       },
       {
         question: "Is my data secure when using AI analysis?",
-        answer: "Yes, absolutely. Your documents are processed securely and are never used to train AI models or shared publicly. We use enterprise-grade AI services with strict data privacy policies. Your documents are processed in-memory only and discarded immediately after analysis. We do not store your document content, and the AI service provider does not retain or use your data for training purposes."
+        answer: "Yes, absolutely. Your documents are processed securely and are never used to train AI models or shared publicly. We use enterprise-grade AI services with strict data privacy policies. Your documents are stored securely in our database to enable analysis history and control text generation features. The AI service provider does not retain or use your data for training purposes. You can manually delete your documents at any time."
       },
       {
         question: "What security certifications or standards do you follow?",

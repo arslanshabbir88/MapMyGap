@@ -133,9 +133,9 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">5.2 Data Protection Practices</h3>
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Security best practices following industry standards</li>
-                  <li>Infrastructure provided by SOC 2 compliant service providers</li>
+                  <li>Infrastructure partners (Vercel, Supabase) maintain SOC 2 compliance</li>
                   <li>Commitment to prompt breach notification if incidents occur</li>
-                  <li>Reliance on cloud provider infrastructure for availability and resilience</li>
+                  <li>Cloud infrastructure for availability and resilience</li>
                 </ul>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">6. Data Sharing and Disclosure</h2>
