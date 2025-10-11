@@ -204,7 +204,7 @@ function Homepage({ onShowLogin }) {
                 <p className="text-xl sm:text-2xl text-slate-200 max-w-4xl mx-auto leading-relaxed mb-12">
                   Get professional-grade AI compliance analysis in <span className="text-blue-400 font-semibold">minutes, not weeks</span>. 
                   <br className="hidden sm:block" />
-                  Transform 40+ hours of consultant work into instant, actionable insights.
+                  Skip weeks of waiting and get instant, actionable insights.
                 </p>
                 
                 {/* Key Metrics Bar */}
@@ -214,8 +214,8 @@ function Homepage({ onShowLogin }) {
                     <div className="text-slate-300">Than traditional consulting</div>
                   </div>
                   <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-green-500/50 transition-all duration-300">
-                    <div className="text-3xl sm:text-4xl font-bold text-green-400 mb-2">80+ Hours</div>
-                    <div className="text-slate-300">Saved per framework</div>
+                    <div className="text-3xl sm:text-4xl font-bold text-green-400 mb-2">Weeks Saved</div>
+                    <div className="text-slate-300">Per framework analysis</div>
                   </div>
                   <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700 rounded-xl p-6 hover:border-purple-500/50 transition-all duration-300">
                     <div className="text-3xl sm:text-4xl font-bold text-purple-400 mb-2">5 Minutes</div>
