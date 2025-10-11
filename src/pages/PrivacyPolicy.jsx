@@ -158,7 +158,8 @@ const PrivacyPolicy = ({ onShowLogin }) => {
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">7. Your Rights and Choices</h2>
                 
-                <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">7.1 GDPR Rights (EU Users)</h3>
+                <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">7.1 Your Privacy Rights</h3>
+                <p className="mb-3 text-slate-400">Depending on your jurisdiction (including GDPR, UK GDPR, CCPA, and other privacy laws), you may have the following rights:</p>
                 <ul className="list-disc pl-6 space-y-2">
                   <li><strong>Access:</strong> Request a copy of your personal data</li>
                   <li><strong>Rectification:</strong> Correct inaccurate or incomplete data</li>
