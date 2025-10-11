@@ -10,7 +10,7 @@ MapMyGap is an AI-powered compliance gap analysis platform that helps organizati
 - **Multiple Framework Support**: NIST 800-53, NIST CSF, ISO 27001, SOC 2, PCI DSS
 - **Gap Identification**: Automatic identification of compliance gaps and partial implementations
 - **Implementation Text Generation**: AI-generated specific, actionable implementation guidance
-- **Real-time Processing**: Documents are processed in real-time with no permanent storage
+- **Secure Storage**: Documents are securely stored to enable analysis history and control text generation
 - **Export Capabilities**: Multiple export formats including PDF, Excel, and JSON
 
 ## New Website Pages
@@ -44,7 +44,7 @@ MapMyGap is an AI-powered compliance gap analysis platform that helps organizati
 
 ### Security Features
 - **End-to-end encryption** (TLS 1.3 + AES-256)
-- **No permanent document storage** (30-day temporary retention)
+- **Secure document storage** for analysis history and control text generation
 - **Enterprise-grade security** with SOC 2 and ISO 27001 compliance
 - **GDPR and CCPA compliance** for data protection
 

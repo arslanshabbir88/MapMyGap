@@ -86,10 +86,10 @@ const TermsOfService = ({ onShowLogin }) => {
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">6. Data Handling and Privacy</h2>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li>Documents are processed in real-time and not permanently stored</li>
-                  <li>AI processing is performed for analysis purposes only</li>
-                  <li>30-day temporary storage for user convenience</li>
-                  <li>Secure deletion after processing period</li>
+                  <li>Documents are securely stored to enable analysis history and control text generation features</li>
+                  <li>AI processing is performed for analysis purposes only and never used to train AI models</li>
+                  <li>Users can manually delete their analysis history and documents at any time</li>
+                  <li>All data is stored with encryption and strict access controls</li>
                   <li>No sharing of user data with third parties</li>
                 </ul>
 
