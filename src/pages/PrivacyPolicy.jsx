@@ -169,7 +169,7 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 </ul>
 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">7.2 How to Exercise Your Rights</h3>
-                <p>To exercise any of these rights, please contact us at privacy@mapmygap.com. We will respond to your request within 30 days.</p>
+                <p>To exercise any of these rights, please contact us at admin@mapmygap.com. We will respond to your request within 30 days.</p>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">8. Cookies and Tracking</h2>
                 
@@ -195,10 +195,9 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">12. Contact Information</h2>
                 <p>If you have questions about this Privacy Policy or our data practices, please contact us:</p>
                 <div className="bg-slate-700/50 p-4 rounded-lg mt-4">
-                  <p className="font-semibold text-slate-200">Privacy Officer</p>
-                  <p>Email: privacy@mapmygap.com</p>
+                  <p className="font-semibold text-slate-200">MapMyGap</p>
+                  <p>Email: admin@mapmygap.com</p>
                   <p>Website: https://mapmygap.com</p>
-                  <p>Address: [Your Company Address]</p>
                 </div>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">13. Data Protection Authority</h2>
