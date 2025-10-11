@@ -100,7 +100,7 @@ const TermsOfService = ({ onShowLogin }) => {
                 <div className="bg-red-900/50 border-l-4 border-red-400 p-4 mb-4">
                   <p className="text-red-200"><strong>IMPORTANT:</strong> MapMyGap shall not be liable for any damages arising from the use of AI-generated content, including but not limited to compliance failures, regulatory violations, or financial losses.</p>
                 </div>
-                <p>Our total liability shall not exceed the amount paid for the service in the 12 months preceding the claim.</p>
+                <p>Our total liability shall not exceed the amount paid for the service in the 12 months preceding the claim. For free trial users, this liability cap may be zero.</p>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">9. Intellectual Property</h2>
                 <p>MapMyGap retains all rights to the service, including AI models, algorithms, and platform technology. Users retain rights to their uploaded documents and analysis results.</p>
