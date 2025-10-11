@@ -83,10 +83,10 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">4.1 Document Storage</h3>
                 <ul className="list-disc pl-6 space-y-2">
-                  <li><strong>Real-time Processing:</strong> Documents are processed immediately upon upload</li>
-                  <li><strong>Temporary Storage:</strong> 30-day retention for user convenience</li>
-                  <li><strong>Secure Deletion:</strong> Automatic deletion after retention period</li>
-                  <li><strong>No Permanent Storage:</strong> We do not permanently store your documents</li>
+                  <li><strong>Secure Storage:</strong> Documents are securely stored to enable analysis history and control text generation features</li>
+                  <li><strong>User Control:</strong> You can manually delete your analysis history and documents at any time</li>
+                  <li><strong>Encrypted Storage:</strong> All documents are stored with encryption and strict access controls</li>
+                  <li><strong>Data Isolation:</strong> You can only access your own documents and analysis results</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">4.2 Data Retention Schedule</h3>
@@ -101,24 +101,19 @@ const PrivacyPolicy = ({ onShowLogin }) => {
                     </thead>
                     <tbody>
                       <tr className="border-b border-slate-600">
-                        <td className="py-2">Uploaded Documents</td>
-                        <td className="py-2">30 days</td>
-                        <td className="py-2">Secure deletion</td>
-                      </tr>
-                      <tr className="border-b border-slate-600">
-                        <td className="py-2">Analysis Results</td>
-                        <td className="py-2">90 days</td>
-                        <td className="py-2">Secure deletion</td>
+                        <td className="py-2">Uploaded Documents & Analysis Results</td>
+                        <td className="py-2">Until manually deleted by user</td>
+                        <td className="py-2">User-initiated deletion</td>
                       </tr>
                       <tr className="border-b border-slate-600">
                         <td className="py-2">Account Information</td>
                         <td className="py-2">Until account deletion</td>
-                        <td className="py-2">Account deletion</td>
+                        <td className="py-2">Account deletion removes all associated data</td>
                       </tr>
                       <tr>
-                        <td className="py-2">Usage Analytics</td>
-                        <td className="py-2">2 years</td>
-                        <td className="py-2">Anonymization</td>
+                        <td className="py-2">Usage Logs & Analytics</td>
+                        <td className="py-2">Retained for service operation</td>
+                        <td className="py-2">Deleted with account deletion</td>
                       </tr>
                     </tbody>
                   </table>
