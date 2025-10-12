@@ -110,10 +110,10 @@ const About = ({ onShowLogin }) => {
               on manual compliance reviews that could be completed in minutes with the right technology.
             </p>
             <p className="text-lg text-slate-400 mb-8">
-              Our founders, with deep experience in cybersecurity, compliance, and AI, recognized that 
-              the same artificial intelligence technology transforming other industries could revolutionize 
-              how organizations approach compliance. We set out to build a platform that would make 
-              enterprise-grade compliance analysis accessible to everyone.
+              By combining expertise in cybersecurity, compliance, and AI, we recognized that 
+              artificial intelligence technology could revolutionize how organizations approach compliance. 
+              Our goal was to build a platform that would make enterprise-grade compliance analysis 
+              accessible to organizations of all sizes.
             </p>
             <p className="text-lg text-slate-400">
               Today, MapMyGap serves organizations across industries, helping them achieve compliance 
