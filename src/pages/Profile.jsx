@@ -40,8 +40,8 @@ const Profile = () => {
   };
 
   const handleUpgrade = () => {
-    // Redirect to Stripe checkout for plan upgrade
-    window.location.href = '/api/create-checkout-session?plan=professional';
+    // Redirect to pricing page so user can choose their plan
+    navigate('/pricing');
   };
 
   const handleCancelSubscription = async () => {
