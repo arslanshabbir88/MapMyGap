@@ -31,9 +31,9 @@ const About = ({ onShowLogin }) => {
       description: "We believe compliance excellence should be accessible to organizations of all sizes and industries."
     },
     {
-      icon: "📚",
-      title: "Education",
-      description: "We're committed to educating our users about compliance best practices and industry standards."
+      icon: "⚡",
+      title: "Efficiency",
+      description: "We focus on delivering fast, actionable results that save time and resources for our customers."
     }
   ];
 
