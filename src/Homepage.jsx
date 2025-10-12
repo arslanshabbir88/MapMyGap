@@ -546,7 +546,7 @@ function Homepage({ onShowLogin }) {
                   </div>
                   <div className="space-y-4 text-slate-300">
                     <p className="text-lg">
-                      Analyze <span className="text-purple-400 font-semibold">NIST, ISO 27001, SOC 2, PCI DSS, HIPAA, GDPR</span>, and more
+                      Analyze <span className="text-purple-400 font-semibold">NIST CSF, NIST 800-53, ISO 27001, SOC 2, PCI DSS, HIPAA, SOX, NYDFS Part 500</span>, and more
                     </p>
                     <p className="text-lg">
                       No need for multiple consultants or tools—<span className="text-green-400 font-semibold">everything in one place</span>

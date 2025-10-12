@@ -57,7 +57,7 @@ const FAQ = ({ onShowLogin }) => {
     compliance: [
       {
         question: "Which compliance frameworks do you support?",
-        answer: "We support NIST 800-53, NIST CSF, ISO 27001, SOC 2, PCI DSS, HIPAA, GDPR, and many others. Our framework library is continuously expanding based on industry demand."
+        answer: "We support NIST CSF, NIST SP 800-53, NIST SP 800-63B, ISO 27001, SOC 1, SOC 2, PCI DSS, HIPAA, SOX, and NYDFS Part 500. Our framework library is continuously expanding based on industry demand."
       },
       {
         question: "Can MapMyGap help with audit preparation?",

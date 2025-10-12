@@ -7,43 +7,43 @@ const Security = ({ onShowLogin }) => {
   const implementedSecurityFeatures = [
     {
       icon: "🔐",
-      title: "Secure Data Processing",
-      description: "Your documents are processed securely in memory and are never permanently stored. We use industry-standard TLS encryption for data transmission.",
+      title: "Data Encryption",
+      description: "We protect your data with industry-standard encryption both in transit and at rest to ensure your compliance documents remain secure.",
       details: [
-        "TLS encryption for data in transit",
-        "No permanent document storage",
-        "Documents processed in-memory only",
-        "Automatic cleanup after processing"
+        "TLS encryption for all data in transit",
+        "Encrypted database storage",
+        "Secure authentication tokens",
+        "HTTPS enforced on all connections"
       ]
     },
     {
       icon: "🛡️",
-      title: "Authentication & Access",
-      description: "Secure user authentication through Google OAuth integration, ensuring only authorized users can access the platform.",
+      title: "Authentication & Access Control",
+      description: "Secure user authentication through Google OAuth integration with strict access controls ensuring only authorized users can access the platform.",
       details: [
         "Google OAuth authentication",
         "Secure session management",
         "Protected API endpoints",
-        "User data isolation"
+        "Row-level security policies"
       ]
     },
     {
       icon: "📊",
-      title: "Privacy-First Design",
-      description: "Built with privacy as a core principle - we minimize data collection and ensure your sensitive compliance documents remain confidential.",
+      title: "Data Isolation",
+      description: "We implement strict data isolation practices to ensure users can only access their own documents, analysis results, and account information.",
       details: [
-        "Minimal data collection",
-        "No document content logging",
-        "Temporary processing only",
-        "User privacy protection"
+        "User-specific data access only",
+        "Database row-level security",
+        "Isolated analysis environments",
+        "No cross-user data sharing"
       ]
     },
     {
       icon: "🔒",
       title: "Infrastructure Security",
-      description: "Hosted on Vercel's secure infrastructure with built-in DDoS protection, SSL/TLS, and security headers.",
+      description: "Built on secure cloud infrastructure with enterprise-grade security features including DDoS protection and comprehensive monitoring.",
       details: [
-        "Vercel infrastructure security",
+        "Secure cloud infrastructure",
         "DDoS protection",
         "Security headers enabled",
         "Regular security updates"
@@ -51,25 +51,25 @@ const Security = ({ onShowLogin }) => {
     }
   ];
 
-  const dataProtection = [
+  const dataHandlingPrinciples = [
     {
-      title: "Data Minimization",
-      description: "We only collect the minimum amount of data necessary to provide our services.",
-      icon: "📉"
+      title: "Secure Document Storage",
+      description: "Your documents are securely stored with encryption to enable analysis history and control text generation features. You have full control and can delete them at any time.",
+      icon: "💾"
     },
     {
-      title: "No Document Storage",
-      description: "Documents are processed in memory and automatically deleted after analysis. We never store your sensitive compliance documents.",
-      icon: "🚫"
+      title: "User-Controlled Deletion",
+      description: "You can manually delete your analysis history and documents at any time through your account. When deleted, all associated data is permanently removed.",
+      icon: "🗑️"
     },
     {
-      title: "Secure Processing",
-      description: "All data processing is performed in secure, isolated environments with no persistent storage.",
-      icon: "🔒"
+      title: "AI Privacy Protection",
+      description: "Your documents are processed by AI for analysis purposes only. The AI service provider does not retain or use your data for training purposes.",
+      icon: "🤖"
     },
     {
       title: "No Third-Party Sharing",
-      description: "We never share your data with third parties without explicit consent.",
+      description: "We never share your documents or analysis results with third parties. Your data remains private and confidential.",
       icon: "🤝"
     }
   ];
@@ -84,8 +84,8 @@ const Security = ({ onShowLogin }) => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-5xl font-bold mb-6 text-white">Security & Privacy</h1>
             <p className="text-xl text-white max-w-3xl mx-auto">
-              We're committed to protecting your data through honest, transparent security practices. 
-              Here's exactly what we implement to keep your information secure.
+              We're committed to protecting your data with transparent, enterprise-grade security practices. 
+              Here's exactly how we keep your sensitive compliance information secure.
             </p>
           </div>
         </section>
@@ -94,10 +94,9 @@ const Security = ({ onShowLogin }) => {
         <div className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-white mb-4">Our Security Approach</h2>
+              <h2 className="text-4xl font-bold text-white mb-4">Our Security Implementation</h2>
               <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-                We believe in transparency about our security measures. Below are the specific 
-                security features we have implemented and actively maintain.
+                We implement comprehensive security measures to protect your data at every level of our platform.
               </p>
             </div>
 
@@ -110,7 +109,7 @@ const Security = ({ onShowLogin }) => {
                   <ul className="space-y-2">
                     {feature.details.map((detail, detailIndex) => (
                       <li key={detailIndex} className="flex items-start gap-3">
-                        <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
+                        <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
                         <span className="text-sm text-slate-200">{detail}</span>
                       </li>
                     ))}
@@ -121,19 +120,18 @@ const Security = ({ onShowLogin }) => {
           </div>
         </div>
 
-        {/* Data Protection Principles */}
+        {/* Data Handling Principles */}
         <div className="py-20 bg-slate-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-white mb-4">Data Protection Principles</h2>
+              <h2 className="text-4xl font-bold text-white mb-4">How We Handle Your Data</h2>
               <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-                We follow these core principles to ensure your information is handled 
-                securely and responsibly.
+                Transparency is key to building trust. Here's exactly how we handle your compliance documents and analysis data.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {dataProtection.map((principle, index) => (
+              {dataHandlingPrinciples.map((principle, index) => (
                 <div key={index} className="bg-slate-700 border border-slate-600 rounded-lg p-6 text-center hover:shadow-lg transition-shadow duration-300 hover:border-slate-500">
                   <div className="text-4xl mb-4">{principle.icon}</div>
                   <h3 className="text-lg font-semibold text-white mb-3">{principle.title}</h3>
@@ -144,77 +142,130 @@ const Security = ({ onShowLogin }) => {
           </div>
         </div>
 
-        {/* Honest Assessment */}
-        <div className="py-20 bg-slate-800">
+        {/* Detailed Security Information */}
+        <div className="py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-white mb-4">Our Commitment to Honesty</h2>
+              <h2 className="text-4xl font-bold text-white mb-4">Security Best Practices</h2>
               <p className="text-xl text-slate-100 max-w-3xl mx-auto">
-                We believe trust is built through transparency, not through overstated claims.
+                We follow industry-standard security practices and continuously work to improve our security posture.
               </p>
             </div>
 
-            <div className="bg-slate-700 border border-slate-600 rounded-lg p-8">
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-6">What We Have Implemented</h3>
-                  <ul className="space-y-4">
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-100">
-                        <strong>Secure Authentication:</strong> Google OAuth integration for user login
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-100">
-                        <strong>Data Privacy:</strong> No permanent storage of your documents
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-100">
-                        <strong>Infrastructure:</strong> Hosted on Vercel's secure platform
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-white rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-100">
-                        <strong>Processing:</strong> Secure in-memory document analysis
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* What We Implement */}
+              <div className="bg-slate-800 border border-slate-600 rounded-lg p-8">
+                <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                  <span className="text-green-400 mr-3">✓</span>
+                  Currently Implemented
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>OAuth Authentication:</strong> Secure Google OAuth integration for user login
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Encrypted Storage:</strong> Documents stored with encryption and strict access controls
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>TLS Encryption:</strong> All data in transit protected with TLS encryption
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Secure Infrastructure:</strong> Hosted on enterprise-grade cloud infrastructure
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Row-Level Security:</strong> Database policies ensure data isolation between users
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>Comprehensive Logging:</strong> Error tracking and audit logging for security monitoring
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>AI Data Privacy:</strong> AI providers do not retain or train on your documents
+                    </div>
+                  </li>
+                </ul>
+              </div>
 
-                <div>
-                  <h3 className="text-2xl font-bold text-white mb-6">What We're Working Toward</h3>
-                  <ul className="space-y-4">
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-300">
-                        <strong>Enhanced Authentication:</strong> Multi-factor authentication (MFA)
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-300">
-                        <strong>Advanced Monitoring:</strong> Security monitoring and alerting
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-300">
-                        <strong>Compliance:</strong> Industry certifications and audits
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full mt-2 flex-shrink-0"></div>
-                      <div className="text-slate-300">
-                        <strong>Incident Response:</strong> Formal security incident procedures
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+              {/* Future Enhancements */}
+              <div className="bg-slate-800 border border-slate-600 rounded-lg p-8">
+                <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
+                  <span className="text-blue-400 mr-3">⟳</span>
+                  Planned Enhancements
+                </h3>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-300">
+                      <strong>Multi-Factor Authentication:</strong> Additional authentication layer for enhanced security
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-300">
+                      <strong>SOC 2 Compliance:</strong> Third-party security audit and certification
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-300">
+                      <strong>Advanced Monitoring:</strong> Real-time security monitoring and alerting
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-300">
+                      <strong>Penetration Testing:</strong> Regular third-party security assessments
+                    </div>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-300">
+                      <strong>Incident Response Plan:</strong> Formal security incident response procedures
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Honest Transparency Section */}
+        <div className="py-20 bg-slate-800">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-blue-900/30 border border-blue-500/30 rounded-lg p-8">
+              <h3 className="text-2xl font-bold text-white mb-4 flex items-center">
+                <span className="text-blue-400 mr-3">ℹ️</span>
+                Our Commitment to Transparency
+              </h3>
+              <div className="space-y-4 text-slate-100">
+                <p>
+                  We believe in honest, transparent communication about our security practices. We don't claim to have certifications we haven't obtained or security measures we haven't implemented.
+                </p>
+                <p>
+                  Our infrastructure partners (cloud hosting and database providers) maintain SOC 2 compliance and other certifications. We follow security principles from recognized frameworks like SOC 2, NIST CSF, and ISO 27001 in our implementation.
+                </p>
+                <p>
+                  If you have specific security requirements or need detailed information about our practices for your compliance assessments, please contact us at <a href="mailto:admin@mapmygap.com" className="text-blue-300 hover:text-blue-200 underline">admin@mapmygap.com</a>.
+                </p>
               </div>
             </div>
           </div>
@@ -226,20 +277,20 @@ const Security = ({ onShowLogin }) => {
             <h2 className="text-4xl font-bold text-white mb-6">Questions About Our Security?</h2>
             <p className="text-xl text-white mb-8">
               We're committed to transparency. If you have specific questions about our security 
-              practices or want to know more about our implementation, please reach out.
+              practices or need detailed information for your security assessment, please reach out.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                to="/faq"
+                to="/privacy"
                 className="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-600 bg-white hover:bg-gray-50 transition-colors duration-200 shadow-lg"
               >
-                View FAQ
+                Read Privacy Policy
               </Link>
               <a
                 href="mailto:admin@mapmygap.com"
                 className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
               >
-                Contact Support
+                Contact Security Team
               </a>
             </div>
           </div>
@@ -253,8 +304,11 @@ const Security = ({ onShowLogin }) => {
                 ← Back to Home
               </Link>
               <div className="flex gap-4">
+                <Link to="/terms" className="text-blue-300 hover:text-blue-200 font-medium">
+                  Terms of Service
+                </Link>
                 <Link to="/privacy" className="text-blue-300 hover:text-blue-200 font-medium">
-                  Privacy Policy →
+                  Privacy Policy
                 </Link>
               </div>
             </div>

@@ -175,8 +175,8 @@ export default async function handler(req, res) {
         // Get tier limits
         const tierLimits = {
           trial: { 
-            control_text: 0,
-            control_text_enabled: false
+            control_text: 1000,
+            control_text_enabled: true
           },
           starter: { 
             control_text: 0,

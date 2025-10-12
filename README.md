@@ -7,11 +7,11 @@ MapMyGap is an AI-powered compliance gap analysis platform that helps organizati
 ## Features
 
 - **AI-Powered Analysis**: Advanced AI models analyze compliance documents against industry frameworks
-- **Multiple Framework Support**: NIST 800-53, NIST CSF, ISO 27001, SOC 2, PCI DSS
+- **Multiple Framework Support**: NIST CSF, NIST SP 800-53, NIST SP 800-63B, ISO 27001, SOC 1, SOC 2, PCI DSS, HIPAA, SOX, NYDFS Part 500
 - **Gap Identification**: Automatic identification of compliance gaps and partial implementations
 - **Implementation Text Generation**: AI-generated specific, actionable implementation guidance
 - **Secure Storage**: Documents are securely stored to enable analysis history and control text generation
-- **Export Capabilities**: Multiple export formats including PDF, Excel, and JSON
+- **Export Capabilities**: Multiple export formats including Excel, CSV, and JSON
 
 ## New Website Pages
 
@@ -96,11 +96,16 @@ GCP_CLIENT_EMAIL=your_gcp_client_email
 - Plain text files (.txt)
 
 ### Framework Support
-- **NIST SP 800-53** (Revision 5) - Federal security controls
 - **NIST CSF** (Version 2.0) - Cybersecurity framework
+- **NIST SP 800-53** (Revision 5) - Federal security controls
+- **NIST SP 800-63B** - Digital identity guidelines
 - **ISO 27001:2022** - Information security management
-- **SOC 2 Type II** - Service organization controls
+- **SOC 1 Type II** - Service organization controls (financial reporting)
+- **SOC 2 Type II** - Service organization controls (trust services)
 - **PCI DSS v4.0** - Payment card industry standards
+- **HIPAA** - Health Insurance Portability and Accountability Act
+- **SOX** - Sarbanes-Oxley Act compliance
+- **NYDFS Part 500** - New York Department of Financial Services cybersecurity requirements
 
 ## Deployment
 
