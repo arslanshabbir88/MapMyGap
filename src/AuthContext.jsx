@@ -154,8 +154,32 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         const data = await response.json();
         console.log('🔍 Subscription data received:', data);
-        setSubscription(data.subscription);
-        console.log('🔍 Subscription state set to:', data.subscription);
+        
+        // If no subscription exists, auto-create a trial subscription
+        if (!data.subscription) {
+          console.log('🆕 No subscription found, creating trial subscription...');
+          const trialResponse = await fetch('/api/create-trial-subscription', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: user.id,
+            }),
+          });
+
+          if (trialResponse.ok) {
+            const trialData = await trialResponse.json();
+            console.log('✅ Trial subscription created:', trialData.subscription);
+            setSubscription(trialData.subscription);
+          } else {
+            console.error('❌ Failed to create trial subscription');
+            setSubscription(null);
+          }
+        } else {
+          setSubscription(data.subscription);
+          console.log('🔍 Subscription state set to:', data.subscription);
+        }
       } else {
         console.log('❌ Subscription check failed:', response.status, response.statusText);
         setSubscription(null);
