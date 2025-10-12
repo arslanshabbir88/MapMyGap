@@ -13,8 +13,8 @@
  * COMPLIANCE ANALYSIS COMPONENT
  * 
  * SECURITY: Uses secure /api/analyze endpoint
- * ✅ NO document content is stored or cached
- * ✅ All analysis is performed fresh and discarded immediately
+ * ✅ Documents stored securely with encryption for analysis history
+ * ✅ Users can manually delete documents and analysis at any time
  * ✅ Enterprise-grade data protection for sensitive internal standards
  */
 
@@ -822,16 +822,18 @@ function Analyzer() {
                     )}
                     {(result.status === 'gap' || result.status === 'partial') && (
                         <div>
-                            {/* Only show control text generation button for Professional/Enterprise users */}
+                            {/* Show control text generation button for Trial, Professional, and Enterprise users */}
                             {(() => {
                               const hasSubscription = !!subscription;
+                              const isTrial = subscription?.plan_type?.toLowerCase() === 'trial';
                               const isProfessional = subscription?.plan_type?.toLowerCase() === 'professional';
                               const isEnterprise = subscription?.plan_type?.toLowerCase() === 'enterprise';
-                              const shouldShowButton = hasSubscription && (isProfessional || isEnterprise);
+                              const shouldShowButton = hasSubscription && (isTrial || isProfessional || isEnterprise);
                               
                               console.log('🔍 Control text button debug:', {
                                 hasSubscription,
                                 planType: subscription?.plan_type,
+                                isTrial,
                                 isProfessional,
                                 isEnterprise,
                                 shouldShowButton
@@ -849,12 +851,11 @@ function Analyzer() {
                             </button>
                             )}
                             
-                            {/* Show upgrade prompt for Trial/Starter users */}
+                            {/* Show upgrade prompt for Starter users only (Trial gets the button) */}
                             {(() => {
                               const hasSubscription = !!subscription;
-                              const isProfessional = subscription?.plan_type?.toLowerCase() === 'professional';
-                              const isEnterprise = subscription?.plan_type?.toLowerCase() === 'enterprise';
-                              const shouldShowUpgrade = !hasSubscription || (!isProfessional && !isEnterprise);
+                              const isStarter = subscription?.plan_type?.toLowerCase() === 'starter';
+                              const shouldShowUpgrade = !hasSubscription || isStarter;
                               
                               return shouldShowUpgrade;
                             })() && (
@@ -866,14 +867,16 @@ function Analyzer() {
                                         <div className="flex-1">
                                             <h4 className="text-sm font-medium text-white">Generate Complete Implementation</h4>
                                             <p className="text-xs text-slate-400 mt-1">
-                                                Upgrade to Professional or Enterprise to generate complete implementation text for gaps and partial controls.
+                                                {!hasSubscription 
+                                                  ? 'Sign up for a free trial to generate complete implementation text for gaps and partial controls.' 
+                                                  : 'Upgrade to Professional or Enterprise for unlimited control text generation.'}
                                             </p>
                                         </div>
                                         <button
                                             onClick={() => window.location.href = '/pricing'}
                                             className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:from-blue-600 hover:to-purple-600 transition-all duration-200"
                                         >
-                                            Upgrade
+                                            {!hasSubscription ? 'Start Trial' : 'Upgrade'}
                                         </button>
                                     </div>
                                 </div>
