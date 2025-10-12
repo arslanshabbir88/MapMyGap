@@ -580,7 +580,7 @@ function Analyzer() {
       }
       
       if (!availableContent || availableContent.trim() === '') {
-        setGenerationError('Cannot generate control text. Please upload a new document or ensure historical analysis has document content.');
+        setGenerationError('This analysis was created before you upgraded and does not have stored document content. Please run a new analysis to generate control text.');
         return;
       }
       
@@ -1044,8 +1044,12 @@ function Analyzer() {
       // Ensure we have a proper filename
       const displayName = filename || uploadedFile?.name || 'Untitled Document';
       
-      // Check if user has a paid plan to store document content
-      const isPaidPlan = subscription && (subscription.plan_type?.toLowerCase() === 'professional' || subscription.plan_type?.toLowerCase() === 'enterprise');
+      // Check if user has a plan that supports control text generation (Trial, Professional, Enterprise)
+      const hasControlTextAccess = subscription && (
+        subscription.plan_type?.toLowerCase() === 'trial' ||
+        subscription.plan_type?.toLowerCase() === 'professional' || 
+        subscription.plan_type?.toLowerCase() === 'enterprise'
+      );
       
       // Ensure results and summary are properly structured
       const dataToSave = {
@@ -1062,8 +1066,8 @@ function Analyzer() {
         }
       };
       
-      // Store full document content in separate table for paid plans
-      if (isPaidPlan && fileContent) {
+      // Store full document content in separate table for plans with control text access
+      if (hasControlTextAccess && fileContent) {
         try {
           // Create a simple hash of the content for deduplication (avoid btoa encoding issues)
           const contentHash = fileContent.substring(0, 64) + '_' + fileContent.length; // Simple hash without encoding
@@ -1101,7 +1105,7 @@ function Analyzer() {
               .update({ document_content_id: documentData.id })
               .eq('id', parseInt(savedAnalysis.id));
             
-            console.log('💾 Stored full document content in separate table for paid plan:', subscription.plan_type?.toLowerCase(), 'Content length:', fileContent.length);
+            console.log('💾 Stored full document content in separate table for plan with control text access:', subscription.plan_type?.toLowerCase(), 'Content length:', fileContent.length);
           }
         } catch (error) {
           console.error('❌ Error storing document content:', error);
@@ -1116,7 +1120,7 @@ function Analyzer() {
           console.log('💾 Saved analysis without document content due to error');
         }
       } else {
-        console.log('❌ Not storing document content. isPaidPlan:', isPaidPlan, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
+        console.log('❌ Not storing document content. hasControlTextAccess:', hasControlTextAccess, 'hasFileContent:', !!fileContent, 'plan:', subscription?.plan_type?.toLowerCase());
         
         // Save analysis without document content
         const { error: analysisError } = await supabase
