@@ -857,8 +857,9 @@ function Analyzer() {
                               const isStarter = subscription?.plan_type?.toLowerCase() === 'starter';
                               const shouldShowUpgrade = !hasSubscription || isStarter;
                               
-                              return shouldShowUpgrade;
-                            })() && (
+                              if (!shouldShowUpgrade) return null;
+                              
+                              return (
                                 <div className="p-4 bg-slate-800/50 border border-slate-600 rounded-lg">
                                     <div className="flex items-center space-x-3">
                                         <div className="flex-shrink-0">
@@ -880,7 +881,8 @@ function Analyzer() {
                                         </button>
                                     </div>
                                 </div>
-                            )}
+                              );
+                            })()}
                 {generationError && (
                   <p className="mt-3 text-sm text-red-400">{generationError}</p>
                 )}
