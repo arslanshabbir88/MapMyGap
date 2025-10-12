@@ -152,14 +152,14 @@ const Security = ({ onShowLogin }) => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="max-w-4xl mx-auto">
               {/* What We Implement */}
               <div className="bg-slate-800 border border-slate-600 rounded-lg p-8">
                 <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
                   <span className="text-green-400 mr-3">✓</span>
-                  Currently Implemented
+                  Security Measures Implemented
                 </h3>
-                <ul className="space-y-4">
+                <ul className="grid md:grid-cols-2 gap-4">
                   <li className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
                     <div className="text-slate-100">
@@ -202,44 +202,10 @@ const Security = ({ onShowLogin }) => {
                       <strong>AI Data Privacy:</strong> AI providers do not retain or train on your documents
                     </div>
                   </li>
-                </ul>
-              </div>
-
-              {/* Future Enhancements */}
-              <div className="bg-slate-800 border border-slate-600 rounded-lg p-8">
-                <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                  <span className="text-blue-400 mr-3">⟳</span>
-                  Planned Enhancements
-                </h3>
-                <ul className="space-y-4">
                   <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-300">
-                      <strong>Multi-Factor Authentication:</strong> Additional authentication layer for enhanced security
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-300">
-                      <strong>SOC 2 Compliance:</strong> Third-party security audit and certification
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-300">
-                      <strong>Advanced Monitoring:</strong> Real-time security monitoring and alerting
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-300">
-                      <strong>Penetration Testing:</strong> Regular third-party security assessments
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
-                    <div className="text-slate-300">
-                      <strong>Incident Response Plan:</strong> Formal security incident response procedures
+                    <div className="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                    <div className="text-slate-100">
+                      <strong>User Control:</strong> Manual deletion of documents and analysis history available
                     </div>
                   </li>
                 </ul>
