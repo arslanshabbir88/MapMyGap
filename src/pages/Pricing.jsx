@@ -216,12 +216,12 @@ const Pricing = ({ onShowLogin }) => {
           <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
           <div className="space-y-6">
             <div className="bg-gray-800 rounded-lg p-6">
-              <h3 className="text-xl font-semibold mb-3 text-blue-400">Can I upgrade or downgrade my plan?</h3>
-              <p className="text-gray-300">Yes! You can change your plan at any time. Upgrades take effect immediately, and downgrades take effect at your next billing cycle.</p>
+              <h3 className="text-xl font-semibold mb-3 text-blue-400">Can I upgrade my plan?</h3>
+              <p className="text-gray-300">Yes! You can upgrade your plan at any time through your profile page. Upgrades take effect immediately, giving you instant access to additional features and higher limits.</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-6">
               <h3 className="text-xl font-semibold mb-3 text-blue-400">What happens when I reach my analysis limit?</h3>
-              <p className="text-gray-300">You'll receive a notification when you're close to your limit. Once reached, you can either upgrade your plan or wait until your next billing cycle for more analyses.</p>
+              <p className="text-gray-300">Once you reach your limit, you can either upgrade your plan for immediate access to more analyses, or wait until your next billing cycle when your limits automatically reset.</p>
             </div>
             <div className="bg-gray-800 rounded-lg p-6">
               <h3 className="text-xl font-semibold mb-3 text-blue-400">Is there a setup fee?</h3>
@@ -229,7 +229,7 @@ const Pricing = ({ onShowLogin }) => {
             </div>
             <div className="bg-gray-800 rounded-lg p-6">
               <h3 className="text-xl font-semibold mb-3 text-blue-400">Can I cancel anytime?</h3>
-              <p className="text-gray-300">Absolutely. Cancel your subscription at any time with no cancellation fees. You'll continue to have access until the end of your current billing period.</p>
+              <p className="text-gray-300">Absolutely. Cancel your subscription at any time directly from your profile page with no cancellation fees. You'll continue to have full access until the end of your current billing period.</p>
             </div>
           </div>
         </div>

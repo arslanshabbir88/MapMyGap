@@ -44,6 +44,41 @@ const Profile = () => {
     window.location.href = '/api/create-checkout-session?plan=professional';
   };
 
+  const handleCancelSubscription = async () => {
+    if (!confirm('Are you sure you want to cancel your subscription?\n\nYou will retain access until the end of your current billing period, but your subscription will not renew.')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/cancel-subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const accessUntil = new Date(data.access_until).toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        alert(`Subscription cancelled successfully!\n\nYou'll retain access until ${accessUntil}.`);
+        window.location.reload();
+      } else {
+        alert('Failed to cancel subscription: ' + data.error);
+      }
+    } catch (error) {
+      console.error('❌ Error cancelling subscription:', error);
+      alert('Error cancelling subscription: ' + error.message);
+    }
+  };
+
   const handleFixSubscriptionDates = async () => {
     try {
       const response = await fetch('/api/fix-subscription-dates', {
@@ -327,6 +362,29 @@ const Profile = () => {
               Upgrade Plan
             </button>
           )}
+          
+          {/* Show cancel button for paid subscriptions that aren't already cancelled */}
+          {subscription?.plan_type?.toLowerCase() !== 'trial' && 
+           subscription?.status !== 'cancelled' && 
+           subscription?.status !== 'canceling' && (
+            <button
+              onClick={handleCancelSubscription}
+              className="px-8 py-3 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 hover:border-red-500/50 text-red-400 font-semibold rounded-xl transition-all duration-300"
+            >
+              Cancel Subscription
+            </button>
+          )}
+          
+          {/* Show status if subscription is canceling */}
+          {subscription?.status === 'canceling' && (
+            <div className="px-8 py-3 bg-orange-600/20 border border-orange-500/30 text-orange-400 font-semibold rounded-xl flex items-center space-x-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+              <span>Subscription Cancelling at Period End</span>
+            </div>
+          )}
+          
           <button
             onClick={handleLogout}
             className="px-8 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105"
