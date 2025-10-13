@@ -7,6 +7,11 @@ const Profile = () => {
   const navigate = useNavigate();
   const [usage, setUsage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [accessUntilDate, setAccessUntilDate] = useState('');
 
 
 
@@ -45,9 +50,7 @@ const Profile = () => {
   };
 
   const handleCancelSubscription = async () => {
-    if (!confirm('Are you sure you want to cancel your subscription?\n\nYou will retain access until the end of your current billing period, but your subscription will not renew.')) {
-      return;
-    }
+    setShowCancelModal(false);
 
     try {
       const response = await fetch('/api/cancel-subscription', {
@@ -63,7 +66,6 @@ const Profile = () => {
       const data = await response.json();
 
       if (response.ok) {
-        let accessUntilMessage = '';
         if (data.access_until) {
           try {
             const accessUntil = new Date(data.access_until).toLocaleDateString('en-US', { 
@@ -71,23 +73,28 @@ const Profile = () => {
               month: 'long', 
               day: 'numeric' 
             });
-            accessUntilMessage = `\n\nYou'll retain access until ${accessUntil}.`;
+            setAccessUntilDate(accessUntil);
           } catch (e) {
             console.error('Error formatting date:', e);
           }
         }
-        alert(`Subscription cancelled successfully!${accessUntilMessage}`);
-        window.location.reload();
+        setShowSuccessModal(true);
+        // Reload after 3 seconds
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       } else {
         const errorMessage = data.details 
           ? `${data.error}\n\nDetails: ${data.details}` 
           : data.error;
-        alert('Failed to cancel subscription:\n\n' + errorMessage);
+        setModalMessage(errorMessage);
+        setShowErrorModal(true);
         console.error('Cancellation error:', data);
       }
     } catch (error) {
       console.error('❌ Error cancelling subscription:', error);
-      alert('Error cancelling subscription: ' + error.message);
+      setModalMessage(error.message);
+      setShowErrorModal(true);
     }
   };
 
@@ -380,7 +387,7 @@ const Profile = () => {
            subscription?.status !== 'cancelled' && 
            subscription?.status !== 'canceling' && (
             <button
-              onClick={handleCancelSubscription}
+              onClick={() => setShowCancelModal(true)}
               className="px-8 py-3 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 hover:border-red-500/50 text-red-400 font-semibold rounded-xl transition-all duration-300"
             >
               Cancel Subscription
@@ -405,6 +412,88 @@ const Profile = () => {
           </button>
         </div>
       </div>
+
+      {/* Cancellation Confirmation Modal */}
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in">
+            <div className="flex items-center justify-center w-16 h-16 bg-red-500/20 rounded-full mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white text-center mb-3">Cancel Subscription?</h3>
+            <p className="text-slate-300 text-center mb-6">
+              Are you sure you want to cancel your subscription? You will retain access until the end of your current billing period, but your subscription will not renew.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="flex-1 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-all duration-300"
+              >
+                Keep Subscription
+              </button>
+              <button
+                onClick={handleCancelSubscription}
+                className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-xl transition-all duration-300"
+              >
+                Yes, Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in">
+            <div className="flex items-center justify-center w-16 h-16 bg-emerald-500/20 rounded-full mx-auto mb-4">
+              <svg className="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white text-center mb-3">Subscription Cancelled</h3>
+            <p className="text-slate-300 text-center mb-4">
+              Your subscription has been successfully cancelled.
+            </p>
+            {accessUntilDate && (
+              <p className="text-blue-400 text-center font-medium mb-6">
+                You'll retain access until {accessUntilDate}
+              </p>
+            )}
+            <button
+              onClick={() => window.location.reload()}
+              className="w-full px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-800 border border-slate-700 rounded-2xl p-8 max-w-md w-full shadow-2xl animate-fade-in">
+            <div className="flex items-center justify-center w-16 h-16 bg-red-500/20 rounded-full mx-auto mb-4">
+              <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-white text-center mb-3">Cancellation Failed</h3>
+            <p className="text-slate-300 text-center mb-6">
+              {modalMessage || 'An error occurred while cancelling your subscription. Please try again.'}
+            </p>
+            <button
+              onClick={() => setShowErrorModal(false)}
+              className="w-full px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-semibold rounded-xl transition-all duration-300"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
