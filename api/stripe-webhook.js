@@ -72,6 +72,7 @@ export default async function handler(req, res) {
                 status: subscription.status,
                 currentPeriodEnd: subscription.current_period_end,
                 currentPeriodEndType: typeof subscription.current_period_end,
+                currentPeriodEndConverted: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
                 customerId: session.customer
               });
               
@@ -134,7 +135,8 @@ export default async function handler(req, res) {
                   userId: session.metadata.userId,
                   subscriptionId: subscription.id,
                   planType: planType,
-                  status: subscription.status
+                  status: subscription.status,
+                  currentPeriodEnd: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null
                 });
               }
             } catch (error) {
@@ -211,6 +213,12 @@ export default async function handler(req, res) {
       case 'customer.subscription.updated':
         const updatedSubscription = event.data.object;
         console.log('Subscription updated:', updatedSubscription.id);
+        console.log('📊 Updated subscription details:', {
+          id: updatedSubscription.id,
+          status: updatedSubscription.status,
+          currentPeriodEnd: updatedSubscription.current_period_end,
+          currentPeriodEndConverted: updatedSubscription.current_period_end ? new Date(updatedSubscription.current_period_end * 1000).toISOString() : null
+        });
         
         // Update subscription in Supabase
         try {
@@ -222,14 +230,18 @@ export default async function handler(req, res) {
           else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
           else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
           
+          const updateData = {
+            plan_type: planType,
+            status: updatedSubscription.status,
+            current_period_end: updatedSubscription.current_period_end ? new Date(updatedSubscription.current_period_end * 1000).toISOString() : null,
+            updated_at: new Date().toISOString()
+          };
+          
+          console.log('📝 Updating Supabase with:', updateData);
+          
           const { error } = await supabase
             .from('subscriptions')
-            .update({
-              plan_type: planType,
-              status: updatedSubscription.status,
-              current_period_end: new Date(updatedSubscription.current_period_end * 1000).toISOString(),
-              updated_at: new Date().toISOString()
-            })
+            .update(updateData)
             .eq('stripe_subscription_id', updatedSubscription.id);
           
           if (error) {
