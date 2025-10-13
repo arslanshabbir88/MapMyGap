@@ -44,14 +44,32 @@ export default async function handler(req, res) {
         // Fetch subscription from Stripe
         const stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id);
 
+        console.log(`   Stripe status:`, stripeSub.status);
         console.log(`   Stripe current_period_end:`, stripeSub.current_period_end);
+        console.log(`   Stripe canceled_at:`, stripeSub.canceled_at);
+        console.log(`   Stripe ended_at:`, stripeSub.ended_at);
         
         if (!stripeSub.current_period_end) {
           console.log(`   ⚠️ No current_period_end in Stripe either!`);
+          
+          // If subscription is canceled/incomplete, update status in our DB
+          if (stripeSub.status === 'canceled' || stripeSub.status === 'incomplete' || stripeSub.status === 'incomplete_expired') {
+            await supabase
+              .from('subscriptions')
+              .update({
+                status: stripeSub.status,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', sub.id);
+            
+            console.log(`   ℹ️ Updated status to: ${stripeSub.status}`);
+          }
+          
           results.push({
             subscription_id: sub.stripe_subscription_id,
             status: 'skipped',
-            reason: 'No current_period_end in Stripe'
+            reason: `No current_period_end in Stripe (status: ${stripeSub.status})`,
+            stripe_status: stripeSub.status
           });
           continue;
         }
