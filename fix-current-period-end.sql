@@ -1,7 +1,7 @@
--- Fix current_period_end for cancelled subscriptions
+-- Fix current_period_end for subscriptions
 -- Run this in Supabase SQL Editor
 
--- First, let's see what we have
+-- First, let's see what subscriptions have NULL current_period_end
 SELECT 
   id,
   user_id,
@@ -12,14 +12,22 @@ SELECT
   cancel_at_period_end,
   created_at
 FROM subscriptions
-WHERE status = 'canceling'
+WHERE current_period_end IS NULL
 ORDER BY created_at DESC;
 
--- If current_period_end is NULL, you'll need to manually update it
--- Get the stripe_subscription_id from the query above, then go to Stripe Dashboard
--- to find the current_period_end date, then run:
+-- To fix a specific subscription:
+-- 1. Copy the stripe_subscription_id from above (e.g., 'sub_1SHPN82LOmx0fW2Y75jFdFFo')
+-- 2. Go to Stripe Dashboard → Customers → Find your customer → Click subscription
+-- 3. Look for "Current period ends" date
+-- 4. Run this (replace the values):
 
 -- UPDATE subscriptions
--- SET current_period_end = '2025-XX-XX'  -- Replace with the actual date from Stripe
--- WHERE stripe_subscription_id = 'sub_xxxxx';  -- Replace with your subscription ID
+-- SET current_period_end = '2025-11-12T13:29:04.000Z'  -- Replace with date from Stripe (YYYY-MM-DDTHH:MM:SS.000Z format)
+-- WHERE stripe_subscription_id = 'sub_1SHPN82LOmx0fW2Y75jFdFFo';  -- Your subscription ID
+
+-- Example for your current subscription:
+-- For sub_1SHPN82LOmx0fW2Y75jFdFFo, if Stripe shows "Nov 12, 2025" then:
+UPDATE subscriptions
+SET current_period_end = '2025-11-12T13:29:04.000Z'
+WHERE stripe_subscription_id = 'sub_1SHPN82LOmx0fW2Y75jFdFFo';
 
