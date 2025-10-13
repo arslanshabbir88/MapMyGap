@@ -44,13 +44,65 @@ export default async function handler(req, res) {
         // Fetch subscription from Stripe
         const stripeSub = await stripe.subscriptions.retrieve(sub.stripe_subscription_id);
 
-        console.log(`   Stripe status:`, stripeSub.status);
-        console.log(`   Stripe current_period_end:`, stripeSub.current_period_end);
-        console.log(`   Stripe canceled_at:`, stripeSub.canceled_at);
-        console.log(`   Stripe ended_at:`, stripeSub.ended_at);
+        console.log(`   Stripe subscription details:`, {
+          status: stripeSub.status,
+          current_period_end: stripeSub.current_period_end,
+          current_period_start: stripeSub.current_period_start,
+          canceled_at: stripeSub.canceled_at,
+          ended_at: stripeSub.ended_at,
+          created: stripeSub.created,
+          billing_cycle_anchor: stripeSub.billing_cycle_anchor,
+          items: stripeSub.items?.data?.length
+        });
         
         if (!stripeSub.current_period_end) {
-          console.log(`   ⚠️ No current_period_end in Stripe either!`);
+          console.log(`   ⚠️ No current_period_end in Stripe!`);
+          
+          // Try to calculate from billing_cycle_anchor or created date
+          let calculatedDate = null;
+          if (stripeSub.billing_cycle_anchor) {
+            // Use billing_cycle_anchor + 1 month (for monthly subscriptions)
+            const anchorDate = new Date(stripeSub.billing_cycle_anchor * 1000);
+            anchorDate.setMonth(anchorDate.getMonth() + 1);
+            calculatedDate = anchorDate.toISOString();
+            console.log(`   📅 Calculated from billing_cycle_anchor: ${calculatedDate}`);
+          } else if (stripeSub.created) {
+            // Fallback: use created + 1 month
+            const createdDate = new Date(stripeSub.created * 1000);
+            createdDate.setMonth(createdDate.getMonth() + 1);
+            calculatedDate = createdDate.toISOString();
+            console.log(`   📅 Calculated from created: ${calculatedDate}`);
+          }
+          
+          if (calculatedDate) {
+            // Update with calculated date
+            const { error: updateError } = await supabase
+              .from('subscriptions')
+              .update({
+                current_period_end: calculatedDate,
+                status: stripeSub.status,
+                updated_at: new Date().toISOString()
+              })
+              .eq('id', sub.id);
+
+            if (updateError) {
+              console.error(`   ❌ Error updating:`, updateError);
+              results.push({
+                subscription_id: sub.stripe_subscription_id,
+                status: 'error',
+                error: updateError.message
+              });
+            } else {
+              console.log(`   ✅ Updated with calculated date`);
+              results.push({
+                subscription_id: sub.stripe_subscription_id,
+                status: 'success',
+                current_period_end: calculatedDate,
+                note: 'Calculated from billing_cycle_anchor or created date'
+              });
+            }
+            continue;
+          }
           
           // If subscription is canceled/incomplete, update status in our DB
           if (stripeSub.status === 'canceled' || stripeSub.status === 'incomplete' || stripeSub.status === 'incomplete_expired') {
