@@ -89,10 +89,17 @@ export default async function handler(req, res) {
       // Don't fail the request - Stripe cancellation succeeded
     }
 
+    // Calculate access_until date
+    const accessUntil = canceledSubscription.current_period_end 
+      ? new Date(canceledSubscription.current_period_end * 1000).toISOString()
+      : subscription.current_period_end; // Fallback to database value
+
+    console.log('✅ Cancellation successful. Access until:', accessUntil);
+
     return res.status(200).json({ 
       success: true, 
       message: 'Subscription will be cancelled at the end of your billing period',
-      access_until: new Date(canceledSubscription.current_period_end * 1000).toISOString()
+      access_until: accessUntil
     });
 
   } catch (error) {

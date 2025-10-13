@@ -63,12 +63,20 @@ const Profile = () => {
       const data = await response.json();
 
       if (response.ok) {
-        const accessUntil = new Date(data.access_until).toLocaleDateString('en-US', { 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        });
-        alert(`Subscription cancelled successfully!\n\nYou'll retain access until ${accessUntil}.`);
+        let accessUntilMessage = '';
+        if (data.access_until) {
+          try {
+            const accessUntil = new Date(data.access_until).toLocaleDateString('en-US', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            });
+            accessUntilMessage = `\n\nYou'll retain access until ${accessUntil}.`;
+          } catch (e) {
+            console.error('Error formatting date:', e);
+          }
+        }
+        alert(`Subscription cancelled successfully!${accessUntilMessage}`);
         window.location.reload();
       } else {
         const errorMessage = data.details 
