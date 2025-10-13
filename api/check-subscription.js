@@ -37,16 +37,18 @@ export default async function handler(req, res) {
     
     console.log('🔍 All subscriptions for user:', userId, 'Data:', subscriptions);
     
-    // Filter for active subscriptions
-    const activeSubscriptions = subscriptions?.filter(sub => sub.status === 'active') || [];
-    console.log('🔍 Active subscriptions:', activeSubscriptions);
+    // Filter for active subscriptions (including 'canceling' status - user still has access until period ends)
+    const activeSubscriptions = subscriptions?.filter(sub => 
+      sub.status === 'active' || sub.status === 'canceling'
+    ) || [];
+    console.log('🔍 Active/Canceling subscriptions:', activeSubscriptions);
 
     if (error) {
       console.error('Supabase query error:', error);
       return res.status(200).json({ subscription: null });
     }
 
-    // Get the first active subscription (if any)
+    // Get the first active/canceling subscription (if any)
     const subscription = activeSubscriptions && activeSubscriptions.length > 0 ? activeSubscriptions[0] : null;
 
     if (!subscription) {
