@@ -33,6 +33,14 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: 'No active subscription found' });
     }
 
+    console.log('📋 Subscription details:', {
+      id: subscription.id,
+      plan_type: subscription.plan_type,
+      status: subscription.status,
+      stripe_subscription_id: subscription.stripe_subscription_id,
+      current_period_end: subscription.current_period_end
+    });
+
     // Don't cancel trial subscriptions (they're already time-limited)
     if (subscription.plan_type?.toLowerCase() === 'trial') {
       return res.status(400).json({ 
@@ -65,11 +73,20 @@ export default async function handler(req, res) {
         }
       );
       console.log('✅ Stripe subscription cancelled at period end');
+      console.log('📋 Stripe response:', {
+        id: canceledSubscription.id,
+        status: canceledSubscription.status,
+        cancel_at_period_end: canceledSubscription.cancel_at_period_end,
+        current_period_end: canceledSubscription.current_period_end
+      });
     } catch (stripeError) {
       console.error('❌ Stripe API error:', stripeError);
+      console.error('Error type:', stripeError.type);
+      console.error('Error code:', stripeError.code);
       return res.status(500).json({ 
         error: 'Failed to cancel subscription in Stripe',
         details: stripeError.message,
+        stripeCode: stripeError.code,
         subscriptionId: subscription.stripe_subscription_id
       });
     }
