@@ -16,6 +16,7 @@ import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
 import AppLayout from './components/AppLayout.jsx';
+import AdminFixDates from './pages/AdminFixDates.jsx';
 
 function AppContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -65,6 +66,7 @@ function AppContent() {
         <Route path="/pricing" element={<Pricing onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/about" element={<About onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/admin/fix-dates" element={<AdminFixDates />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
