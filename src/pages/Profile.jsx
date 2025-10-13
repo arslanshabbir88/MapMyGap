@@ -98,35 +98,6 @@ const Profile = () => {
     }
   };
 
-  const handleFixSubscriptionDates = async () => {
-    try {
-      const response = await fetch('/api/fix-subscription-dates', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('✅ Subscription dates fixed:', data);
-        alert('Subscription dates updated successfully! Please refresh the page.');
-        window.location.reload();
-      } else {
-        const error = await response.json();
-        console.error('❌ Error fixing subscription dates:', error);
-        alert('Failed to fix subscription dates: ' + error.error);
-      }
-    } catch (error) {
-      console.error('❌ Error fixing subscription dates:', error);
-      alert('Error fixing subscription dates: ' + error.message);
-    }
-  };
-
-
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -270,13 +241,7 @@ const Profile = () => {
                         </div>
                       ) : (
                         <div className="text-sm text-slate-400 mt-1">
-                          <p className="text-yellow-400 mb-2">Expiration date not available</p>
-                          <button
-                            onClick={handleFixSubscriptionDates}
-                            className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded transition-colors"
-                          >
-                            Fix Subscription Dates
-                          </button>
+                          <p className="text-yellow-400">Expiration date not available</p>
                         </div>
                       )}
                       
