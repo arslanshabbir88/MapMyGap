@@ -92,13 +92,22 @@ export default async function handler(req, res) {
     }
 
     // Update subscription status in database
+    // Also update current_period_end in case it's missing or needs refresh
+    const updateData = {
+      status: 'canceling', // Special status to indicate it will cancel at period end
+      cancel_at_period_end: true,
+      updated_at: new Date().toISOString()
+    };
+
+    // Update current_period_end if available from Stripe
+    if (canceledSubscription.current_period_end) {
+      updateData.current_period_end = new Date(canceledSubscription.current_period_end * 1000).toISOString();
+      console.log('📅 Updating current_period_end to:', updateData.current_period_end);
+    }
+
     const { error: updateError } = await supabase
       .from('subscriptions')
-      .update({
-        status: 'canceling', // Special status to indicate it will cancel at period end
-        cancel_at_period_end: true,
-        updated_at: new Date().toISOString()
-      })
+      .update(updateData)
       .eq('id', subscription.id);
 
     if (updateError) {
