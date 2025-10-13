@@ -41,20 +41,38 @@ export default async function handler(req, res) {
     }
 
     if (!subscription.stripe_subscription_id) {
+      console.error('❌ No Stripe subscription ID found in database');
       return res.status(400).json({ error: 'No Stripe subscription ID found' });
+    }
+
+    // Check if this is a trial subscription (starts with 'trial_')
+    if (subscription.stripe_subscription_id.startsWith('trial_')) {
+      console.log('⚠️ This is a trial subscription created through checkout.session.completed');
+      return res.status(400).json({ 
+        error: 'Trial subscriptions expire automatically after 14 days. No cancellation needed.' 
+      });
     }
 
     console.log('🔄 Cancelling Stripe subscription:', subscription.stripe_subscription_id);
 
     // Cancel the subscription at period end (user keeps access until paid period expires)
-    const canceledSubscription = await stripe.subscriptions.update(
-      subscription.stripe_subscription_id,
-      {
-        cancel_at_period_end: true
-      }
-    );
-
-    console.log('✅ Stripe subscription cancelled at period end');
+    let canceledSubscription;
+    try {
+      canceledSubscription = await stripe.subscriptions.update(
+        subscription.stripe_subscription_id,
+        {
+          cancel_at_period_end: true
+        }
+      );
+      console.log('✅ Stripe subscription cancelled at period end');
+    } catch (stripeError) {
+      console.error('❌ Stripe API error:', stripeError);
+      return res.status(500).json({ 
+        error: 'Failed to cancel subscription in Stripe',
+        details: stripeError.message,
+        subscriptionId: subscription.stripe_subscription_id
+      });
+    }
 
     // Update subscription status in database
     const { error: updateError } = await supabase

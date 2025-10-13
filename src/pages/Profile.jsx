@@ -71,7 +71,11 @@ const Profile = () => {
         alert(`Subscription cancelled successfully!\n\nYou'll retain access until ${accessUntil}.`);
         window.location.reload();
       } else {
-        alert('Failed to cancel subscription: ' + data.error);
+        const errorMessage = data.details 
+          ? `${data.error}\n\nDetails: ${data.details}` 
+          : data.error;
+        alert('Failed to cancel subscription:\n\n' + errorMessage);
+        console.error('Cancellation error:', data);
       }
     } catch (error) {
       console.error('❌ Error cancelling subscription:', error);
