@@ -63,6 +63,7 @@ export default async function handler(req, res) {
       plan_type: subscription.plan_type,
       currentPeriodEnd: subscription.current_period_end,
       customerId: subscription.stripe_customer_id,
+      cancelAtPeriodEnd: subscription.cancel_at_period_end || false,
     };
 
     console.log('🔍 Subscription found for user:', userId, 'Data:', subscriptionData);

@@ -12,6 +12,7 @@ const Profile = () => {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [accessUntilDate, setAccessUntilDate] = useState('');
+  const [isCancelling, setIsCancelling] = useState(false);
 
 
 
@@ -51,6 +52,7 @@ const Profile = () => {
 
   const handleCancelSubscription = async () => {
     setShowCancelModal(false);
+    setIsCancelling(true);
 
     try {
       const response = await fetch('/api/cancel-subscription', {
@@ -89,12 +91,14 @@ const Profile = () => {
           : data.error;
         setModalMessage(errorMessage);
         setShowErrorModal(true);
+        setIsCancelling(false);
         console.error('Cancellation error:', data);
       }
     } catch (error) {
       console.error('❌ Error cancelling subscription:', error);
       setModalMessage(error.message);
       setShowErrorModal(true);
+      setIsCancelling(false);
     }
   };
 
@@ -223,15 +227,15 @@ const Profile = () => {
                       </h3>
                       <p className="text-sm text-slate-400">
                         Status: <span className={`font-medium capitalize ${
-                          subscription?.status === 'canceling' ? 'text-orange-400' : 'text-emerald-400'
+                          subscription?.cancelAtPeriodEnd ? 'text-orange-400' : 'text-emerald-400'
                         }`}>
-                          {subscription?.status === 'canceling' ? 'Canceling' : subscription?.status || 'Active'}
+                          {subscription?.cancelAtPeriodEnd ? 'Canceling' : subscription?.status || 'Active'}
                         </span>
                       </p>
                       {subscription?.currentPeriodEnd ? (
                         <div className="text-sm text-slate-400 mt-1">
                           <p>
-                            {subscription.status === 'canceling' ? (
+                            {subscription?.cancelAtPeriodEnd ? (
                               <>
                                 Cancels{' '}
                                 <span className="text-orange-400 font-medium">
@@ -303,11 +307,12 @@ const Profile = () => {
                         <div className="flex justify-between">
                           <span className="text-slate-400">Plan Status:</span>
                           <span className={`font-medium ${
+                            subscription.cancelAtPeriodEnd ? 'text-orange-400' :
                             subscription.status === 'active' ? 'text-emerald-400' : 
                             subscription.status === 'past_due' ? 'text-orange-400' : 
                             'text-red-400'
                           }`}>
-                            {subscription.status?.charAt(0).toUpperCase() + subscription.status?.slice(1) || 'Active'}
+                            {subscription.cancelAtPeriodEnd ? 'Canceling' : subscription.status?.charAt(0).toUpperCase() + subscription.status?.slice(1) || 'Active'}
                           </span>
                         </div>
                       </div>
@@ -375,17 +380,18 @@ const Profile = () => {
           {/* Show cancel button for paid subscriptions that aren't already cancelled */}
           {subscription?.plan_type?.toLowerCase() !== 'trial' && 
            subscription?.status !== 'cancelled' && 
-           subscription?.status !== 'canceling' && (
+           !subscription?.cancelAtPeriodEnd && (
             <button
               onClick={() => setShowCancelModal(true)}
-              className="px-8 py-3 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 hover:border-red-500/50 text-red-400 font-semibold rounded-xl transition-all duration-300"
+              disabled={isCancelling}
+              className="px-8 py-3 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 hover:border-red-500/50 text-red-400 font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Cancel Subscription
+              {isCancelling ? 'Cancelling...' : 'Cancel Subscription'}
             </button>
           )}
           
           {/* Show status if subscription is canceling */}
-          {subscription?.status === 'canceling' && (
+          {subscription?.cancelAtPeriodEnd && (
             <div className="px-8 py-3 bg-orange-600/20 border border-orange-500/30 text-orange-400 font-semibold rounded-xl flex items-center space-x-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z" />
