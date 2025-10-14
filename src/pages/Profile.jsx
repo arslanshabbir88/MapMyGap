@@ -222,21 +222,46 @@ const Profile = () => {
                         {subscription?.plan_type?.charAt(0).toUpperCase() + subscription?.plan_type?.slice(1) || 'Trial'} Plan
                       </h3>
                       <p className="text-sm text-slate-400">
-                        Status: <span className="text-emerald-400 font-medium capitalize">
-                          {subscription?.status || 'Active'}
+                        Status: <span className={`font-medium capitalize ${
+                          subscription?.status === 'canceling' ? 'text-orange-400' : 'text-emerald-400'
+                        }`}>
+                          {subscription?.status === 'canceling' ? 'Canceling' : subscription?.status || 'Active'}
                         </span>
                       </p>
                       {subscription?.currentPeriodEnd ? (
                         <div className="text-sm text-slate-400 mt-1">
                           <p>
-                            {subscription.plan_type?.toLowerCase() === 'trial' ? 'Trial expires' : 'Renews'} on{' '}
-                            <span className="text-blue-400 font-medium">
-                              {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
-                                year: 'numeric', 
-                                month: 'long', 
-                                day: 'numeric' 
-                              })}
-                            </span>
+                            {subscription.status === 'canceling' ? (
+                              <>
+                                Cancels{' '}
+                                <span className="text-orange-400 font-medium">
+                                  {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                  })}
+                                </span>
+                              </>
+                            ) : subscription.plan_type?.toLowerCase() === 'trial' ? (
+                              <>
+                                Trial expires{' '}
+                                <span className="text-blue-400 font-medium">
+                                  {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                  })}
+                                </span>
+                              </>
+                            ) : (
+                              <>
+                                Renews{' '}
+                                <span className="text-blue-400 font-medium">
+                                  {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                  })}
+                                </span>
+                              </>
+                            )}
                           </p>
                         </div>
                       ) : (
