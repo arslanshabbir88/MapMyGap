@@ -237,30 +237,33 @@ const Profile = () => {
                           <p>
                             {subscription?.cancelAtPeriodEnd ? (
                               <>
-                                Cancels{' '}
+                                Cancels on{' '}
                                 <span className="text-orange-400 font-medium">
                                   {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
-                                    month: 'short', 
+                                    year: 'numeric',
+                                    month: 'long', 
                                     day: 'numeric' 
                                   })}
                                 </span>
                               </>
                             ) : subscription.plan_type?.toLowerCase() === 'trial' ? (
                               <>
-                                Trial expires{' '}
+                                Trial expires on{' '}
                                 <span className="text-blue-400 font-medium">
                                   {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
-                                    month: 'short', 
+                                    year: 'numeric',
+                                    month: 'long', 
                                     day: 'numeric' 
                                   })}
                                 </span>
                               </>
                             ) : (
                               <>
-                                Renews{' '}
+                                Renews on{' '}
                                 <span className="text-blue-400 font-medium">
                                   {new Date(subscription.currentPeriodEnd).toLocaleDateString('en-US', { 
-                                    month: 'short', 
+                                    year: 'numeric',
+                                    month: 'long', 
                                     day: 'numeric' 
                                   })}
                                 </span>
