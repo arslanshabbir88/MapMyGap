@@ -305,11 +305,18 @@ export default async function handler(req, res) {
       case 'customer.subscription.updated':
         const updatedSubscription = event.data.object;
         console.log('Subscription updated:', updatedSubscription.id);
+        
+        // Check both top-level and items for current_period_end (Stripe API change)
+        let updatedPeriodEnd = updatedSubscription.current_period_end || 
+                               updatedSubscription.items?.data?.[0]?.current_period_end;
+        
         console.log('📊 Updated subscription details:', {
           id: updatedSubscription.id,
           status: updatedSubscription.status,
           currentPeriodEnd: updatedSubscription.current_period_end,
-          currentPeriodEndConverted: updatedSubscription.current_period_end ? new Date(updatedSubscription.current_period_end * 1000).toISOString() : null
+          itemsPeriodEnd: updatedSubscription.items?.data?.[0]?.current_period_end,
+          finalPeriodEnd: updatedPeriodEnd,
+          currentPeriodEndConverted: updatedPeriodEnd ? new Date(updatedPeriodEnd * 1000).toISOString() : null
         });
         
         // Update subscription in Supabase
@@ -322,12 +329,49 @@ export default async function handler(req, res) {
           else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
           else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
           
+          // Calculate current_period_end with fallback (don't overwrite with null!)
+          let currentPeriodEnd = null;
+          if (updatedPeriodEnd) {
+            currentPeriodEnd = new Date(updatedPeriodEnd * 1000).toISOString();
+          } else {
+            // Don't have a date from Stripe, calculate it
+            if (updatedSubscription.billing_cycle_anchor) {
+              const anchorDate = new Date(updatedSubscription.billing_cycle_anchor * 1000);
+              const interval = updatedSubscription.items?.data?.[0]?.price?.recurring?.interval;
+              const intervalCount = updatedSubscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+              
+              if (interval === 'year') {
+                anchorDate.setFullYear(anchorDate.getFullYear() + intervalCount);
+              } else {
+                anchorDate.setMonth(anchorDate.getMonth() + intervalCount);
+              }
+              currentPeriodEnd = anchorDate.toISOString();
+              console.log(`⚠️ Calculated from billing_cycle_anchor (${interval}):`, currentPeriodEnd);
+            } else if (updatedSubscription.created) {
+              const createdDate = new Date(updatedSubscription.created * 1000);
+              const interval = updatedSubscription.items?.data?.[0]?.price?.recurring?.interval;
+              const intervalCount = updatedSubscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+              
+              if (interval === 'year') {
+                createdDate.setFullYear(createdDate.getFullYear() + intervalCount);
+              } else {
+                createdDate.setMonth(createdDate.getMonth() + intervalCount);
+              }
+              currentPeriodEnd = createdDate.toISOString();
+              console.log(`⚠️ Calculated from created (${interval}):`, currentPeriodEnd);
+            }
+          }
+          
           const updateData = {
             plan_type: planType,
             status: updatedSubscription.status,
-            current_period_end: updatedSubscription.current_period_end ? new Date(updatedSubscription.current_period_end * 1000).toISOString() : null,
             updated_at: new Date().toISOString()
           };
+          
+          // Only update current_period_end if we have a value (don't overwrite with null)
+          if (currentPeriodEnd) {
+            updateData.current_period_end = currentPeriodEnd;
+          }
           
           console.log('📝 Updating Supabase with:', updateData);
           
