@@ -73,8 +73,28 @@ export default async function handler(req, res) {
                 currentPeriodEnd: subscription.current_period_end,
                 currentPeriodEndType: typeof subscription.current_period_end,
                 currentPeriodEndConverted: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
-                customerId: session.customer
+                customerId: session.customer,
+                billingCycleAnchor: subscription.billing_cycle_anchor,
+                created: subscription.created
               });
+              
+              // Calculate current_period_end if not provided by Stripe
+              let currentPeriodEnd = null;
+              if (subscription.current_period_end) {
+                currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+              } else if (subscription.billing_cycle_anchor) {
+                // Use billing_cycle_anchor + 1 month
+                const anchorDate = new Date(subscription.billing_cycle_anchor * 1000);
+                anchorDate.setMonth(anchorDate.getMonth() + 1);
+                currentPeriodEnd = anchorDate.toISOString();
+                console.log('⚠️ No current_period_end from Stripe, calculated from billing_cycle_anchor:', currentPeriodEnd);
+              } else if (subscription.created) {
+                // Fallback: use created + 1 month
+                const createdDate = new Date(subscription.created * 1000);
+                createdDate.setMonth(createdDate.getMonth() + 1);
+                currentPeriodEnd = createdDate.toISOString();
+                console.log('⚠️ No current_period_end from Stripe, calculated from created:', currentPeriodEnd);
+              }
               
               // Determine plan type
               let planType = 'Unknown';
@@ -91,7 +111,7 @@ export default async function handler(req, res) {
                   stripe_customer_id: session.customer,
                   plan_type: planType,
                   status: subscription.status,
-                  current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                  current_period_end: currentPeriodEnd,
                   // Reset usage when plan changes
                   runs_used: 0,
                   control_text_used: 0,
@@ -114,7 +134,7 @@ export default async function handler(req, res) {
                     stripe_customer_id: session.customer,
                     plan_type: planType,
                     status: subscription.status,
-                    current_period_end: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null,
+                    current_period_end: currentPeriodEnd,
                     // Reset usage for new subscriptions
                     runs_used: 0,
                     control_text_used: 0,
@@ -136,7 +156,7 @@ export default async function handler(req, res) {
                   subscriptionId: subscription.id,
                   planType: planType,
                   status: subscription.status,
-                  currentPeriodEnd: subscription.current_period_end ? new Date(subscription.current_period_end * 1000).toISOString() : null
+                  currentPeriodEnd: currentPeriodEnd
                 });
               }
             } catch (error) {
