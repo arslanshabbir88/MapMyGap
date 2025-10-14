@@ -83,17 +83,33 @@ export default async function handler(req, res) {
               if (subscription.current_period_end) {
                 currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
               } else if (subscription.billing_cycle_anchor) {
-                // Use billing_cycle_anchor + 1 month
+                // Use billing_cycle_anchor + interval (month or year)
                 const anchorDate = new Date(subscription.billing_cycle_anchor * 1000);
-                anchorDate.setMonth(anchorDate.getMonth() + 1);
+                const interval = subscription.items?.data?.[0]?.price?.recurring?.interval;
+                const intervalCount = subscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+                
+                if (interval === 'year') {
+                  anchorDate.setFullYear(anchorDate.getFullYear() + intervalCount);
+                } else {
+                  // Default to month
+                  anchorDate.setMonth(anchorDate.getMonth() + intervalCount);
+                }
                 currentPeriodEnd = anchorDate.toISOString();
-                console.log('⚠️ No current_period_end from Stripe, calculated from billing_cycle_anchor:', currentPeriodEnd);
+                console.log(`⚠️ No current_period_end from Stripe, calculated from billing_cycle_anchor (${interval}):`, currentPeriodEnd);
               } else if (subscription.created) {
-                // Fallback: use created + 1 month
+                // Fallback: use created + interval (month or year)
                 const createdDate = new Date(subscription.created * 1000);
-                createdDate.setMonth(createdDate.getMonth() + 1);
+                const interval = subscription.items?.data?.[0]?.price?.recurring?.interval;
+                const intervalCount = subscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+                
+                if (interval === 'year') {
+                  createdDate.setFullYear(createdDate.getFullYear() + intervalCount);
+                } else {
+                  // Default to month
+                  createdDate.setMonth(createdDate.getMonth() + intervalCount);
+                }
                 currentPeriodEnd = createdDate.toISOString();
-                console.log('⚠️ No current_period_end from Stripe, calculated from created:', currentPeriodEnd);
+                console.log(`⚠️ No current_period_end from Stripe, calculated from created (${interval}):`, currentPeriodEnd);
               }
               
               // Determine plan type
@@ -223,11 +239,67 @@ export default async function handler(req, res) {
       case 'customer.subscription.created':
         const subscription = event.data.object;
         console.log('Subscription created:', subscription.id);
+        console.log('📊 Subscription created event - checking current_period_end:', {
+          id: subscription.id,
+          status: subscription.status,
+          current_period_end: subscription.current_period_end,
+          current_period_start: subscription.current_period_start
+        });
         
-        // For new subscriptions, we don't need to do anything here
-        // The checkout.session.completed event already handled the initial creation
-        // This event is just a confirmation that Stripe created the subscription
-        console.log('Subscription created event received - no action needed');
+        // This event fires AFTER checkout.session.completed and has complete subscription data
+        // Use it to update current_period_end if it was missing during checkout
+        try {
+          // Calculate current_period_end with fallback
+          let currentPeriodEnd = null;
+          if (subscription.current_period_end) {
+            currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+            console.log('✅ Subscription has current_period_end:', currentPeriodEnd);
+          } else if (subscription.billing_cycle_anchor) {
+            const anchorDate = new Date(subscription.billing_cycle_anchor * 1000);
+            const interval = subscription.items?.data?.[0]?.price?.recurring?.interval;
+            const intervalCount = subscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+            
+            if (interval === 'year') {
+              anchorDate.setFullYear(anchorDate.getFullYear() + intervalCount);
+            } else {
+              anchorDate.setMonth(anchorDate.getMonth() + intervalCount);
+            }
+            currentPeriodEnd = anchorDate.toISOString();
+            console.log(`⚠️ Calculated from billing_cycle_anchor (${interval}):`, currentPeriodEnd);
+          } else if (subscription.created) {
+            const createdDate = new Date(subscription.created * 1000);
+            const interval = subscription.items?.data?.[0]?.price?.recurring?.interval;
+            const intervalCount = subscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+            
+            if (interval === 'year') {
+              createdDate.setFullYear(createdDate.getFullYear() + intervalCount);
+            } else {
+              createdDate.setMonth(createdDate.getMonth() + intervalCount);
+            }
+            currentPeriodEnd = createdDate.toISOString();
+            console.log(`⚠️ Calculated from created (${interval}):`, currentPeriodEnd);
+          }
+          
+          // Update subscription in database if we have a current_period_end
+          if (currentPeriodEnd) {
+            const { error } = await supabase
+              .from('subscriptions')
+              .update({
+                current_period_end: currentPeriodEnd,
+                status: subscription.status,
+                updated_at: new Date().toISOString()
+              })
+              .eq('stripe_subscription_id', subscription.id);
+            
+            if (error) {
+              console.error('Error updating subscription in customer.subscription.created:', error);
+            } else {
+              console.log('✅ Updated subscription with current_period_end:', currentPeriodEnd);
+            }
+          }
+        } catch (error) {
+          console.error('Error processing subscription.created:', error);
+        }
         break;
 
       case 'customer.subscription.updated':
