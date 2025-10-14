@@ -78,10 +78,14 @@ export default async function handler(req, res) {
                 created: subscription.created
               });
               
-              // Calculate current_period_end if not provided by Stripe
+              // Calculate current_period_end from new API location (items.data) or fallback
+              // As of March 31, 2025, current_period_end is in subscription items, not top-level
               let currentPeriodEnd = null;
-              if (subscription.current_period_end) {
-                currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+              const periodEndValue = subscription.items?.data?.[0]?.current_period_end || subscription.current_period_end;
+              
+              if (periodEndValue) {
+                currentPeriodEnd = new Date(periodEndValue * 1000).toISOString();
+                console.log('✅ Found current_period_end from Stripe:', currentPeriodEnd);
               } else if (subscription.billing_cycle_anchor) {
                 // Use billing_cycle_anchor + interval (month or year)
                 const anchorDate = new Date(subscription.billing_cycle_anchor * 1000);
@@ -249,10 +253,12 @@ export default async function handler(req, res) {
         // This event fires AFTER checkout.session.completed and has complete subscription data
         // Use it to update current_period_end if it was missing during checkout
         try {
-          // Calculate current_period_end with fallback
+          // Calculate current_period_end from new API location (items.data) or fallback
           let currentPeriodEnd = null;
-          if (subscription.current_period_end) {
-            currentPeriodEnd = new Date(subscription.current_period_end * 1000).toISOString();
+          const periodEndValue = subscription.items?.data?.[0]?.current_period_end || subscription.current_period_end;
+          
+          if (periodEndValue) {
+            currentPeriodEnd = new Date(periodEndValue * 1000).toISOString();
             console.log('✅ Subscription has current_period_end:', currentPeriodEnd);
           } else if (subscription.billing_cycle_anchor) {
             const anchorDate = new Date(subscription.billing_cycle_anchor * 1000);

@@ -99,9 +99,11 @@ export default async function handler(req, res) {
       updated_at: new Date().toISOString()
     };
 
-    // Calculate current_period_end with fallback
-    if (canceledSubscription.current_period_end) {
-      updateData.current_period_end = new Date(canceledSubscription.current_period_end * 1000).toISOString();
+    // Calculate current_period_end from new API location (items.data) or fallback
+    const periodEndValue = canceledSubscription.items?.data?.[0]?.current_period_end || canceledSubscription.current_period_end;
+    
+    if (periodEndValue) {
+      updateData.current_period_end = new Date(periodEndValue * 1000).toISOString();
       console.log('📅 Updating current_period_end from Stripe:', updateData.current_period_end);
     } else if (subscription.current_period_end) {
       // Keep existing date from database
