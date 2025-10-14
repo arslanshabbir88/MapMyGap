@@ -99,10 +99,40 @@ export default async function handler(req, res) {
       updated_at: new Date().toISOString()
     };
 
-    // Update current_period_end if available from Stripe
+    // Calculate current_period_end with fallback
     if (canceledSubscription.current_period_end) {
       updateData.current_period_end = new Date(canceledSubscription.current_period_end * 1000).toISOString();
-      console.log('📅 Updating current_period_end to:', updateData.current_period_end);
+      console.log('📅 Updating current_period_end from Stripe:', updateData.current_period_end);
+    } else if (subscription.current_period_end) {
+      // Keep existing date from database
+      updateData.current_period_end = subscription.current_period_end;
+      console.log('📅 Keeping existing current_period_end from database:', updateData.current_period_end);
+    } else if (canceledSubscription.billing_cycle_anchor) {
+      // Calculate from billing_cycle_anchor
+      const anchorDate = new Date(canceledSubscription.billing_cycle_anchor * 1000);
+      const interval = canceledSubscription.items?.data?.[0]?.price?.recurring?.interval;
+      const intervalCount = canceledSubscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+      
+      if (interval === 'year') {
+        anchorDate.setFullYear(anchorDate.getFullYear() + intervalCount);
+      } else {
+        anchorDate.setMonth(anchorDate.getMonth() + intervalCount);
+      }
+      updateData.current_period_end = anchorDate.toISOString();
+      console.log(`📅 Calculated current_period_end from billing_cycle_anchor (${interval}):`, updateData.current_period_end);
+    } else if (canceledSubscription.created) {
+      // Calculate from created date
+      const createdDate = new Date(canceledSubscription.created * 1000);
+      const interval = canceledSubscription.items?.data?.[0]?.price?.recurring?.interval;
+      const intervalCount = canceledSubscription.items?.data?.[0]?.price?.recurring?.interval_count || 1;
+      
+      if (interval === 'year') {
+        createdDate.setFullYear(createdDate.getFullYear() + intervalCount);
+      } else {
+        createdDate.setMonth(createdDate.getMonth() + intervalCount);
+      }
+      updateData.current_period_end = createdDate.toISOString();
+      console.log(`📅 Calculated current_period_end from created (${interval}):`, updateData.current_period_end);
     }
 
     const { error: updateError } = await supabase
