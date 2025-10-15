@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /profile
+Disallow: /analyzer
+
+# Sitemap
+Sitemap: https://mapmygap.com/sitemap.xml
+
