@@ -45,7 +45,7 @@ export default async function handler(req, res) {
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
-      allow_promotion_codes: false,
+      allow_promotion_codes: true, // Enable promo codes at checkout
       billing_address_collection: 'auto', // Always auto for both trial and subscriptions
       metadata: {
         plan: plan,
