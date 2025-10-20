@@ -118,10 +118,10 @@ export default async function handler(req, res) {
               
               // Determine plan type
               let planType = 'Unknown';
-              if (price.id === 'price_1S1q8O2LOmx0fW2YpttvoaCs') planType = 'Trial';
-              else if (price.id === 'price_1S1gdB2LOmx0fW2YClgvwNTc') planType = 'Starter';
-              else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
-              else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
+              if (price.id === 'price_1SKBQKRxR84YWtKOnL7EH5CJ') planType = 'Trial';
+              else if (price.id === 'price_1SKBQaRxR84YWtKO10Dgusyf') planType = 'Starter';
+              else if (price.id === 'price_1SKBQYRxR84YWtKO57ZCxxxI') planType = 'Professional';
+              else if (price.id === 'price_1SKBQWRxR84YWtKOWhoMAxGU') planType = 'Enterprise';
               
               // Store in Supabase - first try to update existing, then insert if none exists
               const { data: updateData, error: updateError } = await supabase
@@ -330,10 +330,10 @@ export default async function handler(req, res) {
           const price = await stripe.prices.retrieve(updatedSubscription.items.data[0].price.id);
           
           let planType = 'Unknown';
-          if (price.id === 'price_1S1q8O2LOmx0fW2YpttvoaCs') planType = 'Trial';
-          else if (price.id === 'price_1S1gdB2LOmx0fW2YClgvwNTc') planType = 'Starter';
-          else if (price.id === 'price_1S1ghh2LOmx0fW2YWE0mjvJ0') planType = 'Professional';
-          else if (price.id === 'price_1S1gjU2LOmx0fW2YkA4x8uKK') planType = 'Enterprise';
+          if (price.id === 'price_1SKBQKRxR84YWtKOnL7EH5CJ') planType = 'Trial';
+          else if (price.id === 'price_1SKBQaRxR84YWtKO10Dgusyf') planType = 'Starter';
+          else if (price.id === 'price_1SKBQYRxR84YWtKO57ZCxxxI') planType = 'Professional';
+          else if (price.id === 'price_1SKBQWRxR84YWtKOWhoMAxGU') planType = 'Enterprise';
           
           // Calculate current_period_end with fallback (don't overwrite with null!)
           let currentPeriodEnd = null;
