@@ -33,8 +33,8 @@ const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
           priceId: priceId,
           plan: plan,
           userId: user.id,
-          successUrl: `${window.location.origin}/subscription-success`,
-          cancelUrl: `${window.location.origin}/pricing`,
+          successUrl: `https://www.mapmygap.com/subscription-success`,
+          cancelUrl: `https://www.mapmygap.com/pricing`,
         }),
       });
 
