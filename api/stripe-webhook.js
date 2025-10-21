@@ -193,34 +193,42 @@ export default async function handler(req, res) {
               });
               
               // Store trial data in Supabase (treat as a subscription with trial status)
+              // First try to insert, if it fails due to duplicate, then update
               let { error } = await supabase
                 .from('subscriptions')
-                .update({
-                  stripe_subscription_id: `trial_${session.id}`, // Use session ID as trial identifier
+                .insert({
+                  user_id: session.metadata.userId,
+                  stripe_subscription_id: `trial_${session.id}`,
                   stripe_customer_id: session.customer || `trial_customer_${session.id}`, // Use fallback for trial
                   plan_type: session.metadata.plan,
-                  status: 'active', // Trial is active
+                  status: 'active',
                   current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
-                  updated_at: new Date().toISOString()
-                })
-                .eq('user_id', session.metadata.userId);
+                  runs_used: 0,
+                  control_text_used: 0,
+                  runs_reset_date: new Date().toISOString(),
+                  control_text_reset_date: new Date().toISOString(),
+                  created_at: new Date().toISOString()
+                });
               
-              // If no rows were updated, insert a new record
-              if (error || !error) {
-                const { error: insertError } = await supabase
+              // If insert failed due to duplicate key, try update instead
+              if (error && error.code === '23505') { // PostgreSQL duplicate key error
+                console.log('Trial subscription already exists, updating instead...');
+                const { error: updateError } = await supabase
                   .from('subscriptions')
-                  .insert({
-                    user_id: session.metadata.userId,
+                  .update({
                     stripe_subscription_id: `trial_${session.id}`,
-                    stripe_customer_id: session.customer || `trial_customer_${session.id}`, // Use fallback for trial
+                    stripe_customer_id: session.customer || `trial_customer_${session.id}`,
                     plan_type: session.metadata.plan,
                     status: 'active',
-                    current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
-                    created_at: new Date().toISOString()
-                  });
+                    current_period_end: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+                    updated_at: new Date().toISOString()
+                  })
+                  .eq('user_id', session.metadata.userId);
                 
-                if (insertError) {
-                  error = insertError;
+                if (updateError) {
+                  error = updateError;
+                } else {
+                  error = null; // Clear error if update succeeded
                 }
               }
               
