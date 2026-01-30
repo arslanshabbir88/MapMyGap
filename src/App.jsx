@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './AuthContext';
 import Homepage from './Homepage.jsx';
 import Analyzer from './Analyzer.jsx';
@@ -16,6 +16,22 @@ import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
 import AppLayout from './components/AppLayout.jsx';
+
+// Component to track page views for Google Analytics
+function PageViewTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track page view when route changes
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('config', 'G-613K4Q3WKK', {
+        page_path: location.pathname + location.search,
+      });
+    }
+  }, [location]);
+
+  return null;
+}
 
 function AppContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -34,6 +50,7 @@ function AppContent() {
 
   return (
     <Router>
+      <PageViewTracker />
       <Routes>
         <Route path="/" element={<Homepage onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/analyzer" element={
