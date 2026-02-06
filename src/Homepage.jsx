@@ -146,7 +146,7 @@ function Homepage({ onShowLogin }) {
                       onClick={navigateToAnalyzer}
                       className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
                     >
-                      Get Started
+                Get Started
                     </button>
                   </>
                 )}
@@ -199,7 +199,7 @@ function Homepage({ onShowLogin }) {
                   <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-blue-600">
                     with AI
                   </span>
-                </h1>
+              </h1>
                 
                 <p className="text-xl sm:text-2xl text-slate-200 max-w-4xl mx-auto leading-relaxed mb-12">
                   Get professional-grade AI compliance analysis in <span className="text-blue-400 font-semibold">minutes, not weeks</span>. 
@@ -563,8 +563,8 @@ function Homepage({ onShowLogin }) {
                 <p className="text-xl text-slate-300 max-w-3xl mx-auto">
                   MapMyGap delivers professional-grade AI analysis—<span className="text-blue-400 font-semibold">100x faster</span>, with <span className="text-green-400 font-semibold">flexible iterations</span>, and <span className="text-purple-400 font-semibold">complete control</span> over your timeline.
                 </p>
-              </div>
-            </div>
+                </div>
+             </div>
           </section>
 
           {/* Final CTA Section */}
@@ -646,8 +646,8 @@ function Homepage({ onShowLogin }) {
             
             <div className="border-t border-slate-800 mt-8 pt-8 text-center">
               <p className="text-slate-400">&copy; 2025 MapMyGap. All rights reserved.</p>
+                </div>
             </div>
-          </div>
         </footer>
       </div>
     </>

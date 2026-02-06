@@ -16,6 +16,7 @@ import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
 import AppLayout from './components/AppLayout.jsx';
+import CookieConsentBanner from './components/CookieConsentBanner.jsx';
 
 // Component to track page views for Google Analytics
 function PageViewTracker() {
@@ -50,6 +51,7 @@ function AppContent() {
 
   return (
     <Router>
+      <CookieConsentBanner />
       <PageViewTracker />
       <Routes>
         <Route path="/" element={<Homepage onShowLogin={() => setShowLoginModal(true)} />} />
