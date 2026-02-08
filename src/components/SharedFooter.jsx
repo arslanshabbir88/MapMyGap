@@ -41,7 +41,7 @@ const SharedFooter = () => {
         </div>
         
         <div className="border-t border-slate-800 mt-8 pt-8 text-center">
-          <p className="text-slate-400">&copy; 2025 MapMyGap. All rights reserved.</p>
+          <p className="text-slate-400">&copy; 2026 MapMyGap. All rights reserved.</p>
         </div>
       </div>
     </footer>

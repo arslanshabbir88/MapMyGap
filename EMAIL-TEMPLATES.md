@@ -164,7 +164,7 @@ Replace the basic HTML with this professional template:
         <div class="footer">
             <p><strong>MapMyGap</strong> - AI-Powered Compliance Analysis</p>
             <p>Questions? Contact us at support@mapmygap.com</p>
-            <p>© 2025 MapMyGap. All rights reserved.</p>
+            <p>© 2026 MapMyGap. All rights reserved.</p>
         </div>
     </div>
 </body>
