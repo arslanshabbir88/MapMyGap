@@ -36,6 +36,7 @@ function PageViewTracker() {
 
 function AppContent() {
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [authModalSignUp, setAuthModalSignUp] = useState(false);
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -81,7 +82,7 @@ function AppContent() {
         <Route path="/how-it-works" element={<HowItWorks onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/frameworks" element={<Frameworks onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/security" element={<Security onShowLogin={() => setShowLoginModal(true)} />} />
-        <Route path="/pricing" element={<Pricing onShowLogin={() => setShowLoginModal(true)} />} />
+        <Route path="/pricing" element={<Pricing onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/about" element={<About onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess onShowLogin={() => setShowLoginModal(true)} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -91,6 +92,7 @@ function AppContent() {
         isOpen={showLoginModal} 
         onClose={() => setShowLoginModal(false)}
         onSwitchToSignup={() => setShowLoginModal(false)}
+        initialIsSignup={authModalSignUp}
       />
     </Router>
   );

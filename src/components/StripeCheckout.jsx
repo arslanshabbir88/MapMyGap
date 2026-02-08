@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 
-const StripeCheckout = ({ plan, priceId, onSuccess, onCancel }) => {
+const StripeCheckout = ({ plan, priceId, onSuccess, onCancel, onShowSignup }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { user } = useAuth();
 
   const handleCheckout = async () => {
     if (!user) {
-      setError('Please log in to subscribe');
+      if (onShowSignup) {
+        onShowSignup();
+      } else {
+        setError('Please log in to subscribe');
+      }
       return;
     }
 

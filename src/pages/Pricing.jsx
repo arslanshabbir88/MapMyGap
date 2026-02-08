@@ -4,7 +4,7 @@ import SharedFooter from '../components/SharedFooter';
 import StripeCheckout from '../components/StripeCheckout';
 import { STRIPE_CONFIG } from '../config/stripe';
 
-const Pricing = ({ onShowLogin }) => {
+const Pricing = ({ onShowLogin, onShowSignup }) => {
   // Define all possible features
   const allFeatures = [
     { key: 'analyses', text: 'Analyses per month' },
@@ -204,6 +204,7 @@ const Pricing = ({ onShowLogin }) => {
                     priceId={plan.priceId}
                     onSuccess={() => console.log(`${plan.name} subscription successful`)}
                     onCancel={() => console.log(`${plan.name} subscription cancelled`)}
+                    onShowSignup={onShowSignup}
                   />
                 </div>
               </div>

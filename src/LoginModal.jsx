@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 
 const Icon = ({ path, className = "w-6 h-6" }) => (
@@ -16,8 +16,11 @@ const GoogleIcon = () => (
   </svg>
 );
 
-const LoginModal = ({ isOpen, onClose, onSwitchToSignup }) => {
-  const [isSignup, setIsSignup] = useState(false);
+const LoginModal = ({ isOpen, onClose, onSwitchToSignup, initialIsSignup = false }) => {
+  const [isSignup, setIsSignup] = useState(initialIsSignup);
+  useEffect(() => {
+    if (isOpen) setIsSignup(!!initialIsSignup);
+  }, [isOpen, initialIsSignup]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
