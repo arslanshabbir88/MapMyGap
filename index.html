@@ -28,6 +28,35 @@
     <meta property="twitter:description" content="Get professional compliance gap analysis in 5 minutes instead of 6 weeks. AI-powered analysis for NIST CSF, ISO 27001, SOC 2, PCI DSS, HIPAA, and more." />
     <meta property="twitter:image" content="https://mapmygap.com/og-image.png" />
     
+    <!-- JSON-LD: Organization + WebSite -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://mapmygap.com/#organization",
+          "name": "MapMyGap",
+          "url": "https://mapmygap.com",
+          "logo": "https://mapmygap.com/favicon.svg",
+          "description": "AI-powered compliance gap analysis platform. Analyze documents against NIST CSF, ISO 27001, SOC 2, PCI DSS, HIPAA, and more in minutes.",
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "name": "MapMyGap",
+          "url": "https://mapmygap.com",
+          "description": "Get professional compliance gap analysis in 5 minutes. AI-powered analysis for NIST, ISO 27001, SOC 2, PCI DSS, HIPAA.",
+          "publisher": { "@id": "https://mapmygap.com/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": { "@type": "EntryPoint", "urlTemplate": "https://mapmygap.com/?q={search_term_string}" },
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
     <!-- Additional SEO -->
     <meta name="theme-color" content="#3b82f6" />
     <meta name="apple-mobile-web-app-capable" content="yes" />

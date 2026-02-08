@@ -101,8 +101,19 @@ const FAQ = ({ onShowLogin, onShowSignup }) => {
     { id: 'pricing', name: 'Pricing & Plans', icon: '💰' }
   ];
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: Object.values(faqData).flat().map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main>

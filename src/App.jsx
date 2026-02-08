@@ -18,6 +18,7 @@ import Profile from './pages/Profile.jsx';
 import AppLayout from './components/AppLayout.jsx';
 import CookieConsentBanner from './components/CookieConsentBanner.jsx';
 import { ContactFormProvider } from './contexts/ContactFormContext.jsx';
+import PageMeta from './components/PageMeta.jsx';
 
 // Component to track page views for Google Analytics
 function PageViewTracker() {
@@ -55,6 +56,7 @@ function AppContent() {
     <Router>
       <ContactFormProvider>
       <CookieConsentBanner />
+      <PageMeta />
       <PageViewTracker />
       <Routes>
         <Route path="/" element={<Homepage onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
