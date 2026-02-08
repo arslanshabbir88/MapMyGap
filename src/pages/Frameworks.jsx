@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
+const DEFAULT_FRAMEWORK = 'nist-csf';
+
 const Frameworks = ({ onShowLogin, onShowSignup }) => {
-  const [selectedFramework, setSelectedFramework] = useState('nist-csf');
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const frameworks = {
     'nist-csf': {
@@ -625,6 +627,15 @@ const Frameworks = ({ onShowLogin, onShowSignup }) => {
     }
   };
 
+  const fromUrl = searchParams.get('framework');
+  const selectedFramework = fromUrl && Object.prototype.hasOwnProperty.call(frameworks, fromUrl)
+    ? fromUrl
+    : DEFAULT_FRAMEWORK;
+
+  const handleSelectFramework = (key) => {
+    setSearchParams({ framework: key });
+  };
+
   const selectedFrameworkData = frameworks[selectedFramework];
 
   return (
@@ -650,7 +661,7 @@ const Frameworks = ({ onShowLogin, onShowSignup }) => {
             {Object.entries(frameworks).map(([key, framework]) => (
               <button
                 key={key}
-                onClick={() => setSelectedFramework(key)}
+                onClick={() => handleSelectFramework(key)}
                 className={`p-4 rounded-lg text-center transition-all duration-200 ${
                   selectedFramework === key
                     ? 'bg-gradient-to-r ' + framework.color + ' text-white shadow-lg transform scale-105'
