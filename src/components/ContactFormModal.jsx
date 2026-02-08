@@ -45,8 +45,14 @@ export default function ContactFormModal({ isOpen, onClose, type = 'support' }) 
           message: message.trim(),
         }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to send');
+      const text = await res.text();
+      let data;
+      try {
+        data = text ? JSON.parse(text) : {};
+      } catch {
+        throw new Error(res.ok ? 'Invalid response from server' : text || 'Failed to send message. Please try again.');
+      }
+      if (!res.ok) throw new Error(data.error || text || 'Failed to send');
       setSuccess(true);
       setName('');
       setEmail('');
