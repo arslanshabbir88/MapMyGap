@@ -118,7 +118,7 @@ export default async function handler(req, res) {
               
               // Determine plan type
               let planType = 'Unknown';
-              if (price.id === 'price_1SKBQKRxR84YWtKOnL7EH5CJ') planType = 'Trial';
+              if (price.id === 'price_1SyMLxRxR84YWtKOQ8KRPRvf') planType = 'Trial';
               else if (price.id === 'price_1SKBQaRxR84YWtKO10Dgusyf') planType = 'Starter';
               else if (price.id === 'price_1SKBQYRxR84YWtKO57ZCxxxI') planType = 'Professional';
               else if (price.id === 'price_1SKBQWRxR84YWtKOWhoMAxGU') planType = 'Enterprise';
@@ -338,7 +338,7 @@ export default async function handler(req, res) {
           const price = await stripe.prices.retrieve(updatedSubscription.items.data[0].price.id);
           
           let planType = 'Unknown';
-          if (price.id === 'price_1SKBQKRxR84YWtKOnL7EH5CJ') planType = 'Trial';
+          if (price.id === 'price_1SyMLxRxR84YWtKOQ8KRPRvf') planType = 'Trial';
           else if (price.id === 'price_1SKBQaRxR84YWtKO10Dgusyf') planType = 'Starter';
           else if (price.id === 'price_1SKBQYRxR84YWtKO57ZCxxxI') planType = 'Professional';
           else if (price.id === 'price_1SKBQWRxR84YWtKOWhoMAxGU') planType = 'Enterprise';

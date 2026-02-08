@@ -17,7 +17,7 @@ export const STRIPE_CONFIG = {
   
   // Price IDs from your Stripe dashboard (Live Mode)
   prices: {
-    trial: 'price_1SKBQKRxR84YWtKOnL7EH5CJ', // 14 day trial
+    trial: 'price_1SyMLxRxR84YWtKOQ8KRPRvf', // 14 day trial (prod_TwEpWSjoX2rRvT)
     starter: 'price_1SKBQaRxR84YWtKO10Dgusyf', // Starter Plan
     professional: 'price_1SKBQYRxR84YWtKO57ZCxxxI', // Professional Plan
     enterprise: 'price_1SKBQWRxR84YWtKOWhoMAxGU' // Enterprise Plan
