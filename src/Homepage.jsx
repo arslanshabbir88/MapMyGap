@@ -21,7 +21,7 @@ const XMarkIcon = () => <Icon path="M6 18L18 6M6 6l12 12" />;
 
 // --- Main Homepage Component ---
 
-function Homepage({ onShowLogin }) {
+function Homepage({ onShowLogin, onShowSignup }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -36,10 +36,16 @@ function Homepage({ onShowLogin }) {
 
   const navigateToAnalyzer = () => {
     if (!user) {
-      // Show login modal
-      if (onShowLogin) {
-        onShowLogin();
-      }
+      if (onShowLogin) onShowLogin();
+      return;
+    }
+    navigate('/analyzer');
+  };
+
+  const handleGetStarted = () => {
+    if (!user) {
+      if (onShowSignup) onShowSignup();
+      else if (onShowLogin) onShowLogin();
       return;
     }
     navigate('/analyzer');
@@ -143,10 +149,10 @@ function Homepage({ onShowLogin }) {
                       Sign In
                     </button>
                     <button
-                      onClick={navigateToAnalyzer}
+                      onClick={handleGetStarted}
                       className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
                     >
-                Get Started
+                      Get Started
                     </button>
                   </>
                 )}
@@ -223,11 +229,11 @@ function Homepage({ onShowLogin }) {
                   </div>
                 </div>
 
-              </div>
-              
+</div>
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <button
-                  onClick={navigateToAnalyzer}
+                  onClick={user ? navigateToAnalyzer : handleGetStarted}
                   className="group relative rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-10 py-5 text-lg font-semibold text-white shadow-2xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 hover:from-blue-600 hover:to-purple-700"
                 >
                   <span className="relative z-10">{user ? 'Go to Analyzer' : 'Start Free Analysis'}</span>
@@ -587,7 +593,7 @@ function Homepage({ onShowLogin }) {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <button
-                  onClick={navigateToAnalyzer}
+                  onClick={user ? navigateToAnalyzer : handleGetStarted}
                   className="group relative rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 px-10 py-5 text-lg font-semibold text-white shadow-2xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 transform hover:scale-105 hover:from-blue-600 hover:to-purple-700"
                 >
                   <span className="relative z-10">{user ? 'Go to Analyzer' : 'Start Free Analysis'}</span>
