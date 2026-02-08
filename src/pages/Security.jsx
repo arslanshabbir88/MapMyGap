@@ -2,8 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
+import { useContactForm } from '../contexts/ContactFormContext';
 
 const Security = ({ onShowLogin, onShowSignup }) => {
+  const { openContactForm } = useContactForm();
   const implementedSecurityFeatures = [
     {
       icon: "🔐",
@@ -230,7 +232,7 @@ const Security = ({ onShowLogin, onShowSignup }) => {
                   Our infrastructure partners (cloud hosting and database providers) maintain SOC 2 compliance and other certifications. We follow security principles from recognized frameworks like SOC 2, NIST CSF, and ISO 27001 in our implementation.
                 </p>
                 <p>
-                  If you have specific security requirements or need detailed information about our practices for your compliance assessments, please contact us at <a href="mailto:admin@mapmygap.com" className="text-blue-300 hover:text-blue-200 underline">admin@mapmygap.com</a>.
+                  If you have specific security requirements or need detailed information about our practices for your compliance assessments, please <button type="button" onClick={() => openContactForm('support')} className="text-blue-300 hover:text-blue-200 underline">contact us</button>.
                 </p>
               </div>
             </div>
@@ -252,12 +254,13 @@ const Security = ({ onShowLogin, onShowSignup }) => {
               >
                 Read Privacy Policy
               </Link>
-              <a
-                href="mailto:admin@mapmygap.com"
+              <button
+                type="button"
+                onClick={() => openContactForm('support')}
                 className="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-medium rounded-md text-white hover:bg-white hover:text-blue-600 transition-colors duration-200"
               >
                 Contact Security Team
-              </a>
+              </button>
             </div>
           </div>
         </div>

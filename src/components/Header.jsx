@@ -1,10 +1,12 @@
 import React from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useContactForm } from '../contexts/ContactFormContext';
 
 const Header = () => {
   const { user, subscription, signOut } = useAuth();
   const navigate = useNavigate();
+  const { openContactForm } = useContactForm();
 
   const handleLogout = async () => {
     try {
@@ -16,8 +18,7 @@ const Header = () => {
   };
 
   const handleSupport = () => {
-    // You can replace this with your actual support contact
-    window.open('mailto:admin@mapmygap.com', '_blank');
+    openContactForm('support');
   };
 
   const getUserInitials = () => {

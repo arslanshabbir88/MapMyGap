@@ -3,8 +3,10 @@ import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../AuthContext';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
+import { useContactForm } from '../contexts/ContactFormContext';
 
 const SubscriptionSuccess = ({ onShowLogin, onShowSignup }) => {
+  const { openContactForm } = useContactForm();
   const [searchParams] = useSearchParams();
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -145,7 +147,7 @@ const SubscriptionSuccess = ({ onShowLogin, onShowSignup }) => {
 
           {/* Support Info */}
           <div className="mt-12 text-gray-400">
-            <p>Need help? Contact us at <a href="mailto:admin@mapmygap.com" className="text-blue-400 hover:text-blue-300">admin@mapmygap.com</a></p>
+            <p>Need help? <button type="button" onClick={() => openContactForm('support')} className="text-blue-400 hover:text-blue-300 underline">Contact us</button></p>
           </div>
         </div>
       </main>

@@ -17,6 +17,7 @@ import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
 import AppLayout from './components/AppLayout.jsx';
 import CookieConsentBanner from './components/CookieConsentBanner.jsx';
+import { ContactFormProvider } from './contexts/ContactFormContext.jsx';
 
 // Component to track page views for Google Analytics
 function PageViewTracker() {
@@ -52,6 +53,7 @@ function AppContent() {
 
   return (
     <Router>
+      <ContactFormProvider>
       <CookieConsentBanner />
       <PageViewTracker />
       <Routes>
@@ -94,6 +96,7 @@ function AppContent() {
         onSwitchToSignup={() => setShowLoginModal(false)}
         initialIsSignup={authModalSignUp}
       />
+      </ContactFormProvider>
     </Router>
   );
 }

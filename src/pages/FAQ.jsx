@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
+import { useContactForm } from '../contexts/ContactFormContext';
 
 const FAQ = ({ onShowLogin, onShowSignup }) => {
+  const { openContactForm } = useContactForm();
   const [openCategory, setOpenCategory] = useState('general');
 
   const faqData = {
@@ -167,18 +169,20 @@ const FAQ = ({ onShowLogin, onShowSignup }) => {
               Reach out and we'll get back to you as soon as possible.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="mailto:admin@mapmygap.com"
-                className="inline-flex items-center px-8 py-4 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-500 transition-colors rounded-lg text-lg font-semibold"
+              <button
+                type="button"
+                onClick={() => openContactForm('support')}
+                className="inline-flex items-center justify-center px-8 py-4 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-500 transition-colors rounded-lg text-lg font-semibold"
               >
                 Email Support
-              </a>
-              <a
-                href="mailto:sales@mapmygap.com"
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-lg font-semibold hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+              </button>
+              <button
+                type="button"
+                onClick={() => openContactForm('sales')}
+                className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-lg font-semibold hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
               >
                 Contact Sales
-              </a>
+              </button>
             </div>
           </div>
         </section>
