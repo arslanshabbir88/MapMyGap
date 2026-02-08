@@ -14,10 +14,23 @@ const LogoutIcon = () => <Icon path="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 
 const MenuIcon = () => <Icon path="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />;
 const XMarkIcon = () => <Icon path="M6 18L18 6M6 6l12 12" />;
 
-const SharedNavigation = ({ onShowLogin }) => {
+const SharedNavigation = ({ onShowLogin, onShowSignup }) => {
   const { user, signOut, subscription, subscriptionLoading } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleGetStarted = () => {
+    if (!user) {
+      if (onShowSignup) onShowSignup();
+      else if (onShowLogin) onShowLogin();
+      return;
+    }
+    if (!subscription) {
+      navigate('/pricing');
+      return;
+    }
+    navigate('/analyzer');
+  };
 
   const handleLogout = async () => {
     try {
@@ -111,7 +124,7 @@ const SharedNavigation = ({ onShowLogin }) => {
                   Sign In
                 </button>
                 <button
-                  onClick={navigateToAnalyzer}
+                  onClick={handleGetStarted}
                   className="rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-semibold text-white shadow-lg shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/40 transition-all duration-300"
                 >
                   Get Started

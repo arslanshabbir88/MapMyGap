@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const HowItWorks = ({ onShowLogin }) => {
+const HowItWorks = ({ onShowLogin, onShowSignup }) => {
   const steps = [
     {
       number: "01",
@@ -122,7 +122,7 @@ const HowItWorks = ({ onShowLogin }) => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
-      <SharedNavigation onShowLogin={onShowLogin} />
+      <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main>
         {/* Hero Section */}

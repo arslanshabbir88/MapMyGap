@@ -94,7 +94,7 @@ const Pricing = ({ onShowLogin, onShowSignup }) => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <SharedNavigation onShowLogin={onShowLogin} />
+      <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main className="pt-20 pb-16">
         {/* Header */}

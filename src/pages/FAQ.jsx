@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const FAQ = ({ onShowLogin }) => {
+const FAQ = ({ onShowLogin, onShowSignup }) => {
   const [openCategory, setOpenCategory] = useState('general');
 
   const faqData = {
@@ -101,7 +101,7 @@ const FAQ = ({ onShowLogin }) => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
-      <SharedNavigation onShowLogin={onShowLogin} />
+      <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main>
         {/* Hero Section */}

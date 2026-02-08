@@ -4,7 +4,7 @@ import { useAuth } from '../AuthContext';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const SubscriptionSuccess = ({ onShowLogin }) => {
+const SubscriptionSuccess = ({ onShowLogin, onShowSignup }) => {
   const [searchParams] = useSearchParams();
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,7 +46,7 @@ const SubscriptionSuccess = ({ onShowLogin }) => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-900 text-white">
-        <SharedNavigation onShowLogin={onShowLogin} />
+        <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
         <main className="pt-20 pb-16">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <div className="mb-8">
@@ -67,7 +67,7 @@ const SubscriptionSuccess = ({ onShowLogin }) => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      <SharedNavigation onShowLogin={onShowLogin} />
+      <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main className="pt-20 pb-16">
         <div className="max-w-4xl mx-auto px-4 text-center">

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const Security = ({ onShowLogin }) => {
+const Security = ({ onShowLogin, onShowSignup }) => {
   const implementedSecurityFeatures = [
     {
       icon: "🔐",
@@ -76,7 +76,7 @@ const Security = ({ onShowLogin }) => {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
-      <SharedNavigation onShowLogin={onShowLogin} />
+      <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main>
         {/* Hero Section */}
