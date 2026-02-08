@@ -638,8 +638,44 @@ const Frameworks = ({ onShowLogin, onShowSignup }) => {
 
   const selectedFrameworkData = frameworks[selectedFramework];
 
+  const baseUrl = 'https://mapmygap.com';
+  const frameworksSchema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': `${baseUrl}/frameworks#webpage`,
+        url: `${baseUrl}/frameworks`,
+        name: 'Supported Compliance Frameworks | MapMyGap',
+        description: 'MapMyGap supports NIST CSF, NIST 800-53, ISO 27001, SOC 2, PCI DSS, HIPAA, SOX, NYDFS and more. AI-powered compliance gap analysis.',
+        publisher: { '@id': `${baseUrl}/#organization` },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: baseUrl },
+          { '@type': 'ListItem', position: 2, name: 'Compliance Frameworks', item: `${baseUrl}/frameworks` },
+        ],
+      },
+      {
+        '@type': 'ItemList',
+        name: 'Compliance Frameworks',
+        description: 'Compliance frameworks supported by MapMyGap for gap analysis.',
+        numberOfItems: Object.keys(frameworks).length,
+        itemListElement: Object.entries(frameworks).map(([key, fw], i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: fw.name,
+          url: `${baseUrl}/frameworks?framework=${key}`,
+          description: fw.description,
+        })),
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-300">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(frameworksSchema) }} />
       <SharedNavigation onShowLogin={onShowLogin} onShowSignup={onShowSignup} />
       
       <main>
