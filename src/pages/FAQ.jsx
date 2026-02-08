@@ -171,17 +171,10 @@ const FAQ = ({ onShowLogin, onShowSignup }) => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 type="button"
-                onClick={() => openContactForm('support')}
-                className="inline-flex items-center justify-center px-8 py-4 border border-slate-600 text-slate-300 hover:text-white hover:border-slate-500 transition-colors rounded-lg text-lg font-semibold"
-              >
-                Email Support
-              </button>
-              <button
-                type="button"
-                onClick={() => openContactForm('sales')}
+                onClick={() => openContactForm()}
                 className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg text-lg font-semibold hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
               >
-                Contact Sales
+                Contact us
               </button>
             </div>
           </div>

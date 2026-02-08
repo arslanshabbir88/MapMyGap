@@ -12,13 +12,13 @@ export default function ContactFormModal({ isOpen, onClose, type = 'support' }) 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [submitType, setSubmitType] = useState(type);
+  const [submitType, setSubmitType] = useState(type || 'general');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    setSubmitType(type);
+    setSubmitType(type || 'general');
   }, [type, isOpen]);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function ContactFormModal({ isOpen, onClose, type = 'support' }) 
 
   if (!isOpen) return null;
 
-  const title = submitType === 'sales' ? 'Contact Sales' : 'Email Support';
+  const title = 'Contact us';
 
   return (
     <div className="fixed inset-0 bg-black/70 z-50 flex justify-center items-center p-4">
@@ -125,6 +125,7 @@ export default function ContactFormModal({ isOpen, onClose, type = 'support' }) 
                 >
                   <option value="support">Support</option>
                   <option value="sales">Sales</option>
+                  <option value="general">General inquiry</option>
                 </select>
               </div>
               <div>

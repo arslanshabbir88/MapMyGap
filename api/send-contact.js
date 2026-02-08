@@ -23,12 +23,11 @@ export default async function handler(req, res) {
       return sendJson(res, 400, { error: 'Name, email, and message are required' });
     }
 
-    const subject = type === 'sales'
-      ? `[MapMyGap Sales] ${name} - ${email}`
-      : `[MapMyGap Support] ${name} - ${email}`;
+    const subjectLabel = type === 'sales' ? 'Sales' : type === 'support' ? 'Support' : 'General';
+    const subject = `[MapMyGap ${subjectLabel}] ${name} - ${email}`;
 
     const text = [
-      `Type: ${type === 'sales' ? 'Contact Sales' : 'Email Support'}`,
+      `Type: ${type === 'sales' ? 'Sales' : type === 'support' ? 'Support' : 'General inquiry'}`,
       `Name: ${name}`,
       `Email: ${email}`,
       '',

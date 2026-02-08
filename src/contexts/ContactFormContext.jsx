@@ -6,8 +6,8 @@ const ContactFormContext = createContext(null);
 export function ContactFormProvider({ children }) {
   const [state, setState] = useState({ open: false, type: 'support' });
 
-  const openContactForm = (type = 'support') => {
-    setState({ open: true, type: type === 'sales' ? 'sales' : 'support' });
+  const openContactForm = (type) => {
+    setState({ open: true, type: type === 'sales' ? 'sales' : type === 'support' ? 'support' : 'general' });
   };
 
   const closeContactForm = () => {
