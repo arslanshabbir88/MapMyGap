@@ -23,47 +23,41 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Determine if this is a trial plan (free or one-time)
+    // Trial is a recurring $0 price with trial period — must use subscription mode
     const isTrialPlan = plan.toLowerCase() === 'trial';
-    
+
     console.log('📊 Plan analysis:', {
       plan,
       isTrialPlan,
-      mode: isTrialPlan ? 'payment' : 'subscription'
+      mode: 'subscription', // Trial uses subscription mode (recurring $0 price)
     });
-    
-    // Create Stripe checkout session
+
+    // Create Stripe checkout session (subscription mode for all plans including trial)
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: isTrialPlan ? [] : ['card'], // No payment method for trial
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      mode: isTrialPlan ? 'payment' : 'subscription', // Use 'payment' for trial, 'subscription' for others
+      mode: 'subscription',
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: userId,
-      allow_promotion_codes: true, // Enable promo codes at checkout
-      billing_address_collection: 'auto', // Always auto for both trial and subscriptions
+      allow_promotion_codes: true,
+      billing_address_collection: 'auto',
       metadata: {
         plan: plan,
         userId: userId,
       },
-      ...(isTrialPlan ? {
-        // For trial (one-time payment), don't set payment_method_collection
-        submit_type: 'auto', // Auto-submit for trial
-      } : {
-        // For subscriptions, set payment_method_collection
-        payment_method_collection: 'always',
-        subscription_data: {
-          metadata: {
-            plan: plan,
-            userId: userId,
-          },
+      // No card required for $0 trial; card required for paid plans
+      payment_method_collection: isTrialPlan ? 'if_required' : 'always',
+      subscription_data: {
+        metadata: {
+          plan: plan,
+          userId: userId,
         },
-      }),
+      },
     });
 
     res.status(200).json({ sessionId: session.id });

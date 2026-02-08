@@ -25,12 +25,12 @@ export default async function handler(req, res) {
     console.log('📄 Document length:', documentLength);
     console.log('📝 Control text length:', controlTextLength);
 
-    // Get current subscription
+    // Get current subscription (active or trialing = trial period)
     const { data: subscription, error: subError } = await supabase
       .from('subscriptions')
       .select('*')
       .eq('user_id', userId)
-      .eq('status', 'active')
+      .in('status', ['active', 'trialing'])
       .single();
 
     if (subError || !subscription) {

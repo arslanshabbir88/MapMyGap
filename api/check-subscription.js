@@ -37,9 +37,9 @@ export default async function handler(req, res) {
     
     console.log('🔍 All subscriptions for user:', userId, 'Data:', subscriptions);
     
-    // Filter for active subscriptions (including 'canceling' status - user still has access until period ends)
+    // Filter for active subscriptions (active, trialing = trial period, canceling = access until period ends)
     const activeSubscriptions = subscriptions?.filter(sub => 
-      sub.status === 'active' || sub.status === 'canceling'
+      sub.status === 'active' || sub.status === 'trialing' || sub.status === 'canceling'
     ) || [];
     console.log('🔍 Active/Canceling subscriptions:', activeSubscriptions);
 
