@@ -160,7 +160,7 @@ const Pricing = ({ onShowLogin, onShowSignup }) => {
                            </p>
                            {plan.trial && (
                              <p className="mt-3 text-green-400 text-sm font-semibold">
-                               No credit card required — just your email.
+                               No credit card required.
                              </p>
                            )}
                          </div>
