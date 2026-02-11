@@ -158,6 +158,11 @@ const Pricing = ({ onShowLogin, onShowSignup }) => {
                            <p className="text-gray-200 text-sm leading-relaxed font-medium">
                              {plan.description}
                            </p>
+                           {plan.trial && (
+                             <p className="mt-3 text-green-400 text-sm font-semibold">
+                               No credit card required — just your email.
+                             </p>
+                           )}
                          </div>
 
                                  {/* Features */}
