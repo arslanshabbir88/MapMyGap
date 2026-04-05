@@ -82,7 +82,7 @@ const PrivacyPolicy = ({ onShowLogin, onShowSignup }) => {
 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">3.3 Marketing emails</h3>
                 <p className="mb-3">
-                  If you choose to receive them, we may send you <strong>product updates</strong> and <strong>occasional marketing</strong> about MapMyGap—the same type of messages described where we offer the option: “Email me product updates and occasional marketing from MapMyGap.” These communications are optional and separate from running your account.
+                  If you choose to receive them, we may send you <strong>product updates</strong> and <strong>occasional marketing</strong> about MapMyGap. This is the same type of messaging described where we offer the option: “Email me product updates and occasional marketing from MapMyGap.” These communications are optional and separate from running your account.
                 </p>
                 <p className="mb-3">
                   <strong>Lawful basis:</strong> Where the law requires a legal basis, we rely on your <strong>consent</strong> when you opt in (for example via the checkbox when you create an account, email preferences in your profile, or the subscribe option in the website footer).
@@ -93,7 +93,7 @@ const PrivacyPolicy = ({ onShowLogin, onShowSignup }) => {
                   . Withdrawing consent does not delete your account.
                 </p>
                 <p className="mb-3 text-slate-400">
-                  <strong>Transactional and service email:</strong> We may still send emails needed to operate the service—such as account verification, password resets, security notices, billing and subscription notices, and replies to support requests—even if you opt out of marketing emails.
+                  <strong>Transactional and service email:</strong> We may still send emails needed to operate the service, such as account verification, password resets, security notices, billing and subscription notices, and replies to support requests, even if you opt out of marketing emails.
                 </p>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">4. Data Storage and Retention</h2>
