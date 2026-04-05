@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import MarketingFooterBlock from './MarketingFooterBlock';
 
 const SharedFooter = () => {
   return (
@@ -17,6 +18,10 @@ const SharedFooter = () => {
               <Link to="/about" className="text-slate-400 hover:text-white transition-colors">About</Link>
               <Link to="/security" className="text-slate-400 hover:text-white transition-colors">Security</Link>
               <Link to="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
+            </div>
+            <div className="mt-8 pt-8 border-t border-slate-800">
+              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Email updates</h4>
+              <MarketingFooterBlock />
             </div>
           </div>
           

@@ -25,3 +25,33 @@ CREATE POLICY "Users can view own subscriptions" ON subscriptions
 -- Create policy to allow service role to manage all subscriptions
 CREATE POLICY "Service role can manage all subscriptions" ON subscriptions
   FOR ALL USING (auth.role() = 'service_role');
+
+-- Marketing email consent (logged-in users; source of truth for campaigns)
+CREATE TABLE IF NOT EXISTS user_marketing_consent (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  opted_in BOOLEAN NOT NULL DEFAULT false,
+  consent_at TIMESTAMPTZ,
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  source TEXT
+);
+
+ALTER TABLE user_marketing_consent ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users manage own marketing consent" ON user_marketing_consent
+  FOR ALL
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- Guest newsletter signups from footer (API uses service role only)
+CREATE TABLE IF NOT EXISTS marketing_leads (
+  email TEXT PRIMARY KEY,
+  opted_in BOOLEAN NOT NULL DEFAULT true,
+  consent_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW(),
+  source TEXT DEFAULT 'footer'
+);
+
+ALTER TABLE marketing_leads ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Service role can manage marketing leads" ON marketing_leads
+  FOR ALL USING (auth.role() = 'service_role');

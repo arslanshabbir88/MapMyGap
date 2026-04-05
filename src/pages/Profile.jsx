@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useMarketingConsent } from '../hooks/useMarketingConsent';
+import MarketingConsentLabel from '../components/MarketingConsentLabel';
 
 const Profile = () => {
   const { user, subscription, signOut } = useAuth();
@@ -13,8 +15,8 @@ const Profile = () => {
   const [modalMessage, setModalMessage] = useState('');
   const [accessUntilDate, setAccessUntilDate] = useState('');
   const [isCancelling, setIsCancelling] = useState(false);
-
-
+  const { optedIn, loading: marketingLoading, saving: marketingSaving, save: saveMarketing } =
+    useMarketingConsent();
 
   useEffect(() => {
     const fetchUsage = async () => {
@@ -166,6 +168,23 @@ const Profile = () => {
                       day: 'numeric' 
                     }) : 'Unknown'}
                   </p>
+                </div>
+                <div className="pt-4 border-t border-slate-700/50">
+                  <p className="text-sm text-slate-400 font-medium mb-3">Email preferences</p>
+                  <div className="flex items-start gap-3">
+                    <input
+                      id="profile-marketing-consent"
+                      type="checkbox"
+                      className="mt-1 h-4 w-4 rounded border-slate-600 bg-slate-700/80 text-blue-500 focus:ring-blue-500"
+                      checked={marketingLoading ? false : optedIn}
+                      disabled={marketingLoading || marketingSaving}
+                      onChange={(e) => saveMarketing(e.target.checked, 'profile')}
+                    />
+                    <MarketingConsentLabel id="profile-marketing-consent" className="text-slate-400" />
+                  </div>
+                  {marketingSaving && (
+                    <p className="text-xs text-slate-500 mt-2">Saving…</p>
+                  )}
                 </div>
               </div>
             </div>

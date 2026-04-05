@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './AuthContext';
+import MarketingConsentLabel from './components/MarketingConsentLabel';
 
 const Icon = ({ path, className = "w-6 h-6" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={className}>
@@ -25,6 +26,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, initialIsSignup = false
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [marketingConsent, setMarketingConsent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -61,12 +63,16 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, initialIsSignup = false
     try {
       setLoading(true);
       if (isSignup) {
-        await signUpWithEmail(email, password, { full_name: fullName });
+        await signUpWithEmail(email, password, {
+          full_name: fullName,
+          marketing_consent: marketingConsent,
+        });
         setMessage('Check your email for confirmation link!');
         setEmail('');
         setPassword('');
         setConfirmPassword('');
         setFullName('');
+        setMarketingConsent(false);
       } else {
         await signInWithEmail(email, password);
         onClose();
@@ -178,6 +184,19 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, initialIsSignup = false
                   placeholder="Confirm your password"
                   required={isSignup}
                 />
+              </div>
+            )}
+
+            {isSignup && (
+              <div className="flex items-start gap-3 pt-1">
+                <input
+                  id="signup-marketing-consent"
+                  type="checkbox"
+                  className="mt-1 h-4 w-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
+                  checked={marketingConsent}
+                  onChange={(e) => setMarketingConsent(e.target.checked)}
+                />
+                <MarketingConsentLabel id="signup-marketing-consent" className="text-slate-400" />
               </div>
             )}
 

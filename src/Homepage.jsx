@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import MarketingFooterBlock from './components/MarketingFooterBlock';
 
 // --- Helper Components ---
 
@@ -627,6 +628,10 @@ function Homepage({ onShowLogin, onShowSignup }) {
                   <Link to="/about" className="text-slate-400 hover:text-white transition-colors">About</Link>
                   <Link to="/security" className="text-slate-400 hover:text-white transition-colors">Security</Link>
                   <Link to="/pricing" className="text-slate-400 hover:text-white transition-colors">Pricing</Link>
+                </div>
+                <div className="mt-8 pt-8 border-t border-slate-800">
+                  <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Email updates</h4>
+                  <MarketingFooterBlock />
                 </div>
               </div>
               
