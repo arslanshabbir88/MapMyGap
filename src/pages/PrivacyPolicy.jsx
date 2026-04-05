@@ -49,6 +49,7 @@ const PrivacyPolicy = ({ onShowLogin, onShowSignup }) => {
                   <li><strong>Documents:</strong> Compliance documents, policies, and procedures you upload</li>
                   <li><strong>Usage Data:</strong> Framework selections, analysis history, and usage statistics</li>
                   <li><strong>Communication:</strong> Support requests, feedback, and correspondence</li>
+                  <li><strong>Marketing preferences:</strong> Whether you opted in to product updates and occasional marketing emails from MapMyGap (e.g., at sign-up, in your profile, or via our website footer)</li>
                 </ul>
 
                 <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">2.2 Automatically Collected Information</h3>
@@ -78,6 +79,22 @@ const PrivacyPolicy = ({ onShowLogin, onShowSignup }) => {
                   <li>Generated analysis is based on your document content</li>
                   <li>No human review of your document content</li>
                 </ul>
+
+                <h3 className="text-xl font-semibold text-slate-200 mt-6 mb-3">3.3 Marketing emails</h3>
+                <p className="mb-3">
+                  If you choose to receive them, we may send you <strong>product updates</strong> and <strong>occasional marketing</strong> about MapMyGap—the same type of messages described where we offer the option: “Email me product updates and occasional marketing from MapMyGap.” These communications are optional and separate from running your account.
+                </p>
+                <p className="mb-3">
+                  <strong>Lawful basis:</strong> Where the law requires a legal basis, we rely on your <strong>consent</strong> when you opt in (for example via the checkbox when you create an account, email preferences in your profile, or the subscribe option in the website footer).
+                </p>
+                <p className="mb-3">
+                  <strong>How to withdraw:</strong> You can opt out at any time by turning off marketing email preferences in your <strong>Profile</strong>, using the <strong>unsubscribe</strong> link in any marketing email we send, or by contacting us at{' '}
+                  <a href="mailto:admin@mapmygap.com" className="text-blue-400 hover:text-blue-300">admin@mapmygap.com</a>
+                  . Withdrawing consent does not delete your account.
+                </p>
+                <p className="mb-3 text-slate-400">
+                  <strong>Transactional and service email:</strong> We may still send emails needed to operate the service—such as account verification, password resets, security notices, billing and subscription notices, and replies to support requests—even if you opt out of marketing emails.
+                </p>
 
                 <h2 className="text-2xl font-bold text-white mt-8 mb-4">4. Data Storage and Retention</h2>
                 
@@ -144,7 +161,7 @@ const PrivacyPolicy = ({ onShowLogin, onShowSignup }) => {
                 <ul className="list-disc pl-6 space-y-2">
                   <li>Your uploaded documents with third parties</li>
                   <li>Your analysis results with other users</li>
-                  <li>Your personal information for marketing purposes</li>
+                  <li>Your personal information with third parties so they can market their own products or services to you (we may email you about MapMyGap only when you have opted in, as described in Section 3.3)</li>
                   <li>Your data with advertisers or data brokers</li>
                 </ul>
 
