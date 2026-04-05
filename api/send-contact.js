@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { createClient } from '@supabase/supabase-js';
 
 // Who receives the form submissions (you)
 const TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'admin@mapmygap.com';
@@ -10,6 +11,50 @@ function sendJson(res, status, body) {
   return res.status(status).end(JSON.stringify(body));
 }
 
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+async function handleMarketingNewsletter(res, body) {
+  const email = (body.email || '').trim().toLowerCase();
+  const optedIn = body.opted_in === true;
+  const source = typeof body.source === 'string' ? body.source.slice(0, 64) : 'footer';
+
+  if (!optedIn) {
+    return sendJson(res, 400, { error: 'Marketing consent is required' });
+  }
+  if (!email || !isValidEmail(email)) {
+    return sendJson(res, 400, { error: 'Valid email is required' });
+  }
+
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseServiceKey) {
+    console.error('send-contact: Supabase env missing (marketing newsletter)');
+    return sendJson(res, 500, { error: 'Service not configured' });
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseServiceKey);
+  const now = new Date().toISOString();
+  const { error } = await supabase.from('marketing_leads').upsert(
+    {
+      email,
+      opted_in: true,
+      consent_at: now,
+      updated_at: now,
+      source,
+    },
+    { onConflict: 'email' }
+  );
+
+  if (error) {
+    console.error('marketing_leads upsert:', error);
+    return sendJson(res, 500, { error: 'Could not save subscription' });
+  }
+
+  return sendJson(res, 200, { success: true });
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return sendJson(res, 405, { error: 'Method not allowed' });
@@ -17,6 +62,11 @@ export default async function handler(req, res) {
 
   try {
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body || {});
+
+    if (body.intent === 'marketing_newsletter') {
+      return handleMarketingNewsletter(res, body);
+    }
+
     const { name, email, type, message } = body;
 
     if (!name || !email || !message) {

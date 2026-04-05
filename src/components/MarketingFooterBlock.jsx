@@ -21,10 +21,15 @@ export default function MarketingFooterBlock() {
     }
     setGuestSubmitting(true);
     try {
-      const res = await fetch('/api/marketing-subscribe', {
+      const res = await fetch('/api/send-contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: trimmed, opted_in: true, source: 'footer' }),
+        body: JSON.stringify({
+          intent: 'marketing_newsletter',
+          email: trimmed,
+          opted_in: true,
+          source: 'footer',
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
