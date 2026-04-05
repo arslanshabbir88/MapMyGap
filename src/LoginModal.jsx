@@ -26,7 +26,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, initialIsSignup = false
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [marketingConsent, setMarketingConsent] = useState(false);
+  const [marketingConsent, setMarketingConsent] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
@@ -72,7 +72,7 @@ const LoginModal = ({ isOpen, onClose, onSwitchToSignup, initialIsSignup = false
         setPassword('');
         setConfirmPassword('');
         setFullName('');
-        setMarketingConsent(false);
+        setMarketingConsent(true);
       } else {
         await signInWithEmail(email, password);
         onClose();

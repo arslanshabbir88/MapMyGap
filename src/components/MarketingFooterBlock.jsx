@@ -7,7 +7,7 @@ export default function MarketingFooterBlock() {
   const { user } = useAuth();
   const { optedIn, loading, saving, save } = useMarketingConsent();
   const [email, setEmail] = useState('');
-  const [guestChecked, setGuestChecked] = useState(false);
+  const [guestChecked, setGuestChecked] = useState(true);
   const [guestSubmitting, setGuestSubmitting] = useState(false);
   const [guestMessage, setGuestMessage] = useState(null);
 
@@ -35,7 +35,7 @@ export default function MarketingFooterBlock() {
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       setGuestMessage({ ok: true, text: "You're subscribed. Thanks!" });
       setEmail('');
-      setGuestChecked(false);
+      setGuestChecked(true);
     } catch (err) {
       setGuestMessage({ ok: false, text: err.message || 'Could not subscribe.' });
     } finally {
