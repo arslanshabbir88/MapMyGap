@@ -642,6 +642,7 @@ function Homepage({ onShowLogin, onShowSignup }) {
                   <li><Link to="/how-it-works" className="text-slate-400 hover:text-white transition-colors">How It Works</Link></li>
                   <li><Link to="/frameworks" className="text-slate-400 hover:text-white transition-colors">Frameworks</Link></li>
                   <li><Link to="/faq" className="text-slate-400 hover:text-white transition-colors">FAQ</Link></li>
+                  <li><Link to="/guides" className="text-slate-400 hover:text-white transition-colors">Guides</Link></li>
                 </ul>
               </div>
               

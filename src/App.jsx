@@ -12,6 +12,8 @@ import Frameworks from './pages/Frameworks.jsx';
 import Security from './pages/Security.jsx';
 import Pricing from './pages/Pricing.jsx';
 import About from './pages/About.jsx';
+import Guides from './pages/Guides.jsx';
+import Soc2VsIso27001 from './pages/Soc2VsIso27001.jsx';
 import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
@@ -88,6 +90,8 @@ function AppContent() {
         <Route path="/security" element={<Security onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/pricing" element={<Pricing onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/about" element={<About onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
+        <Route path="/guides" element={<Guides onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
+        <Route path="/guides/soc-2-vs-iso-27001" element={<Soc2VsIso27001 onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

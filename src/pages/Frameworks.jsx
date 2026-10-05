@@ -740,6 +740,13 @@ const Frameworks = ({ onShowLogin, onShowSignup }) => {
                   <p className="text-slate-300 leading-relaxed mb-6">
                     {selectedFrameworkData.overview}
                   </p>
+                  {(selectedFramework === 'soc2' || selectedFramework === 'iso-27001') && (
+                    <p className="text-slate-300 leading-relaxed mb-6">
+                      <Link to="/guides/soc-2-vs-iso-27001" className="text-blue-400 hover:text-blue-300 font-medium">
+                        SOC 2 vs ISO 27001: which one to pursue first
+                      </Link>
+                    </p>
+                  )}
                   
                   <h4 className="text-xl font-semibold text-white mb-3">Use Cases</h4>
                   <ul className="space-y-2">
