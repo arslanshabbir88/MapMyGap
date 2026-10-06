@@ -249,12 +249,6 @@ function Homepage({ onShowLogin, onShowSignup }) {
                   See How It Works
                 </Link>
               </div>
-
-              <p className="text-slate-300">
-                <Link to="/guides/soc-2-vs-iso-27001" className="text-blue-400 hover:text-blue-300 font-medium">
-                  SOC 2 vs ISO 27001: which one to pursue first
-                </Link>
-              </p>
               
             </div>
           </section>
