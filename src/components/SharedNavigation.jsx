@@ -74,6 +74,7 @@ const SharedNavigation = ({ onShowLogin, onShowSignup }) => {
           <div className="hidden lg:flex items-center space-x-8">
             <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors">How It Works</Link>
             <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors">Frameworks</Link>
+            <Link to="/guides" className="text-slate-300 hover:text-white transition-colors">Guides</Link>
             <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors">Pricing</Link>
             <Link to="/about" className="text-slate-300 hover:text-white transition-colors">About</Link>
             <Link to="/faq" className="text-slate-300 hover:text-white transition-colors">FAQ</Link>
@@ -148,6 +149,7 @@ const SharedNavigation = ({ onShowLogin, onShowSignup }) => {
             <div className="flex flex-col space-y-2 pt-3">
               <Link to="/how-it-works" className="text-slate-300 hover:text-white transition-colors text-sm">How It Works</Link>
               <Link to="/frameworks" className="text-slate-300 hover:text-white transition-colors text-sm">Frameworks</Link>
+              <Link to="/guides" className="text-slate-300 hover:text-white transition-colors text-sm">Guides</Link>
               <Link to="/pricing" className="text-slate-300 hover:text-white transition-colors text-sm">Pricing</Link>
               <Link to="/about" className="text-slate-300 hover:text-white transition-colors text-sm">About</Link>
               <Link to="/faq" className="text-slate-300 hover:text-white transition-colors text-sm">FAQ</Link>
