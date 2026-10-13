@@ -638,7 +638,7 @@ const Frameworks = ({ onShowLogin, onShowSignup }) => {
 
   const selectedFrameworkData = frameworks[selectedFramework];
 
-  const baseUrl = 'https://mapmygap.com';
+  const baseUrl = 'https://www.mapmygap.com';
   const frameworksSchema = {
     '@context': 'https://schema.org',
     '@graph': [

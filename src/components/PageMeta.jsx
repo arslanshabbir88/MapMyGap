@@ -14,7 +14,7 @@ const FRAMEWORK_NAMES = {
   'sox': 'SOX',
 };
 
-const SITE = 'https://mapmygap.com';
+const SITE = 'https://www.mapmygap.com';
 const DEFAULT_TITLE = 'MapMyGap - AI-Powered Compliance Gap Analysis';
 const DEFAULT_DESC = 'Get professional compliance gap analysis in 5 minutes instead of 6 weeks. AI-powered analysis for NIST CSF, ISO 27001, SOC 2, PCI DSS, HIPAA, and more.';
 

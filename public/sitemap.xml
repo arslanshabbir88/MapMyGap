@@ -1,127 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://mapmygap.com/</loc>
+    <loc>https://www.mapmygap.com/</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/how-it-works</loc>
+    <loc>https://www.mapmygap.com/how-it-works</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks</loc>
+    <loc>https://www.mapmygap.com/frameworks</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=nist-csf</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=nist-csf</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=nist-800-53</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=nist-800-53</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=nist-800-63</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=nist-800-63</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=soc1</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=soc1</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=soc2</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=soc2</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=iso-27001</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=iso-27001</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=pci-dss</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=pci-dss</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=nydfs-500</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=nydfs-500</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=hipaa</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=hipaa</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/frameworks?framework=sox</loc>
+    <loc>https://www.mapmygap.com/frameworks?framework=sox</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/pricing</loc>
+    <loc>https://www.mapmygap.com/pricing</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/about</loc>
+    <loc>https://www.mapmygap.com/about</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/guides</loc>
+    <loc>https://www.mapmygap.com/guides</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/guides/soc-2-vs-iso-27001</loc>
+    <loc>https://www.mapmygap.com/guides/soc-2-vs-iso-27001</loc>
     <lastmod>2026-10-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/faq</loc>
+    <loc>https://www.mapmygap.com/faq</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/security</loc>
+    <loc>https://www.mapmygap.com/security</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/terms</loc>
+    <loc>https://www.mapmygap.com/terms</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://mapmygap.com/privacy</loc>
+    <loc>https://www.mapmygap.com/privacy</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>

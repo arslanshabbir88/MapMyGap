@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 
-const SITE = 'https://mapmygap.com';
+const SITE = 'https://www.mapmygap.com';
 const PAGE_URL = `${SITE}/guides/soc-2-vs-iso-27001`;
 
 const faqs = [

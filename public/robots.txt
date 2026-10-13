@@ -6,5 +6,5 @@ Disallow: /profile
 Disallow: /analyzer
 
 # Sitemap
-Sitemap: https://mapmygap.com/sitemap.xml
+Sitemap: https://www.mapmygap.com/sitemap.xml
 

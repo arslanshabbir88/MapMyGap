@@ -4,7 +4,7 @@ import SharedNavigation from '../components/SharedNavigation';
 import SharedFooter from '../components/SharedFooter';
 import { GUIDES } from './guides';
 
-const SITE = 'https://mapmygap.com';
+const SITE = 'https://www.mapmygap.com';
 
 const Guides = ({ onShowLogin, onShowSignup }) => {
   const schema = {
