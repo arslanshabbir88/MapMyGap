@@ -747,6 +747,13 @@ const Frameworks = ({ onShowLogin, onShowSignup }) => {
                       </Link>
                     </p>
                   )}
+                  {selectedFramework === 'soc2' && (
+                    <p className="text-slate-300 leading-relaxed mb-6">
+                      <Link to="/guides/soc-2-type-1-vs-type-2" className="text-blue-400 hover:text-blue-300 font-medium">
+                        SOC 2 Type I vs Type II: which report to get
+                      </Link>
+                    </p>
+                  )}
                   
                   <h4 className="text-xl font-semibold text-white mb-3">Use Cases</h4>
                   <ul className="space-y-2">

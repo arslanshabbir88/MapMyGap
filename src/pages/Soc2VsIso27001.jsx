@@ -147,7 +147,7 @@ const Soc2VsIso27001 = ({ onShowLogin, onShowSignup }) => {
                   Security is the only Trust Services Criterion every SOC 2 report includes. Availability, Processing Integrity, Confidentiality, and Privacy are added when customers or the business need them. A company that only stores documents will not look like a company that promises uptime in a contract.
                 </p>
                 <p className="text-slate-300">
-                  Type I answers whether the controls were designed properly on a given date. Type II answers whether they worked across a period of time. Enterprise buyers usually want Type II, because a design on paper is weaker evidence than months of operation.
+                  Type I answers whether the controls were designed properly on a given date. Type II answers whether they worked across a period of time. Enterprise buyers usually want Type II, because a design on paper is weaker evidence than months of operation. The choice between those two reports is covered in <Link to="/guides/soc-2-type-1-vs-type-2" className="text-blue-400 hover:text-blue-300">SOC 2 Type I vs Type II</Link>.
                 </p>
               </section>
 

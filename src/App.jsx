@@ -14,6 +14,7 @@ import Pricing from './pages/Pricing.jsx';
 import About from './pages/About.jsx';
 import Guides from './pages/Guides.jsx';
 import Soc2VsIso27001 from './pages/Soc2VsIso27001.jsx';
+import Soc2Type1VsType2 from './pages/Soc2Type1VsType2.jsx';
 import SubscriptionSuccess from './pages/SubscriptionSuccess.jsx';
 import SubscriptionGuard from './components/SubscriptionGuard.jsx';
 import Profile from './pages/Profile.jsx';
@@ -92,6 +93,7 @@ function AppContent() {
         <Route path="/about" element={<About onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/guides" element={<Guides onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/guides/soc-2-vs-iso-27001" element={<Soc2VsIso27001 onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
+        <Route path="/guides/soc-2-type-1-vs-type-2" element={<Soc2Type1VsType2 onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="/subscription-success" element={<SubscriptionSuccess onShowLogin={() => { setShowLoginModal(true); setAuthModalSignUp(false); }} onShowSignup={() => { setShowLoginModal(true); setAuthModalSignUp(true); }} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

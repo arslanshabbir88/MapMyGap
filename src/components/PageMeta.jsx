@@ -64,6 +64,11 @@ const ROUTE_META = {
     description: 'SOC 2 vs ISO 27001: what each one proves, who asks for it, and how to choose which compliance framework to pursue first.',
     type: 'article',
   },
+  '/guides/soc-2-type-1-vs-type-2': {
+    title: 'SOC 2 Type I vs Type II | MapMyGap',
+    description: 'SOC 2 Type I vs Type II: what each report proves, which buyers accept it, and how to choose the examination to book.',
+    type: 'article',
+  },
   '/subscription-success': {
     title: 'Subscription Active | MapMyGap',
     description: 'Your MapMyGap subscription is active. Start analyzing compliance documents.',
